@@ -1,0 +1,11 @@
+{
+  "packages": [
+    "packages/*",
+    "affinidi-core-sdk/common-libs/*",
+    "affinidi-core-sdk/sdk/*",
+    "cosmjs/packages/*"
+  ],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "version": "independent"
+}
