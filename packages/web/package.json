@@ -5,13 +5,10 @@
   "description": "Web App wallet for Meta-ID v2",
   "author": "Mark Vandal <araht.pareen@gmail.com>",
   "keywords": [
-    "Meta",
-    "Belrus",
+    "Meta Belrus",
     "SSI",
-    "Digital",
-    "Democracy",
-    "Web",
-    "App",
+    "Digital Democracy",
+    "Web App",
     "Wallet"
   ],
   "license": "Apache-2.0",
