@@ -1,6 +1,0 @@
-[submodule "affinidi-core-sdk"]
-	path = affinidi-core-sdk
-	url = https://github.com/affinityproject/affinidi-core-sdk.git
-[submodule "cosmjs"]
-	path = cosmjs
-	url = https://github.com/cosmos/cosmjs.git

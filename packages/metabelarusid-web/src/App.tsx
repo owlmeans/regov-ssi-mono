@@ -21,8 +21,6 @@ function Copyright() {
 }
 
 function App() {
-  console.log(AffinidiWallet)
-
   return (
     <Container maxWidth="sm">
       <Box my={4} className="App-header">
