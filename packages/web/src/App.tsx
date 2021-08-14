@@ -3,7 +3,6 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
-import { AffinidiWallet } from '@affinidi/wallet-browser-sdk'
 import logo from './logo.svg';
 import './App.css';
 
