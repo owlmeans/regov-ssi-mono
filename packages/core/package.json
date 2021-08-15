@@ -2,7 +2,10 @@
   "name": "metablearusid-core",
   "version": "0.0.1",
   "description": "It's core package for Meta-ID",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "typing": "dist/index.js",
+  "module": "dist/metabelarusid-core.esm.js",
+  "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/markvandal/mb.wallets-mono.git",
@@ -17,6 +20,11 @@
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
     "jest": "^27.0.6",
+    "tsdx": "^0.14.1",
     "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@affinidi/tiny-lds-ecdsa-secp256k1-2019": "^1.1.0",
+    "@affinidi/vc-common": "^1.4.1"
   }
 }
