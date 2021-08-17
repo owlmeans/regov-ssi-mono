@@ -13,18 +13,29 @@
   },
   "author": "Mark Vandal",
   "license": "Apache-2.0",
+  "type": "commonjs",
   "files": [
     "dist"
   ],
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
+    "@types/secp256k1": "^4.0.3",
+    "@types/tiny-secp256k1": "^2.0.1",
     "jest": "^27.0.6",
-    "tsdx": "^0.14.1",
+    "ts-jest": "^27.0.4",
+    "ts-node": "^10.2.0",
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "@affinidi/common": "^2.0.0-beta.4",
     "@affinidi/tiny-lds-ecdsa-secp256k1-2019": "^1.1.0",
-    "@affinidi/vc-common": "^1.4.1"
+    "@affinidi/vc-common": "^1.4.1",
+    "bip32": "^2.0.6",
+    "secp256k1": "^4.0.2",
+    "tiny-secp256k1": "^2.0.0"
   }
 }
