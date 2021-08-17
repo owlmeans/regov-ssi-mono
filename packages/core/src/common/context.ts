@@ -28,7 +28,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
   return {
     keyChain,
 
-    cryptoContext,
+    crypto: cryptoContext,
 
     buildCredential: async <
       T extends CommonSubjectType = CommonSubjectType,

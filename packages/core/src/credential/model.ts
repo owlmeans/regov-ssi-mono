@@ -1,5 +1,5 @@
 
-import { _keyChainHelper } from "common/helper/key";
+import { _keyChainHelper } from "keys/helper";
 import { CommonContext } from "common/types";
 import { CreateCredentialMethod, ERROR_NO_DEFINITION, ERROR_NO_HOLDER, ERROR_NO_ISSUER, SignCredentialMethod } from "./types";
 
@@ -35,7 +35,7 @@ export const buildSignCredentialMethod =
         credential,
         issuer,
         await _keyChainHelper.keyToCommonKey(
-          key,
+          context, key,
           options.password || context.keyChain.getDefaultPassword(),
           { rotation: options.rotation }
         ),

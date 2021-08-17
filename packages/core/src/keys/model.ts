@@ -1,9 +1,8 @@
-// import { nodeCryptoContext } from "crypto/context/node"
 import { BuildKeyChainWrapperMethod, CreateKeyOptions, DPArgs, KeyPair, KeyRotation } from "./types"
 
 
 export const buildKeyChain: BuildKeyChainWrapperMethod =
-  async ({ password, source, keyOptions, cryptoContext }) => {
+  async ({ password, source, keyOptions, crypto }) => {
     const _createKey =
       async (alias: string, password: string, options?: CreateKeyOptions): Promise<KeyPair> => {
         const type = 'BIP32'
@@ -13,27 +12,27 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
 
         const seed = options?.seed
           ? Buffer.from(options.seed, 'base64')
-          : (await cryptoContext.getRandomBytes(32))
+          : (await crypto.getRandomBytes(32))
         const seed64 = seed.toString('base64')
         const dp = options?.dp ? options.dp : <DPArgs>[0]
         if (dp.length < 1) {
           dp.push(0)
         }
 
-        const commonKey = cryptoContext.getKey(seed, cryptoContext.makeDerivationPath.apply(null, dp))
+        const commonKey = crypto.getKey(seed, crypto.makeDerivationPath.apply(null, dp))
         const nextDp = <DPArgs>[...dp]
         nextDp.unshift(<number>nextDp.shift() + 1)
-        const nextKey = cryptoContext.getKey(seed, cryptoContext.makeDerivationPath.apply(null, nextDp))
+        const nextKey = crypto.getKey(seed, crypto.makeDerivationPath.apply(null, nextDp))
 
         const rotation: KeyRotation = {
           type,
           opened: options?.opened || false,
           private: options?.opened
             ? commonKey.pk
-            : await cryptoContext.encrypt(commonKey.pk, password),
+            : await crypto.encrypt(commonKey.pk, password),
           public: commonKey.pubKey,
           digest: commonKey.id,
-          nextDigest: cryptoContext.sign(commonKey.id, nextKey.pk),
+          nextDigest: crypto.sign(commonKey.id, nextKey.pk),
           safe,
           dp,
           future: false,
@@ -43,8 +42,8 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
         const nextRotation: KeyRotation = {
           type,
           opened: false,
-          private: await cryptoContext.encrypt(nextKey.pk, password),
-          public: await cryptoContext.encrypt(nextKey.pubKey, password),
+          private: await crypto.encrypt(nextKey.pk, password),
+          public: await crypto.encrypt(nextKey.pubKey, password),
           digest: nextKey.id,
           safe,
           future: true,
@@ -58,7 +57,7 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
           currentRotation: 0,
           rotations: [rotation, nextRotation],
           alias,
-          seed: await cryptoContext.encrypt(seed64, password),
+          seed: await crypto.encrypt(seed64, password),
           id: commonKey.id,
           safe,
           ...safeCommentObj
@@ -90,7 +89,7 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
           return {
             ...keyRotation,
             opened: true,
-            private: await cryptoContext.decrypt(keyRotation.private, password)
+            private: await crypto.decrypt(keyRotation.private, password)
           }
         },
 

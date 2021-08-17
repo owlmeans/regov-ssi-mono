@@ -1,24 +1,30 @@
 import { CommonContext } from "common/types"
 import { CommonKey } from "common/types/key"
 import { SignCredentialOptions } from "credential/types"
-import { keyChainHelper } from "keys/model"
 import { KeyPair } from "keys/types"
+
 
 export type KeyChainHelperOptions = {
   rotation?: number
   id?: string
 }
 
+
 export const _keyChainHelper = {
 
-  keyToCommonKey: async (key: KeyPair, password: string, options?: KeyChainHelperOptions): Promise<CommonKey> => {
+  keyToCommonKey: async (
+    context: CommonContext,
+    key: KeyPair,
+    password: string,
+    options?: KeyChainHelperOptions
+  ): Promise<CommonKey> => {
 
     let keyRotation = key.rotations[
       options?.rotation !== undefined ? options?.rotation : key.currentRotation
     ]
 
     if (!keyRotation.opened) {
-      keyRotation = await keyChainHelper.openKey(
+      keyRotation = await context.keyChain.openKey(
         key,
         password,
         options?.rotation

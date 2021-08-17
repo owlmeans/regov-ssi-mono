@@ -3,7 +3,7 @@ import { Secp256k1Key, Secp256k1Signature } from "@affinidi/tiny-lds-ecdsa-secp2
 import { KeysService } from '@affinidi/common'
 import { fromSeed, BIP32Interface } from 'bip32'
 import { CommonKey } from "common/types/key"
-import { CryptoContext } from "crypto/types"
+import { CryptoHelper as CryptoHelper } from "common/crypto/types"
 
 // import * as secp256k1 from 'secp256k1'
 
@@ -72,7 +72,7 @@ const _getRandomBytes = async (size: number): Promise<Buffer> => {
 }
 
 
-export const nodeCryptoContext: CryptoContext = {
+export const nodeCryptoHelper: CryptoHelper = {
   buildSignSuite: (options) => new Secp256k1Signature({
     key: new Secp256k1Key({
       ...options,

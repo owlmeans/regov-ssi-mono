@@ -1,6 +1,6 @@
 import { CommonKey } from "common/types/key";
 
-export type CryptoContext = {
+export type CryptoHelper = {
   buildSignSuite: (keyOptions: BuildSignSignatureOptions) => Object
 
   hash: (data: string) => string

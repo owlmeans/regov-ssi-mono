@@ -1,4 +1,4 @@
-import { CryptoContext } from "crypto/types"
+import { CryptoHelper } from "common/crypto/types"
 
 export type KeyChain = {
   defaultKey: string
@@ -17,7 +17,7 @@ export type KeyChainWrapper = {
 
 export type BuildKeyChainWrapperMethod =
   (options: {
-    cryptoContext: CryptoContext,
+    crypto: CryptoHelper,
     password: string,
     source?: string,
     keyOptions?: CreateKeyOptions
