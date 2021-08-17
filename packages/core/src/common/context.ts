@@ -7,7 +7,7 @@ import { CommonKey } from "./types/key";
 
 export const buildCommonContext: BuildCommonContextMethod = async ({
   keyChain,
-  cryptoContext
+  crypto
 }) => {
   const documentLoader = async (url: string): Promise<any> => {
     if (url.startsWith('did:')) {
@@ -28,7 +28,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
   return {
     keyChain,
 
-    crypto: cryptoContext,
+    crypto,
 
     buildCredential: async <
       T extends CommonSubjectType = CommonSubjectType,
@@ -67,7 +67,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
             privateKey: key.pk,
             publicKey: key.pubKey
           },
-          getSignSuite: cryptoContext.buildSignSuite,
+          getSignSuite: crypto.buildSignSuite,
           documentLoader,
           getProofPurposeOptions: options?.buildProofPurposeOptions || (async () => ({
             controller: {

@@ -1,12 +1,12 @@
-import { GetSignSuiteFn, TContext } from "@affinidi/vc-common";
+import { TContext } from "@affinidi/vc-common";
 import { CryptoHelper } from "common/crypto/types";
-import { KeyChain, KeyChainWrapper } from "keys/types";
+import { KeyChainWrapper } from "keys/types";
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "./types/credential";
 import { CommonKey } from "./types/key";
 
 export type BuildCommonContextMethod = (options: {
   keyChain: KeyChainWrapper
-  cryptoContext: CryptoHelper
+  crypto: CryptoHelper
 }) => Promise<CommonContext>
 
 export type CommonContext = {

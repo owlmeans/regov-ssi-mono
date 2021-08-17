@@ -30,13 +30,13 @@ export const buildSignCredentialMethod =
         throw new Error(ERROR_NO_ISSUER)
       }
 
-      const key = _keyChainHelper.parseSigningKeyOptions(context, options)
+      const key = _keyChainHelper.parseSigningKeyOptions(context.keyChain, options)
       return context.signCredential(
         credential,
         issuer,
         await _keyChainHelper.keyToCommonKey(
-          context, key,
-          options.password || context.keyChain.getDefaultPassword(),
+          context.keyChain, key,
+          options.password,
           { rotation: options.rotation }
         ),
         { controllerRole: options.controllerRole }

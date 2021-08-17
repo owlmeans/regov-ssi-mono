@@ -19,7 +19,7 @@ beforeAll(async () => {
       password: '11111111',
       crypto: nodeCryptoHelper
     }),
-    cryptoContext: nodeCryptoHelper
+    crypto: nodeCryptoHelper
   })
 })
 
