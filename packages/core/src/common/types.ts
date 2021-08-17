@@ -1,13 +1,17 @@
-import { GetSignSuiteFn } from "@affinidi/vc-common";
+import { GetSignSuiteFn, TContext } from "@affinidi/vc-common";
+import { CryptoContext } from "crypto/types";
 import { KeyChain, KeyChainWrapper } from "keys/types";
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "./types/credential";
 import { CommonKey } from "./types/key";
 
-export type BuildCommonContextMethod = (keyChain: KeyChainWrapper) => Promise<CommonContext>
+export type BuildCommonContextMethod = (options: {
+  keyChain: KeyChainWrapper
+  cryptoContext: CryptoContext
+}) => Promise<CommonContext>
 
 export type CommonContext = {
-  keyChain: KeyChainWrapper 
-  buildSignSuite: CommonBuildSignSuiteMethod
+  keyChain: KeyChainWrapper
+  cryptoContext: CryptoContext
   buildCredential: CommonBuildCredentialMethod
   signCredential: CommonSignCredentialMethod
 }
@@ -18,6 +22,8 @@ export type CommonBuildCredentialMethod = <
   >(options: CommonBuildCredentailOptions<SubjectType>) =>
   Promise<CommonUnsignedCredential<Subject>>
 
+export type CommonContextType = TContext
+
 export type CommonBuildCredentailOptions<
   SubjectType extends CommonSubjectType = CommonSubjectType,
   Subject extends CommonCredentailSubject<SubjectType> = CommonCredentailSubject<SubjectType>
@@ -27,6 +33,7 @@ export type CommonBuildCredentailOptions<
     holder: string,
     subject: Subject,
     issueanceDate?: string
+    context: TContext
   }
 
 export type CommonSignCredentialMethod =
@@ -39,8 +46,6 @@ export type CommonSignCredentialMethod =
     options?: CommonSignCredentialOptions
   ) =>
     Promise<CommonCredentail<Subject>>
-
-export type CommonBuildSignSuiteMethod = GetSignSuiteFn
 
 export type CommonSignCredentialOptions = {
   controllerRole?: ControllerRole

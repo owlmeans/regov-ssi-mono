@@ -1,4 +1,4 @@
-import { ControllerRole } from "common/types"
+import { CommonContextType, ControllerRole } from "common/types"
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "common/types/credential"
 import { KeyPair } from "keys/types"
 
@@ -33,6 +33,7 @@ export type CreateCredentialMethod =
     type: CredentialType,
     subject: CredentialSubjectProperty<Subject>,
     holder?: string,
+    context?: CredentialContextType
   ) => Promise<UnsignedCredentail<Subject>>
 
 
@@ -58,6 +59,8 @@ export type CredentialSubject<SubjectType extends CredentialSubjectType = Creden
 
 export type CredentialSubjectType = CommonSubjectType & {}
 
+export type CredentialContextType = CommonContextType & {}
+
 export type UnsignedCredentail<
   Subject extends CredentialSubject = CredentialSubject
   > = CommonUnsignedCredential<Subject> & {}
@@ -65,4 +68,5 @@ export type UnsignedCredentail<
 export type CredentialType = CommonType
 
 export const ERROR_NO_HOLDER = 'ERROR_NO_HOLDER'
+export const ERROR_NO_DEFINITION = 'ERROR_NO_DEFINITION'
 export const ERROR_NO_ISSUER = 'ERROR_NO_ISSUER'

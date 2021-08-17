@@ -3,6 +3,7 @@ import { Secp256k1Key, Secp256k1Signature } from "@affinidi/tiny-lds-ecdsa-secp2
 import { KeysService } from '@affinidi/common'
 import { fromSeed, BIP32Interface } from 'bip32'
 import { CommonKey } from "common/types/key"
+import { CryptoContext } from "crypto/types"
 
 // import * as secp256k1 from 'secp256k1'
 
@@ -71,17 +72,14 @@ const _getRandomBytes = async (size: number): Promise<Buffer> => {
 }
 
 
-export const cryptoHelper = {
-  buildSignSignature: (keyOptions: {
-    publicKeyHex?: string;
-    privateKeyHex?: string;
-    id: string;
-    controller: string;
-  }) => {
-    return new Secp256k1Signature({
-      key: new Secp256k1Key(keyOptions)
+export const nodeCryptoContext: CryptoContext = {
+  buildSignSuite: (options) => new Secp256k1Signature({
+    key: new Secp256k1Key({
+      ...options,
+      privateKeyHex: Buffer.from(options.privateKey, 'base64').toString('hex'),
+      publicKeyHex: Buffer.from(options.publicKey, 'base64').toString('hex'),
     })
-  },
+  }),
 
   hash: _hash,
 
@@ -101,7 +99,7 @@ export const cryptoHelper = {
   getRandomBytes: _getRandomBytes,
 
   normalizePassword: (password: string) => {
-    return KeysService.normalizePassword(password)
+    return KeysService.normalizePassword(password) as Uint8Array
   },
 
   encrypt: async (body: string, password: string): Promise<string> => {
@@ -133,12 +131,13 @@ export const cryptoHelper = {
 
   makeId: _makeId,
 
-  getKey: (seed: Buffer, derivationPath?: string): CommonKey & { dp: string } => {
+  getKey: (seed: Uint8Array, derivationPath?: string): CommonKey & { dp: string } => {
+    const bufferedSeed = <Buffer>seed
     derivationPath = derivationPath || _makeDerivationPath()
-    const _key = `${seed.toString('hex')}_derivationPath`
+    const _key = `${bufferedSeed.toString('hex')}_derivationPath`
 
     if (!_keysCache[_key]) {
-      _keysCache[_key] = fromSeed(seed).derivePath(derivationPath)
+      _keysCache[_key] = fromSeed(bufferedSeed).derivePath(derivationPath)
     }
 
     const pubKey = _keysCache[_key].publicKey.toString('base64')

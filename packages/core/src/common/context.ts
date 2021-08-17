@@ -1,31 +1,21 @@
 
-import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, getVCV1JSONContext } from "@affinidi/vc-common";
-import { Credential } from "credential/types";
-import { KeyChainWrapper } from "keys/types";
-import { cryptoHelper } from "./crypto/helper";
+import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned } from "@affinidi/vc-common";
 
-import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions, CommonBuildSignSuiteMethod, COMMON_CONTROLLER_ROLE_HOLDER } from "./types";
+import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions, COMMON_CONTROLLER_ROLE_HOLDER } from "./types";
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./types/credential";
 import { CommonKey } from "./types/key";
 
-export const buildCommonContext: BuildCommonContextMethod = async (
-  keyChain: KeyChainWrapper
-) => {
-
-  const buildSignSuite: CommonBuildSignSuiteMethod = ({ keyId, privateKey, publicKey, controller }) => {
-    return cryptoHelper.buildSignSignature({
-      id: keyId,
-      controller,
-      privateKeyHex: Buffer.from(privateKey, 'base64').toString('hex'),
-      publicKeyHex: Buffer.from(<string>publicKey, 'base64').toString('hex')
-    })
-  }
-
+export const buildCommonContext: BuildCommonContextMethod = async ({
+  keyChain,
+  cryptoContext
+}) => {
   const documentLoader = async (url: string): Promise<any> => {
     if (url.startsWith('did:')) {
+      // @TODO Fix lookup by did for metabelarus purpose
+      throw new SyntaxError('Can\'t look up did based urls fore documents')
       return {
         contextUrl: null,
-        // document: didDoc,
+        document: {},
         documentUrl: url,
       }
     }
@@ -38,7 +28,7 @@ export const buildCommonContext: BuildCommonContextMethod = async (
   return {
     keyChain,
 
-    buildSignSuite,
+    cryptoContext,
 
     buildCredential: async <
       T extends CommonSubjectType = CommonSubjectType,
@@ -51,17 +41,7 @@ export const buildCommonContext: BuildCommonContextMethod = async (
         holder: {
           id: options.holder
         },
-        context: {
-          '@version': 1.1,
-          meta: 'https://meta-id.meta-belarus.org/vc-schema#',
-          data: {
-            '@id': 'meta:data',
-            '@type': '@id',
-            '@context': {
-              worker: { '@id': 'meta:worker', '@type': 'xsd:string' }
-            }
-          }
-        }
+        context: options.context
       })
 
       return buildVCV1Unsigned({
@@ -87,7 +67,7 @@ export const buildCommonContext: BuildCommonContextMethod = async (
             privateKey: key.pk,
             publicKey: key.pubKey
           },
-          getSignSuite: buildSignSuite,
+          getSignSuite: cryptoContext.buildSignSuite,
           documentLoader,
           getProofPurposeOptions: options?.buildProofPurposeOptions || (async () => ({
             controller: {

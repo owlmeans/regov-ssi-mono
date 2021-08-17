@@ -1,3 +1,4 @@
+import { CryptoContext } from "crypto/types"
 
 export type KeyChain = {
   defaultKey: string
@@ -6,11 +7,21 @@ export type KeyChain = {
 
 export type KeyChainWrapper = {
   keyChain: KeyChain,
+
   getDefaultPassword: () => string
+
+  openKey: (keypair: KeyPair, password: string, rotation?: number) => Promise<KeyRotation>
+
+  createKey: (alias: string, password: string, options?: CreateKeyOptions) => Promise<KeyPair>
 }
 
-export type BuildKeyChainWrapperMethod = 
-  (password: string, source?: string, keyOptions?: CreateKeyOptions) => Promise<KeyChainWrapper>
+export type BuildKeyChainWrapperMethod =
+  (options: {
+    cryptoContext: CryptoContext,
+    password: string,
+    source?: string,
+    keyOptions?: CreateKeyOptions
+  }) => Promise<KeyChainWrapper>
 
 export type KeyPair = {
   alias: string

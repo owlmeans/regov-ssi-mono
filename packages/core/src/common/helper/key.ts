@@ -1,4 +1,3 @@
-import { cryptoHelper } from "common/crypto/helper"
 import { CommonContext } from "common/types"
 import { CommonKey } from "common/types/key"
 import { SignCredentialOptions } from "credential/types"

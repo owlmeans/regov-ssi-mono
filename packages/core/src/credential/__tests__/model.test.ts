@@ -2,6 +2,7 @@ import { buildCommonContext } from "common/context"
 import { CommonContext } from "common/types"
 import { buildCreateCrednetialMethod, buildSignCredentialMethod } from "credential/model"
 import { CredentialSubjectType, UnsignedCredentail } from "credential/types"
+import { nodeCryptoContext } from "crypto/context/node"
 import { buildKeyChain } from "keys/model"
 
 import util from 'util'
@@ -13,9 +14,10 @@ const testContext: {
 } = {}
 
 beforeAll(async () => {
-  testContext.commonContext = await buildCommonContext(
-    await buildKeyChain('11111111')
-  )
+  testContext.commonContext = await buildCommonContext({
+    keyChain: await buildKeyChain('11111111'),
+    cryptoContext: nodeCryptoContext
+  })
 })
 
 describe('Credential Model', () => {
@@ -34,7 +36,18 @@ describe('Credential Model', () => {
           worker: 'Valentin Michalych'
         }
       },
-      'did:peer:yyyy'
+      'did:peer:yyyy',
+      {
+        '@version': 1.1,
+        meta: 'https://meta-id.meta-belarus.org/vc-schema#',
+        data: {
+          '@id': 'meta:data',
+          '@type': '@id',
+          '@context': {
+            worker: { '@id': 'meta:worker', '@type': 'xsd:string' }
+          }
+        }
+      }
     )
 
     testContext.unsignedCredential = unsingnedCredentail
