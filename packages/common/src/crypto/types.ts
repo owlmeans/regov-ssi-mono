@@ -47,7 +47,11 @@ export type BuildVerifySignatureOptions = {
 }
 
 export type CryptoKey = {
-  id: string
-  pk: string
-  pubKey: string
+  id?: string
+  pk?: string
+  pubKey?: string
 }
+
+export const COMMON_CRYPTO_ERROR_NOPK = 'COMMON_CRYPTO_ERROR_NOPK'
+export const COMMON_CRYPTO_ERROR_NOPUBKEY = 'COMMON_CRYPTO_ERROR_NOPUBKEY'
+export const COMMON_CRYPTO_ERROR_NOID = 'COMMON_CRYPTO_ERROR_NOID'

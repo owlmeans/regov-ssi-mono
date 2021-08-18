@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DID Helper Creates a DID Document 1`] = `
+Object {
+  "@context": Array [
+    "https://w3id.org/security/v2",
+  ],
+  "id": Any<String>,
+  "proof": Object {
+    "controller": Any<String>,
+    "created": Any<String>,
+    "nonce": Any<String>,
+    "signature": Any<String>,
+    "type": "Secp256k1Signature",
+    "verificationMethod": Any<String>,
+  },
+  "publicKey": Array [
+    Object {
+      "id": Any<String>,
+      "publicKeyBase58": Any<String>,
+      "type": "Secp256k1Signature",
+    },
+  ],
+  "verificationMethod": Array [
+    Object {
+      "id": Any<String>,
+      "publicKeyBase58": Any<String>,
+      "type": "Secp256k1VerificationKey",
+    },
+  ],
+}
+`;

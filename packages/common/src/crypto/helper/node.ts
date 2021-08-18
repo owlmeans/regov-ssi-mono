@@ -90,12 +90,26 @@ export const nodeCryptoHelper: CryptoHelper = {
   hash: _hash,
 
   sign: (data: string, key: string) => {
-    const arr = _getSecp256k1().sign(_hashBytes(data), _base58().decode(key))
+    // console.log({
+    //   cap: 'TO SIGN!!!!!',
+    //   data,
+    //   hashData: _hashBytes(data).toString('hex'),
+    //   key
+    // })
 
-    return _base58().encode(arr)
+    return Buffer.from(
+      _getSecp256k1().sign(_hashBytes(data), _base58().decode(key))
+    ).toString('base64')
   },
 
   verify: (signature: string, data: string, key: string) => {
+    // console.log({
+    //   cap: 'TO VERIFY!!!!!',
+    //   data,
+    //   hashData: _hashBytes(data).toString('hex'),
+    //   key
+    // })
+
     return _getSecp256k1().verify(
       Buffer.from(signature, 'base64'),
       _hashBytes(data),
