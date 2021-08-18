@@ -19,6 +19,8 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.12.3",
+    "metabelarusid-common": "^0.0.1",
+    "metabelarusid-did": "^0.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",

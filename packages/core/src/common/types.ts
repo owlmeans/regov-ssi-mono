@@ -1,19 +1,20 @@
-import { TContext } from "@affinidi/vc-common";
-import { CryptoHelper } from "common/crypto/types";
-import { KeyChainWrapper } from "keys/types";
-import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "./types/credential";
-import { CommonKey } from "./types/key";
+import { TContext } from "@affinidi/vc-common"
+import { CryptoHelper } from "metabelarusid-common"
+import { KeyChainWrapper } from "keys/types"
+import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "./types/credential"
+import { CryptoKey } from "metabelarusid-common"
 
 export type BuildCommonContextMethod = (options: {
-  keyChain: KeyChainWrapper
+  keys: KeyChainWrapper
   crypto: CryptoHelper
 }) => Promise<CommonContext>
 
 export type CommonContext = {
-  keyChain: KeyChainWrapper
+  keys: KeyChainWrapper
   crypto: CryptoHelper
   buildCredential: CommonBuildCredentialMethod
   signCredential: CommonSignCredentialMethod
+  verifyCredential: CommonVerfiyCredentailMethod
 }
 
 export type CommonBuildCredentialMethod = <
@@ -42,7 +43,7 @@ export type CommonSignCredentialMethod =
     >(
     unsingedCredential: CommonUnsignedCredential<Subject>,
     issuer: string,
-    key: CommonKey,
+    key: CryptoKey,
     options?: CommonSignCredentialOptions
   ) =>
     Promise<CommonCredentail<Subject>>
@@ -51,6 +52,8 @@ export type CommonSignCredentialOptions = {
   controllerRole?: ControllerRole
   buildProofPurposeOptions?: () => Promise<Object>
 }
+
+export type CommonVerfiyCredentailMethod = (credential: CommonCredentail) => Promise<boolean>
 
 export type ControllerRole =
   typeof COMMON_CONTROLLER_ROLE_ISSUER

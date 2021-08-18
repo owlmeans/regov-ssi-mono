@@ -2,7 +2,7 @@ import { buildCommonContext } from "common/context"
 import { CommonContext } from "common/types"
 import { buildCreateCrednetialMethod, buildSignCredentialMethod } from "credential/model"
 import { CredentialSubjectType, UnsignedCredentail } from "credential/types"
-import { nodeCryptoHelper } from "common/crypto/helper/node"
+import { nodeCryptoHelper } from "metabelarusid-common"
 import { buildKeyChain } from "keys/model"
 
 import util from 'util'
@@ -15,7 +15,7 @@ const testContext: {
 
 beforeAll(async () => {
   testContext.commonContext = await buildCommonContext({
-    keyChain: await buildKeyChain({
+    keys: await buildKeyChain({
       password: '11111111',
       crypto: nodeCryptoHelper
     }),
@@ -74,6 +74,7 @@ describe('Credential Model', () => {
       proof: {
         created: expect.any(String),
         jws: expect.any(String),
+        verificationMethod: expect.any(String),
       }
     })
   })

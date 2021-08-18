@@ -1,12 +1,12 @@
 
-import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned } from "@affinidi/vc-common";
+import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, validateVCV1 } from "@affinidi/vc-common";
 
 import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions, COMMON_CONTROLLER_ROLE_HOLDER } from "./types";
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./types/credential";
-import { CommonKey } from "./types/key";
+import { CryptoKey } from "metabelarusid-common"
 
 export const buildCommonContext: BuildCommonContextMethod = async ({
-  keyChain,
+  keys,
   crypto
 }) => {
   const documentLoader = async (url: string): Promise<any> => {
@@ -26,7 +26,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
   }
 
   return {
-    keyChain,
+    keys,
 
     crypto,
 
@@ -55,7 +55,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     >(
       unsingedCredential: CommonUnsignedCredential<S>,
       issuer: string,
-      key: CommonKey,
+      key: CryptoKey,
       options?: CommonSignCredentialOptions
     ) => {
       try {
@@ -67,7 +67,12 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
             privateKey: key.pk,
             publicKey: key.pubKey
           },
-          getSignSuite: crypto.buildSignSuite,
+          getSignSuite: (options) => crypto.buildSignSuite({
+            publicKey: <string>options.publicKey,
+            privateKey: options.privateKey,
+            id: options.keyId,
+            controller: options.controller
+          }),
           documentLoader,
           getProofPurposeOptions: options?.buildProofPurposeOptions || (async () => ({
             controller: {
@@ -81,6 +86,18 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
 
         throw e
       }
+    },
+
+    verifyCredential: async (credential) => {
+      validateVCV1({
+        getVerifySuite: crypto.buildVerifySuite,
+        documentLoader,
+        getProofPurposeOptions: (async () => ({
+          controller: { id: credential.holder.id }
+        }))
+      })
+
+      return true
     }
   }
 }

@@ -1,4 +1,4 @@
-import { CommonKey } from "common/types/key"
+import { CryptoKey } from "metabelarusid-common"
 import { SignCredentialOptions } from "credential/types"
 import { KeyChainWrapper, KeyPair } from "keys/types"
 
@@ -11,22 +11,22 @@ export type KeyChainHelperOptions = {
 // @TODO Refactor it into something reasonable.
 // Everything is wrong here with the code structure.
 // Idea: Move it to KeyChainWrapper
-export const _keyChainHelper = {
-  keyToCommonKey: async (
-    keyChain: KeyChainWrapper,
+export const _keysHelper = {
+  keyToCryptoKey: async (
+    keys: KeyChainWrapper,
     key: KeyPair,
     password?: string,
     options?: KeyChainHelperOptions
-  ): Promise<CommonKey> => {
+  ): Promise<CryptoKey> => {
 
     let keyRotation = key.rotations[
       options?.rotation !== undefined ? options?.rotation : key.currentRotation
     ]
 
     if (!keyRotation.opened) {
-      keyRotation = await keyChain.openKey(
+      keyRotation = await keys.openKey(
         key,
-        password || keyChain.getDefaultPassword(),
+        password || keys.getDefaultPassword(),
         options?.rotation
       )
     }
@@ -41,17 +41,17 @@ export const _keyChainHelper = {
   // @TODO Add implemnetation on syntax errors
   // @TODO Refactor it: choose only one proper approach and use it instead of 
   // this 'convenient' solution
-  parseSigningKeyOptions: (keyChain: KeyChainWrapper, options: SignCredentialOptions): KeyPair => {
+  parseSigningKeyOptions: (keys: KeyChainWrapper, options: SignCredentialOptions): KeyPair => {
     switch (typeof options.key) {
       default:
       case 'boolean':
         if (options.key) {
           throw new SyntaxError('AUTO KEY CREATION IS NOT IMPLEMENTED')
         } else {
-          options.key = keyChain.keyChain.defaultKey
+          options.key = keys.keys.defaultKey
         }
       case 'string':
-        options.key = keyChain.keyChain.keys[options.key]
+        options.key = keys.keys.keys[options.key]
       case 'object':
         if (options.key.hasOwnProperty('issuer')) {
           throw new SyntaxError('CAN\'T LOOK UP KEY BY ISSUER')

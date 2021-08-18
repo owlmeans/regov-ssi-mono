@@ -3125,7 +3125,7 @@
   resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
   integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
-"@types/secp256k1@^4.0.1", "@types/secp256k1@^4.0.3":
+"@types/secp256k1@^4.0.1":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@types/secp256k1/-/secp256k1-4.0.3.tgz#1b8e55d8e00f08ee7220b4d59a6abe89c37a901c"
   integrity sha512-Da66lEIFeIz9ltsdMZcpQvmrmmoqrfju8pm1BH8WbYjZSwUgCwXLb9C+9XYogwBITnbsSaMdVPb2ekf7TV+03w==
@@ -3153,13 +3153,6 @@
   integrity sha512-Gk9vaXfbzc5zCXI9eYE9BI5BNHEp4D3FWjgqBE/ePGYElLAP+KvxBcsdkwfIVvezs605oiyd/VrpiHe3Oeg+Aw==
   dependencies:
     "@types/jest" "*"
-
-"@types/tiny-secp256k1@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@types/tiny-secp256k1/-/tiny-secp256k1-2.0.1.tgz#a2a1a1e8f377ac63419464c6ce05b8bec109c39c"
-  integrity sha512-3UmSOVZR8nqCk50r/ODnT58+FutNzf1NpJHSW69Lc33ZDvOVciKHYOcBN/BXPzYWzWvM0GvHVnxv6HNHxOKXbg==
-  dependencies:
-    tiny-secp256k1 "*"
 
 "@types/uglify-js@*":
   version "3.13.1"
@@ -13329,7 +13322,7 @@ scrypt-js@^3.0.0:
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-3.0.1.tgz#d314a57c2aef69d1ad98a138a21fe9eafa9ee312"
   integrity sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA==
 
-secp256k1@^4.0.1, secp256k1@^4.0.2:
+secp256k1@^4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.2.tgz#15dd57d0f0b9fdb54ac1fa1694f40e5e9a54f4a1"
   integrity sha512-UDar4sKvWAksIlfX3xIaQReADn+WFnHvbVujpcbr+9Sf/69odMwy2MUsz5CKLQgX9nsIyrjuxL2imVyoNHa3fg==
@@ -14377,11 +14370,6 @@ timsort@^0.3.0:
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
 
-tiny-secp256k1@*, tiny-secp256k1@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/tiny-secp256k1/-/tiny-secp256k1-2.0.0.tgz#b628df0697f6a2535c55e0bb90332d0cb03e7712"
-  integrity sha512-fL2GZvXKbsXI3cV+uOpEThSiljKwyXOtmGCEh09j+eysTVdPwgei3yogM8BiXMwxDTlMZjQLYpiJLb1gO0vstw==
-
 tiny-secp256k1@^1.1.3, tiny-secp256k1@^1.1.5, tiny-secp256k1@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/tiny-secp256k1/-/tiny-secp256k1-1.1.6.tgz#7e224d2bee8ab8283f284e40e6b4acb74ffe047c"
@@ -14392,6 +14380,11 @@ tiny-secp256k1@^1.1.3, tiny-secp256k1@^1.1.5, tiny-secp256k1@^1.1.6:
     create-hmac "^1.1.7"
     elliptic "^6.4.0"
     nan "^2.13.2"
+
+tiny-secp256k1@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/tiny-secp256k1/-/tiny-secp256k1-2.0.0.tgz#b628df0697f6a2535c55e0bb90332d0cb03e7712"
+  integrity sha512-fL2GZvXKbsXI3cV+uOpEThSiljKwyXOtmGCEh09j+eysTVdPwgei3yogM8BiXMwxDTlMZjQLYpiJLb1gO0vstw==
 
 tiny-warning@^1.0.2, tiny-warning@^1.0.3:
   version "1.0.3"
@@ -14509,6 +14502,20 @@ ts-jest@^27.0.4:
     lodash "4.x"
     make-error "1.x"
     mkdirp "1.x"
+    semver "7.x"
+    yargs-parser "20.x"
+
+ts-jest@^27.0.5:
+  version "27.0.5"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-27.0.5.tgz#0b0604e2271167ec43c12a69770f0bb65ad1b750"
+  integrity sha512-lIJApzfTaSSbtlksfFNHkWOzLJuuSm4faFAfo5kvzOiRAuoN4/eKxVJ2zEAho8aecE04qX6K1pAzfH5QHL1/8w==
+  dependencies:
+    bs-logger "0.x"
+    fast-json-stable-stringify "2.x"
+    jest-util "^27.0.0"
+    json5 "2.x"
+    lodash "4.x"
+    make-error "1.x"
     semver "7.x"
     yargs-parser "20.x"
 

@@ -1,4 +1,4 @@
-import { CryptoHelper } from "common/crypto/types"
+import { CryptoHelper } from "metabelarusid-common"
 
 export type KeyChain = {
   defaultKey: string
@@ -6,7 +6,7 @@ export type KeyChain = {
 }
 
 export type KeyChainWrapper = {
-  keyChain: KeyChain,
+  keys: KeyChain,
 
   getDefaultPassword: () => string
 

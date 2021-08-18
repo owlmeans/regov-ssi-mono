@@ -1,0 +1,35 @@
+{
+  "name": "metabelarusid-did",
+  "version": "0.0.1",
+  "description": "Meta-Id DID method",
+  "author": "Mark Vandal <araht.pareen@gmail.com>",
+  "homepage": "https://github.com/markvandal/mb.wallets-mono#readme",
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markvandal/mb.wallets-mono.git",
+    "directory": "packages/did"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/markvandal/mb.wallets-mono/issues"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.6.1",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.5",
+    "ts-node": "^10.2.0",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "metabelarusid-common": "^0.0.1"
+  }
+}

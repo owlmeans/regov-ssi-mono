@@ -11,9 +11,9 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
         const safeCommentObj = (options?.safeComment ? { safeComment: options?.safeComment } : {})
 
         const seed = options?.seed
-          ? Buffer.from(options.seed, 'base64')
+          ? crypto.base58().decode(options.seed)
           : (await crypto.getRandomBytes(32))
-        const seed64 = seed.toString('base64')
+        const seed64 = crypto.base58().encode(seed)
         const dp = options?.dp ? options.dp : <DPArgs>[0]
         if (dp.length < 1) {
           dp.push(0)
@@ -66,7 +66,7 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
 
     if (!source) {
       return {
-        keyChain: {
+        keys: {
           defaultKey: '_identity',
           keys: {
             ['_identity']: await _createKey('_identity', password, keyOptions)

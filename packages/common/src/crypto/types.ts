@@ -1,7 +1,8 @@
-import { CommonKey } from "common/types/key";
 
 export type CryptoHelper = {
   buildSignSuite: (keyOptions: BuildSignSignatureOptions) => Object
+
+  buildVerifySuite: (options: BuildVerifySignatureOptions) => Object
 
   hash: (data: string) => string
 
@@ -19,12 +20,19 @@ export type CryptoHelper = {
 
   makeDerivationPath: (index?: number, change?: number, account?: number, bc?: string) => string
 
+  base58: () => Base58Lib
+
   makeId: (key: string, payload?: string, expand?: boolean) => string
 
   /**
    * @bug seed param implicitly requires Buffer not Uint8Array!
    */
-  getKey: (seed: Uint8Array, derivationPath?: string) => CommonKey & { dp: string }
+  getKey: (seed: Uint8Array, derivationPath?: string) => CryptoKey & { dp: string }
+}
+
+export type Base58Lib = {
+  encode: (a: Uint8Array) => string
+  decode: (a: string) => Uint8Array
 }
 
 export type BuildSignSignatureOptions = {
@@ -32,4 +40,14 @@ export type BuildSignSignatureOptions = {
   privateKey: string
   id: string
   controller: string
+}
+
+export type BuildVerifySignatureOptions = {
+
+}
+
+export type CryptoKey = {
+  id: string
+  pk: string
+  pubKey: string
 }

@@ -2,10 +2,9 @@ import { Secp256k1Key, Secp256k1Signature } from "@affinidi/tiny-lds-ecdsa-secp2
 
 import { KeysService } from '@affinidi/common'
 import { fromSeed, BIP32Interface } from 'bip32'
-import { CommonKey } from "common/types/key"
-import { CryptoHelper as CryptoHelper } from "common/crypto/types"
+import { Base58Lib, CryptoHelper, CryptoKey } from "../types"
+import { encode as encode58, decode as decode58 } from './base58'
 
-// import * as secp256k1 from 'secp256k1'
 
 const IV_LENGTH = 16
 const ENCRYPTION_ALGORITHM = 'aes-256-cbc'
@@ -14,7 +13,7 @@ const _keysCache: { [key: string]: BIP32Interface } = {}
 
 const _hashBytes = (bytes: Buffer | string) => KeysService.sha256(bytes)
 
-const _hash = (data: string) => _hashBytes(data).toString('base64')
+const _hash = (data: string) => _base58().encode(_hashBytes(data))
 
 const _createCipher = (suite: string, key: unknown, iv: unknown, isDecipher = false) => {
   const aes = require('browserify-aes/browser')
@@ -53,6 +52,8 @@ const _getSecp256k1 = () => {
   }
 }
 
+const _base58 = (): Base58Lib => ({ encode: encode58, decode: decode58 })
+
 const _makeDerivationPath = (index = 0, change = 0, account = 0, bc = '0') => {
   return `m/44'/${bc}/${account}'/${change}/${index}`
 }
@@ -76,23 +77,29 @@ export const nodeCryptoHelper: CryptoHelper = {
   buildSignSuite: (options) => new Secp256k1Signature({
     key: new Secp256k1Key({
       ...options,
-      privateKeyHex: Buffer.from(options.privateKey, 'base64').toString('hex'),
-      publicKeyHex: Buffer.from(options.publicKey, 'base64').toString('hex'),
+      privateKeyHex: Buffer.from(_base58().decode(options.privateKey)).toString('hex'),
+      publicKeyHex: Buffer.from(_base58().decode(options.publicKey)).toString('hex'),
     })
   }),
+
+  buildVerifySuite: (options) => {
+
+    return {}
+  },
 
   hash: _hash,
 
   sign: (data: string, key: string) => {
-    const arr = _getSecp256k1().sign(_hashBytes(data), Buffer.from(key, 'base64'))
-    return Buffer.from(arr).toString('base64')
+    const arr = _getSecp256k1().sign(_hashBytes(data), _base58().decode(key))
+
+    return _base58().encode(arr)
   },
 
   verify: (signature: string, data: string, key: string) => {
     return _getSecp256k1().verify(
       Buffer.from(signature, 'base64'),
       _hashBytes(data),
-      Buffer.from(key, 'base64')
+      _base58().decode(key)
     )
   },
 
@@ -131,7 +138,9 @@ export const nodeCryptoHelper: CryptoHelper = {
 
   makeId: _makeId,
 
-  getKey: (seed: Uint8Array, derivationPath?: string): CommonKey & { dp: string } => {
+  base58: _base58,
+
+  getKey: (seed: Uint8Array, derivationPath?: string): CryptoKey & { dp: string } => {
     const bufferedSeed = <Buffer>seed
     derivationPath = derivationPath || _makeDerivationPath()
     const _key = `${bufferedSeed.toString('hex')}_derivationPath`
@@ -140,11 +149,11 @@ export const nodeCryptoHelper: CryptoHelper = {
       _keysCache[_key] = fromSeed(bufferedSeed).derivePath(derivationPath)
     }
 
-    const pubKey = _keysCache[_key].publicKey.toString('base64')
+    const pubKey = _base58().encode(_keysCache[_key].publicKey)
 
     return {
       dp: derivationPath,
-      pk: (<Buffer>_keysCache[_key].privateKey).toString('base64'),
+      pk: _base58().encode(<Buffer>_keysCache[_key].privateKey),
       pubKey,
       id: _makeId(pubKey)
     }

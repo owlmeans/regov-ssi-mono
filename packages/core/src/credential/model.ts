@@ -1,7 +1,7 @@
 
-import { _keyChainHelper } from "keys/helper";
+import { _keysHelper } from "keys/helper";
 import { CommonContext } from "common/types";
-import { CreateCredentialMethod, ERROR_NO_DEFINITION, ERROR_NO_HOLDER, ERROR_NO_ISSUER, SignCredentialMethod } from "./types";
+import { CreateCredentialMethod, ERROR_NO_DEFINITION, ERROR_NO_HOLDER, ERROR_NO_ISSUER, SignCredentialMethod, VerifyCredentialMethod } from "./types";
 
 
 export const buildCreateCrednetialMethod =
@@ -30,15 +30,21 @@ export const buildSignCredentialMethod =
         throw new Error(ERROR_NO_ISSUER)
       }
 
-      const key = _keyChainHelper.parseSigningKeyOptions(context.keyChain, options)
+      const key = _keysHelper.parseSigningKeyOptions(context.keys, options)
       return context.signCredential(
         credential,
         issuer,
-        await _keyChainHelper.keyToCommonKey(
-          context.keyChain, key,
+        await _keysHelper.keyToCryptoKey(
+          context.keys, key,
           options.password,
           { rotation: options.rotation }
         ),
         { controllerRole: options.controllerRole }
       )
     }
+
+export const buildVerifyCredentialMethod = (context: CommonContext): VerifyCredentialMethod =>
+  async (credential, options = {}) => {
+
+    return true
+  }

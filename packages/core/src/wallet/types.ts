@@ -1,5 +1,5 @@
-import { CredentialType, Credential, CredentialSubject, UnsignedCredentail, CreateCredentialMethod, SignCredentialMethod } from "credential/types"
-import { KeyChain, KeyPair } from "keys/types"
+import { CreateCredentialMethod, SignCredentialMethod } from "credential/types"
+import { KeyChainWrapper } from "keys/types"
 import { SecureStore } from "store/types"
 import { CredentialsRegistry, CredentialsRegistryWrapper, RegistryType } from "./registry/types"
 
@@ -15,7 +15,7 @@ export type Wallet = {
 
   safe: boolean
 
-  keys: KeyChain
+  keys: KeyChainWrapper
 
   identities: CredentialsRegistry
 
