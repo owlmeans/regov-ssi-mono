@@ -82,11 +82,6 @@ export const nodeCryptoHelper: CryptoHelper = {
     })
   }),
 
-  buildVerifySuite: (options) => {
-
-    return {}
-  },
-
   hash: _hash,
 
   sign: (data: string, key: string) => {

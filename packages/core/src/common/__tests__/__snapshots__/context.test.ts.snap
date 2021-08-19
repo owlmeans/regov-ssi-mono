@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Credential Model Create Credentail 1`] = `
+exports[`Credential Model Creates Credentail 1`] = `
 Object {
   "@context": Array [
     "https://www.w3.org/2018/credentials/v1",
@@ -26,9 +26,9 @@ Object {
     },
   },
   "holder": Object {
-    "id": "did:peer:yyyy",
+    "id": "did:peer:holder",
   },
-  "id": "did:peer:xxxxx",
+  "id": "did:peer:doc",
   "issuanceDate": Any<String>,
   "type": Array [
     "VerifiableCredential",
@@ -37,7 +37,7 @@ Object {
 }
 `;
 
-exports[`Credential Model Sing Credential 1`] = `
+exports[`Credential Model Signs Credential 1`] = `
 Object {
   "@context": Array [
     "https://www.w3.org/2018/credentials/v1",
@@ -63,11 +63,11 @@ Object {
     },
   },
   "holder": Object {
-    "id": "did:peer:yyyy",
+    "id": "did:peer:holder",
   },
-  "id": "did:peer:xxxxx",
+  "id": "did:peer:doc",
   "issuanceDate": Any<String>,
-  "issuer": "did:peer:zzzzz",
+  "issuer": "did:peer:issuer",
   "proof": Object {
     "created": Any<String>,
     "jws": Any<String>,

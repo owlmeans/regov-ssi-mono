@@ -55,7 +55,7 @@ describe('DID Helper', () => {
     if (!testContext.didDoc) {
       throw new Error('No DID doc from pervious test')
     }
-    const result = didHelper.verifyDIDProofSignature(testContext.didDoc)
+    const result = didHelper.verifyDID(testContext.didDoc)
 
     expect(result).toBe(true)
   })

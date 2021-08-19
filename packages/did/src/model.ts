@@ -5,6 +5,7 @@ import {
   COMMON_CRYPTO_ERROR_NOPUBKEY,
   COMMON_CRYPTO_ERROR_NOID
 } from 'metabelarusid-common'
+
 import {
   DIDDocumnet,
   DIDPURPOSE_VERIFICATION,
@@ -15,7 +16,7 @@ import {
   DIDDocumentPayload,
   didPurposeList,
   DID_ERROR_NOVERIFICATION_METHOD
-} from 'types'
+} from './types'
 
 export const buildDidHelper =
   (crypto: CryptoHelper, didPrefix = DEFAULT_DID_PREFIX): DIDHelper => {
@@ -30,8 +31,6 @@ export const buildDidHelper =
         options.expand
       )}`
     }
-
-    const _cleanUpDid = (did: string) => did.split(':')[2]
 
     const _makeDIDProofSignature = (key: CryptoKey, id: string, nonce: string, purposes: DIDDocumentPurpose[]) => {
       if (!key.pk) {
@@ -70,7 +69,22 @@ export const buildDidHelper =
 
       makeDIDProofSignature: _makeDIDProofSignature,
 
-      verifyDIDProofSignature: _verifyDIDProofSignature,
+      verifyDID: _verifyDIDProofSignature,
+
+      parseDIDId: (id) => {
+        const [noFragmentId, fragment] = id.split('#')
+        const [noQueryId, query] = noFragmentId.split('?')
+        const [,method, cleanId] = noQueryId.split(':')
+
+        return {
+          method,
+          id: cleanId,
+          query,
+          fragment
+        }
+      },
+
+      isDIDId: (id: string) => id.split(':').length > 2,
 
       createDID: async (key, options = {}) => {
         if (!key.pubKey) {

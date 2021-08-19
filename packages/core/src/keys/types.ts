@@ -1,4 +1,4 @@
-import { CryptoHelper } from "metabelarusid-common"
+import { CryptoKey, CryptoHelper } from "metabelarusid-common"
 
 export type KeyChain = {
   defaultKey: string
@@ -10,9 +10,11 @@ export type KeyChainWrapper = {
 
   getDefaultPassword: () => string
 
-  openKey: (keypair: KeyPair, password: string, rotation?: number) => Promise<KeyRotation>
+  openKey: (keypair: KeyPair, password?: string, rotation?: number) => Promise<KeyRotation>
 
-  createKey: (alias: string, password: string, options?: CreateKeyOptions) => Promise<KeyPair>
+  createKey: (alias: string, password?: string, options?: CreateKeyOptions) => Promise<KeyPair>
+
+  getCryptoKey: (key?: KeyPair | string, _password?: string, options?: KeyPairToCryptoKeyOptions) => Promise<CryptoKey>
 }
 
 export type BuildKeyChainWrapperMethod =
@@ -58,3 +60,10 @@ export type CreateKeyOptions = {
 }
 
 export type DPArgs = [number?, number?, number?, string?]
+
+export type KeyPairToCryptoKeyOptions = {
+  rotation?: number
+  id?: string
+}
+
+export const KEYCHAIN_ERROR_NO_KEY = 'KEYCHAIN_ERROR_NO_KEY'

@@ -2,8 +2,6 @@
 export type CryptoHelper = {
   buildSignSuite: (keyOptions: BuildSignSignatureOptions) => Object
 
-  buildVerifySuite: (options: BuildVerifySignatureOptions) => Object
-
   hash: (data: string) => string
 
   sign: (data: string, key: string) => string
@@ -55,3 +53,4 @@ export type CryptoKey = {
 export const COMMON_CRYPTO_ERROR_NOPK = 'COMMON_CRYPTO_ERROR_NOPK'
 export const COMMON_CRYPTO_ERROR_NOPUBKEY = 'COMMON_CRYPTO_ERROR_NOPUBKEY'
 export const COMMON_CRYPTO_ERROR_NOID = 'COMMON_CRYPTO_ERROR_NOID'
+export const COMMON_CRYPTO_ERROR_ISNOTFULL = 'COMMON_CRYPTO_ERROR_ISNOTFULL'

@@ -5,7 +5,16 @@ export type DIDHelper = {
   createDID: (key: CryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumnet>
   makeDIDId: (key: CryptoKey, options?: MakeDIDIdOptions) => string
   makeDIDProofSignature: (key: CryptoKey, id: string, nonce: string, purposes: DIDDocumentPurpose[]) => string
-  verifyDIDProofSignature: (did: DIDDocumnet, key?: CryptoKey) => boolean
+  verifyDID: (did: DIDDocumnet, key?: CryptoKey) => boolean
+  parseDIDId: (id: string) => DIDIDExplained
+  isDIDId: (id: string) => boolean
+}
+
+export type DIDIDExplained = {
+  method: string
+  id: string
+  fragment?: string
+  query?: string
 }
 
 export type DIDDocumnet = DIDDocumentPayload & {
