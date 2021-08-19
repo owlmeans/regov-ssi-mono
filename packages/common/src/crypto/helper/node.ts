@@ -152,10 +152,10 @@ export const nodeCryptoHelper: CryptoHelper = {
   getKey: (seed: Uint8Array, derivationPath?: string): CryptoKey & { dp: string } => {
     const bufferedSeed = <Buffer>seed
     derivationPath = derivationPath || _makeDerivationPath()
-    const _key = `${bufferedSeed.toString('hex')}_derivationPath`
+    const _key = `${bufferedSeed.toString('hex')}_${derivationPath}`
 
     if (!_keysCache[_key]) {
-      _keysCache[_key] = fromSeed(bufferedSeed).derivePath(derivationPath)
+      _keysCache[_key] = fromSeed(Buffer.from(bufferedSeed)).derivePath(derivationPath)
     }
 
     const pubKey = _base58().encode(_keysCache[_key].publicKey)

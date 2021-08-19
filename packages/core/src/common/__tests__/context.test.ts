@@ -96,11 +96,83 @@ describe('Credential Model', () => {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
 
-    const result = await testContext.commonContext.verifyCredential(
+    const [result] = await testContext.commonContext.verifyCredential(
       testContext.signedCredential,
       await testContext.commonContext.keys.getCryptoKey()
     )
 
     expect(result).toBe(true)
+  })
+
+  it('Fails with the key of another issuer key', async () => {
+    if (!testContext.commonContext) {
+      throw 'Setup didn\'t provide CommonContext'
+    }
+    if (!testContext.signedCredential) {
+      throw 'Previous test didn\'t provide UnsingedCredential'
+    }
+
+    const anotherContext = await buildCommonContext({
+      keys: await buildKeyChain({
+        password: '11111111',
+        crypto: nodeCryptoHelper
+      }),
+      crypto: nodeCryptoHelper,
+      did: buildDidHelper(nodeCryptoHelper)
+    })
+    const cryptoKey = await anotherContext.keys.getCryptoKey()
+
+    const [result] = await testContext.commonContext.verifyCredential(
+      testContext.signedCredential,
+      cryptoKey
+    )
+
+    expect(result).toBe(false)
+  })
+
+  it('Fails with new issuer key', async () => {
+    if (!testContext.commonContext) {
+      throw 'Setup didn\'t provide CommonContext'
+    }
+    if (!testContext.signedCredential) {
+      throw 'Previous test didn\'t provide UnsingedCredential'
+    }
+
+    await testContext.commonContext.keys.createKey('newKey')
+    const cryptoKey = await testContext.commonContext.keys.getCryptoKey('newKey')
+
+    const [result] = await testContext.commonContext.verifyCredential(
+      testContext.signedCredential,
+      cryptoKey
+    )
+
+    expect(result).toBe(false)
+  })
+
+  it('Doesn\'t allow to temper subject', async () => {
+    if (!testContext.commonContext) {
+      throw 'Setup didn\'t provide CommonContext'
+    }
+    if (!testContext.signedCredential) {
+      throw 'Previous test didn\'t provide UnsingedCredential'
+    }
+
+    const newCredential = <Credential<{
+      data: {
+        '@type': string,
+        worker: string
+      }
+    }>>{ ...testContext.signedCredential }
+    newCredential.credentialSubject = { ...newCredential.credentialSubject }
+    newCredential.credentialSubject.data = { ...newCredential.credentialSubject.data }
+
+    newCredential.credentialSubject.data.worker = `${newCredential.credentialSubject.data.worker}_`
+
+    const [result] = await testContext.commonContext.verifyCredential(
+      newCredential,
+      await testContext.commonContext.keys.getCryptoKey()
+    )
+
+    expect(result).toBe(false)
   })
 })

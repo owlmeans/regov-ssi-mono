@@ -1,21 +1,49 @@
-import { COMMON_CRYPTO_ERROR_ISNOTFULL, COMMON_CRYPTO_ERROR_NOPUBKEY } from "../../../common/src"
-import { BuildKeyChainWrapperMethod, CreateKeyOptions, DPArgs, KeyChain, KEYCHAIN_ERROR_NO_KEY, KeyPair, KeyPairToCryptoKeyOptions, KeyRotation } from "./types"
-import { CryptoKey } from 'metabelarusid-common'
+import {
+  BuildKeyChainWrapperMethod,
+  CreateKeyOptions,
+  DPArgs,
+  KeyChain,
+  KEYCHAIN_DEFAULT_KEY,
+  KEYCHAIN_ERROR_NO_KEY,
+  KEYCHAIN_ERROR_WRONG_DP,
+  KeyPair,
+  KeyPairToCryptoKeyOptions,
+  KeyRotation
+} from "./types"
+import { CryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from 'metabelarusid-common'
 
 
 export const buildKeyChain: BuildKeyChainWrapperMethod =
   async ({ password, source, keyOptions, crypto }) => {
-    const _createKey =
-      async (alias: string, _password?: string, options?: CreateKeyOptions): Promise<KeyPair> => {
+    const _createKeyBuilder = (keys?: KeyChain) =>
+      async (alias: string, _password?: string, options: CreateKeyOptions = {}): Promise<KeyPair> => {
         const type = 'BIP32'
 
         const safe = options?.safe || false
         const safeCommentObj = (options?.safeComment ? { safeComment: options?.safeComment } : {})
 
-        const seed = options?.seed
-          ? crypto.base58().decode(options.seed)
-          : (await crypto.getRandomBytes(32))
-        const seed64 = crypto.base58().encode(seed)
+        if (!options.seed && keys) {
+          const seedKey = keys.keys[keys.defaultKey]
+          // @TODO Make sure that we shouldn't use 0 rotation seed
+          const seedRotation = seedKey.rotations[seedKey.currentRotation]
+          if (seedKey.safe && !options.seedPassword) {
+            throw new Error(KEYCHAIN_ERROR_NO_KEY)
+          }
+          options.seed = await crypto.decrypt(
+            seedKey.seed,
+            seedKey.safe && options.seedPassword ? options.seedPassword : _password || password
+          )
+          const seedDp = seedRotation.dp
+          if (typeof seedDp[0] !== 'number') {
+            throw new Error(KEYCHAIN_ERROR_WRONG_DP)
+          }
+          const newDp: DPArgs = [...seedDp]
+          newDp[1] = typeof newDp[1] !== 'number' ? 1 : newDp[1] + 1
+          options.dp = newDp
+        }
+
+        const seed = options.seed ? crypto.base58().decode(options.seed) : (await crypto.getRandomBytes(32))
+        const seed58 = crypto.base58().encode(seed)
         const dp = options?.dp ? options.dp : <DPArgs>[0]
         if (dp.length < 1) {
           dp.push(0)
@@ -35,8 +63,8 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
 
         const rotation: KeyRotation = {
           type,
-          opened: options?.opened || false,
-          private: options?.opened
+          opened: options.opened || false,
+          private: options.opened
             ? commonKey.pk
             : await crypto.encrypt(commonKey.pk, _password || password),
           public: commonKey.pubKey,
@@ -60,17 +88,23 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
           ...safeCommentObj
         }
 
-        return {
+        const keypair = {
           type,
           dp: dp,
           currentRotation: 0,
           rotations: [rotation, nextRotation],
           alias,
-          seed: await crypto.encrypt(seed64, _password || password),
+          seed: await crypto.encrypt(seed58, _password || password),
           id: commonKey.id,
           safe,
           ...safeCommentObj
         }
+
+        if (keys) {
+          keys.keys[alias] = keypair
+        }
+
+        return keypair
       }
 
     const _openKey = async (
@@ -126,9 +160,9 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
 
     if (!source) {
       const keys = {
-        defaultKey: '_identity',
+        defaultKey: KEYCHAIN_DEFAULT_KEY,
         keys: {
-          ['_identity']: await _createKey('_identity', password, keyOptions)
+          [KEYCHAIN_DEFAULT_KEY]: await _createKeyBuilder()(KEYCHAIN_DEFAULT_KEY, password, keyOptions)
         }
       }
 
@@ -141,7 +175,7 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
 
         getCryptoKey: _keyPairToCryptoKey(keys),
 
-        createKey: _createKey
+        createKey: _createKeyBuilder(keys)
       }
     }
 

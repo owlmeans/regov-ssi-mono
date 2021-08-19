@@ -130,12 +130,10 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       })(credential)
 
       if (result.kind !== 'valid') {
-        console.log(result.errors) // @TODO Add some more proper debug ?
-        
-        return false
+        return [false, result]
       }
 
-      return true
+      return [true, result]
     }
   }
 }

@@ -57,6 +57,7 @@ export type CreateKeyOptions = {
   safe?: boolean
   safeComment?: string
   dp?: DPArgs
+  seedPassword?: string
 }
 
 export type DPArgs = [number?, number?, number?, string?]
@@ -67,3 +68,8 @@ export type KeyPairToCryptoKeyOptions = {
 }
 
 export const KEYCHAIN_ERROR_NO_KEY = 'KEYCHAIN_ERROR_NO_KEY'
+export const KEYCHAIN_ERROR_UNSAFE_ACCESS = 'KEYCHAIN_ERROR_UNSAFE_ACCESS'
+export const KEYCHAIN_ERROR_WRONG_DP = 'KEYCHAIN_ERROR_WRONG_DP'
+
+
+export const KEYCHAIN_DEFAULT_KEY = '_identity'

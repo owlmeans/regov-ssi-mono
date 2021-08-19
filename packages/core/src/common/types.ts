@@ -3,6 +3,7 @@ import { CryptoHelper, CryptoKey } from "metabelarusid-common"
 import { KeyChainWrapper } from "keys/types"
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "./types/credential"
 import { DIDHelper } from 'metabelarusid-did'
+import { Validatied } from "@affinidi/vc-common/dist/verifier/util"
 
 export type BuildCommonContextMethod = (options: {
   keys: KeyChainWrapper
@@ -58,7 +59,9 @@ export type CommonSignCredentialOptions = {
 export type CommonVerfiyCredentailMethod = (
   credential: CommonCredentail,
   key: CryptoKey
-) => Promise<boolean>
+) => Promise<[boolean, CommonVerificationResult]>
+
+export type CommonVerificationResult<Credential extends CommonCredentail = CommonCredentail> = Validatied<CommonCredentail>
 
 export type ControllerRole =
   typeof COMMON_CONTROLLER_ROLE_ISSUER
