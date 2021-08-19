@@ -10,7 +10,7 @@ import {
   KeyPairToCryptoKeyOptions,
   KeyRotation
 } from "./types"
-import { CryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from 'metabelarusid-common'
+import { CommonCryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from 'metabelarusid-common'
 
 
 export const buildKeyChain: BuildKeyChainWrapperMethod =
@@ -128,7 +128,7 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
     const _keyPairToCryptoKey = (keys: KeyChain) =>
       async (
         key?: KeyPair | string, _password?: string, options?: KeyPairToCryptoKeyOptions
-      ): Promise<CryptoKey> => {
+      ): Promise<CommonCryptoKey> => {
         if (!key) {
           key = keys.defaultKey
         }
@@ -154,7 +154,8 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
         return {
           id: options?.id || key.id,
           pk: keyRotation.private,
-          pubKey: keyRotation.public
+          pubKey: keyRotation.public,
+          nextKeyDigest: keyRotation.nextDigest
         }
       }
 

@@ -1,4 +1,4 @@
-import { CryptoKey, CryptoHelper } from "metabelarusid-common"
+import { CommonCryptoKey, CryptoHelper } from "metabelarusid-common"
 
 export type KeyChain = {
   defaultKey: string
@@ -14,7 +14,7 @@ export type KeyChainWrapper = {
 
   createKey: (alias: string, password?: string, options?: CreateKeyOptions) => Promise<KeyPair>
 
-  getCryptoKey: (key?: KeyPair | string, _password?: string, options?: KeyPairToCryptoKeyOptions) => Promise<CryptoKey>
+  getCryptoKey: (key?: KeyPair | string, _password?: string, options?: KeyPairToCryptoKeyOptions) => Promise<CommonCryptoKey>
 }
 
 export type BuildKeyChainWrapperMethod =

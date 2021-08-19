@@ -1,12 +1,16 @@
 require('dotenv').config()
 
 import { buildDidHelper } from "model"
-import { DIDDocumnet } from "types"
-import { nodeCryptoHelper } from "../../../common/src"
+import { DIDDocumnet, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "types"
+import { nodeCryptoHelper } from "metabelarusid-common"
+
+import util from 'util'
+util.inspect.defaultOptions.depth = 8
 
 
 const testContext: {
   didDoc?: DIDDocumnet
+  holderDoc?: DIDDocumnet
 } = {}
 
 describe('DID Helper', () => {
@@ -25,18 +29,25 @@ describe('DID Helper', () => {
   it('Creates a DID Document', async () => {
     const key = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
 
-    const didDoc = await didHelper.createDID(key, {
+    const didDocUnsinged = await didHelper.createDID(key, {
+      purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION],
       data: 'Hello world!',
       hash: true
     })
+
+    const didDoc = await didHelper.signDID(key, didDocUnsinged)
 
     testContext['didDoc'] = didDoc
     expect(didDoc).toMatchSnapshot({
       id: expect.any(String),
       verificationMethod: [{
         id: expect.any(String),
-        publicKeyBase58: expect.any(String)
+        publicKeyBase58: expect.any(String),
+        controller: expect.anything()
       }],
+      assertionMethod: [
+        expect.any(String)
+      ],
       proof: {
         controller: expect.any(String),
         nonce: expect.any(String),
@@ -58,5 +69,46 @@ describe('DID Helper', () => {
     const result = didHelper.verifyDID(testContext.didDoc)
 
     expect(result).toBe(true)
+  })
+
+  it('Produces holder / controller verifiable did', async () => {
+    const aliceKey = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
+    aliceKey.nextKeyDigest = 'nkdigest-simulation'
+    const bobKey = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
+    bobKey.nextKeyDigest = 'nkdigest-simulation'
+
+    const didDocUnsinged = await didHelper.createDID(aliceKey, {
+      purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION],
+      data: 'Hello world!',
+      hash: true
+    })
+
+    const didDoc = await didHelper.signDID(bobKey, didDocUnsinged)
+    testContext.holderDoc = didDoc
+  })
+
+  it('Verifies holder veriable did', async () => {
+    if (!testContext.holderDoc) {
+      throw new Error('No DID doc from pervious test')
+    }
+    const result = didHelper.verifyDID(testContext.holderDoc)
+
+    expect(result).toBe(true)
+  })
+
+  it('Fails on tempered data', async () => {
+    if (!testContext.holderDoc) {
+      throw new Error('No DID doc from pervious test')
+    }
+
+    const brokenDoc = <DIDDocumnet>JSON.parse(JSON.stringify(testContext.holderDoc))
+    if (brokenDoc.verificationMethod && brokenDoc.verificationMethod[0]
+      && typeof brokenDoc.verificationMethod[0] === 'object'
+      && typeof brokenDoc.verificationMethod[0].subjectSignature === 'object') {
+      brokenDoc.verificationMethod[0].subjectSignature.created = new Date().toUTCString()
+    }
+    const result = didHelper.verifyDID(brokenDoc)
+
+    expect(result).toBe(false)
   })
 })

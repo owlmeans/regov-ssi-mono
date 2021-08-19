@@ -25,7 +25,7 @@ export type CryptoHelper = {
   /**
    * @bug seed param implicitly requires Buffer not Uint8Array!
    */
-  getKey: (seed: Uint8Array, derivationPath?: string) => CryptoKey & { dp: string }
+  getKey: (seed: Uint8Array, derivationPath?: string) => CommonCryptoKey & { dp: string }
 }
 
 export type Base58Lib = {
@@ -40,14 +40,11 @@ export type BuildSignSignatureOptions = {
   controller: string
 }
 
-export type BuildVerifySignatureOptions = {
-
-}
-
-export type CryptoKey = {
+export type CommonCryptoKey = {
   id?: string
   pk?: string
   pubKey?: string
+  nextKeyDigest?: string
 }
 
 export const COMMON_CRYPTO_ERROR_NOPK = 'COMMON_CRYPTO_ERROR_NOPK'

@@ -1,27 +1,33 @@
 
-import { CryptoKey } from 'metabelarusid-common'
+import { CommonCryptoKey } from 'metabelarusid-common'
 
 export type DIDHelper = {
-  createDID: (key: CryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumnet>
-  makeDIDId: (key: CryptoKey, options?: MakeDIDIdOptions) => string
-  makeDIDProofSignature: (key: CryptoKey, id: string, nonce: string, purposes: DIDDocumentPurpose[]) => string
-  verifyDID: (did: DIDDocumnet, key?: CryptoKey) => boolean
+  createDID: (key: CommonCryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
+  signDID: (key: CommonCryptoKey, didDocUnsigned: DIDDocumentUnsinged, purposes?: DIDDocumentPurpose[]) => Promise<DIDDocumnet>
+  makeDIDId: (key: CommonCryptoKey, options?: MakeDIDIdOptions) => string
+  makeDIDProofSignature: (key: CommonCryptoKey, id: string, nonce: string, date: string, didDoc: DIDDocumentUnsinged) => string
+  verifyDID: (did: DIDDocumnet, key?: CommonCryptoKey) => boolean
   parseDIDId: (id: string) => DIDIDExplained
   isDIDId: (id: string) => boolean
 }
 
 export type DIDIDExplained = {
   method: string
-  id: string
+  id: string,
+  subjectId?: string,
   fragment?: string
   query?: string
+  did: string
 }
 
-export type DIDDocumnet = DIDDocumentPayload & {
+export type DIDDocumnet = DIDDocumentUnsinged & {
+  proof: DIDDocumentProof
+}
+
+export type DIDDocumentUnsinged = DIDDocumentPayload & {
   '@context': string | string[] | DIDDocumentContext | DIDDocumentContext[]
-  id: string,
-  controller?: string,
-  proof: DIDDocumentProof,
+  id: string
+  controller?: string
   publicKey: {
     id: string, 
     type: string,
@@ -65,7 +71,7 @@ export const DIDPURPOSE_AGREEMENT = 'keyAgreement'
 export const DIDPURPOSE_CAPABILITY = 'capabilityInvocation'
 export const DIDPURPOSE_DELEGATION = 'capabilityDelegation'
 
-export const didPurposeList = [
+export const didPurposeList: DIDDocumentPurpose[] = [
   DIDPURPOSE_VERIFICATION,
   DIDPURPOSE_AUTHENTICATION,
   DIDPURPOSE_ASSERTION,
@@ -81,6 +87,7 @@ export type DIDVerificationItem = {
   type: string
   controller?: string
   publicKeyBase58: string
+  subjectSignature?: DIDDocumentProof
 }
 
 export type DIDVerificationMethod = DIDVerificationItem & {}
@@ -110,8 +117,10 @@ export type DIDDocumentProof = {
   nonce: string,
   signature: string
   verificationMethod?: string
+  originalPurposes?: DIDDocumentPurpose[]
 }
 
 export const DID_ERROR_NOVERIFICATION_METHOD = 'DID_ERROR_NOVERIFICATION_METHOD'
+export const DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS = 'DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS'
 
 export const DEFAULT_DID_PREFIX = process.env.DID_PREFIX

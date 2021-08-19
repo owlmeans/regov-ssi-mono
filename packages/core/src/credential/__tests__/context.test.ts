@@ -1,7 +1,7 @@
 require('dotenv').config()
 
-import { buildCommonContext } from "common/context"
-import { CommonContext } from "common/types"
+import { buildCommonContext } from "credential/context"
+import { CommonContext } from "credential/context/types"
 import { Credential, UnsignedCredentail } from "credential/types"
 import { nodeCryptoHelper } from "metabelarusid-common"
 import { buildDidHelper } from "metabelarusid-did"
@@ -77,6 +77,8 @@ describe('Credential Model', () => {
     )
 
     testContext.signedCredential = credentail
+
+    console.log(credentail)
 
     expect(credentail).toMatchSnapshot({
       issuanceDate: expect.any(String),

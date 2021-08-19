@@ -1,5 +1,5 @@
-import { CommonContextType } from "common/types"
-import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "common/types/credential"
+import { CommonContextType } from "credential/context/types"
+import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "credential/context/types/credential"
 
 
 export type Credential<Subject extends CredentialSubject = CredentialSubject>

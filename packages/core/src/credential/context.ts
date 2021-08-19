@@ -1,9 +1,9 @@
 
 import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, validateVCV1 } from "@affinidi/vc-common";
 
-import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions, COMMON_CONTROLLER_ROLE_HOLDER } from "./types";
-import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./types/credential";
-import { COMMON_CRYPTO_ERROR_NOID, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY, CryptoKey } from "metabelarusid-common"
+import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions } from "./context/types";
+import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./context/types/credential";
+import { COMMON_CRYPTO_ERROR_NOID, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY, CommonCryptoKey } from "metabelarusid-common"
 
 
 export const buildCommonContext: BuildCommonContextMethod = async ({
@@ -72,7 +72,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     >(
       unsingedCredential: CommonUnsignedCredential<S>,
       issuer: string,
-      key: CryptoKey,
+      key: CommonCryptoKey,
       options?: CommonSignCredentialOptions
     ) => {
       if (!key.id) {
@@ -109,7 +109,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       }
     },
 
-    verifyCredential: async (credential, key: CryptoKey) => {
+    verifyCredential: async (credential, key: CommonCryptoKey) => {
       const result = await validateVCV1({
         getVerifySuite: (options) => {
           if (!key.id) {
