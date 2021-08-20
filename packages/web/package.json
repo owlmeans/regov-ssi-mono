@@ -19,12 +19,13 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.12.3",
-    "metabelarusid-common": "^0.0.1",
-    "metabelarusid-did": "^0.0.1",
+    "@reduxjs/toolkit": "^1.6.1",
+    "metabelarusid-core": "^0.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "typescript": "^4.3.5",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
+    "redux-persist": "^6.0.0",
     "web-vitals": "^1.1.2"
   },
   "devDependencies": {
@@ -34,7 +35,11 @@
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
     "@types/react": "^17.0.17",
-    "@types/react-dom": "^17.0.9"
+    "@types/react-dom": "^17.0.9",
+    "@types/react-router-dom": "^5.1.8",
+    "jest-watch-typeahead": "^0.6.4",
+    "react-scripts": "4.0.3",
+    "typescript": "^4.3.5"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -22,5 +22,9 @@
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "./jest.config.js",
+    "./dist/**/*"
   ]
 }
