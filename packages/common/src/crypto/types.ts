@@ -44,7 +44,8 @@ export type CommonCryptoKey = {
   id?: string
   pk?: string
   pubKey?: string
-  nextKeyDigest?: string
+  nextKeyDigest?: string,
+  fragment?: string
 }
 
 export const COMMON_CRYPTO_ERROR_NOPK = 'COMMON_CRYPTO_ERROR_NOPK'

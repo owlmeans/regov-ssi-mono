@@ -7,9 +7,11 @@ export type DIDHelper = {
   makeDIDId: (key: CommonCryptoKey, options?: MakeDIDIdOptions) => string
   makeDIDProofSignature: (key: CommonCryptoKey, id: string, nonce: string, date: string, didDoc: DIDDocumentUnsinged) => string
   verifyDID: (did: DIDDocumnet, key?: CommonCryptoKey) => boolean
-  parseDIDId: (id: string) => DIDIDExplained
+  parseDIDId: ParseDIDIdMethod
   isDIDId: (id: string) => boolean
 }
+
+export type ParseDIDIdMethod = (id: string) => DIDIDExplained
 
 export type DIDIDExplained = {
   method: string

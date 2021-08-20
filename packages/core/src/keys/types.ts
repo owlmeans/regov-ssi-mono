@@ -15,6 +15,8 @@ export type KeyChainWrapper = {
   createKey: (alias: string, password?: string, options?: CreateKeyOptions) => Promise<KeyPair>
 
   getCryptoKey: (key?: KeyPair | string, _password?: string, options?: KeyPairToCryptoKeyOptions) => Promise<CommonCryptoKey>
+  
+  expandKey: (key: CommonCryptoKey, _password?: string) => Promise<void>
 }
 
 export type BuildKeyChainWrapperMethod =

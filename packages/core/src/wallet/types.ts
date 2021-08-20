@@ -1,4 +1,3 @@
-import { CreateCredentialMethod, SignCredentialMethod } from "credential/types"
 import { KeyChainWrapper } from "keys/types"
 import { SecureStore } from "store/types"
 import { CredentialsRegistry, CredentialsRegistryWrapper, RegistryType } from "./registry/types"
@@ -31,10 +30,6 @@ export type WalletWrapperMethodBuilder<Method extends Function> = (wallet: Walle
 export type WalletWrapperBuilder = (alias: string, context: WalletContext) => WalletWrapper
 
 export type WalletWrapper = {
-  createCredential: CreateCredentialMethod
-
-  signCredential: SignCredentialMethod
-
   getRegistry: GetRegistryMethod
 }
 

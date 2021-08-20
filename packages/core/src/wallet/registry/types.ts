@@ -1,4 +1,4 @@
-import { CredentialSubject, CredentialType, UnsignedCredentail, VerificationOptions } from "credential/types"
+import { CredentialSubject, CredentialType, UnsignedCredentail } from "credential/types"
 
 
 export type CredentialsRegistry = {
@@ -32,7 +32,6 @@ export type LookupCredentialsMethod<
   Type extends UnsignedCredentail = UnsignedCredentail<Subject>
   > = (
     type: CredentialType,
-    options?: VerificationOptions,
   ) => Promise<CredentialWrapper<Subject, Type>[]>
 
 export type RegistryType = typeof REGISTRY_TYPE_IDENTITIES

@@ -4,7 +4,7 @@ import { buildCommonContext } from "credential/context"
 import { CommonContext } from "credential/context/types"
 import { Credential, UnsignedCredentail } from "credential/types"
 import { nodeCryptoHelper } from "metabelarusid-common"
-import { buildDidHelper } from "metabelarusid-did"
+import { buildDidHelper, buildDidRegistryWarpper, DIDDocumnet, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "metabelarusid-did"
 import { buildKeyChain } from "keys/model"
 
 import util from 'util'
@@ -24,7 +24,7 @@ beforeAll(async () => {
       crypto: nodeCryptoHelper
     }),
     crypto: nodeCryptoHelper,
-    did: buildDidHelper(nodeCryptoHelper)
+    did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
   })
 })
 
@@ -33,10 +33,33 @@ describe('Credential Model', () => {
     if (!testContext.commonContext) {
       throw 'Setup didn\'t provide CommonContext'
     }
+
+    const didWrapper = testContext.commonContext.did
+    const keys = testContext.commonContext.keys
+
+    const subject = {
+      data: {
+        '@type': 'TestCredentialSubjectDataType',
+        worker: 'Valentin Michalych'
+      }
+    }
+
+    const key = await keys.getCryptoKey()
+    const didUnsigned = await didWrapper.helper().createDID(
+      key, {
+        data: JSON.stringify(subject),
+        hash: true,
+        purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION]
+      }
+    )
+
+    const did = await didWrapper.helper().signDID(key, didUnsigned)
+    didWrapper.addDID(did)
+
     const unsingnedCredentail = await testContext.commonContext.buildCredential({
-      id: 'did:peer:doc',
+      id: did.id,
       type: ['VerifiableCredential', 'TestCredential'],
-      holder: 'did:peer:holder',
+      holder: did.proof.controller,
       context: {
         '@version': 1.1,
         meta: 'https://meta-id.meta-belarus.org/vc-schema#',
@@ -48,16 +71,15 @@ describe('Credential Model', () => {
           }
         }
       },
-      subject: {
-        data: {
-          '@type': 'TestCredentialSubjectDataType',
-          worker: 'Valentin Michalych'
-        }
-      }
+      subject
     })
 
     testContext.unsignedCredential = unsingnedCredentail
     expect(unsingnedCredentail).toMatchSnapshot({
+      id: expect.any(String),
+      holder: {
+        id: expect.any(String)
+      },
       issuanceDate: expect.any(String)
     })
   })
@@ -70,17 +92,27 @@ describe('Credential Model', () => {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
 
+    const didWrapper = testContext.commonContext.did
+    const keys = testContext.commonContext.keys
+
+    const did = <DIDDocumnet>await didWrapper.lookUpDid(testContext.unsignedCredential.id)
+    const key = await didWrapper.extractKey(`${did.proof.controller}#${DIDPURPOSE_ASSERTION}-1`)
+    await keys.expandKey(key)
+
     const credentail = await testContext.commonContext.signCredential(
       testContext.unsignedCredential,
-      'did:peer:issuer',
-      await testContext.commonContext.keys.getCryptoKey()
+      did.proof.controller,
+      await keys.getCryptoKey()
     )
 
     testContext.signedCredential = credentail
 
-    console.log(credentail)
-
     expect(credentail).toMatchSnapshot({
+      id: expect.any(String),
+      holder: {
+        id: expect.any(String)
+      },
+      issuer: expect.any(String),
       issuanceDate: expect.any(String),
       proof: {
         created: expect.any(String),
@@ -97,10 +129,12 @@ describe('Credential Model', () => {
     if (!testContext.signedCredential) {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
+    const didWrapper = testContext.commonContext.did
+    const did = <DIDDocumnet>await didWrapper.lookUpDid(testContext.signedCredential.id)
 
     const [result] = await testContext.commonContext.verifyCredential(
       testContext.signedCredential,
-      await testContext.commonContext.keys.getCryptoKey()
+      await didWrapper.extractKey(did.id)
     )
 
     expect(result).toBe(true)
@@ -120,7 +154,7 @@ describe('Credential Model', () => {
         crypto: nodeCryptoHelper
       }),
       crypto: nodeCryptoHelper,
-      did: buildDidHelper(nodeCryptoHelper)
+      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
     })
     const cryptoKey = await anotherContext.keys.getCryptoKey()
 

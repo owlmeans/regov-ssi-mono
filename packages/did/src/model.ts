@@ -15,14 +15,17 @@ import {
   DIDDocumentPayload,
   DID_ERROR_NOVERIFICATION_METHOD,
   DIDDocumentUnsinged,
-  DIDIDExplained,
   DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS,
   DIDDocumentPurpose,
   DIDVerificationItem,
   didPurposeList,
-  DIDVerificationMethod
+  ParseDIDIdMethod,
 } from './types'
 
+/**
+ * @TODO Verify DID fylly:
+ * 1. Verify that ids produces correctly
+ */
 export const buildDidHelper =
   (crypto: CryptoHelper, didPrefix = DEFAULT_DID_PREFIX): DIDHelper => {
     const _makeDIDId = (key: CommonCryptoKey, options: MakeDIDIdOptions = {}) => {
@@ -55,11 +58,20 @@ export const buildDidHelper =
       return crypto.hash(JSON.stringify(unsingedDoc))
     }
 
+    const _buildKeyPayload = (key: string) => {
+      return {
+        publicKeyBase58: key,
+        /* publicKeyHex: Buffer.from(
+          crypto.base58().decode(key)
+        ).toString('hex') */
+      }
+    }
+
     const _makeDIDProofSignature = (key: CommonCryptoKey, id: string, nonce: string, date: string, didDoc: DIDDocumentUnsinged) => {
       if (!key.pk) {
         throw new Error(COMMON_CRYPTO_ERROR_NOPK)
       }
-      
+
       return crypto.sign(`${date}:${nonce}:${_didDocToSigningSuffix(didDoc)}:${id}`, key.pk)
     }
 
@@ -129,7 +141,7 @@ export const buildDidHelper =
               id: verification.id,
               controller: verification.controller,
               type: 'EcdsaSecp256k1VerificationKey2019',
-              publicKeyBase58: verification.publicKeyBase58
+              ..._buildKeyPayload(verification.publicKeyBase58),
             }
           if (typeof verification !== 'object' || !verification.subjectSignature) {
             return true
@@ -198,7 +210,7 @@ export const buildDidHelper =
       )
     }
 
-    const _parseDIDId = (id: string): DIDIDExplained => {
+    const _parseDIDId: ParseDIDIdMethod = (id) => {
       const [noFragmentId, fragment] = id.split('#')
       const [noQueryId, query] = noFragmentId.split('?')
       const [, method, cleanId, ...others] = noQueryId.split(':')
@@ -234,7 +246,7 @@ export const buildDidHelper =
             id: `${params.id}#${purpose}-${params.keyIdx}`,
             controller: params.controller,
             type: 'EcdsaSecp256k1VerificationKey2019',
-            publicKeyBase58: params.key.pubKey
+            ..._buildKeyPayload(params.key.pubKey)
           }]
 
         return memo
@@ -267,7 +279,7 @@ export const buildDidHelper =
         const hasVerificationMethod = didDocUnsigned.hasOwnProperty(DIDPURPOSE_VERIFICATION)
 
         let verificationIdx = 0
-        let publickKeyIdx = 0
+        let publicKeyIdx = 0
         if (hasVerificationMethod) {
           let verifications = (<DIDVerificationItem[]>didDocUnsigned[DIDPURPOSE_VERIFICATION])
           if (!Array.isArray(verifications)) {
@@ -276,8 +288,8 @@ export const buildDidHelper =
           const verification = {
             id: `${didDocUnsigned.id}#${DIDPURPOSE_VERIFICATION}-`,
             controller,
-            type: 'EcdsaSecp256k1VerificationKey2019',
-            publicKeyBase58: key.pubKey
+            type: 'EcdsaSecp256k1VerificationKey2019', 
+            ..._buildKeyPayload(key.pubKey)
           }
           let addVerification = !verifications[0] || controller !== verifications[0].controller
           if (addVerification) {
@@ -337,15 +349,15 @@ export const buildDidHelper =
         const publicKey = {
           id: `${controller}#publicKey-`,
           type: 'EcdsaSecp256k1VerificationKey2019',
-          publicKeyBase58: key.pubKey
+          ..._buildKeyPayload(key.pubKey)
         }
         if (didDocUnsigned.publicKey) {
-          publickKeyIdx = didDocUnsigned.publicKey.length + 1
+          publicKeyIdx = didDocUnsigned.publicKey.length + 1
           if (!didDocUnsigned.publicKey[0] || didDocUnsigned.publicKey[0].id !== `${publicKey.id}1`) {
-            didDocUnsigned.publicKey.push({ ...publicKey, id: `${publicKey.id}${publickKeyIdx}` })
+            didDocUnsigned.publicKey.push({ ...publicKey, id: `${publicKey.id}${publicKeyIdx}` })
           }
         } else {
-          publickKeyIdx = 1
+          publicKeyIdx = 1
           didDocUnsigned.publicKey = [{ ...publicKey, id: `${publicKey.id}1` }]
         }
 
@@ -365,7 +377,7 @@ export const buildDidHelper =
             ),
             verificationMethod: hasVerificationMethod
               ? `${didDocUnsigned.id}#${DIDPURPOSE_VERIFICATION}-${verificationIdx}`
-              : `${controller}#publicKey-${publickKeyIdx}`
+              : `${controller}#publicKey-${publicKeyIdx}`
           }
         }
 
@@ -404,7 +416,7 @@ export const buildDidHelper =
           publicKey: [{
             id: `${holder}#publicKey-1`,
             type: 'EcdsaSecp256k1VerificationKey2019',
-            publicKeyBase58: key.pubKey
+            ..._buildKeyPayload(key.pubKey)
           }],
         }
 

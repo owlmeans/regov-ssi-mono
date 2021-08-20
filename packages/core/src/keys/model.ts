@@ -176,7 +176,26 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
 
         getCryptoKey: _keyPairToCryptoKey(keys),
 
-        createKey: _createKeyBuilder(keys)
+        createKey: _createKeyBuilder(keys),
+
+        expandKey: async (key, _password = undefined) => {
+          if (!key.pk) {
+            Object.entries(keys.keys).find(([, _key]) => {
+              return _key.rotations.find(_rotation => {
+                const found = _rotation.public === key.pubKey
+                if (found) {
+                  key.pk = _rotation.private
+                  key.nextKeyDigest = _rotation.nextDigest
+                }
+
+                return found
+              })
+            })
+            if (key.pk) {
+              key.pk = await crypto.decrypt(key.pk, _password || password)
+            }
+          }
+        }
       }
     }
 
