@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "@affinidi/vc-common": "^1.4.1",
-    "metabelarusid-common": "^0.0.1",
     "metabelarusid-did": "^0.0.1"
   }
 }
