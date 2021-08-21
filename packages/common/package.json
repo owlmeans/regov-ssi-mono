@@ -7,7 +7,10 @@
   "license": "Apache-2.0",
   "type": "commonjs",
   "main": "src/index.ts",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
+    "src",
     "dist"
   ],
   "repository": {
@@ -35,6 +38,7 @@
     "@affinidi/tiny-lds-ecdsa-secp256k1-2019": "^1.1.0",
     "bip32": "^2.0.6",
     "metabelarusid-core": "^0.0.1",
+    "metabelarusid-did": "^0.0.1",
     "secp256k1": "^4.0.2",
     "tiny-secp256k1": "^2.0.0"
   }

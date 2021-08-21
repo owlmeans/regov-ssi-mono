@@ -1,11 +1,11 @@
 require('dotenv').config()
 
-import { buildCommonContext } from "credential/context"
-import { CommonContext } from "credential/context/types"
-import { Credential, UnsignedCredentail } from "credential/types"
+import { buildCommonContext } from "../context"
+import { CommonContext } from "../context/types"
+import { Credential, UnsignedCredentail } from "../types"
 import { nodeCryptoHelper } from "metabelarusid-common"
 import { buildDidHelper, buildDidRegistryWarpper, DIDDocumnet, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "metabelarusid-did"
-import { buildKeyChain } from "keys/model"
+import { buildKeyChain } from "../../keys/model"
 
 import util from 'util'
 util.inspect.defaultOptions.depth = 8

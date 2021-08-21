@@ -1,4 +1,4 @@
-import { CredentialSubject, CredentialType, UnsignedCredentail } from "credential/types"
+import { Credential, CredentialSubject, CredentialType, UnsignedCredentail } from "../../credential/types"
 
 
 export type CredentialsRegistry = {
@@ -19,19 +19,25 @@ export type CredentialsRegistryWrapper = {
 }
 
 export type RemoveCredentialMethod =
-  (credential: Credential | UnsignedCredentail | CredentialWrapper) =>
-    Promise<CredentialWrapper>
+  (
+    credential: Credential | UnsignedCredentail | CredentialWrapper,
+    section?: string
+  ) => Promise<CredentialWrapper>
 
-export type AddCredentialMethod = (
-  credential: Credential,
-  section?: string
-) => Promise<CredentialsRegistryWrapper>
+export type AddCredentialMethod<
+  Subject extends CredentialSubject = CredentialSubject,
+  Type extends UnsignedCredentail<Subject> | Credential<Subject> = Credential<Subject>
+  > = (
+    credential: Type,
+    section?: string
+  ) => Promise<CredentialWrapper<Subject, Type>>
 
 export type LookupCredentialsMethod<
   Subject extends CredentialSubject = CredentialSubject,
-  Type extends UnsignedCredentail = UnsignedCredentail<Subject>
+  Type extends UnsignedCredentail<Subject> | Credential<Subject> = Credential<Subject>
   > = (
     type: CredentialType,
+    section?: string
   ) => Promise<CredentialWrapper<Subject, Type>[]>
 
 export type RegistryType = typeof REGISTRY_TYPE_IDENTITIES
@@ -42,7 +48,7 @@ export const REGISTRY_TYPE_CREDENTIALS = 'credentials'
 
 export type CredentialWrapper<
   Subject extends CredentialSubject = CredentialSubject,
-  Type extends UnsignedCredentail = UnsignedCredentail<Subject>
+  Type extends UnsignedCredentail<Subject> | Credential<Subject> = Credential<Subject>
   > = {
     credential: Type
     meta: CredentialWrapperMetadata
@@ -53,5 +59,5 @@ export type CredentialWrapperMetadata = {
   nonce?: string
   keyDigest?: string
   holderDigest?: string
-  ownershipProof?: string | Credential
+  ownershipProof?: string
 }

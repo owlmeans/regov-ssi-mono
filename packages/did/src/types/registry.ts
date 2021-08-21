@@ -10,8 +10,13 @@ export type DIDRegistry = {
   dids: DIDDocumentWrapper[],
 }
 
+export type DIDRegistryBundle = {
+  personal: DIDRegistry
+  peer: DIDRegistry
+} 
+
 export type DIDRegistryWrapper = {
-  registry: DIDRegistry,
+  registry: DIDRegistryBundle,
 
   lookUpDid: <T extends DIDDocumnet| DIDDocumentWrapper>(did: string, wrapped?: boolean) => Promise<T | undefined>
 

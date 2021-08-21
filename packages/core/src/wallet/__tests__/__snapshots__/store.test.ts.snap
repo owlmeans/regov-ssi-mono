@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Wallet Imports store back 1`] = `
+Object {
+  "keyChain": Object {
+    "defaultKey": "_identity",
+    "keys": Object {
+      "_identity": Object {
+        "alias": "_identity",
+        "currentRotation": 0,
+        "dp": Array [
+          0,
+        ],
+        "id": "8MbyK1XFhCf6tWCEuqrR5XGXAho6FhdVQm9awBRYbKzj",
+        "rotations": Array [
+          Object {
+            "digest": "8MbyK1XFhCf6tWCEuqrR5XGXAho6FhdVQm9awBRYbKzj",
+            "dp": Array [
+              0,
+            ],
+            "future": false,
+            "nextDigest": "c2xIrRxBLwPDlHhd624HwwkmYT0UNzSfVL5AuYQHK/N3NFcZ5SqBZ7HvutGiZ5toqYaOcTPTr8/WwqvvIIBcfg==",
+            "opened": false,
+            "private": Any<String>,
+            "public": "grUKfJPKYcxsrr3Kz2DAZEWCELAADMigL3eqdqP1Za6q",
+            "safe": false,
+            "type": "BIP32",
+          },
+          Object {
+            "digest": "4CqYJPSrK2tiUYm8sUJsnUHN2qsGJ3r1Xsq6LY6baNvG",
+            "dp": Array [
+              1,
+            ],
+            "future": true,
+            "opened": false,
+            "private": Any<String>,
+            "public": Any<String>,
+            "safe": false,
+            "type": "BIP32",
+          },
+        ],
+        "safe": false,
+        "seed": Any<String>,
+        "type": "BIP32",
+      },
+    },
+  },
+  "registry": Object {
+    "peer": Object {
+      "dids": Array [],
+    },
+    "personal": Object {
+      "dids": Array [],
+    },
+  },
+}
+`;

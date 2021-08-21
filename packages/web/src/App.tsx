@@ -4,22 +4,20 @@ import { PersistGate } from 'redux-persist/integration/react'
 
 import { Container, Box/*, Typography*/ } from '@material-ui/core'
 
-import { store, persistor } from './store/config'
+import { store, persistor } from './store'
 import { RootNavigation } from './navigation/index'
+import { WalletProvider } from './model/context'
 
 export const App = () => {
   return (
     <Provider store={store}>
-      <Container maxWidth="sm">
+      <Container maxWidth="md">
         <PersistGate
           loading={null}
           persistor={persistor}>
-          <Box my={4}>
+          <WalletProvider>
             <RootNavigation />
-            {/* <Typography variant="h4" component="h1" gutterBottom>
-              Create React App v4-beta example with TypeScript
-            </Typography> */}
-          </Box>
+          </WalletProvider>
         </PersistGate>
       </Container>
     </Provider>

@@ -1,7 +1,7 @@
 require('dotenv').config()
 
-import { buildDidHelper } from "model"
-import { DIDDocumnet, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "types"
+import { buildDidHelper } from "../model"
+import { DIDDocumnet, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "../types"
 import { nodeCryptoHelper } from "metabelarusid-common"
 
 import util from 'util'

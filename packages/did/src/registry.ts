@@ -1,16 +1,15 @@
-import { AddDIDMethod, DIDDocumentWrapper, DIDRegistry, DIDRegistryWrapper } from "./types/registry"
+import { AddDIDMethod, DIDDocumentWrapper, DIDRegistry, DIDRegistryWrapper, DIDRegistryBundle } from "./types/registry"
 import { DIDDocumentPurpose, DIDDocumnet, DIDHelper, DIDPURPOSE_VERIFICATION } from "./types"
 import { CommonCryptoKey } from "metabelarusid-common"
 
-export const buildDidRegistryWarpper: (didHelper: DIDHelper) =>
-  DIDRegistryWrapper = (didHelper) => {
-    const _registry: DIDRegistry = {
-      dids: []
+export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegistryBundle) =>
+  DIDRegistryWrapper = (didHelper, registry?) => {
+    registry = registry || {
+      personal: { dids: [] },
+      peer: { dids: [] }
     }
 
-    const _peerRegistry: DIDRegistry = {
-      dids: []
-    }
+    const { personal: _registry, peer: _peerRegistry } = registry
 
     const _lookUpDid = async <T extends DIDDocumentWrapper | DIDDocumnet>(
       did: string, wrapped?: boolean
@@ -40,7 +39,7 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper) =>
       }
 
     return {
-      registry: _registry,
+      registry,
 
       lookUpDid: _lookUpDid,
 
@@ -69,7 +68,7 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper) =>
           const fragment = `${method}-${idx}`
           if (typeof verificationItem === 'string') {
             const keyInfo = didW.did.publicKey.find(key => key.id === verificationItem)
-            
+
             producedKey = {
               id: didW.did.proof.controller,
               pubKey: keyInfo?.publicKeyBase58,

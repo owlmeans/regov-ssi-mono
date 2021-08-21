@@ -3,15 +3,25 @@ import {
   /* createAsyncThunk*/
 } from '@reduxjs/toolkit'
 
-const slice = createSlice({
+import { SecuredStoreReducers, SecuredStoreState } from './types/store'
+
+const slice = createSlice<SecuredStoreState, SecuredStoreReducers>({
   name: 'store',
 
   initialState: {
+    stores: {},
   },
 
   reducers: {
-    init: (state) => {
-      return { ...state }
+    update: (state, { payload: store }) => {
+      return { 
+        ...state, 
+        current: store.alias,
+        stores: {
+          ...state.stores,
+          [store.alias]: store
+        }
+      }
     }
   },
 })

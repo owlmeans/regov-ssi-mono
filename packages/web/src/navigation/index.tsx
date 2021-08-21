@@ -3,30 +3,41 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
 } from "react-router-dom"
 
-import { Box } from '@material-ui/core'
+import { Box, makeStyles } from '@material-ui/core'
+
+import { NavigationMainRedirect, NavigationTop } from '../components'
 
 import { StoreNavigation } from "./store"
 import { WalletNavigation } from "./wallet"
 
-export const RootNavigation = () =>
-  <Router>
+
+export const RootNavigation = () => {
+  const classes = useStyles()
+
+  return <Router>
     <Box>
-      <Box>
-        <Link to="/wallet">Wallet</Link>
+      <NavigationTop />
+      <Box className={classes.content}>
+        <Switch>
+          <Route exact path="/">
+            <NavigationMainRedirect />
+          </Route>
+          <Route path="/store">
+            <StoreNavigation />
+          </Route>
+          <Route path="/wallet">
+            <WalletNavigation />
+          </Route>
+        </Switch>
       </Box>
-      <Switch>
-        <Route exact path="/">
-          <div>... to redirect</div>
-        </Route>
-        <Route path="/store">
-          <StoreNavigation />
-        </Route>
-        <Route path="/wallet">
-          <WalletNavigation />
-        </Route>
-      </Switch>
     </Box>
   </Router>
+}
+
+const useStyles = makeStyles({
+  content: {
+    paddingTop: '10%',
+  },
+})

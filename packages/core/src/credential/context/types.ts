@@ -1,13 +1,15 @@
 import { TContext } from "@affinidi/vc-common"
+import { Validatied } from "@affinidi/vc-common/dist/verifier/util"
+
 import { CryptoHelper, CommonCryptoKey } from "metabelarusid-common"
-import { KeyChainWrapper } from "keys/types"
+import { KeyChainWrapper } from "../../keys/types"
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "./types/credential"
 import { DIDRegistryWrapper } from 'metabelarusid-did'
-import { Validatied } from "@affinidi/vc-common/dist/verifier/util"
+
 
 export type BuildCommonContextMethod = (options: {
   keys: KeyChainWrapper
-  crypto: CryptoHelper,
+  crypto: CryptoHelper
   did: DIDRegistryWrapper
 }) => Promise<CommonContext>
 

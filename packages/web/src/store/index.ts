@@ -5,6 +5,10 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
 import { reducer as storeReducer } from './store'
+import { Store } from '@reduxjs/toolkit'
+
+import { RootState } from './types'
+
 export { actions as storeActions } from './store'
 
 
@@ -18,7 +22,7 @@ const reducer = combineReducers({
   store: storeReducer
 })
 
-export const store = createStore(
+export const store: Store<RootState> = createStore(
   persistReducer(
     { storage, key: 'root', whitelist: ['store'] },
     reducer
@@ -28,6 +32,4 @@ export const store = createStore(
 
 export const persistor = persistStore(store)
 
-
-export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch

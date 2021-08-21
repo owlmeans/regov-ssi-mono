@@ -2,9 +2,8 @@
   "name": "metabelarusid-core",
   "version": "0.0.1",
   "description": "It's core package for Meta-ID",
-  "main": "dist/index.js",
-  "typing": "dist/index.js",
-  "module": "dist/metabelarusid-core.esm.js",
+  "main": "src/index.ts",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",
@@ -15,7 +14,7 @@
   "license": "Apache-2.0",
   "type": "commonjs",
   "files": [
-    "dist"
+    "src"
   ],
   "scripts": {
     "test": "jest"
@@ -31,6 +30,7 @@
   },
   "dependencies": {
     "@affinidi/vc-common": "^1.4.1",
+    "metabelarusid-common": "^0.0.1",
     "metabelarusid-did": "^0.0.1"
   }
 }

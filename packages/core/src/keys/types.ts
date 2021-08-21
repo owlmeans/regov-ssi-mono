@@ -23,7 +23,7 @@ export type BuildKeyChainWrapperMethod =
   (options: {
     crypto: CryptoHelper,
     password: string,
-    source?: string,
+    source?: KeyChain,
     keyOptions?: CreateKeyOptions
   }) => Promise<KeyChainWrapper>
 
