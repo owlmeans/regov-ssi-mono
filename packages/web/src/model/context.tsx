@@ -6,6 +6,7 @@ import { webCryptoHelper } from 'metabelarusid-common'
 import { connect, ConnectedProps } from 'react-redux'
 
 import { RootState } from '../store/types'
+import { DID_PREFIX } from './types'
 
 
 const _walletRegistry: { [key: string]: WalletWrapper } = {}
@@ -31,6 +32,8 @@ export const WalletProvider =
         return () => { _forceUpdateRegistry.splice(idx, 1) }
       })
 
+      console.log(`Provide wallet ${_walletRegistry[alias]?.store?.alias}`)
+
       return <WalletContext.Provider value={_walletRegistry[alias]}>
         {children}
       </WalletContext.Provider>
@@ -41,7 +44,12 @@ export const WithWallet = WalletContext.Consumer
 
 export const produceWalletContext =
   async (password: string, store: EncryptedStore = undefined) => {
-    const result = _walletRegistry[store.alias] = await buildWalletWrapper(webCryptoHelper, password, store)
+    const result = _walletRegistry[store.alias] = await buildWalletWrapper(
+      webCryptoHelper,
+      password,
+      store,
+      { prefix: DID_PREFIX }
+    )
     _forceUpdateRegistry.every(forceUpdate => forceUpdate())
     return result
   }

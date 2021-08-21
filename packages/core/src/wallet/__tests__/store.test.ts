@@ -22,7 +22,7 @@ describe('Wallet', () => {
     const wallet = _ctx.wallet = await buildWalletWrapper(nodeCryptoHelper, '11111111', {
       alias: 'current',
       name: 'Some name'
-    }, { seed: _ctx.seed })
+    }, { key: { seed: _ctx.seed } })
 
     expect(wallet.store.alias).toBe('current')
   })
@@ -43,14 +43,14 @@ describe('Wallet', () => {
     }
 
     const newWallet = await buildWalletWrapper(nodeCryptoHelper, '11111111', _ctx.store)
-    
+
     expect(newWallet.wallet).toMatchSnapshot({
       keyChain: {
         keys: {
           [KEYCHAIN_DEFAULT_KEY]: {
             seed: expect.any(String),
             rotations: [
-              {private: expect.any(String)},
+              { private: expect.any(String) },
               {
                 private: expect.any(String),
                 public: expect.any(String)

@@ -1,7 +1,7 @@
 import { DIDRegistryBundle, DIDRegistryWrapper } from "metabelarusid-did"
 import { CryptoHelper } from "metabelarusid-common"
 import { CommonContext } from "../credential/context/types"
-import { CreateKeyOptions, KeyChain } from "../keys/types"
+import { CreateKeyOptions, KeyChain, KeyChainWrapper } from "../keys/types"
 import { BasicStore, EncryptedStore, SecureStore } from "../store/types"
 import { CredentialsRegistry, CredentialsRegistryWrapper, RegistryType } from './registry/types'
 
@@ -24,8 +24,13 @@ export type WalletWrapperBuilder = <Store extends BasicStore = BasicStore>(
   crypto: CryptoHelper,
   password: string,
   store?: Store | string,
-  keyOptions?: CreateKeyOptions
+  keyOptions?: WalletOptions
 ) => Promise<WalletWrapper>
+
+export type WalletOptions = {
+  prefix?: string
+  key?: CreateKeyOptions
+}
 
 export type WalletWrapper = {
   store: SecureStore
@@ -34,14 +39,18 @@ export type WalletWrapper = {
 
   did: DIDRegistryWrapper
 
+  keys: KeyChainWrapper
+
   ctx: CommonContext
+
+  hasIdentity: () => boolean
 
   getRegistry: GetRegistryMethod
 
   export: (_password?: string) => Promise<EncryptedStore>
 }
 
-export type GetRegistryMethod = (type: RegistryType, peer?: boolean) => CredentialsRegistryWrapper
+export type GetRegistryMethod = (type?: RegistryType) => CredentialsRegistryWrapper
 
 export const DEFAULT_WALLET_ALIAS = 'citizen'
 

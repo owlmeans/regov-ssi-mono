@@ -16,6 +16,7 @@ export type CredentialsRegistryWrapper = {
   addCredential: AddCredentialMethod
   lookupCredentials: LookupCredentialsMethod
   removeCredential: RemoveCredentialMethod
+  getCredential: GetCredentialMethod
 }
 
 export type RemoveCredentialMethod =
@@ -40,11 +41,23 @@ export type LookupCredentialsMethod<
     section?: string
   ) => Promise<CredentialWrapper<Subject, Type>[]>
 
+export type GetCredentialMethod<
+  Subject extends CredentialSubject = CredentialSubject,
+  Type extends UnsignedCredentail<Subject> | Credential<Subject> = Credential<Subject>
+  > = (
+    id?: string,
+    section?: string
+  ) => CredentialWrapper<Subject, Type>|undefined
+
 export type RegistryType = typeof REGISTRY_TYPE_IDENTITIES
   | typeof REGISTRY_TYPE_CREDENTIALS
+  | string
 
 export const REGISTRY_TYPE_IDENTITIES = 'identities'
 export const REGISTRY_TYPE_CREDENTIALS = 'credentials'
+
+export const REGISTRY_SECTION_OWN = 'own'
+export const REGISTRY_SECTION_PEER = 'peer'
 
 export type CredentialWrapper<
   Subject extends CredentialSubject = CredentialSubject,

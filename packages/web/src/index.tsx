@@ -4,6 +4,7 @@ import { ThemeProvider, CssBaseline } from '@material-ui/core'
 import { theme } from './theme'
 import { App } from './app'
 
+require('dotenv').config()
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>

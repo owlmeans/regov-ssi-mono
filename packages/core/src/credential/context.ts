@@ -54,7 +54,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
 
     const jsonld = require('jsonld')
 
-    return jsonld.documentLoaders.node()(url)
+    return jsonld.documentLoader(url)
   }
 
   return {

@@ -7,33 +7,39 @@ import {
 } from "react-router-dom"
 
 import { Grid, Paper, Typography } from '@material-ui/core'
+import { WalletCredentialBundler, WalletPassport } from "../components"
 
 export const WalletNavigation = () => {
   let { path, url } = useRouteMatch()
 
-  return <Grid container direction="row" justifyContent="space-between" alignItems="stretch"
-    spacing={1}>
-    <Grid container item xs={6} direction="column" justifyContent="flex-start" alignItems="stretch"
-      spacing={1}>
-      <Grid item>
-        <Paper>
-          <Typography>Hello</Typography>
-        </Paper>
+  return <Switch>
+    <Route exact path={`${path}`}>
+      <Grid container direction="row" justifyContent="space-between" alignItems="stretch"
+        spacing={1}>
+        <Grid container item xs={6} direction="column" justifyContent="flex-start" alignItems="stretch"
+          spacing={1}>
+          <Grid item>
+            <Paper>
+              <Typography>Hello</Typography>
+            </Paper>
+          </Grid>
+          <Grid item>
+            <Paper>
+              <Typography>Hello</Typography>
+            </Paper>
+          </Grid>
+        </Grid>
+        <Grid container item xs={6} direction="column" justifyContent="flex-start" alignItems="stretch">
+          <Grid item>
+            <WalletPassport />
+          </Grid>
+        </Grid>
       </Grid>
-      <Grid item>
-        <Paper>
-          <Typography>Hello</Typography>
-        </Paper>
-      </Grid>
-    </Grid>
-    <Grid container item xs={6} direction="column" justifyContent="flex-start" alignItems="stretch">
-      <Grid item>
-        <Paper>
-          <Typography>World</Typography>
-        </Paper>
-      </Grid>
-    </Grid>
-  </Grid>
+    </Route>
+    <Route path={`${path}/export/:type/:credential`}>
+      <WalletCredentialBundler />
+    </Route>
+  </Switch>
 
 
   // return <Box>

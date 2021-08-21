@@ -155,7 +155,7 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
           id: options?.id || key.id,
           pk: keyRotation.private,
           pubKey: keyRotation.public,
-          nextKeyDigest: keyRotation.nextDigest
+          nextKeyDigest: keyRotation.nextDigest ? crypto.hash(keyRotation.nextDigest) : undefined
         }
       }
 
@@ -185,7 +185,7 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
               const found = _rotation.public === key.pubKey
               if (found) {
                 key.pk = _rotation.private
-                key.nextKeyDigest = _rotation.nextDigest
+                key.nextKeyDigest = _rotation.nextDigest ? crypto.hash(_rotation.nextDigest) : undefined
               }
 
               return found

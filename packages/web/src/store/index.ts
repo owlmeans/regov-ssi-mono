@@ -5,11 +5,13 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
 import { reducer as storeReducer } from './store'
+import { reducer as identityReducer } from './identity'
 import { Store } from '@reduxjs/toolkit'
 
 import { RootState } from './types'
 
 export { actions as storeActions } from './store'
+export { actions as identityActions } from './identity'
 
 
 const composeEnhancers =
@@ -19,7 +21,8 @@ const composeEnhancers =
     : compose
 
 const reducer = combineReducers({
-  store: storeReducer
+  store: storeReducer,
+  identity: identityReducer
 })
 
 export const store: Store<RootState> = createStore(

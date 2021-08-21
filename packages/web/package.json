@@ -25,6 +25,7 @@
     "metabelarusid-core": "^0.0.1",
     "metabelarusid-did": "^0.0.1",
     "react": "^17.0.2",
+    "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
@@ -41,6 +42,7 @@
     "@types/react": "^17.0.17",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
+    "dotenv": "^10.0.0",
     "jest-watch-typeahead": "^0.6.4",
     "react-scripts": "4.0.3",
     "typescript": "^4.3.5"

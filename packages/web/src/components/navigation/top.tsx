@@ -1,40 +1,67 @@
-import { Box, AppBar, Toolbar, Typography, Grid } from '@material-ui/core'
+import { Box, AppBar, Toolbar, Typography, Grid, Button, ButtonBase } from '@material-ui/core'
 import { connect, ConnectedProps } from 'react-redux'
 import { compose } from 'recompose'
 
 import { RootState } from '../../store/types'
 import { withWallet } from '../../model/context'
 import { WalletWrapper } from 'metabelarusid-core'
+import { NavigationMainRedirect } from './main-redirect'
+import { storeActions } from '../../store'
+import { PropsWithWallet } from '../../model/types'
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 
 
 const connector = connect(
-  ({ store: { current, stores } }: RootState, props) => {
+  ({ store: { current, stores, uncommited } }: RootState, props) => {
     return {
       name: current && stores[current]?.name,
+      uncommited,
+      ...props
+    }
+  },
+  (dispatch, props: PropsWithWallet) => {
+    return {
+      commit: async () => {
+        dispatch(storeActions.update(await props.wallet.export()))
+      },
       ...props
     }
   }
 )
 
-export const NavigationTop = compose(connector, withWallet)(
-  ({ name, wallet }: ConnectedProps<typeof connector> & { wallet: WalletWrapper }) => {
-    return <Box>
-      <AppBar position="fixed">
-        <Toolbar>
-          <Grid container
+export const NavigationTop = compose(withWallet, withRouter, connector)(
+  ({ name, uncommited, commit, history, wallet }: ConnectedProps<typeof connector> & RouteComponentProps & PropsWithWallet) => {
+    return wallet ? <AppBar position="fixed">
+      <Toolbar>
+        <Grid container item
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center">
+          <Typography variant="h5">Meta-ID</Typography>
+        </Grid>
+        {
+          name ? <Grid container item
             direction="row"
-            justifyContent="space-between"
-            alignItems="center">
+            justifyContent="flex-end"
+            alignItems="center"
+            spacing={3}>
             <Grid item>
-              <Typography variant="h5">Meta-ID</Typography>
+              <ButtonBase onClick={() => history.push('/wallet')}>
+                <Typography variant="h6">{name}</Typography>
+              </ButtonBase>
             </Grid>
             {
-              wallet && name ? <Grid item><Typography variant="h6">{name}</Typography></Grid>
+              uncommited
+                ? <Grid item>
+                  <Button size="small" variant="contained" onClick={commit}>Сохранить</Button>
+                </Grid>
                 : undefined
             }
           </Grid>
-        </Toolbar>
-      </AppBar>
-    </Box>
+            : undefined
+        }
+      </Toolbar>
+    </AppBar> : <NavigationMainRedirect />
+
   }
 )

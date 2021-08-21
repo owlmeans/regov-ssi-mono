@@ -71,7 +71,7 @@ export const StoreCreation = compose(connector, withRouter)(
             <TextField
               {...helper.produce('name')}
               label="Наменование вашего кошелька"
-              defaultValue="Главны  кошелёк"
+              defaultValue="Главный  кошелёк"
               helperText="Введите любое удобное для вас имя"
               fullWidth
               margin="normal"

@@ -20,7 +20,15 @@ const slice = createSlice<SecuredStoreState, SecuredStoreReducers>({
         stores: {
           ...state.stores,
           [store.alias]: store
-        }
+        },
+        uncommited: false
+      }
+    },
+
+    tip: (state) => {
+      return {
+        ...state,
+        uncommited: true
       }
     }
   },

@@ -63,7 +63,7 @@ export const StoreLogin = compose(withRouter, connector)(
     const helper = buildFormHelper<LoginFields>([useRef()])
 
     return <Card>
-      <CardHeader title={`Откройте "${store.name}"`} />
+      <CardHeader title={`Откройте "${store?.name}"`} />
       <CardContent>
         <Grid container
           direction="column"

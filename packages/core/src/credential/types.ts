@@ -8,7 +8,7 @@ export type Credential<Subject extends CredentialSubject = CredentialSubject>
 export type Identity<Subject extends IdentitySubect = IdentitySubect>
   = {} & Credential<Subject>
 
-export type IdentitySubect = {} & CredentialSubject
+export type IdentitySubect<Type extends CredentialSubjectType = CredentialSubjectType> = CredentialSubject<Type>
 
 export type CredentialSubjectProperty<Type extends CredentialSubject = CredentialSubject>
   = Type
