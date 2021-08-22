@@ -70,7 +70,7 @@ const connector = connect(
       },
 
       clear: () => {
-        dispatch(credentialActions.cleanUpClaim())
+        dispatch(credentialActions.cleanUp())
 
         // props.history.push('/wallet')
       },

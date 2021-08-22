@@ -14,7 +14,7 @@ import { connect, ConnectedProps } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 
 
-import { REGISTRY_TYPE_IDENTITIES } from 'metabelarusid-core'
+import { REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from 'metabelarusid-core'
 
 import { PropsWithWallet } from '../../../model/types'
 import { withWallet } from '../../../model/context'
@@ -50,7 +50,8 @@ const connector = connect(
           }
 
           await props.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).addCredential(
-            bundle.document.credential
+            bundle.document.credential,
+            REGISTRY_SECTION_PEER
           )
           props.wallet.did.addPeerDID(bundle.document.did)
           

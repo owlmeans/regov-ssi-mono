@@ -19,12 +19,13 @@ const slice = createSlice<CredentialState, CredentialReducers>({
       }
     },
 
-    cleanUpClaim: (state) => {
+    cleanUp: (state) => {
       return {
         ...state,
         currentClaim: undefined,
         claim: undefined,
-        signed: undefined
+        signed: undefined,
+        credential: undefined
       }
     },
 
@@ -40,6 +41,13 @@ const slice = createSlice<CredentialState, CredentialReducers>({
         ...state,
         claim: undefined,
         signed
+      }
+    },
+
+    verify: (state, {payload: credential}) => {
+      return {
+        ...state,
+        credential
       }
     }
   },

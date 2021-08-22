@@ -32,6 +32,14 @@ export const passportHelper = {
     return subject.data.info
   },
 
+  getPassportSubjectContent: (subject: IdentityPassportSubject) => {
+    if (Array.isArray(subject)) {
+      subject = subject[0]
+    }
+
+    return subject.data.info
+  },
+
   createPassport: async (wallet: WalletWrapper, info: string) => {
     const identitySubject: IdentityPassportSubject = {
       data: {

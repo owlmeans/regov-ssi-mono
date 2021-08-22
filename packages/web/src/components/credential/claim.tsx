@@ -52,7 +52,7 @@ const connector = connect(
         dispatch(credentialActions.claim(claim))
       },
       copy: () => {
-        dispatch(credentialActions.cleanUpClaim())
+        dispatch(credentialActions.cleanUp())
       },
       ...props
     }
