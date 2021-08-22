@@ -72,6 +72,10 @@ const _getRandomBytes = async (size: number): Promise<Buffer> => {
   return require('crypto').randomBytes(size)
 }
 
+const _normalizePassword = (password: string) => {
+  return KeysService.sha256(password)
+}
+
 
 export const nodeCryptoHelper: CryptoHelper = {
   buildSignSuite: (options) => new Secp256k1Signature({
@@ -114,12 +118,10 @@ export const nodeCryptoHelper: CryptoHelper = {
 
   getRandomBytes: _getRandomBytes,
 
-  normalizePassword: (password: string) => {
-    return KeysService.normalizePassword(password) as Uint8Array
-  },
+  normalizePassword: _normalizePassword,
 
   encrypt: async (body: string, password: string): Promise<string> => {
-    const normalizedPassword = KeysService.normalizePassword(password)
+    const normalizedPassword = _normalizePassword(password)
     const bodyBuffer = Buffer.from(body, 'utf8')
 
     const iv = await _getRandomBytes(IV_LENGTH)
@@ -132,7 +134,7 @@ export const nodeCryptoHelper: CryptoHelper = {
 
   decrypt: async (chiper: string, password: string): Promise<string> => {
     const encryptedSeedBuffer = Buffer.from(chiper, 'base64')
-    const normalizedPassword = KeysService.normalizePassword(password)
+    const normalizedPassword = _normalizePassword(password)
     const iv = encryptedSeedBuffer.slice(0, IV_LENGTH)
     const encryptedSeedWtihoutVector = encryptedSeedBuffer.slice(IV_LENGTH)
 
