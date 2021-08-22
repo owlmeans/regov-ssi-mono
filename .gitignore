@@ -105,3 +105,6 @@ dist
 
 # OS specific files
 .DS_Store
+
+# Firebase cache files
+.firebase/
