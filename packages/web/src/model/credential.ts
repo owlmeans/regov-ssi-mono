@@ -3,7 +3,13 @@ import { REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES, WalletWrapper } from '
 import { DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION, DIDVerificationItem } from 'metabelarusid-did'
 
 import { buildContext } from './utils'
-import { ERROR_VERIFICATION_NOIDENTITY, FreeFormSubject, FREEFORM_CREDENTIAL_TYPES, IdentityPassport, IdentityPassportSubject, IdentityPassportSubjectType, TYPE_CREDENTIAL_FREEFORM } from './types'
+import {
+  ERROR_VERIFICATION_NOIDENTITY,
+  FreeFormSubject,
+  FREEFORM_CREDENTIAL_TYPES,
+  IdentityPassport,
+  TYPE_CREDENTIAL_FREEFORM
+} from './types'
 import { CredentialClaimState, SignedCredentialState } from '../store/types/credential'
 
 
@@ -35,7 +41,7 @@ export const credentialHelper = {
 
     const issuerKey = await wallet.did.extractKey(credential.did.proof.controller)
     const [result, info] = await wallet.ctx.verifyCredential(
-      credential.credential, 
+      credential.credential,
       issuerKey
     )
     const errors: string[] = []

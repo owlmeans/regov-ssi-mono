@@ -14,17 +14,16 @@ import {
   makeStyles,
 } from '@material-ui/core'
 import { connect, ConnectedProps } from 'react-redux'
-import { withRouter, RouteComponentProps } from 'react-router'
+import { withRouter } from 'react-router'
 
 
-import { REGISTRY_TYPE_IDENTITIES } from 'metabelarusid-core'
 
 import { PropsWithWallet } from '../../model/types'
 import { withWallet } from '../../model/context'
 import { bundle, unbundle } from '../../model/bundler'
 import { buildFormHelper } from '../helper/form'
-import { credentialActions, storeActions } from '../../store'
-import { SignedCredentialState, SignedCredentialStateWithErrors } from '../../store/types/credential'
+import { credentialActions } from '../../store'
+import { SignedCredentialStateWithErrors } from '../../store/types/credential'
 import { RootState } from '../../store/types'
 import { credentialHelper } from '../../model/credential'
 import { passportHelper } from '../../model/passport'
