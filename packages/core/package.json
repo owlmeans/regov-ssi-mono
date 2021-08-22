@@ -17,7 +17,9 @@
     "src"
   ],
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc -b",
+    "build:watch": "tsc -b -w"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",

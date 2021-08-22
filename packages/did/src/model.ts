@@ -7,7 +7,7 @@ import {
 } from 'metabelarusid-common'
 
 import {
-  DIDDocumnet,
+  DIDDocument,
   DIDPURPOSE_VERIFICATION,
   DIDHelper,
   DEFAULT_DID_PREFIX,
@@ -49,7 +49,7 @@ export const buildDidHelper =
       return newDoc
     }
 
-    const _didDocToSigningSuffix = (didDoc: DIDDocumentUnsinged | DIDDocumnet): string => {
+    const _didDocToSigningSuffix = (didDoc: DIDDocumentUnsinged | DIDDocument): string => {
       let unsingedDoc: DIDDocumentUnsinged = didDoc
       if (unsingedDoc.hasOwnProperty('proof')) {
         unsingedDoc = _unsingDoc(unsingedDoc)
@@ -80,7 +80,7 @@ export const buildDidHelper =
      * Right now the controller can't add it's own methods, otherwithe subject
      * verification will fail.
      */
-    const _verifySubjectSignature = (didDoc: DIDDocumnet): boolean => {
+    const _verifySubjectSignature = (didDoc: DIDDocument): boolean => {
       if (!didDoc.verificationMethod) {
         return true
       }
@@ -168,7 +168,7 @@ export const buildDidHelper =
       }).findIndex(result => !result)
     }
 
-    const _verifyDIDProofSignature = (didDoc: DIDDocumnet, key?: CommonCryptoKey) => {
+    const _verifyDIDProofSignature = (didDoc: DIDDocument, key?: CommonCryptoKey) => {
       if (!key?.pubKey) {
         if (!didDoc.proof.verificationMethod) {
           throw new Error(DID_ERROR_NOVERIFICATION_METHOD)
@@ -362,7 +362,7 @@ export const buildDidHelper =
         }
 
         const signatureDate = new Date().toISOString()
-        const didDoc: DIDDocumnet = {
+        const didDoc: DIDDocument = {
           ...didDocUnsigned, proof: {
             type: 'EcdsaSecp256k1Signature2019',
             controller,

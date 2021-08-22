@@ -4,7 +4,7 @@ import { buildCommonContext } from "../context"
 import { CommonContext } from "../context/types"
 import { Credential, UnsignedCredentail } from "../types"
 import { nodeCryptoHelper } from "metabelarusid-common"
-import { buildDidHelper, buildDidRegistryWarpper, DIDDocumnet, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "metabelarusid-did"
+import { buildDidHelper, buildDidRegistryWarpper, DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "metabelarusid-did"
 import { buildKeyChain } from "../../keys/model"
 
 import util from 'util'
@@ -95,7 +95,7 @@ describe('Credential Model', () => {
     const didWrapper = testContext.commonContext.did
     const keys = testContext.commonContext.keys
 
-    const did = <DIDDocumnet>await didWrapper.lookUpDid(testContext.unsignedCredential.id)
+    const did = <DIDDocument>await didWrapper.lookUpDid(testContext.unsignedCredential.id)
     const key = await didWrapper.extractKey(`${did.proof.controller}#${DIDPURPOSE_ASSERTION}-1`)
     await keys.expandKey(key)
 
@@ -130,7 +130,7 @@ describe('Credential Model', () => {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
     const didWrapper = testContext.commonContext.did
-    const did = <DIDDocumnet>await didWrapper.lookUpDid(testContext.signedCredential.id)
+    const did = <DIDDocument>await didWrapper.lookUpDid(testContext.signedCredential.id)
 
     const [result] = await testContext.commonContext.verifyCredential(
       testContext.signedCredential,

@@ -5,10 +5,10 @@ import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonTyp
 export type Credential<Subject extends CredentialSubject = CredentialSubject>
   = CommonCredentail<Subject> & {}
 
-export type Identity<Subject extends IdentitySubect = IdentitySubect>
+export type Identity<Subject extends IdentitySubject = IdentitySubject>
   = {} & Credential<Subject>
 
-export type IdentitySubect<Type extends CredentialSubjectType = CredentialSubjectType> = CredentialSubject<Type>
+export type IdentitySubject<Type extends CredentialSubjectType = CredentialSubjectType> = CredentialSubject<Type>
 
 export type CredentialSubjectProperty<Type extends CredentialSubject = CredentialSubject>
   = Type

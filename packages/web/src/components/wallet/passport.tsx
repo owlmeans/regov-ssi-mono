@@ -1,5 +1,5 @@
 
-import { PropsWithChildren, PropsWithoutRef, useRef } from 'react'
+import { PropsWithChildren, useRef } from 'react'
 import { compose } from 'recompose'
 
 import {
@@ -17,7 +17,6 @@ import { withWallet } from '../../model/context'
 import { PropsWithWallet } from '../../model/types'
 import { buildFormHelper } from '../helper/form'
 import { RootState } from '../../store/types'
-import { WalletWrapper } from 'metabelarusid-core'
 import { passportHelper } from '../../model/passport'
 import { identityActions, storeActions } from '../../store'
 import { generatePath, RouteComponentProps, withRouter } from 'react-router-dom'

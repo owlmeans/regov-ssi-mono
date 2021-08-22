@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 import { buildDidHelper } from "../model"
-import { DIDDocumnet, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "../types"
+import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "../types"
 import { nodeCryptoHelper } from "metabelarusid-common"
 
 import util from 'util'
@@ -9,8 +9,8 @@ util.inspect.defaultOptions.depth = 8
 
 
 const testContext: {
-  didDoc?: DIDDocumnet
-  holderDoc?: DIDDocumnet
+  didDoc?: DIDDocument
+  holderDoc?: DIDDocument
 } = {}
 
 describe('DID Helper', () => {
@@ -101,7 +101,7 @@ describe('DID Helper', () => {
       throw new Error('No DID doc from pervious test')
     }
 
-    const brokenDoc = <DIDDocumnet>JSON.parse(JSON.stringify(testContext.holderDoc))
+    const brokenDoc = <DIDDocument>JSON.parse(JSON.stringify(testContext.holderDoc))
     if (brokenDoc.verificationMethod && brokenDoc.verificationMethod[0]
       && typeof brokenDoc.verificationMethod[0] === 'object'
       && typeof brokenDoc.verificationMethod[0].subjectSignature === 'object') {

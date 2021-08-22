@@ -1,5 +1,5 @@
 import { AddDIDMethod, DIDDocumentWrapper, DIDRegistry, DIDRegistryWrapper, DIDRegistryBundle } from "./types/registry"
-import { DIDDocumentPurpose, DIDDocumnet, DIDHelper, DIDPURPOSE_VERIFICATION } from "./types"
+import { DIDDocumentPurpose, DIDDocument, DIDHelper, DIDPURPOSE_VERIFICATION } from "./types"
 import { CommonCryptoKey } from "metabelarusid-common"
 
 export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegistryBundle) =>
@@ -11,7 +11,7 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegis
 
     const { personal: _registry, peer: _peerRegistry } = registry
 
-    const _lookUpDid = async <T extends DIDDocumentWrapper | DIDDocumnet>(
+    const _lookUpDid = async <T extends DIDDocumentWrapper | DIDDocument>(
       did: string, wrapped?: boolean
     ): Promise<T | undefined> => {
       const parsed = didHelper.parseDIDId(did)

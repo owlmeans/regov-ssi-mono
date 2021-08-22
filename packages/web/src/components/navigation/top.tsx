@@ -1,14 +1,13 @@
-import { Box, AppBar, Toolbar, Typography, Grid, Button, ButtonBase } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, Grid, Button, ButtonBase } from '@material-ui/core'
 import { connect, ConnectedProps } from 'react-redux'
 import { compose } from 'recompose'
 
 import { RootState } from '../../store/types'
 import { withWallet } from '../../model/context'
-import { WalletWrapper } from 'metabelarusid-core'
 import { NavigationMainRedirect } from './main-redirect'
 import { storeActions } from '../../store'
 import { PropsWithWallet } from '../../model/types'
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 
 
 const connector = connect(
@@ -30,7 +29,8 @@ const connector = connect(
 )
 
 export const NavigationTop = compose(withWallet, withRouter, connector)(
-  ({ name, uncommited, commit, history, wallet }: ConnectedProps<typeof connector> & RouteComponentProps & PropsWithWallet) => {
+  ({ name, uncommited, commit, history, wallet }: ConnectedProps<typeof connector>
+    & RouteComponentProps & PropsWithWallet) => {
     return wallet ? <AppBar position="fixed">
       <Toolbar>
         <Grid container item

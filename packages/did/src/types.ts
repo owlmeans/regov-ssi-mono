@@ -3,10 +3,10 @@ import { CommonCryptoKey } from 'metabelarusid-common'
 
 export type DIDHelper = {
   createDID: (key: CommonCryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
-  signDID: (key: CommonCryptoKey, didDocUnsigned: DIDDocumentUnsinged, purposes?: DIDDocumentPurpose[]) => Promise<DIDDocumnet>
+  signDID: (key: CommonCryptoKey, didDocUnsigned: DIDDocumentUnsinged, purposes?: DIDDocumentPurpose[]) => Promise<DIDDocument>
   makeDIDId: (key: CommonCryptoKey, options?: MakeDIDIdOptions) => string
   makeDIDProofSignature: (key: CommonCryptoKey, id: string, nonce: string, date: string, didDoc: DIDDocumentUnsinged) => string
-  verifyDID: (did: DIDDocumnet, key?: CommonCryptoKey) => boolean
+  verifyDID: (did: DIDDocument, key?: CommonCryptoKey) => boolean
   parseDIDId: ParseDIDIdMethod
   isDIDId: (id: string) => boolean
 }
@@ -22,7 +22,7 @@ export type DIDIDExplained = {
   did: string
 }
 
-export type DIDDocumnet = DIDDocumentUnsinged & {
+export type DIDDocument = DIDDocumentUnsinged & {
   proof: DIDDocumentProof
 }
 

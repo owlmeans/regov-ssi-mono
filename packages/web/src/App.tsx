@@ -2,7 +2,7 @@
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
-import { Container, Box/*, Typography*/ } from '@material-ui/core'
+import { Container } from '@material-ui/core'
 
 import { store, persistor } from './store'
 import { RootNavigation } from './navigation/index'

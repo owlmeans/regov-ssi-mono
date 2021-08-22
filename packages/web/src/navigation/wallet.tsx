@@ -2,15 +2,22 @@
 import {
   Switch,
   Route,
-  Link,
-  useRouteMatch
+  useRouteMatch,
+  useHistory
 } from "react-router-dom"
 
-import { Grid, Paper, Typography } from '@material-ui/core'
-import { WalletCredentialBundler, WalletPassport } from "../components"
+import { Button, Grid } from '@material-ui/core'
+import {
+  IssuerCredentialSigner,
+  WalletCredentialImporter,
+  WalletCredentialBundler,
+  WalletPassport,
+  CredentialClaim
+} from "../components"
 
 export const WalletNavigation = () => {
-  let { path, url } = useRouteMatch()
+  let { path } = useRouteMatch()
+  const history = useHistory()
 
   return <Switch>
     <Route exact path={`${path}`}>
@@ -19,25 +26,38 @@ export const WalletNavigation = () => {
         <Grid container item xs={6} direction="column" justifyContent="flex-start" alignItems="stretch"
           spacing={1}>
           <Grid item>
-            <Paper>
-              <Typography>Hello</Typography>
-            </Paper>
-          </Grid>
-          <Grid item>
-            <Paper>
-              <Typography>Hello</Typography>
-            </Paper>
+            <CredentialClaim />
           </Grid>
         </Grid>
-        <Grid container item xs={6} direction="column" justifyContent="flex-start" alignItems="stretch">
+        <Grid container item xs={6} spacing={1}
+          direction="column" justifyContent="flex-start" alignItems="stretch">
           <Grid item>
             <WalletPassport />
+          </Grid>
+          <Grid container item spacing={2}
+            direction="column"
+            justifyContent="flex-start"
+            alignItems="stretch">
+            <Grid item>
+              <Button fullWidth variant="contained" color="secondary"
+                onClick={() => history.push(`${path}/import/peer`)}>Добавить доверенное лицо</Button>
+            </Grid>
+            <Grid item>
+              <Button fullWidth variant="contained" color="secondary"
+                onClick={() => history.push(`${path}/claim/sign`)}>Выписать документ по заявке</Button>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
     </Route>
     <Route path={`${path}/export/:type/:credential`}>
       <WalletCredentialBundler />
+    </Route>
+    <Route path={`${path}/import/:section`}>
+      <WalletCredentialImporter />
+    </Route>
+    <Route path={`${path}/claim/sign`}>
+      <IssuerCredentialSigner />
     </Route>
   </Switch>
 

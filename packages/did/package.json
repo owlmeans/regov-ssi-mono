@@ -18,7 +18,9 @@
     "directory": "packages/did"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc -b",
+    "build:watch": "tsc -b -w"
   },
   "bugs": {
     "url": "https://github.com/markvandal/mb.wallets-mono/issues"
