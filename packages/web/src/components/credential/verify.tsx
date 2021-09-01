@@ -91,7 +91,7 @@ export const CredentialVerifier = compose(withWallet, withRouter, connector)(
 
     return credential
       ? <Card>
-        <CardHeader title="Проеверенный документ"
+        <CardHeader title="Проверенный документ"
           subheader={credential.errors ? 'Документ не верен ❌❌❌' : 'Поздравляем! Документ верен! ✅'} />
         <CardContent>
           <Grid container spacing={2}

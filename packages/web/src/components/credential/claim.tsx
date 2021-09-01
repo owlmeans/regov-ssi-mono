@@ -26,8 +26,12 @@ import { bundle } from '../../model/bundler'
 
 
 const connector = connect(
-  ({ credential: { currentClaim } }: RootState, props: PropsWithWallet) => {
+  ({
+    credential: { currentClaim },
+    identity: { created }
+  }: RootState, props: PropsWithWallet) => {
     return {
+      created,
       claim: currentClaim,
       ...props
     }
@@ -63,6 +67,8 @@ export const CredentialClaim = compose(withWallet, connector)(
   ({
     claim,
     create,
+    created,
+    wallet,
     copy
   }: PropsWithChildren<
     ConnectedProps<typeof connector> & PropsWithWallet
@@ -85,13 +91,16 @@ export const CredentialClaim = compose(withWallet, connector)(
               <Grid item>
                 <Typography variant="body2">
                   Чтобы получить верифицированный документ, создайте заявление.
+                  Скопируйте и передайте это заявление эмитенту документов, 
+                  которому доверяют лица запрашивающие документ для проверки.<br />
+                  Например, передйте представителю "Паспортного стола Meta-ID"
                 </Typography>
               </Grid>
               <Grid item>
                 <TextField
                   {...helper.produce('freeform')}
                   label="Документ в свободной форме"
-                  placeholder="Например: Петра Пустота под ником @voyd в Телеграмме явялется членом сообщества Meta-Belarus"
+                  placeholder="Например: Петра Пустота, под ником @voyd в Телеграмме, явялется членом сообщества Meta-Belarus"
                   helperText="Заполните содержание документа в свободной форме."
                   multiline
                   minRows={3}
@@ -108,7 +117,8 @@ export const CredentialClaim = compose(withWallet, connector)(
                 alignItems="center"
                 spacing={1}>
                 <Grid item xs={6}>
-                  <Button fullWidth variant="contained" size="large" color="primary"
+                  <Button fullWidth variant="contained" size="large"
+                    disabled={!created && !wallet?.hasIdentity()}
                     onClick={() => create(helper.extract())}>
                     Создать
                   </Button>

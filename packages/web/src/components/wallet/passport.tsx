@@ -40,7 +40,7 @@ const connector = connect(
         await passportHelper.createPassport(props.wallet, fields.info)
 
         dispatch(identityActions.tip())
-        dispatch(storeActions.tip())
+        dispatch(storeActions.update(await props.wallet.export()))
       },
       ...props
     }
@@ -84,7 +84,7 @@ export const WalletPassport = compose(withWallet, withRouter, connector)(
               justifyContent="flex-end"
               alignItems="center">
               <Grid item xs={6}>
-                <Button fullWidth variant="contained" size="large" color="primary"
+                <Button fullWidth variant="contained" size="large"
                   onClick={() => history.push(generatePath('/wallet/export/identity/passport'))}>
                   Предоставить
                 </Button>
@@ -102,16 +102,17 @@ export const WalletPassport = compose(withWallet, withRouter, connector)(
             alignItems="stretch">
             <Grid item>
               <Typography variant="body2">
-                Паспорт - это набор различных персональных данных о вас хранящихся внутри
-                одной "обложки". Эту "обложку" вы можете создать себе сами совершенно бесплатно
-                прямо сейчас.
+                Паспорт - это уникальный идентфикатор. До него можно проследить
+                все данные о вас, но только если вы того пожелаете. Он необходим, 
+                чтобы можно было доказать, что некоторые документы (или записи из 
+                документов), принадлежат одному лицу, а именно, вам.
               </Typography>
             </Grid>
             <Grid item>
               <Typography variant="caption" color="error">
                 ВНИМАНИЕ! Вы сами создаёте свой паспорт с помощью алгоритмов криптографии.
                 Этот паспорт привязан к данному кошельку. Кошелёк хранится только у вас
-                он никуда не передаётся. Соответственно при утрате данного кошелька (его
+                и никуда не передаётся. Соответственно, при утрате данного кошелька (его
                 данных с вашего устройства) или же пароля от данного кошелька, паспорт
                 будет безвозвратно утерян.
               </Typography>

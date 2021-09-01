@@ -55,7 +55,7 @@ const connector = connect(
           )
           props.wallet.did.addPeerDID(bundle.document.did)
           
-          dispatch(storeActions.tip())
+          dispatch(storeActions.update(await props.wallet.export()))
 
           alert('Документ успешно добавлен в кошелёк!')
 
@@ -74,7 +74,7 @@ export const WalletCredentialImporter = compose(withWallet, withRouter, connecto
   ({ store, section }: PropsWithoutRef<ConnectedProps<typeof connector>>) => {
     const helper = buildFormHelper<ImporterFields>([useRef()])
     const subheader = section === 'peer'
-      ? 'Для добавления паспарта доверенного лица'
+      ? 'Для добавления паспорта доверенного лица'
       : 'Для добавления личных документов удостоверенных доверенными лицами'
 
     return <Card>

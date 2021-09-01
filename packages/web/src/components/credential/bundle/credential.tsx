@@ -88,7 +88,7 @@ export const WalletCredentialBundler = compose(withWallet, withRouter, connector
               <CopyToClipboard text={
                 credential.credential?.id ? bundle(credential, match.params.type) : ''
               }>
-                <Button fullWidth variant="contained" color="secondary"
+                <Button fullWidth variant="contained" color="primary"
                   disabled={!credential.credential?.id}>
                   Скопировать
                 </Button>
@@ -98,7 +98,7 @@ export const WalletCredentialBundler = compose(withWallet, withRouter, connector
               <CopyToClipboard text={
                 credential.credential?.id ? bundle(credential.did, 'certificate') : ''
               }>
-                <Button fullWidth variant="contained" color="secondary"
+                <Button fullWidth variant="contained"
                   disabled={!credential.credential?.id}>
                   Скопировать только сертификат
                 </Button>

@@ -53,7 +53,8 @@ export const NavigationTop = compose(withWallet, withRouter, connector)(
             {
               uncommited
                 ? <Grid item>
-                  <Button size="small" variant="contained" onClick={commit}>Сохранить</Button>
+                  <Button size="small" variant="contained" color="secondary" 
+                    onClick={commit}>Сохранить</Button>
                 </Grid>
                 : undefined
             }

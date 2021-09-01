@@ -1,3 +1,4 @@
+import { PropsWithChildren } from "react"
 
 import {
   Switch,
@@ -15,8 +16,28 @@ import {
   CredentialClaim,
   CredentialVerifier
 } from "../components"
+import { PropsWithWallet } from "../model/types"
+import { RootState } from "../store/types"
+import { connect, ConnectedProps } from "react-redux"
+import { compose } from "@reduxjs/toolkit"
+import { withWallet } from "../model/context"
 
-export const WalletNavigation = () => {
+
+const connector = connect(
+  ({
+    identity: { created }
+  }: RootState, props: PropsWithWallet) => {
+    return {
+      created,
+      ...props
+    }
+  }
+)
+
+export const WalletNavigation = compose(withWallet, connector)(
+  ({ created, wallet }: PropsWithChildren<
+    ConnectedProps<typeof connector> & PropsWithWallet
+  >) => {
   let { path } = useRouteMatch()
   const history = useHistory()
 
@@ -27,7 +48,7 @@ export const WalletNavigation = () => {
         <Grid container item xs={6} direction="column" justifyContent="flex-start" alignItems="stretch"
           spacing={1}>
           <Grid item>
-            <CredentialClaim />
+            {created || wallet?.hasIdentity() ? <CredentialClaim /> : null}
           </Grid>
         </Grid>
         <Grid container item xs={6} spacing={1}
@@ -40,15 +61,16 @@ export const WalletNavigation = () => {
             justifyContent="flex-start"
             alignItems="stretch">
             <Grid item>
-              <Button fullWidth variant="contained" color="secondary"
+              <Button fullWidth variant="contained" color="primary"
+                disabled={!created && !wallet?.hasIdentity()}
                 onClick={() => history.push(`${path}/claim/sign`)}>Выписать документ по заявке</Button>
             </Grid>
             <Grid item>
-              <Button fullWidth variant="contained" color="secondary"
+              <Button fullWidth variant="contained" color="primary"
                 onClick={() => history.push(`${path}/import/peer`)}>Добавить доверенное лицо</Button>
             </Grid>
             <Grid item>
-              <Button fullWidth variant="contained" color="secondary"
+              <Button fullWidth variant="contained" color="primary"
                 onClick={() => history.push(`${path}/verify`)}>Проверить документ</Button>
             </Grid>
           </Grid>
@@ -69,3 +91,4 @@ export const WalletNavigation = () => {
     </Route>
   </Switch>
 }
+)
