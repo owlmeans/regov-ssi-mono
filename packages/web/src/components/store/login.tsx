@@ -16,18 +16,25 @@ import { History } from 'history'
 
 import { EncryptedStore } from 'metabelarusid-core'
 
-import { produceWalletContext } from '../../model/context'
+import { produceWalletContext, withWallet } from '../../model/context'
 import { buildFormHelper } from '../helper/form'
 import { RootState } from '../../store/types'
+import { storeActions } from '../../store'
+import { PropsWithWallet } from '../../model/types'
+
 
 const connector = connect(
-  ({ store: { current, stores } }: RootState, props: RouteComponentProps<{store: string}>) => {
+  (
+    { store: { current, stores } }: RootState,
+    props: PropsWithWallet & RouteComponentProps<{ store: string }>
+  ) => {
     const params = props.match.params
     if (!params.store || !stores[params.store]) {
       params.store = current
     }
     return {
       store: stores[params.store],
+      many: !props.wallet && Object.entries(stores).length > 1,
       ...props
     }
   },
@@ -44,6 +51,8 @@ const connector = connect(
             throw new Error('Что-то пошло не так')
           }
 
+          dispatch(storeActions.switch(wallet.store.alias))
+
           history.push(generatePath('/wallet'))
         } catch (e) {
           alert(`Не могу открыть кошелёк: ${e.toString()}`)
@@ -54,16 +63,21 @@ const connector = connect(
   }
 )
 
-export const StoreLogin = compose(withRouter, connector)(
+export const StoreLogin = compose(withRouter, withWallet, connector)(
   ({
     store,
+    many,
     login,
     history
   }: PropsWithChildren<ConnectedProps<typeof connector> & RouteComponentProps>) => {
     const helper = buildFormHelper<LoginFields>([useRef()])
 
     return <Card>
-      <CardHeader title={`Откройте "${store?.name}"`} />
+      <CardHeader
+        title={`Откройте "${store?.name}"`}
+        action={many && <Button variant="contained" size="small"
+          onClick={() => history.push('/store')}>Список</Button>}
+      />
       <CardContent>
         <Grid container
           direction="column"

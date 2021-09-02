@@ -5,20 +5,18 @@ import {
   useRouteMatch
 } from "react-router-dom"
 
-//import { Box } from '@material-ui/core'
-import { StoreCreation, StoreLogin } from "../components"
+import { StoreCreation, StoreList, StoreLogin } from "../components"
 
 
 export const StoreNavigation = () => {
-  let { path/*, url*/ } = useRouteMatch()
+  let { path } = useRouteMatch()
 
   return <Switch>
       <Route exact path={path}>
-        <StoreCreation />
+        <StoreList />
       </Route>
       <Route path={`${path}/create`}>
-        <div>create store</div>
-        <div>new / import</div>
+        <StoreCreation />
       </Route>
       <Route path={`${path}/login/:store`}>
         <StoreLogin />

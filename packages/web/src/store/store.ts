@@ -1,9 +1,7 @@
-import {
-  createSlice,
-  /* createAsyncThunk*/
-} from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 import { SecuredStoreReducers, SecuredStoreState } from './types/store'
+
 
 const slice = createSlice<SecuredStoreState, SecuredStoreReducers>({
   name: 'store',
@@ -14,14 +12,39 @@ const slice = createSlice<SecuredStoreState, SecuredStoreReducers>({
 
   reducers: {
     update: (state, { payload: store }) => {
-      return { 
-        ...state, 
+      return {
+        ...state,
         current: store.alias,
         stores: {
           ...state.stores,
           [store.alias]: store
         },
         uncommited: false
+      }
+    },
+
+    switch: (state, { payload: current }) => {
+      return {
+        ...state,
+        current,
+        uncommited: false
+      }
+    },
+
+    remove: (state, { payload: alias }) => {
+      return {
+        ...state,
+        current: alias === state.current ? undefined : state.current,
+        stores: {
+          ...Object.entries(state.stores).reduce((
+            stores, [key, store]
+          ) => {
+            return {
+              ...stores,
+              ...(key === alias ? {} : { [key]: store })
+            }
+          }, {})
+        }
       }
     },
 

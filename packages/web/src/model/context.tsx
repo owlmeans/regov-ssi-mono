@@ -54,6 +54,14 @@ export const produceWalletContext =
     return result
   }
 
+export const removeWalletContext = 
+  async (alias: string) => {
+    if (_walletRegistry[alias]) {
+      delete _walletRegistry[alias]
+    }
+    _forceUpdateRegistry.every(forceUpdate => forceUpdate())
+  }
+
 export const withWallet = (Com) =>
   (props: PropsWithChildren<any> | ComponentProps<any>) =>
     <WithWallet>

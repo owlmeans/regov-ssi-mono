@@ -1,21 +1,6 @@
 {
   "hosting": [
     {
-      "site": "meta-belarus-id-test",
-      "public": "build",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
       "site": "meta-belarus-id",
       "public": "build",
       "ignore": [

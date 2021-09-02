@@ -11,5 +11,9 @@ export type SecuredStoreState = {
 export type SecuredStoreReducers = SliceCaseReducers<SecuredStoreState> & {
   update: (state: SecuredStoreState, action: PayloadAction<EncryptedStore> ) => SecuredStoreState
 
+  switch: (state: SecuredStoreState, action: PayloadAction<string>) => SecuredStoreState
+
+  remove: (state: SecuredStoreState, action: PayloadAction<string>) => SecuredStoreState
+
   tip: (state: SecuredStoreState) => SecuredStoreState
 }
