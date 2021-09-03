@@ -71,8 +71,6 @@ export const passportHelper = {
     await registry.addCredential(identity)
     registry.registry.rootCredential = identity.id
 
-    console.log(identity.credentialSubject)
-
     return {
       did,
       identity

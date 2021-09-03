@@ -61,7 +61,9 @@ export const StoreCreation = compose(connector, withRouter)(
 
 
     return <Card>
-      <CardHeader title="Создайте новый Кошелёк и ID" />
+      <CardHeader title="Создайте новый Кошелёк и ID"
+        action={<Button variant="contained" size="small"
+          onClick={() => history.push('/store/import')}>Импортировать</Button>} />
       <CardContent>
         <Grid container
           direction="column"

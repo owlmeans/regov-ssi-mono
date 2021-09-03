@@ -12,7 +12,7 @@ const connector = connect(
   ({ store: { stores } }: RootState, props: RouteComponentProps) => {
     return { stores, ...props }
   },
-  (dispatch, props: RouteComponentProps & PropsWithWallet ) => {
+  (dispatch, props: RouteComponentProps & PropsWithWallet) => {
     return {
       remove: (alias: string) => {
         dispatch(storeActions.remove(alias))
@@ -41,10 +41,14 @@ export const StoreList = compose(withWallet, withRouter, connector)(
         </List>
       </CardContent>
       <CardActions>
-        <Grid container
+        <Grid container spacing={2}
           direction="row"
           justifyContent="flex-end"
           alignItems="center">
+          <Grid item>
+            <Button variant="contained"
+              onClick={() => history.push('/store/import')}>Импортировать</Button>
+          </Grid>
           <Grid item>
             <Button variant="contained" onClick={() => history.push('/store/create')}>Создать</Button>
           </Grid>

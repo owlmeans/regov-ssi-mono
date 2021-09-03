@@ -5,7 +5,7 @@ import {
   useRouteMatch
 } from "react-router-dom"
 
-import { StoreCreation, StoreList, StoreLogin } from "../components"
+import { StoreCreation, StoreImport, StoreList, StoreLogin } from "../components"
 
 
 export const StoreNavigation = () => {
@@ -21,8 +21,8 @@ export const StoreNavigation = () => {
       <Route path={`${path}/login/:store`}>
         <StoreLogin />
       </Route>
-      <Route path={`${path}/info`}>
-        <div>store info</div>
+      <Route path={`${path}/import`}>
+        <StoreImport />
       </Route>
     </Switch>
 }

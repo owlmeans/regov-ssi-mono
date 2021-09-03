@@ -91,8 +91,6 @@ export const credentialHelper = {
       subject: credentialSubject
     })
 
-    console.log(unsignedCredential)
-
     return {
       credential: unsignedCredential,
       did: didUnsigned

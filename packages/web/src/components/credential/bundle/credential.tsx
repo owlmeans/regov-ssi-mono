@@ -43,7 +43,6 @@ const connector = connect(
     if (props.wallet) {
       if (id === 'passport') {
         const passport = passportHelper.getPassport(props.wallet)
-        console.log(passport)
         credential.credential = passport.identity
         credential.did = passport.did.did
       } else {

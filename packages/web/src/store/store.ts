@@ -23,6 +23,16 @@ const slice = createSlice<SecuredStoreState, SecuredStoreReducers>({
       }
     },
 
+    add: (state, { payload: store }) => {
+      return {
+        ...state,
+        stores: {
+          ...state.stores,
+          ...{ [store.alias]: store }
+        }
+      }
+    },
+
     switch: (state, { payload: current }) => {
       return {
         ...state,

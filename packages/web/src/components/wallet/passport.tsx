@@ -32,7 +32,6 @@ const connector = connect(
   (dispatch, props: PropsWithWallet) => {
     return {
       create: async (fields: PassportFields) => {
-        console.log(fields)
         if (!fields.info) {
           alert('Пожалуйста напишите что нибудь о себе! Эта информация будет доступна только вам.')
         }
