@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "It's core package for OwlMeans RegGov SSI",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
-  "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",  
+  "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
   "main": "src/index.ts",
@@ -12,7 +12,7 @@
   "files": [
     "src",
     "dist"
-  ],  
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/owlmeans/regov-ssi-mono.git",
