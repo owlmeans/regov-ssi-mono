@@ -1,20 +1,21 @@
 {
-  "name": "metabelarusid-did",
-  "version": "0.0.1",
-  "description": "Meta-Id DID method",
-  "author": "Mark Vandal <araht.pareen@gmail.com>",
-  "homepage": "https://github.com/markvandal/mb.wallets-mono#readme",
+  "name": "@owlmeans/regov-ssi-did",
+  "version": "0.1.0",
+  "description": "OwlMeans RegGov SSI DID Library",
+  "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
+  "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
   "main": "src/index.ts",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "src"
+    "src",
+    "dist"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/markvandal/mb.wallets-mono.git",
+    "url": "git+https://github.com/owlmeans/regov-ssi-mono.git",
     "directory": "packages/did"
   },
   "scripts": {
@@ -23,7 +24,7 @@
     "build:watch": "tsc -b -w"
   },
   "bugs": {
-    "url": "https://github.com/markvandal/mb.wallets-mono/issues"
+    "url": "https://github.com/owlmeans/regov-ssi-mono/issues"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
@@ -35,6 +36,6 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "metabelarusid-common": "^0.0.1"
+    "@owlmeans/regov-ssi-common": "^0.1.0"
   }
 }

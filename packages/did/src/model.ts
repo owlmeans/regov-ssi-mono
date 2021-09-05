@@ -4,7 +4,7 @@ import {
   COMMON_CRYPTO_ERROR_NOPK,
   COMMON_CRYPTO_ERROR_NOPUBKEY,
   COMMON_CRYPTO_ERROR_NOID
-} from 'metabelarusid-common'
+} from '@owlmeans/regov-ssi-common'
 
 import {
   DIDDocument,

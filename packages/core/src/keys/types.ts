@@ -1,4 +1,4 @@
-import { CommonCryptoKey, CryptoHelper } from "metabelarusid-common"
+import { CommonCryptoKey, CryptoHelper } from "@owlmeans/regov-ssi-common"
 
 export type KeyChain = {
   defaultKey: string

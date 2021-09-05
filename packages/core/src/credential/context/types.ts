@@ -1,10 +1,16 @@
 import { TContext } from "@affinidi/vc-common"
 import { Validatied } from "@affinidi/vc-common/dist/verifier/util"
 
-import { CryptoHelper, CommonCryptoKey } from "metabelarusid-common"
+import { CryptoHelper, CommonCryptoKey } from "@owlmeans/regov-ssi-common"
 import { KeyChainWrapper } from "../../keys/types"
-import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "./types/credential"
-import { DIDRegistryWrapper } from 'metabelarusid-did'
+import { 
+  CommonCredentail, 
+  CommonCredentailSubject, 
+  CommonSubjectType, 
+  CommonType, 
+  CommonUnsignedCredential 
+} from "./types/credential"
+import { DIDRegistryWrapper } from '@owlmeans/regov-ssi-did'
 
 
 export type BuildCommonContextMethod = (options: {

@@ -10,7 +10,7 @@ import {
   KeyPairToCryptoKeyOptions,
   KeyRotation
 } from "./types"
-import { CommonCryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from 'metabelarusid-common'
+import { CommonCryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from '@owlmeans/regov-ssi-common'
 
 
 export const buildKeyChain: BuildKeyChainWrapperMethod =

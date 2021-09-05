@@ -1,5 +1,5 @@
-import { DIDRegistryBundle, DIDRegistryWrapper } from "metabelarusid-did"
-import { CryptoHelper } from "metabelarusid-common"
+import { DIDRegistryBundle, DIDRegistryWrapper } from "@owlmeans/regov-ssi-did"
+import { CryptoHelper } from "@owlmeans/regov-ssi-common"
 import { CommonContext } from "../credential/context/types"
 import { CreateKeyOptions, KeyChain, KeyChainWrapper } from "../keys/types"
 import { BasicStore, EncryptedStore, SecureStore } from "../store/types"

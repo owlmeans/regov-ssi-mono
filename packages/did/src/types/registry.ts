@@ -1,4 +1,4 @@
-import { CommonCryptoKey } from "metabelarusid-common"
+import { CommonCryptoKey } from "@owlmeans/regov-ssi-common"
 import { DIDDocument, DIDHelper } from "../types"
 
 export type DIDDocumentWrapper = {

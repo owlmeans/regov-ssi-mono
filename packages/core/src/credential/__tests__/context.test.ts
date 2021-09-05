@@ -3,8 +3,14 @@ require('dotenv').config()
 import { buildCommonContext } from "../context"
 import { CommonContext } from "../context/types"
 import { Credential, UnsignedCredentail } from "../types"
-import { nodeCryptoHelper } from "metabelarusid-common"
-import { buildDidHelper, buildDidRegistryWarpper, DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "metabelarusid-did"
+import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
+import { 
+  buildDidHelper, 
+  buildDidRegistryWarpper, 
+  DIDDocument, 
+  DIDPURPOSE_ASSERTION, 
+  DIDPURPOSE_VERIFICATION 
+} from "@owlmeans/regov-ssi-did"
 import { buildKeyChain } from "../../keys/model"
 
 import util from 'util'

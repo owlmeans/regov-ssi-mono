@@ -1,4 +1,4 @@
-import { buildDidHelper, buildDidRegistryWarpper } from "metabelarusid-did";
+import { buildDidHelper, buildDidRegistryWarpper } from "@owlmeans/regov-ssi-did";
 import { buildCommonContext, Credential, UnsignedCredentail } from "../credential";
 import { buildKeyChain } from "../keys";
 import { buildStore } from "../store/store";

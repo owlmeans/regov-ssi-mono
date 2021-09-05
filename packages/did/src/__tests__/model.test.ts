@@ -2,7 +2,7 @@ require('dotenv').config()
 
 import { buildDidHelper } from "../model"
 import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "../types"
-import { nodeCryptoHelper } from "metabelarusid-common"
+import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
 
 import util from 'util'
 util.inspect.defaultOptions.depth = 8

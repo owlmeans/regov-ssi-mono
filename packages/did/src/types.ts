@@ -1,5 +1,5 @@
 
-import { CommonCryptoKey } from 'metabelarusid-common'
+import { CommonCryptoKey } from '@owlmeans/regov-ssi-common'
 
 export type DIDHelper = {
   createDID: (key: CommonCryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>

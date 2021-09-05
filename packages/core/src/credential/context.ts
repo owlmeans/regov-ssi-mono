@@ -3,7 +3,12 @@ import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, validateVCV1 } from "@
 
 import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions } from "./context/types";
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./context/types/credential";
-import { COMMON_CRYPTO_ERROR_NOID, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY, CommonCryptoKey } from "metabelarusid-common"
+import { 
+  COMMON_CRYPTO_ERROR_NOID, 
+  COMMON_CRYPTO_ERROR_NOPK, 
+  COMMON_CRYPTO_ERROR_NOPUBKEY, 
+  CommonCryptoKey 
+} from "@owlmeans/regov-ssi-common"
 
 /**
  * @TODO Sign and verify VC with nonce from did.

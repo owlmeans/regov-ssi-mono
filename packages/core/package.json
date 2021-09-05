@@ -1,25 +1,30 @@
 {
-  "name": "metabelarusid-core",
-  "version": "0.0.1",
-  "description": "It's core package for Meta-ID",
+  "name": "@owlmeans/regov-ssi-core",
+  "version": "0.1.0",
+  "description": "It's core package for OwlMeans RegGov SSI",
+  "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
+  "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",  
+  "license": "Apache-2.0",
+  "type": "commonjs",
   "main": "src/index.ts",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],  
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/markvandal/mb.wallets-mono.git",
+    "url": "git+https://github.com/owlmeans/regov-ssi-mono.git",
     "directory": "packages/core"
   },
-  "author": "Mark Vandal",
-  "license": "Apache-2.0",
-  "type": "commonjs",
-  "files": [
-    "src"
-  ],
   "scripts": {
     "test": "jest",
     "build": "tsc -b",
     "build:watch": "tsc -b -w"
+  },
+  "bugs": {
+    "url": "https://github.com/owlmeans/regov-ssi-mono/issues"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
@@ -32,7 +37,7 @@
   },
   "dependencies": {
     "@affinidi/vc-common": "^1.4.1",
-    "metabelarusid-common": "^0.0.1",
-    "metabelarusid-did": "^0.0.1"
+    "@owlmeans/regov-ssi-common": "^0.1.0",
+    "@owlmeans/regov-ssi-did": "^0.1.0"
   }
 }

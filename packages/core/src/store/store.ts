@@ -1,4 +1,4 @@
-import { CryptoHelper } from "metabelarusid-common";
+import { CryptoHelper } from "@owlmeans/regov-ssi-common";
 import { DEFAULT_WALLET_ALIAS } from "../wallet/types";
 import { BasicStore, EncryptedStore, SecureStore } from "./types";
 

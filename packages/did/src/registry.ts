@@ -1,6 +1,6 @@
 import { AddDIDMethod, DIDDocumentWrapper, DIDRegistry, DIDRegistryWrapper, DIDRegistryBundle } from "./types/registry"
 import { DIDDocumentPurpose, DIDDocument, DIDHelper, DIDPURPOSE_VERIFICATION } from "./types"
-import { CommonCryptoKey } from "metabelarusid-common"
+import { CommonCryptoKey } from "@owlmeans/regov-ssi-common"
 
 export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegistryBundle) =>
   DIDRegistryWrapper = (didHelper, registry?) => {
