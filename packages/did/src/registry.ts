@@ -18,12 +18,20 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegis
 
       let didDocW = _registry.dids.find(
         did => did.did.id === parsed.did
-          || did.did.proof.controller === parsed.did
       )
       if (!didDocW) {
         didDocW = _peerRegistry.dids.find(
           did => did.did.id === parsed.did
-            || did.did.proof.controller === parsed.did
+        )
+      }
+      if (!didDocW) {
+        didDocW = _registry.dids.find(
+          did => did.did.proof.controller === parsed.did
+        )
+      }
+      if (!didDocW) {
+        didDocW = _peerRegistry.dids.find(
+          did => did.did.proof.controller === parsed.did
         )
       }
 

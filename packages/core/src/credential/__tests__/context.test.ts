@@ -217,4 +217,27 @@ describe('Credential Model', () => {
 
     expect(result).toBe(false)
   })
+
+  it('Creates unsigned verifiable presentation', async () => {
+    if (!testContext.commonContext) {
+      throw 'Setup didn\'t provide CommonContext'
+    }
+    if (!testContext.signedCredential) {
+      throw 'Previous test didn\'t provide UnsingedCredential'
+    }
+
+    const didWrapper = testContext.commonContext.did
+    // In test we take did document of the credential itself
+    const did = <DIDDocument>await didWrapper.lookUpDid(testContext.signedCredential.holder.id)
+
+    const vp = await testContext.commonContext?.buildPresentation(
+      [testContext.signedCredential],
+      {
+        holder: did,
+        type: 'TestPresentation'
+      }
+    )
+
+    console.log(vp)
+  })
 })

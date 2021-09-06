@@ -1,14 +1,18 @@
 
-import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, validateVCV1 } from "@affinidi/vc-common";
+import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, buildVPV1Unsigned, validateVCV1 } from "@affinidi/vc-common"
 
-import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions } from "./context/types";
-import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./context/types/credential";
-import { 
-  COMMON_CRYPTO_ERROR_NOID, 
-  COMMON_CRYPTO_ERROR_NOPK, 
-  COMMON_CRYPTO_ERROR_NOPUBKEY, 
-  CommonCryptoKey 
+import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions } from "./context/types"
+import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./context/types/credential"
+import {
+  COMMON_CRYPTO_ERROR_NOID,
+  COMMON_CRYPTO_ERROR_NOPK,
+  COMMON_CRYPTO_ERROR_NOPUBKEY,
+  CommonCryptoKey,
+  basicHelper
 } from "@owlmeans/regov-ssi-common"
+import { CommonPresentationHolder, CommonUnsignedPresentation } from "./context/types/presentation"
+import { CommonBuildPresentationOptions } from '.'
+import { getDocumentLoader } from "./context/loader"
 
 /**
  * @TODO Sign and verify VC with nonce from did.
@@ -19,48 +23,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
   crypto,
   did
 }) => {
-  const documentLoader = async (url: string): Promise<any> => {
-    if (url.startsWith('did:')) {
-      return {
-        contextUrl: null,
-        document: (did => {
-          const newDid = JSON.parse(JSON.stringify(did))
-          /**
-           * @TODO It looks like theese guys doesn't conisdere more
-           * sophistacted did structure... or I understand it wrong :)
-           * Nevertheless, it should be fixed somewhere else
-           */
-          if (newDid.proof?.controller) {
-            newDid.id = newDid.proof?.controller
-          }
-
-          return newDid
-        })(await did.lookUpDid(url)),
-        /**
-          document: {
-            '@context': [
-              'https://w3id.org/security/v2',
-              'https://w3id.org/did/v1'
-            ],
-            id: url,
-            publicKey: [{
-              id: `${url}#primary`,
-              usage: 'signing',
-              type: 'Secp256k1VerificationKey2018',
-              publicKeyHex: Buffer.from(crypto.base58().decode(url.split(':')[2])).toString('hex')
-            }],
-            assertionMethod: [`${url}#primary`],
-            authentication: [`${url}#primary`],
-          },
-         */
-        documentUrl: url,
-      }
-    }
-
-    const jsonld = require('jsonld')
-
-    return jsonld.documentLoader(url)
-  }
+  const documentLoader = getDocumentLoader(did)
 
   return {
     keys,
@@ -124,7 +87,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
           documentLoader,
           getProofPurposeOptions: options?.buildProofPurposeOptions
         }) as CommonCredentail<S>
-      } catch (e) {
+      } catch (e: any) {
         console.log(e.details)
 
         throw e
@@ -156,6 +119,19 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       }
 
       return [true, result]
+    },
+
+    buildPresentation: async <
+      C extends CommonCredentail = CommonCredentail,
+      H extends CommonPresentationHolder = CommonPresentationHolder
+    >(credentails: C[], options: CommonBuildPresentationOptions<H>) => {
+      return buildVPV1Unsigned({
+        id: `urn:uuid:${basicHelper.makeRandomUuid()}`,
+        vcs: credentails,
+        holder: options.holder,
+        context: options.context,
+        type: options.type
+      }) as CommonUnsignedPresentation<C, H>
     }
   }
 }

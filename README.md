@@ -1,1 +1,1 @@
-# @owlmeans/reggov-ssi-mono
+# @owlmeans/regov-ssi-mono
