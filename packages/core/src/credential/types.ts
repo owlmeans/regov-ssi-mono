@@ -1,5 +1,12 @@
 import { CommonContextType } from "./context/types"
-import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonType, CommonUnsignedCredential } from "./context/types/credential"
+import {
+  CommonCredentail,
+  CommonCredentailSubject,
+  CommonSubjectType,
+  CommonType,
+  CommonUnsignedCredential
+} from "./context/types/credential"
+import { CommonPresentation, CommonPresentationHolder, CommonPresentationType, CommonUnsignedPresentation } from "./context/types/presentation"
 
 
 export type Credential<Subject extends CredentialSubject = CredentialSubject>
@@ -25,3 +32,17 @@ export type UnsignedCredentail<
   > = CommonUnsignedCredential<Subject> & {}
 
 export type CredentialType = CommonType
+
+export type UnsignedPresentation<
+  C extends Credential = Credential,
+  H extends PresentationHolder = PresentationHolder,
+  > = CommonUnsignedPresentation<C, H>
+
+export type Presentation<
+  C extends Credential = Credential,
+  H extends PresentationHolder = PresentationHolder
+  > = CommonPresentation<C, H>
+
+export type PresentationHolder = CommonPresentationHolder
+
+export type PresentationType = CommonPresentationType

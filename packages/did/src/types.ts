@@ -5,10 +5,13 @@ export type DIDHelper = {
   createDID: (key: CommonCryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
   signDID: (key: CommonCryptoKey, didDocUnsigned: DIDDocumentUnsinged, purposes?: DIDDocumentPurpose[]) => Promise<DIDDocument>
   makeDIDId: (key: CommonCryptoKey, options?: MakeDIDIdOptions) => string
-  makeDIDProofSignature: (key: CommonCryptoKey, id: string, nonce: string, date: string, didDoc: DIDDocumentUnsinged) => string
-  verifyDID: (did: DIDDocument, key?: CommonCryptoKey) => boolean
+  didToLongForm: (did: DIDDocument) => Promise<string>
+  extractProofController: (did: DIDDocument) => string
+  verifyDID: (did: DIDDocument, key?: CommonCryptoKey) => Promise<boolean>
   parseDIDId: ParseDIDIdMethod
   isDIDId: (id: string) => boolean
+  expandVerificationMethod: (didDoc: DIDDocument, method: string) => DIDVerificationItem
+  setupDocumentLoader: (loader: BuildDocumentLoader) => void
 }
 
 export type ParseDIDIdMethod = (id: string) => DIDIDExplained
@@ -20,6 +23,8 @@ export type DIDIDExplained = {
   fragment?: string
   query?: string
   did: string
+  purpose?: string
+  keyIdx?: number
 }
 
 export type DIDDocument = DIDDocumentUnsinged & {
@@ -31,7 +36,7 @@ export type DIDDocumentUnsinged = DIDDocumentPayload & {
   id: string
   controller?: string
   publicKey: {
-    id: string, 
+    id: string,
     type: string,
     publicKeyBase58: string,
   }[]
@@ -39,7 +44,7 @@ export type DIDDocumentUnsinged = DIDDocumentPayload & {
 
 export type DIDDocumentPayload = {
   verificationMethod?: (string | DIDVerificationMethod)[]
-  authenitcaion?: (string | DIDAuthentication)[]
+  authentication?: (string | DIDAuthentication)[]
   assertionMethod?: (string | DIDAssertion)[]
   keyAgreement?: (string | DIDKeyAgreement)[]
   capabilityInvocation?: (string | DIDCapability)[]
@@ -67,7 +72,7 @@ export type DIDDocumentPurpose =
   | typeof DIDPURPOSE_DELEGATION
 
 export const DIDPURPOSE_VERIFICATION = 'verificationMethod'
-export const DIDPURPOSE_AUTHENTICATION = 'authenitcaion'
+export const DIDPURPOSE_AUTHENTICATION = 'authentication'
 export const DIDPURPOSE_ASSERTION = 'assertionMethod'
 export const DIDPURPOSE_AGREEMENT = 'keyAgreement'
 export const DIDPURPOSE_CAPABILITY = 'capabilityInvocation'
@@ -88,8 +93,11 @@ export type DIDVerificationItem = {
   id?: string
   type: string
   controller?: string
+  originalPurposes?: DIDDocumentPurpose[]
+  nonce?: string
   publicKeyBase58: string
-  subjectSignature?: DIDDocumentProof
+  proof?: DIDDocumentProof
+  '@context'?: any
 }
 
 export type DIDVerificationMethod = DIDVerificationItem & {}
@@ -115,14 +123,18 @@ export type DIDServiceEndpoint = string | { [key: string]: string } | string[]
 export type DIDDocumentProof = {
   type: string,
   created: string,
-  controller: string,
-  nonce: string,
-  signature: string
+  proofPurpose?: string,
+  jws: string
   verificationMethod?: string
-  originalPurposes?: DIDDocumentPurpose[]
 }
+
+export type BuildDocumentLoader =
+  (fallback?: () => DIDDocument | DIDDocumentUnsinged | undefined) =>
+    (url: string) => Promise<any>
 
 export const DID_ERROR_NOVERIFICATION_METHOD = 'DID_ERROR_NOVERIFICATION_METHOD'
 export const DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS = 'DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS'
+export const DID_ERROR_VERIFICATION_METHOD_LOOKUP = 'DID_ERROR_VERIFICATION_METHOD_LOOKUP'
+export const DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD = 'DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD'
 
 export const DEFAULT_DID_PREFIX = process.env.DID_PREFIX

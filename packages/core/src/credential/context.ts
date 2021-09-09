@@ -1,5 +1,5 @@
 
-import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, buildVPV1Unsigned, validateVCV1 } from "@affinidi/vc-common"
+import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, buildVPV1, buildVPV1Unsigned, validateVCV1 } from "@affinidi/vc-common"
 
 import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions } from "./context/types"
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./context/types/credential"
@@ -10,9 +10,9 @@ import {
   CommonCryptoKey,
   basicHelper
 } from "@owlmeans/regov-ssi-common"
-import { CommonPresentationHolder, CommonUnsignedPresentation } from "./context/types/presentation"
-import { CommonBuildPresentationOptions } from '.'
-import { getDocumentLoader } from "./context/loader"
+import { CommonPresentation, CommonPresentationHolder, CommonUnsignedPresentation } from "./context/types/presentation"
+import { CommonBuildPresentationOptions, CommonSignPresentationOptions } from '.'
+import { DIDDocument, buildDocumentLoader } from "@owlmeans/regov-ssi-did"
 
 /**
  * @TODO Sign and verify VC with nonce from did.
@@ -23,7 +23,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
   crypto,
   did
 }) => {
-  const documentLoader = getDocumentLoader(did)
+  const documentLoader = buildDocumentLoader(did)(() => undefined)
 
   return {
     keys,
@@ -72,7 +72,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
           unsigned: unsingedCredential,
           issuer: {
             did: issuer,
-            keyId: key.fragment || 'publicKey-1',// @TODO Get it from some input
+            keyId: key.fragment || 'publicKey-1',
             privateKey: key.pk,
             publicKey: key.pubKey
           },
@@ -106,10 +106,15 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
 
           return crypto.buildSignSuite({
             publicKey: key.pubKey,
-            privateKey: key.pk || '',
+            privateKey: '',
             controller: options.controller,
             id: options.verificationMethod
           })
+        },
+        getProofPurposeOptions: async () => {
+          return {
+            controller: await did.lookUpDid(key.id as string)
+          }
         },
         documentLoader
       })(credential)
@@ -127,11 +132,52 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     >(credentails: C[], options: CommonBuildPresentationOptions<H>) => {
       return buildVPV1Unsigned({
         id: `urn:uuid:${basicHelper.makeRandomUuid()}`,
-        vcs: credentails,
-        holder: options.holder,
+        vcs: [...credentails],
+        holder: {
+          id: await did.helper().didToLongForm(options.holder as DIDDocument)
+        } as any,
         context: options.context,
         type: options.type
       }) as CommonUnsignedPresentation<C, H>
+    },
+
+    signPresentation: async<
+      C extends CommonCredentail = CommonCredentail,
+      H extends CommonPresentationHolder = CommonPresentationHolder
+    >(
+      unsignedPresentation: CommonUnsignedPresentation<C, H>,
+      holder: DIDDocument,
+      key: CommonCryptoKey,
+      options?: CommonSignPresentationOptions
+    ) => {
+      if (!key.pk) {
+        throw new Error(COMMON_CRYPTO_ERROR_NOPK)
+      }
+
+      return await buildVPV1({
+        unsigned: unsignedPresentation,
+        holder: {
+          did: holder.id,
+          keyId: key.fragment || 'publicKey-1',
+          privateKey: key.pk,
+          publicKey: key.pubKey
+        },
+        documentLoader,
+        getSignSuite: (options) => {
+          console.log(options)
+
+          return crypto.buildSignSuite({
+            publicKey: <string>options.publicKey,
+            privateKey: options.privateKey,
+            id: `${options.controller}#${options.keyId}`,
+            controller: options.controller
+          })
+        },
+        getProofPurposeOptions: async () => ({
+          challenge: options?.challange || unsignedPresentation.id || basicHelper.makeRandomUuid(),
+          domain: options?.domain || holder.id
+        }),
+      }) as CommonPresentation<C, H>
     }
   }
 }

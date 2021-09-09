@@ -5,6 +5,7 @@ import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "../t
 import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
 
 import util from 'util'
+import { buildDidRegistryWarpper } from ".."
 util.inspect.defaultOptions.depth = 8
 
 
@@ -15,8 +16,9 @@ const testContext: {
 
 describe('DID Helper', () => {
   const didHelper = buildDidHelper(nodeCryptoHelper)
+  buildDidRegistryWarpper(didHelper)
 
-  it('Creates DID Id', async () => {
+  it('creates DID Id', async () => {
     const key = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
     const id = didHelper.makeDIDId(key)
     const described = id.split(':')
@@ -26,7 +28,7 @@ describe('DID Helper', () => {
     expect(typeof described[2]).toBe('string')
   })
 
-  it('Creates a DID Document', async () => {
+  it('creates a DID Document', async () => {
     const key = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
 
     const didDocUnsinged = await didHelper.createDID(key, {
@@ -42,17 +44,16 @@ describe('DID Helper', () => {
       id: expect.any(String),
       verificationMethod: [{
         id: expect.any(String),
+        nonce: expect.any(String),
         publicKeyBase58: expect.any(String),
-        controller: expect.anything()
+        controller: expect.any(String),
       }],
       assertionMethod: [
         expect.any(String)
       ],
       proof: {
-        controller: expect.any(String),
-        nonce: expect.any(String),
         created: expect.any(String),
-        signature: expect.any(String),
+        jws: expect.any(String),
         verificationMethod: expect.any(String),
       },
       publicKey: [{
@@ -62,16 +63,16 @@ describe('DID Helper', () => {
     })
   })
 
-  it('Verifies DID Document from itself', async () => {
+  it('verifies DID Document from itself', async () => {
     if (!testContext.didDoc) {
       throw new Error('No DID doc from pervious test')
     }
-    const result = didHelper.verifyDID(testContext.didDoc)
+    const result = await didHelper.verifyDID(testContext.didDoc)
 
     expect(result).toBe(true)
   })
 
-  it('Produces holder / controller verifiable did', async () => {
+  it('produces holder / controller verifiable did', async () => {
     const aliceKey = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
     aliceKey.nextKeyDigest = 'nkdigest-simulation'
     const bobKey = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
@@ -84,19 +85,20 @@ describe('DID Helper', () => {
     })
 
     const didDoc = await didHelper.signDID(bobKey, didDocUnsinged)
+
     testContext.holderDoc = didDoc
   })
 
-  it('Verifies holder veriable did', async () => {
+  it('verifies holder veriable did', async () => {
     if (!testContext.holderDoc) {
       throw new Error('No DID doc from pervious test')
     }
-    const result = didHelper.verifyDID(testContext.holderDoc)
+    const result = await didHelper.verifyDID(testContext.holderDoc)
 
     expect(result).toBe(true)
   })
 
-  it('Fails on tempered data', async () => {
+  it('fails on tempered data', async () => {
     if (!testContext.holderDoc) {
       throw new Error('No DID doc from pervious test')
     }
@@ -104,10 +106,10 @@ describe('DID Helper', () => {
     const brokenDoc = <DIDDocument>JSON.parse(JSON.stringify(testContext.holderDoc))
     if (brokenDoc.verificationMethod && brokenDoc.verificationMethod[0]
       && typeof brokenDoc.verificationMethod[0] === 'object'
-      && typeof brokenDoc.verificationMethod[0].subjectSignature === 'object') {
-      brokenDoc.verificationMethod[0].subjectSignature.created = new Date().toUTCString()
+      && typeof brokenDoc.verificationMethod[0].proof === 'object') {
+      brokenDoc.verificationMethod[0].proof.created = new Date().toUTCString()
     }
-    const result = didHelper.verifyDID(brokenDoc)
+    const result = await didHelper.verifyDID(brokenDoc)
 
     expect(result).toBe(false)
   })

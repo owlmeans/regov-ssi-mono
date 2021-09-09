@@ -18,7 +18,7 @@ describe('Wallet', () => {
     seed: 'CGETek79CLUkP9vB48Tnj7VEqiWTmD46RScExYGieiE2'
   }
 
-  it('Creates store', async () => {
+  it('creates store', async () => {
     const wallet = _ctx.wallet = await buildWalletWrapper(nodeCryptoHelper, '11111111', {
       alias: 'current',
       name: 'Some name'
@@ -27,7 +27,7 @@ describe('Wallet', () => {
     expect(wallet.store.alias).toBe('current')
   })
 
-  it('Exports store', async () => {
+  it('exports store', async () => {
     if (!_ctx.wallet) {
       throw new Error('No wallet from pervious test')
     }
@@ -37,7 +37,7 @@ describe('Wallet', () => {
     expect(store.alias).toBe('current')
   })
 
-  it('Imports store back', async () => {
+  it('imports store back', async () => {
     if (!_ctx.store) {
       throw new Error('No store from pervious test')
     }

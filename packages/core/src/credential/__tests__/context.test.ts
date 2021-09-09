@@ -4,27 +4,31 @@ import { buildCommonContext } from "../context"
 import { CommonContext } from "../context/types"
 import { Credential, UnsignedCredentail } from "../types"
 import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
-import { 
-  buildDidHelper, 
-  buildDidRegistryWarpper, 
-  DIDDocument, 
-  DIDPURPOSE_ASSERTION, 
-  DIDPURPOSE_VERIFICATION 
+import {
+  buildDidHelper,
+  buildDidRegistryWarpper,
+  DIDDocument,
+  DIDPURPOSE_ASSERTION,
+  DIDPURPOSE_AUTHENTICATION,
+  DIDPURPOSE_VERIFICATION
 } from "@owlmeans/regov-ssi-did"
 import { buildKeyChain } from "../../keys/model"
 
 import util from 'util'
+import { Presentation, UnsignedPresentation } from "../types"
 util.inspect.defaultOptions.depth = 8
 
 
-const testContext: {
-  commonContext?: CommonContext
-  unsignedCredential?: UnsignedCredentail
-  signedCredential?: Credential
+const test: {
+  ctx?: CommonContext
+  unsigned?: UnsignedCredentail
+  credential?: Credential
+  unsignedP?: UnsignedPresentation
+  presentation?: Presentation
 } = {}
 
 beforeAll(async () => {
-  testContext.commonContext = await buildCommonContext({
+  test.ctx = await buildCommonContext({
     keys: await buildKeyChain({
       password: '11111111',
       crypto: nodeCryptoHelper
@@ -34,14 +38,14 @@ beforeAll(async () => {
   })
 })
 
-describe('Credential Model', () => {
-  it('Creates Credentail', async () => {
-    if (!testContext.commonContext) {
+describe('Credential Context', () => {
+  it('creates Credentail', async () => {
+    if (!test.ctx) {
       throw 'Setup didn\'t provide CommonContext'
     }
 
-    const didWrapper = testContext.commonContext.did
-    const keys = testContext.commonContext.keys
+    const didWrapper = test.ctx.did
+    const keys = test.ctx.keys
 
     const subject = {
       data: {
@@ -52,20 +56,23 @@ describe('Credential Model', () => {
 
     const key = await keys.getCryptoKey()
     const didUnsigned = await didWrapper.helper().createDID(
-      key, {
+      key,
+      {
         data: JSON.stringify(subject),
         hash: true,
-        purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION]
+        purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
       }
     )
 
     const did = await didWrapper.helper().signDID(key, didUnsigned)
+    expect(await didWrapper.helper().verifyDID(did)).toBe(true)
+
     didWrapper.addDID(did)
 
-    const unsingnedCredentail = await testContext.commonContext.buildCredential({
+    const unsingnedCredentail = await test.ctx.buildCredential({
       id: did.id,
       type: ['VerifiableCredential', 'TestCredential'],
-      holder: did.proof.controller,
+      holder: didWrapper.helper().extractProofController(did),
       context: {
         '@version': 1.1,
         meta: 'https://meta-id.meta-belarus.org/vc-schema#',
@@ -80,7 +87,7 @@ describe('Credential Model', () => {
       subject
     })
 
-    testContext.unsignedCredential = unsingnedCredentail
+    test.unsigned = unsingnedCredentail
     expect(unsingnedCredentail).toMatchSnapshot({
       id: expect.any(String),
       holder: {
@@ -90,28 +97,29 @@ describe('Credential Model', () => {
     })
   })
 
-  it('Signs Credential', async () => {
-    if (!testContext.commonContext) {
+  it('signs Credential', async () => {
+    if (!test.ctx) {
       throw 'Setup didn\'t provide CommonContext'
     }
-    if (!testContext.unsignedCredential) {
+    if (!test.unsigned) {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
 
-    const didWrapper = testContext.commonContext.did
-    const keys = testContext.commonContext.keys
+    const didWrapper = test.ctx.did
+    const keys = test.ctx.keys
 
-    const did = <DIDDocument>await didWrapper.lookUpDid(testContext.unsignedCredential.id)
-    const key = await didWrapper.extractKey(`${did.proof.controller}#${DIDPURPOSE_ASSERTION}-1`)
+    const did = <DIDDocument>await didWrapper.lookUpDid(test.unsigned.id)
+    const controller = didWrapper.helper().extractProofController(did)
+    const key = await didWrapper.extractKey(controller)
     await keys.expandKey(key)
 
-    const credentail = await testContext.commonContext.signCredential(
-      testContext.unsignedCredential,
-      did.proof.controller,
+    const credentail = await test.ctx.signCredential(
+      test.unsigned,
+      controller,
       await keys.getCryptoKey()
     )
 
-    testContext.signedCredential = credentail
+    test.credential = credentail
 
     expect(credentail).toMatchSnapshot({
       id: expect.any(String),
@@ -128,29 +136,28 @@ describe('Credential Model', () => {
     })
   })
 
-  it('Verifies Credential', async () => {
-    if (!testContext.commonContext) {
+  it('verifies Credential', async () => {
+    if (!test.ctx) {
       throw 'Setup didn\'t provide CommonContext'
     }
-    if (!testContext.signedCredential) {
+    if (!test.credential) {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
-    const didWrapper = testContext.commonContext.did
-    const did = <DIDDocument>await didWrapper.lookUpDid(testContext.signedCredential.id)
+    const didWrapper = test.ctx.did
+    const did = <DIDDocument>await didWrapper.lookUpDid(test.credential.id)
+    const controller = didWrapper.helper().extractProofController(did)
+    const key = await didWrapper.extractKey(controller)
 
-    const [result] = await testContext.commonContext.verifyCredential(
-      testContext.signedCredential,
-      await didWrapper.extractKey(did.id)
-    )
+    const [result, _] = await test.ctx.verifyCredential(test.credential, key)
 
     expect(result).toBe(true)
   })
 
-  it('Fails with the key of another issuer key', async () => {
-    if (!testContext.commonContext) {
+  it('fails with the key of another issuer key', async () => {
+    if (!test.ctx) {
       throw 'Setup didn\'t provide CommonContext'
     }
-    if (!testContext.signedCredential) {
+    if (!test.credential) {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
 
@@ -164,38 +171,38 @@ describe('Credential Model', () => {
     })
     const cryptoKey = await anotherContext.keys.getCryptoKey()
 
-    const [result] = await testContext.commonContext.verifyCredential(
-      testContext.signedCredential,
+    const [result] = await test.ctx.verifyCredential(
+      test.credential,
       cryptoKey
     )
 
     expect(result).toBe(false)
   })
 
-  it('Fails with new issuer key', async () => {
-    if (!testContext.commonContext) {
+  it('fails with new issuer key', async () => {
+    if (!test.ctx) {
       throw 'Setup didn\'t provide CommonContext'
     }
-    if (!testContext.signedCredential) {
+    if (!test.credential) {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
 
-    await testContext.commonContext.keys.createKey('newKey')
-    const cryptoKey = await testContext.commonContext.keys.getCryptoKey('newKey')
+    await test.ctx.keys.createKey('newKey')
+    const cryptoKey = await test.ctx.keys.getCryptoKey('newKey')
 
-    const [result] = await testContext.commonContext.verifyCredential(
-      testContext.signedCredential,
+    const [result] = await test.ctx.verifyCredential(
+      test.credential,
       cryptoKey
     )
 
     expect(result).toBe(false)
   })
 
-  it('Doesn\'t allow to temper subject', async () => {
-    if (!testContext.commonContext) {
+  it('doesn\'t allow to temper subject', async () => {
+    if (!test.ctx) {
       throw 'Setup didn\'t provide CommonContext'
     }
-    if (!testContext.signedCredential) {
+    if (!test.credential) {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
 
@@ -204,40 +211,87 @@ describe('Credential Model', () => {
         '@type': string,
         worker: string
       }
-    }>>{ ...testContext.signedCredential }
+    }>>{ ...test.credential }
     newCredential.credentialSubject = { ...newCredential.credentialSubject }
     newCredential.credentialSubject.data = { ...newCredential.credentialSubject.data }
 
     newCredential.credentialSubject.data.worker = `${newCredential.credentialSubject.data.worker}_`
 
-    const [result] = await testContext.commonContext.verifyCredential(
+    const [result] = await test.ctx.verifyCredential(
       newCredential,
-      await testContext.commonContext.keys.getCryptoKey()
+      await test.ctx.keys.getCryptoKey()
     )
 
     expect(result).toBe(false)
   })
 
-  it('Creates unsigned verifiable presentation', async () => {
-    if (!testContext.commonContext) {
+  it('creates unsigned verifiable presentation', async () => {
+    if (!test.ctx) {
       throw 'Setup didn\'t provide CommonContext'
     }
-    if (!testContext.signedCredential) {
+    if (!test.credential) {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
 
-    const didWrapper = testContext.commonContext.did
+    const didWrapper = test.ctx.did
     // In test we take did document of the credential itself
-    const did = <DIDDocument>await didWrapper.lookUpDid(testContext.signedCredential.holder.id)
+    const did = <DIDDocument>await didWrapper.lookUpDid(test.credential.holder.id)
 
-    const vp = await testContext.commonContext?.buildPresentation(
-      [testContext.signedCredential],
+    const vp = await test.ctx?.buildPresentation(
+      [test.credential],
       {
         holder: did,
         type: 'TestPresentation'
       }
     )
 
-    console.log(vp)
+    test.unsignedP = vp
+
+    expect(vp).toMatchSnapshot(
+      {
+        id: expect.any(String),
+        holder: {
+          id: expect.any(String)
+        },
+        verifiableCredential: [
+          {
+            holder: {
+              id: expect.any(String),
+            },
+            id: expect.any(String),
+            issuanceDate: expect.any(String),
+            issuer: expect.any(String),
+            proof: {
+              created: expect.any(String),
+              jws: expect.any(String),
+              verificationMethod: expect.any(String),
+            }
+          },
+        ]
+      }
+    )
+  })
+
+  it('signs verifiable presentation', async () => {
+    if (!test.ctx) {
+      throw 'Setup didn\'t provide CommonContext'
+    }
+    if (!test.unsignedP) {
+      throw 'Previous test didn\'t provide UnsingedPresentation'
+    }
+    const did = <DIDDocument>await test.ctx.did.lookUpDid(test.unsignedP.holder.id)
+    if (!did) {
+      throw 'No related did in registry'
+    }
+
+    const controller = test.ctx.did.helper().extractProofController(did)
+    const key = await test.ctx.did.extractKey(`${controller}#${DIDPURPOSE_AUTHENTICATION}-1`)
+    await test.ctx.keys.expandKey(key)
+
+    // console.log(test.unsignedP)
+
+    const vp = await test.ctx.signPresentation(test.unsignedP, did, key)
+
+    // console.log(vp)
   })
 })

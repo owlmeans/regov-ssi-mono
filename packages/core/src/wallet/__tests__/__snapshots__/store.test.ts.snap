@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Wallet Imports store back 1`] = `
+exports[`Wallet imports store back 1`] = `
 Object {
   "keyChain": Object {
     "defaultKey": "_identity",

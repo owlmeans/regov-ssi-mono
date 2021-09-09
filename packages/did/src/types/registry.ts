@@ -27,3 +27,5 @@ export type DIDRegistryWrapper = {
 }
 
 export type AddDIDMethod = (did: DIDDocument, key?: string) => void
+
+export const DID_REGISTRY_ERROR_NO_KEY_BY_DID = 'DID_REGISTRY_ERROR_NO_KEY_BY_DID'

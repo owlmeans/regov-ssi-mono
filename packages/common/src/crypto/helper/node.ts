@@ -81,8 +81,8 @@ export const nodeCryptoHelper: CryptoHelper = {
   buildSignSuite: (options) => new Secp256k1Signature({
     key: new Secp256k1Key({
       ...options,
-      privateKeyHex: Buffer.from(_base58().decode(options.privateKey)).toString('hex'),
-      publicKeyHex: Buffer.from(_base58().decode(options.publicKey)).toString('hex'),
+      privateKeyHex: options.privateKey && Buffer.from(_base58().decode(options.privateKey)).toString('hex'),
+      publicKeyHex: options.publicKey && Buffer.from(_base58().decode(options.publicKey)).toString('hex'),
     })
   }),
 

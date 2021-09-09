@@ -20,14 +20,28 @@ import {
   DIDVerificationItem,
   didPurposeList,
   ParseDIDIdMethod,
+  DID_ERROR_VERIFICATION_METHOD_LOOKUP,
+  DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD,
+  BuildDocumentLoader,
 } from './types'
 
+const jldsign = require('jsonld-signatures')
+
+const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
+const SIGNATURE_METHOD = 'EcdsaSecp256k1Signature2019'
+
 /**
- * @TODO Verify DID fylly:
+ * @TODO Verify DID fully:
  * 1. Verify that ids produces correctly
  */
 export const buildDidHelper =
   (crypto: CryptoHelper, didPrefix = DEFAULT_DID_PREFIX): DIDHelper => {
+    let __buildDocumentLoader: BuildDocumentLoader | undefined
+
+    const _buildDocumentLoader = (didDoc: DIDDocument | DIDDocumentUnsinged) => {
+      return __buildDocumentLoader && __buildDocumentLoader(() => didDoc)
+    }
+
     const _makeDIDId = (key: CommonCryptoKey, options: MakeDIDIdOptions = {}) => {
       if (!key.id) {
         throw new Error(COMMON_CRYPTO_ERROR_NOID)
@@ -42,155 +56,108 @@ export const buildDidHelper =
         }`
     }
 
-    const _unsingDoc = (did: any): DIDDocumentUnsinged => {
-      const newDoc = JSON.parse(JSON.stringify(did))
-      delete newDoc.proof
-
-      return newDoc
-    }
-
-    const _didDocToSigningSuffix = (didDoc: DIDDocumentUnsinged | DIDDocument): string => {
-      let unsingedDoc: DIDDocumentUnsinged = didDoc
-      if (unsingedDoc.hasOwnProperty('proof')) {
-        unsingedDoc = _unsingDoc(unsingedDoc)
-      }
-
-      return crypto.hash(JSON.stringify(unsingedDoc))
-    }
-
     const _buildKeyPayload = (key: string) => {
-      return {
-        publicKeyBase58: key,
-        /* publicKeyHex: Buffer.from(
-          crypto.base58().decode(key)
-        ).toString('hex') */
-      }
-    }
-
-    const _makeDIDProofSignature = (key: CommonCryptoKey, id: string, nonce: string, date: string, didDoc: DIDDocumentUnsinged) => {
-      if (!key.pk) {
-        throw new Error(COMMON_CRYPTO_ERROR_NOPK)
-      }
-
-      return crypto.sign(`${date}:${nonce}:${_didDocToSigningSuffix(didDoc)}:${id}`, key.pk)
+      return { publicKeyBase58: key }
     }
 
     /**
-     * @TODO Implement clean up of extra proofs in the verification cycle
-     * Right now the controller can't add it's own methods, otherwithe subject
-     * verification will fail.
+     * @TODO Check listed purposes that they have proper stucture and ids 
+     * in did document
      */
-    const _verifySubjectSignature = (didDoc: DIDDocument): boolean => {
+    const _verifySubjectSignature = async (didDoc: DIDDocument): Promise<boolean> => {
       if (!didDoc.verificationMethod) {
         return true
       }
 
-      const newDidDoc = _unsingDoc(didDoc)
+      /** 
+       * @TODO It can verify multiple signed verificationMethods, 
+       * but only one can be created for now.
+       */
+      return await didDoc.verificationMethod.reduce(async (_result: Promise<boolean>, verification) => {
+        const result = await _result
+        if (!result) return false
 
-      if (newDidDoc.verificationMethod) {
-        const controllerVerification = newDidDoc.verificationMethod?.findIndex(
-          verification => didDoc.proof.verificationMethod === (
-            typeof verification === 'string' ? verification : verification.id
-          )
-        )
-        if (controllerVerification !== undefined && controllerVerification > -1) {
-          newDidDoc.verificationMethod.splice(controllerVerification, 1)
-        }
-
-        const pkIdx = newDidDoc.publicKey.findIndex(pubkey => {
-          const parsedPubKey = _parseDIDId(pubkey.id)
-          return parsedPubKey.did === didDoc.proof.controller
-        })
-        if (typeof pkIdx === 'number' && pkIdx > -1) {
-          newDidDoc.publicKey.splice(pkIdx, 1)
-        }
-      }
-
-      return -1 === didDoc.verificationMethod.filter((verification) => {
-        if (typeof verification === 'object') {
-          if (verification.subjectSignature) {
-            return true
-          }
-        }
-      }).sort((verA, verB) => {
-        const [verAExplained, verBExplained] = [verA, verB].map(
-          ver => _parseDIDId(typeof ver === 'object' ? <string>ver.id : ver)
-        ).map(ver => {
-          if (ver.fragment) {
-            const [, idx] = ver.fragment.split('-')
-            if (!idx) {
-              return 0
+        if (typeof verification === 'object' && verification.proof) {
+          try {
+            const res = await jldsign.verify(
+              verification,
+              {
+                suite: crypto.buildSignSuite({
+                  publicKey: verification.publicKeyBase58,
+                  privateKey: '',
+                  id: `${verification.proof.verificationMethod}`,
+                  controller: `${verification.controller}`
+                }),
+                documentLoader: _buildDocumentLoader(didDoc),
+                purpose: new jldsign.purposes.PublicKeyProofPurpose({
+                  controller: didDoc
+                }),
+                compactProof: false,
+              }
+            )
+            if (res.verified) {
+              return true
+            } else {
+              console.log(res)
             }
-            return parseInt(idx)
+          } catch (e) {
+            console.log(e)
           }
-          return 0
-        })
-
-        return verBExplained - verAExplained
-      }).map(verification => {
-        const idx = newDidDoc.verificationMethod?.findIndex(
-          _verification => typeof _verification === 'string'
-            || typeof verification === 'string'
-            ? _verification === verification
-            : _verification.id === verification.id
-        )
-        if (newDidDoc.verificationMethod && idx !== undefined && idx > -1) {
-          newDidDoc.verificationMethod[idx] = typeof verification === 'string'
-            ? verification
-            : {
-              id: verification.id,
-              controller: verification.controller,
-              type: 'EcdsaSecp256k1VerificationKey2019',
-              ..._buildKeyPayload(verification.publicKeyBase58),
-            }
-          if (typeof verification !== 'object' || !verification.subjectSignature) {
-            return true
-          }
-
-          const subjectSignature = verification.subjectSignature
-          if (!newDidDoc.verificationMethod) {
-            return false
-          }
-          const method = newDidDoc.verificationMethod.find(
-            method =>
-              typeof method === 'object' ? subjectSignature.controller === method.controller : false
-          )
-          if (!method || typeof method === 'string') {
-            return false
-          }
-
-          return crypto.verify(
-            subjectSignature.signature,
-            `${subjectSignature.created}:${subjectSignature.nonce}:${_didDocToSigningSuffix(newDidDoc)}:${newDidDoc.id}`,
-            method.publicKeyBase58
-          )
+          return false
         }
-      }).findIndex(result => !result)
+
+        return true
+      }, Promise.resolve(true))
     }
 
-    const _verifyDIDProofSignature = (didDoc: DIDDocument, key?: CommonCryptoKey) => {
-      if (!key?.pubKey) {
-        if (!didDoc.proof.verificationMethod) {
-          throw new Error(DID_ERROR_NOVERIFICATION_METHOD)
-        }
-        const proofDid = _parseDIDId(didDoc.proof.verificationMethod)
+    const _extractProofController = (did: DIDDocument) => {
+      if (!did.proof.verificationMethod) {
+        throw new Error(DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD)
+      }
+      const method = _expandVerificationMethod(did, did.proof.verificationMethod)
+      if (!method.controller) {
+        return _parseDIDId(did.proof.verificationMethod).did
+      }
+
+      return method.controller
+    }
+
+    const _expandVerificationMethod
+      = (didDoc: DIDDocument, method: string): DIDVerificationItem => {
+        const proofDid = _parseDIDId(method)
         if (!proofDid.fragment) {
           throw new Error(DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS)
         }
 
-        const [source]: DIDDocumentPurpose[] = <DIDDocumentPurpose[]>proofDid.fragment.split('-')
+        const [source, index]: DIDDocumentPurpose[]
+          = <DIDDocumentPurpose[]>proofDid.fragment.split('-')
         if (!didDoc[source]) {
           throw new Error(DID_ERROR_NOVERIFICATION_METHOD)
         }
-        const method = <DIDVerificationItem>didDoc[source]?.find(
-          method => {
-            if (typeof method === 'string') {
-              return false
+        const methodToExpand = <DIDVerificationItem>didDoc[source]?.find(
+          (_method, idx) => {
+            if (typeof _method === 'string') {
+              return idx + 1 === parseInt(index)
             }
 
-            return method.id === didDoc.proof.verificationMethod
+            return _method.id === method
           }
         )
+        return typeof methodToExpand === 'string'
+          ? _expandVerificationMethod(didDoc, methodToExpand)
+          : methodToExpand
+      }
+
+    const _verifyDIDProofSignature = async (didDoc: DIDDocument, key?: CommonCryptoKey) => {
+      if (!didDoc.proof?.verificationMethod) {
+        console.log('No proof or verification method')
+        return false
+      }
+      if (!key?.pubKey) {
+        if (!didDoc.proof.verificationMethod) {
+          throw new Error(DID_ERROR_NOVERIFICATION_METHOD)
+        }
+        const method = _expandVerificationMethod(didDoc, didDoc.proof.verificationMethod)
 
         if (method?.publicKeyBase58) {
           key = {
@@ -203,17 +170,53 @@ export const buildDidHelper =
         throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
       }
 
-      return _verifySubjectSignature(didDoc) && crypto.verify(
-        didDoc.proof.signature,
-        `${didDoc.proof.created}:${didDoc.proof.nonce}:${_didDocToSigningSuffix(didDoc)}:${didDoc.id}`,
-        key.pubKey
-      )
+      try {
+        const controller = _extractProofController(didDoc)
+        const method = _expandVerificationMethod(didDoc, didDoc.proof.verificationMethod)
+        if (!method.id) {
+          throw new Error(DID_ERROR_VERIFICATION_METHOD_LOOKUP)
+        }
+
+        const res = await jldsign.verify(
+          didDoc,
+          {
+            suite: crypto.buildSignSuite({
+              publicKey: key.pubKey,
+              privateKey: '',
+              id: method.id,
+              controller
+            }),
+            documentLoader: _buildDocumentLoader(didDoc),
+            purpose: didDoc.proof.proofPurpose
+              ? new jldsign.purposes.ControllerProofPurpose(
+                {
+                  controller: didDoc,
+                  term: didDoc.proof.proofPurpose,
+                }
+              )
+              : new jldsign.purposes.PublicKeyProofPurpose({
+                controller: didDoc
+              }),
+            compactProof: false,
+          }
+        )
+        if (res.verified) {
+          return await _verifySubjectSignature(didDoc)
+        }
+        console.log(res)
+      } catch (e) {
+        console.log(e)
+      }
+      return false
     }
 
     const _parseDIDId: ParseDIDIdMethod = (id) => {
       const [noFragmentId, fragment] = id.split('#')
       const [noQueryId, query] = noFragmentId.split('?')
       const [, method, cleanId, ...others] = noQueryId.split(':')
+      const [purpose, keyIdx] = (
+        (items) => items && items.length > 0 ? items : [undefined, undefined]
+      )(fragment?.split('-', 2))
 
       return {
         did: noFragmentId || id,
@@ -221,7 +224,11 @@ export const buildDidHelper =
         id: cleanId,
         query,
         fragment,
-        ...(others.length > 0 ? { subjectId: others.join(':') } : {})
+        ...(others.length > 0 ? { subjectId: others.join(':') } : {}),
+        ...(keyIdx ? {
+          purpose,
+          keyIdx: parseInt(keyIdx)
+        } : {})
       }
     }
 
@@ -240,14 +247,16 @@ export const buildDidHelper =
           throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
         }
 
-        memo[purpose] = [purpose !== DIDPURPOSE_VERIFICATION
-          ? `${params.controller}#publicKey-${params.keyIdx}`
-          : {
+        memo[purpose] = [...(purpose !== DIDPURPOSE_VERIFICATION
+          ? [
+            `${params.controller}#publicKey-${params.keyIdx}`,
+          ]
+          : [{
             id: `${params.id}#${purpose}-${params.keyIdx}`,
             controller: params.controller,
-            type: 'EcdsaSecp256k1VerificationKey2019',
+            type: VERIFICATION_METHOD,
             ..._buildKeyPayload(params.key.pubKey)
-          }]
+          }])]
 
         return memo
       }, {})
@@ -259,8 +268,6 @@ export const buildDidHelper =
 
     return {
       makeDIDId: _makeDIDId,
-
-      makeDIDProofSignature: _makeDIDProofSignature,
 
       verifyDID: _verifyDIDProofSignature,
 
@@ -286,9 +293,10 @@ export const buildDidHelper =
             verifications = []
           }
           const verification = {
-            id: `${didDocUnsigned.id}#${DIDPURPOSE_VERIFICATION}-`,
+            id: `${controller}#${DIDPURPOSE_VERIFICATION}-`,
             controller,
-            type: 'EcdsaSecp256k1VerificationKey2019', 
+            nonce,
+            type: VERIFICATION_METHOD,
             ..._buildKeyPayload(key.pubKey)
           }
           let addVerification = !verifications[0] || controller !== verifications[0].controller
@@ -305,8 +313,10 @@ export const buildDidHelper =
             }
           } else if (verifications[0] && controller === verifications[0].controller) {
             verificationIdx = 1
-            verifications[0] = {
-              ...verification,
+            verifications[0] = <DIDVerificationItem>{
+              ...Object.fromEntries(Object.entries(verification).filter(([key]) => {
+                return !['@context', 'proof'].includes(key)
+              })),
               id: `${verification.id}1`
             }
           }
@@ -348,7 +358,7 @@ export const buildDidHelper =
         }
         const publicKey = {
           id: `${controller}#publicKey-`,
-          type: 'EcdsaSecp256k1VerificationKey2019',
+          type: VERIFICATION_METHOD,
           ..._buildKeyPayload(key.pubKey)
         }
         if (didDocUnsigned.publicKey) {
@@ -361,30 +371,33 @@ export const buildDidHelper =
           didDocUnsigned.publicKey = [{ ...publicKey, id: `${publicKey.id}1` }]
         }
 
-        const signatureDate = new Date().toISOString()
-        const didDoc: DIDDocument = {
-          ...didDocUnsigned, proof: {
-            type: 'EcdsaSecp256k1Signature2019',
-            controller,
-            nonce,
-            created: signatureDate,
-            signature: _makeDIDProofSignature(
-              key,
-              didDocUnsigned.id,
-              nonce,
-              signatureDate,
-              didDocUnsigned
-            ),
-            verificationMethod: hasVerificationMethod
-              ? `${didDocUnsigned.id}#${DIDPURPOSE_VERIFICATION}-${verificationIdx}`
-              : `${controller}#publicKey-${publicKeyIdx}`
-          }
-        }
+        const keyId = hasVerificationMethod
+          ? `${DIDPURPOSE_VERIFICATION}-${verificationIdx}`
+          : `publicKey-${publicKeyIdx}`
 
-        return {
-          ...didDoc,
-          proof: didDoc.proof
-        }
+        return await jldsign.sign(
+          didDocUnsigned,
+          {
+            suite: await crypto.buildSignSuite({
+              publicKey: key.pubKey,
+              privateKey: <string>key.pk,
+              id: `${controller}#${keyId}`,
+              controller: controller
+            }),
+            documentLoader: _buildDocumentLoader(didDocUnsigned),
+            purpose: hasVerificationMethod
+              ? new jldsign.purposes.ControllerProofPurpose(
+                {
+                  term: DIDPURPOSE_VERIFICATION,
+                  controller: { id: controller }
+                },
+              )
+              : new jldsign.purposes.PublicKeyProofPurpose({
+                controller: { id: controller }
+              }),
+            compactProof: false,
+          }
+        )
       },
 
       createDID: async (key, options = {}) => {
@@ -415,28 +428,68 @@ export const buildDidHelper =
           }),
           publicKey: [{
             id: `${holder}#publicKey-1`,
-            type: 'EcdsaSecp256k1VerificationKey2019',
+            type: VERIFICATION_METHOD,
             ..._buildKeyPayload(key.pubKey)
           }],
         }
 
         if (didDocUnsigned[DIDPURPOSE_VERIFICATION]) {
-          const verification = (<DIDVerificationItem[]>didDocUnsigned[DIDPURPOSE_VERIFICATION])[0]
-          if (verification) {
-            const nonce = await _makeNonce(key)
-            const signatureDate = new Date().toISOString()
-            verification.subjectSignature = {
-              controller: holder,
-              type: 'EcdsaSecp256k1Signature2019',
-              nonce,
-              created: signatureDate,
-              originalPurposes: purposes,
-              signature: _makeDIDProofSignature(key, id, nonce, signatureDate, didDocUnsigned)
-            }
+          if (didDocUnsigned[DIDPURPOSE_VERIFICATION]?.length === 0) {
+            throw new SyntaxError('No verification method, while the section is presented')
+          }
+          const verifications = <DIDVerificationItem[]>didDocUnsigned[DIDPURPOSE_VERIFICATION]
+          if (verifications[0]) {
+            verifications[0] = await jldsign.sign(
+              {
+                '@context': ['https://w3id.org/did/v1', {
+                  '@version': 1.1,
+                  'xsd': 'https://www.w3.org/2009/XMLSchema/XMLSchema.xsd#',
+                  'did': 'https://w3id.org/security/v2',
+                  nonce: { '@id': 'did:nonce' , '@type': 'xsd:string' },
+                  publicKeyBase58: { '@id': 'did:publicKeyBase58' , '@type': 'xsd:string' },
+                  originalPurposes: { '@type': '@json', '@id': 'did:originalPurposes' },
+                  proof: { '@id': 'did:proof' }
+                }],
+                ...verifications[0],
+                nonce: await _makeNonce(key),
+                originalPurposes: purposes
+              },
+              {
+                suite: await crypto.buildSignSuite({
+                  publicKey: key.pubKey,
+                  privateKey: <string>key.pk,
+                  id: `${holder}#publicKey-1`,
+                  controller: holder
+                }),
+
+                documentLoader: _buildDocumentLoader(didDocUnsigned),
+                purpose: new jldsign.purposes.PublicKeyProofPurpose({
+                  controller: { id: holder }
+                }),
+                compactProof: false,
+              }
+            )
           }
         }
 
         return didDocUnsigned
+      },
+
+      didToLongForm: async (did) => {
+        const compressed = crypto.base58().encode(Buffer.from(
+          JSON.stringify(did),
+          'utf8'
+        ))
+
+        return `${did.id};${didPrefix}:initial-state=${compressed}`
+      },
+
+      extractProofController: _extractProofController,
+
+      expandVerificationMethod: _expandVerificationMethod,
+
+      setupDocumentLoader: (loader) => {
+        __buildDocumentLoader = loader
       }
     }
   }

@@ -28,6 +28,7 @@ export type CommonContext = {
   signCredential: CommonSignCredentialMethod
   verifyCredential: CommonVerfiyCredentailMethod
   buildPresentation: CommonBuildPresentationMethod
+  signPresentation: CommonSignPresentationMethod
 }
 
 export type CommonBuildCredentialMethod = <
@@ -85,7 +86,7 @@ export type CommonBuildPresentationOptions<
   > = {
     type?: string | string[]
     context?: CommonContextType
-    holder: Holder
+    holder: Holder | DIDDocument
   }
 
 export type CommonSignPresentationMethod = <
@@ -100,6 +101,8 @@ export type CommonSignPresentationMethod = <
 
 export type CommonSignPresentationOptions = {
   buildProofPurposeOptions?: () => Promise<Object>
+  challange?: string
+  domain?: string
 }
 
 export type CommonVerifyPresentationMethod = (
