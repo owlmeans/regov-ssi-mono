@@ -288,10 +288,35 @@ describe('Credential Context', () => {
     const key = await test.ctx.did.extractKey(`${controller}#${DIDPURPOSE_AUTHENTICATION}-1`)
     await test.ctx.keys.expandKey(key)
 
-    // console.log(test.unsignedP)
-
     const vp = await test.ctx.signPresentation(test.unsignedP, did, key)
 
-    // console.log(vp)
+    expect(vp).toMatchSnapshot({
+      id: expect.any(String),
+      holder: {
+        id: expect.any(String)
+      },
+      verifiableCredential: [
+        {
+          holder: {
+            id: expect.any(String),
+          },
+          id: expect.any(String),
+          issuanceDate: expect.any(String),
+          issuer: expect.any(String),
+          proof: {
+            created: expect.any(String),
+            jws: expect.any(String),
+            verificationMethod: expect.any(String),
+          }
+        },
+      ],
+      proof: {
+        jws: expect.any(String),
+        verificationMethod: expect.any(String),
+        challenge: expect.any(String) ,
+        domain: expect.any(String),
+        created: expect.any(String)
+      }
+    })
   })
 })

@@ -134,7 +134,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
         id: `urn:uuid:${basicHelper.makeRandomUuid()}`,
         vcs: [...credentails],
         holder: {
-          id: await did.helper().didToLongForm(options.holder as DIDDocument)
+          id: options.holder.id
         } as any,
         context: options.context,
         type: options.type
@@ -164,8 +164,6 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
         },
         documentLoader,
         getSignSuite: (options) => {
-          console.log(options)
-
           return crypto.buildSignSuite({
             publicKey: <string>options.publicKey,
             privateKey: options.privateKey,
