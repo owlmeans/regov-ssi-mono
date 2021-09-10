@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ssi-core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "It's core package for OwlMeans RegGov SSI",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -21,7 +21,7 @@
   "scripts": {
     "test": "jest",
     "build": "tsc -b",
-    "build:watch": "tsc -b -w", 
+    "build:watch": "tsc -b -w",
     "review": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/context.ts"
   },
   "bugs": {
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@affinidi/vc-common": "^1.4.1",
-    "@owlmeans/regov-ssi-common": "^0.1.0",
-    "@owlmeans/regov-ssi-did": "^0.1.0"
+    "@owlmeans/regov-ssi-common": "^0.2.0",
+    "@owlmeans/regov-ssi-did": "^0.2.0"
   }
 }
