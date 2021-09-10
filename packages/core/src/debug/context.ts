@@ -59,7 +59,7 @@ const _test = async () => {
   const unsingnedC = await ctx.buildCredential({
     id: did.id,
     type: ['VerifiableCredential', 'TestCredential'],
-    holder: <string>(<DIDVerificationItem[]>did.verificationMethod)[0].controller,
+    holder: ctx.did.helper().extractProofController(did),
     context: {
       '@version': 1.1,
       exam: 'https://example.org/vc-schema#',
@@ -84,7 +84,7 @@ const _test = async () => {
   const unsignedP = await ctx.buildPresentation(
     [credential],
     {
-      holder: <string>(<DIDVerificationItem[]>did.verificationMethod)[0].controller,
+      holder: ctx.did.helper().extractProofController(did), // <string>(<DIDVerificationItem[]>did.verificationMethod)[0].controller,
       type: 'TestPresentation'
     }
   )

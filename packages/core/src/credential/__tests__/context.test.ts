@@ -70,7 +70,7 @@ describe('Credential Context', () => {
     const unsingnedCredentail = await test.ctx.buildCredential({
       id: did.id,
       type: ['VerifiableCredential', 'TestCredential'],
-      holder: <string>(<DIDVerificationItem[]>did.verificationMethod)[0].controller,
+      holder: test.ctx.did.helper().extractProofController(did),
       context: {
         '@version': 1.1,
         exam: 'https://example.org/vc-schema#',
@@ -173,7 +173,7 @@ describe('Credential Context', () => {
     const vp = await test.ctx?.buildPresentation(
       [test.credential],
       {
-        holder: <string>(<DIDVerificationItem[]>did.verificationMethod)[0].controller,
+        holder: test.ctx.did.helper().extractProofController(did),
         type: 'TestPresentation'
       }
     )
