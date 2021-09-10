@@ -5,7 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "watch": "lerna run build:watch --parallel"
+    "watch": "lerna run build:watch --parallel",
+    "build": "lerna run build"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
