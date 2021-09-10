@@ -21,7 +21,8 @@
   "scripts": {
     "test": "jest",
     "build": "tsc -b",
-    "build:watch": "tsc -b -w"
+    "build:watch": "tsc -b -w", 
+    "review": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/context.ts"
   },
   "bugs": {
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"

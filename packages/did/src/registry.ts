@@ -1,7 +1,7 @@
-import { AddDIDMethod, DIDDocumentWrapper, DIDRegistry, DIDRegistryWrapper, DIDRegistryBundle, DID_REGISTRY_ERROR_NO_KEY_BY_DID } from "./types/registry"
-import { DIDDocumentPurpose, DIDDocument, DIDHelper, DIDPURPOSE_VERIFICATION, DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD } from "./types"
+import { AddDIDMethod, DIDDocumentWrapper, DIDRegistry, DIDRegistryWrapper, DIDRegistryBundle, DID_REGISTRY_ERROR_NO_KEY_BY_DID, LookUpDidMethod } from "./types/registry"
+import { DIDDocumentPurpose, DIDDocument, DIDHelper, DIDPURPOSE_VERIFICATION, DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD, DIDVerificationItem } from "./types"
 import { CommonCryptoKey } from "@owlmeans/regov-ssi-common"
-import { DIDPURPOSE_ASSERTION } from "."
+import { DIDPURPOSE_ASSERTION, DID_ERROR_VERIFICATION_METHOD_LOOKUP } from "."
 import { buildDocumentLoader } from "./loader"
 
 export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegistryBundle) =>
@@ -13,9 +13,7 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegis
 
     const { personal: _registry, peer: _peerRegistry } = registry
 
-    const _lookUpDid = async <T extends DIDDocumentWrapper | DIDDocument>(
-      did: string, wrapped?: boolean
-    ): Promise<T | undefined> => {
+    const _lookUpDid: LookUpDidMethod = async (did: string, wrapped?: true | undefined) => {
       const parsed = didHelper.parseDIDId(did)
 
       let didDocW = _registry.dids.find(
@@ -37,7 +35,7 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegis
         )
       }
 
-      return <T>(wrapped ? didDocW : didDocW?.did)
+      return (wrapped ? didDocW : didDocW?.did) as any
     }
 
     const _buildAddDIDMethod: (resitry: DIDRegistry) => AddDIDMethod =
@@ -53,38 +51,38 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegis
 
       lookUpDid: _lookUpDid,
 
-      extractKey: async (did) => {
-        const didW = <DIDDocumentWrapper>await _lookUpDid(did, true)
-        if (!didW) {
+      extractKey: async (did, keyId) => {
+        if (!keyId) {
+          keyId = `${DIDPURPOSE_VERIFICATION}-1`
+        }
+        if (keyId.split('-').length < 2) {
+          keyId = `${keyId}-1`
+        }
+        if (typeof did === 'string') {
+          did = <DIDDocument>await _lookUpDid(did)
+        }
+        
+        if (!did) {
           throw new Error(DID_REGISTRY_ERROR_NO_KEY_BY_DID)
         }
-        if (didW.key) {
-          throw new SyntaxError('WE NEED TO LOOKUP KEY FROM SOME PROVIDED METHOD')
-        }
 
-        const explained = didHelper.parseDIDId(did)
-        did = explained.fragment ? did : `${did}#${DIDPURPOSE_ASSERTION}-1`
-        
-        let verificationItem = didHelper.expandVerificationMethod(didW.did, did)
-
+        const verificationItem = didHelper.expandVerificationMethod(did, keyId)
         if (!verificationItem) {
-          throw Error(DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD)
-        }
-
-        if (!verificationItem.controller) {
-          verificationItem = didHelper.expandVerificationMethod(
-            didW.did, 
-            // @TODO Fix potential bug with unsequential keys adding
-            `${explained.did}#${DIDPURPOSE_VERIFICATION}-${explained.keyIdx || 1}`
-          )
+          return undefined
         }
 
         return {
-          id: verificationItem.controller,
+          id: ((verificationItem: DIDVerificationItem) => {
+            if (verificationItem.controller) {
+              return verificationItem.controller
+            }
+
+            return didHelper.parseDIDId(<string>verificationItem.id).did
+          })(verificationItem),
           pubKey: verificationItem.publicKeyBase58,
           nextKeyDigest: (nonce => nonce && nonce.length > 1 ? nonce[1] : undefined)
             (verificationItem.nonce?.split(':', 2)),
-          fragment: explained.fragment || `${DIDPURPOSE_ASSERTION}-1`
+          fragment: keyId
         }
       },
 

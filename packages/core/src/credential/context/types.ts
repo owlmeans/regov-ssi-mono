@@ -29,6 +29,7 @@ export type CommonContext = {
   verifyCredential: CommonVerfiyCredentailMethod
   buildPresentation: CommonBuildPresentationMethod
   signPresentation: CommonSignPresentationMethod
+  verifyPresentation: CommonVerifyPresentationMethod
 }
 
 export type CommonBuildCredentialMethod = <
@@ -55,8 +56,7 @@ export type CommonSignCredentialMethod = <
   Subject extends CommonCredentailSubject = CommonCredentailSubject
   >(
   unsingedCredential: CommonUnsignedCredential<Subject>,
-  issuer: string,
-  key: CommonCryptoKey,
+  issuer: DIDDocument,
   options?: CommonSignCredentialOptions
 ) =>
   Promise<CommonCredentail<Subject>>
@@ -64,11 +64,13 @@ export type CommonSignCredentialMethod = <
 export type CommonSignCredentialOptions = {
   controllerRole?: ControllerRole
   buildProofPurposeOptions?: () => Promise<Object>
+  keyId?: string
 }
 
 export type CommonVerfiyCredentailMethod = (
   credential: CommonCredentail,
-  key: CommonCryptoKey
+  did?: DIDDocument | string,
+  keyId?: string
 ) => Promise<[boolean, CommonVerificationResult]>
 
 export type CommonVerificationResult<Credential extends CommonCredentail = CommonCredentail> = Validatied<Credential>
@@ -95,7 +97,6 @@ export type CommonSignPresentationMethod = <
   >(
   unsignedPresentation: CommonUnsignedPresentation<Credential, Holder>,
   holder: DIDDocument,
-  key: CommonCryptoKey,
   options?: CommonSignPresentationOptions
 ) => Promise<CommonPresentation<Credential, Holder>>
 
@@ -103,11 +104,11 @@ export type CommonSignPresentationOptions = {
   buildProofPurposeOptions?: () => Promise<Object>
   challange?: string
   domain?: string
+  keyId?: string
 }
 
 export type CommonVerifyPresentationMethod = (
-  presentation: CommonPresentation,
-  key: CommonCryptoKey
+  presentation: CommonPresentation
 ) => Promise<[boolean, CommonVerifyPresentationResult]>
 
 export type CommonVerifyPresentationResult<

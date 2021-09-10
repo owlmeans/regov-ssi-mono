@@ -1,5 +1,5 @@
 
-import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, buildVPV1, buildVPV1Unsigned, validateVCV1 } from "@affinidi/vc-common"
+import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, buildVPV1, buildVPV1Unsigned, validateVCV1, validateVPV1 } from "@affinidi/vc-common"
 
 import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions } from "./context/types"
 import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./context/types/credential"
@@ -8,11 +8,12 @@ import {
   COMMON_CRYPTO_ERROR_NOPK,
   COMMON_CRYPTO_ERROR_NOPUBKEY,
   CommonCryptoKey,
-  basicHelper
+  basicHelper,
+  COMMON_CRYPTO_ERROR_NOKEY
 } from "@owlmeans/regov-ssi-common"
 import { CommonPresentation, CommonPresentationHolder, CommonUnsignedPresentation } from "./context/types/presentation"
 import { CommonBuildPresentationOptions, CommonSignPresentationOptions } from '.'
-import { DIDDocument, buildDocumentLoader } from "@owlmeans/regov-ssi-did"
+import { DIDDocument, buildDocumentLoader, DIDPURPOSE_AUTHENTICATION, DID_REGISTRY_ERROR_NO_DID, DIDPURPOSE_ASSERTION, DID_REGISTRY_ERROR_NO_KEY_BY_DID } from "@owlmeans/regov-ssi-did"
 
 /**
  * @TODO Sign and verify VC with nonce from did.
@@ -56,13 +57,15 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       S extends CommonCredentailSubject = CommonCredentailSubject
     >(
       unsingedCredential: CommonUnsignedCredential<S>,
-      issuer: string,
-      key: CommonCryptoKey,
+      issuer: DIDDocument,
       options?: CommonSignCredentialOptions
     ) => {
-      if (!key.id) {
-        throw new Error(COMMON_CRYPTO_ERROR_NOID)
+      const key = await did.extractKey(issuer, `${DIDPURPOSE_ASSERTION}-${options?.keyId || '1'}`)
+      if (!key) {
+        throw new Error(COMMON_CRYPTO_ERROR_NOKEY)
       }
+
+      await keys.expandKey(key)
       if (!key.pk) {
         throw new Error(COMMON_CRYPTO_ERROR_NOPK)
       }
@@ -71,12 +74,13 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
         return await buildVCV1({
           unsigned: unsingedCredential,
           issuer: {
-            did: issuer,
+            did: issuer.id,
             keyId: key.fragment || 'publicKey-1',
             privateKey: key.pk,
             publicKey: key.pubKey
           },
           getSignSuite: (options) => {
+            // console.log('Sign VC',options)
             return crypto.buildSignSuite({
               publicKey: <string>options.publicKey,
               privateKey: options.privateKey,
@@ -94,26 +98,40 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       }
     },
 
-    verifyCredential: async (credential, key: CommonCryptoKey) => {
+    verifyCredential: async (credential, didDoc, keyId) => {
+      if (!didDoc) {
+        didDoc = credential.issuer
+      }
+      if (typeof didDoc !== 'object') {
+        didDoc = await did.lookUpDid<DIDDocument>(didDoc)
+      }
+      if (!didDoc) {
+        throw new Error(DID_REGISTRY_ERROR_NO_DID)
+      }
+      const key = await did.extractKey(didDoc, `${DIDPURPOSE_ASSERTION}-${keyId || '1'}`)
+      if (!key) {
+        throw new Error(DID_REGISTRY_ERROR_NO_KEY_BY_DID)
+      }
+      
       const result = await validateVCV1({
         getVerifySuite: (options) => {
-          if (!key.id) {
-            throw new Error(COMMON_CRYPTO_ERROR_NOID)
-          }
           if (!key.pubKey) {
             throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
           }
-
+          if (typeof didDoc !== 'object') {
+            throw new Error(DID_REGISTRY_ERROR_NO_DID)
+          }
+          
           return crypto.buildSignSuite({
             publicKey: key.pubKey,
             privateKey: '',
-            controller: options.controller,
-            id: options.verificationMethod
+            controller: didDoc.id,
+            id: options.verificationMethod // key.id ? key.id : 
           })
         },
         getProofPurposeOptions: async () => {
           return {
-            controller: await did.lookUpDid(key.id as string)
+            controller: didDoc
           }
         },
         documentLoader
@@ -135,7 +153,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
         vcs: [...credentails],
         holder: {
           id: options.holder.id
-        } as any,
+        },
         context: options.context,
         type: options.type
       }) as CommonUnsignedPresentation<C, H>
@@ -147,9 +165,15 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     >(
       unsignedPresentation: CommonUnsignedPresentation<C, H>,
       holder: DIDDocument,
-      key: CommonCryptoKey,
       options?: CommonSignPresentationOptions
     ) => {
+      const keyId = `${DIDPURPOSE_AUTHENTICATION}-${options?.keyId || '1'}`
+      const key = await did.extractKey(holder, keyId)
+      if (!key) {
+        throw new Error(COMMON_CRYPTO_ERROR_NOKEY)
+      }
+
+      await keys.expandKey(key)
       if (!key.pk) {
         throw new Error(COMMON_CRYPTO_ERROR_NOPK)
       }
@@ -158,12 +182,13 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
         unsigned: unsignedPresentation,
         holder: {
           did: holder.id,
-          keyId: key.fragment || 'publicKey-1',
+          keyId: keyId,
           privateKey: key.pk,
           publicKey: key.pubKey
         },
         documentLoader,
         getSignSuite: (options) => {
+          // console.log('Sign VP',options)
           return crypto.buildSignSuite({
             publicKey: <string>options.publicKey,
             privateKey: options.privateKey,
@@ -176,6 +201,48 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
           domain: options?.domain || holder.id
         }),
       }) as CommonPresentation<C, H>
+    },
+
+    verifyPresentation: async (presentation) => {
+      const result = await validateVPV1({
+        documentLoader,
+        getVerifySuite: async (options) => {
+          const didId = did.helper().parseDIDId(options.verificationMethod)
+          const didDoc = await did.lookUpDid<DIDDocument>(didId.did)
+          if (!didDoc) {
+            throw new Error(DID_REGISTRY_ERROR_NO_DID)
+          }
+          
+          const key = await did.extractKey(didDoc, didId.fragment || `${DIDPURPOSE_AUTHENTICATION}-1`)
+          if (!key) {
+            throw new Error(DID_REGISTRY_ERROR_NO_KEY_BY_DID)
+          }
+          
+          if (!key.pubKey) {
+            throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
+          }
+          // console.log('VP / VC verify',options, key)
+          return crypto.buildSignSuite({
+            publicKey: key.pubKey,
+            privateKey: '',
+            controller: didId.did,
+            id: options.verificationMethod
+          })
+        },
+        getProofPurposeOptions: async (options) => {
+          const controller = <DIDDocument>await did.lookUpDid(options.controller)
+
+          return {
+            controller//: await did.lookUpDid(key.id as string)
+          }
+        }
+      })(presentation)
+
+      if (result.kind !== 'valid') {
+        return [false, result]
+      }
+
+      return [true, result]
     }
   }
 }

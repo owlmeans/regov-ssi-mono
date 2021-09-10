@@ -13,19 +13,24 @@ export type DIDRegistry = {
 export type DIDRegistryBundle = {
   personal: DIDRegistry
   peer: DIDRegistry
-} 
+}
 
 export type DIDRegistryWrapper = {
   registry: DIDRegistryBundle,
 
-  lookUpDid: <T extends DIDDocument| DIDDocumentWrapper>(did: string, wrapped?: boolean) => Promise<T | undefined>
+  lookUpDid: LookUpDidMethod
 
-  extractKey: (did: string) => Promise<CommonCryptoKey>
+  extractKey: (did: DIDDocument | string, keyId?: string) => Promise<CommonCryptoKey | undefined>
   addDID: AddDIDMethod
   addPeerDID: AddDIDMethod
   helper(): DIDHelper
 }
 
+export type LookUpDidMethod = <
+  T extends DIDDocumentWrapper | DIDDocument
+  >(did: string, wrapped?: true | undefined) => Promise<T | undefined>
+
 export type AddDIDMethod = (did: DIDDocument, key?: string) => void
 
 export const DID_REGISTRY_ERROR_NO_KEY_BY_DID = 'DID_REGISTRY_ERROR_NO_KEY_BY_DID'
+export const DID_REGISTRY_ERROR_NO_DID = 'DID_REGISTRY_ERROR_NO_DID'

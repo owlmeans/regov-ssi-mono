@@ -115,7 +115,7 @@ export const buildDidHelper =
         throw new Error(DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD)
       }
       const method = _expandVerificationMethod(did, did.proof.verificationMethod)
-      if (!method.controller) {
+      if (!method?.controller) {
         return _parseDIDId(did.proof.verificationMethod).did
       }
 
@@ -123,32 +123,45 @@ export const buildDidHelper =
     }
 
     const _expandVerificationMethod
-      = (didDoc: DIDDocument, method: string): DIDVerificationItem => {
-        const proofDid = _parseDIDId(method)
-        if (!proofDid.fragment) {
+      = (didDoc: DIDDocument, method: string): DIDVerificationItem | undefined => {
+        const isId = _isDIDId(method)
+        let fragment = isId ? _parseDIDId(method).fragment : method
+        if (!fragment) {
           throw new Error(DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS)
         }
 
-        const [source, index]: DIDDocumentPurpose[]
-          = <DIDDocumentPurpose[]>proofDid.fragment.split('-')
+        const [source, index] = <[DIDDocumentPurpose, string]>fragment.split('-')
+        if (!source) {
+          throw new Error(DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS)
+        }
         if (!didDoc[source]) {
           throw new Error(DID_ERROR_NOVERIFICATION_METHOD)
         }
-        const methodToExpand = <DIDVerificationItem>didDoc[source]?.find(
+        const methodToExpand = didDoc[source]?.find(
           (_method, idx) => {
-            if (typeof _method === 'string') {
+            if (!isId || typeof _method === 'string') {
               return idx + 1 === parseInt(index)
             }
 
             return _method.id === method
           }
         )
-        return typeof methodToExpand === 'string'
-          ? _expandVerificationMethod(didDoc, methodToExpand)
-          : methodToExpand
+
+        if (typeof methodToExpand === 'string') {
+          const parsedMethodToExpand = _parseDIDId(methodToExpand)
+          const [_, expandIdx] = <[DIDDocumentPurpose, string]>(
+            <string>parsedMethodToExpand.fragment
+          ).split('-');
+          return {
+            ...(<DIDVerificationItem[]>didDoc.publicKey)[parseInt(expandIdx) - 1],
+            id: methodToExpand
+          }
+        }
+
+        return methodToExpand
       }
 
-    const _verifyDIDProofSignature = async (didDoc: DIDDocument, key?: CommonCryptoKey) => {
+    const _verifyDID = async (didDoc: DIDDocument, key?: CommonCryptoKey) => {
       if (!didDoc.proof?.verificationMethod) {
         console.log('No proof or verification method')
         return false
@@ -172,8 +185,11 @@ export const buildDidHelper =
 
       try {
         const controller = _extractProofController(didDoc)
-        const method = _expandVerificationMethod(didDoc, didDoc.proof.verificationMethod)
-        if (!method.id) {
+        const method = _expandVerificationMethod(
+          didDoc,
+          <string>_parseDIDId(didDoc.proof.verificationMethod).fragment
+        )
+        if (!method?.id) {
           throw new Error(DID_ERROR_VERIFICATION_METHOD_LOOKUP)
         }
 
@@ -249,7 +265,7 @@ export const buildDidHelper =
 
         memo[purpose] = [...(purpose !== DIDPURPOSE_VERIFICATION
           ? [
-            `${params.controller}#publicKey-${params.keyIdx}`,
+            `${params.id}#${purpose}-${params.keyIdx}`,
           ]
           : [{
             id: `${params.id}#${purpose}-${params.keyIdx}`,
@@ -262,6 +278,8 @@ export const buildDidHelper =
       }, {})
     }
 
+    const _isDIDId = (id: string) => id.split(':').length > 2
+
     const _makeNonce = async (key: CommonCryptoKey) =>
       `${crypto.base58().encode(await crypto.getRandomBytes(8))
       }${key.nextKeyDigest ? `:${key.nextKeyDigest}` : ''}`
@@ -269,11 +287,11 @@ export const buildDidHelper =
     return {
       makeDIDId: _makeDIDId,
 
-      verifyDID: _verifyDIDProofSignature,
+      verifyDID: _verifyDID,
 
       parseDIDId: _parseDIDId,
 
-      isDIDId: (id: string) => id.split(':').length > 2,
+      isDIDId: _isDIDId,
 
       signDID: async (key, didDocUnsigned, purposes) => {
         if (!key.pubKey) {
@@ -288,12 +306,12 @@ export const buildDidHelper =
         let verificationIdx = 0
         let publicKeyIdx = 0
         if (hasVerificationMethod) {
-          let verifications = (<DIDVerificationItem[]>didDocUnsigned[DIDPURPOSE_VERIFICATION])
+          let verifications = <DIDVerificationItem[]>didDocUnsigned[DIDPURPOSE_VERIFICATION]
           if (!Array.isArray(verifications)) {
             verifications = []
           }
           const verification = {
-            id: `${controller}#${DIDPURPOSE_VERIFICATION}-`,
+            id: `${didDocUnsigned.id}#${DIDPURPOSE_VERIFICATION}-`,
             controller,
             nonce,
             type: VERIFICATION_METHOD,
@@ -357,7 +375,7 @@ export const buildDidHelper =
           }, didDocUnsigned)
         }
         const publicKey = {
-          id: `${controller}#publicKey-`,
+          id: `${didDocUnsigned.id}#publicKey-`,
           type: VERIFICATION_METHOD,
           ..._buildKeyPayload(key.pubKey)
         }
@@ -381,7 +399,7 @@ export const buildDidHelper =
             suite: await crypto.buildSignSuite({
               publicKey: key.pubKey,
               privateKey: <string>key.pk,
-              id: `${controller}#${keyId}`,
+              id: `${didDocUnsigned.id}#${keyId}`,
               controller: controller
             }),
             documentLoader: _buildDocumentLoader(didDocUnsigned),
@@ -427,7 +445,7 @@ export const buildDidHelper =
             keyIdx: '1'
           }),
           publicKey: [{
-            id: `${holder}#publicKey-1`,
+            id: `${id}#publicKey-1`,
             type: VERIFICATION_METHOD,
             ..._buildKeyPayload(key.pubKey)
           }],
@@ -445,8 +463,8 @@ export const buildDidHelper =
                   '@version': 1.1,
                   'xsd': 'https://www.w3.org/2009/XMLSchema/XMLSchema.xsd#',
                   'did': 'https://w3id.org/security/v2',
-                  nonce: { '@id': 'did:nonce' , '@type': 'xsd:string' },
-                  publicKeyBase58: { '@id': 'did:publicKeyBase58' , '@type': 'xsd:string' },
+                  nonce: { '@id': 'did:nonce', '@type': 'xsd:string' },
+                  publicKeyBase58: { '@id': 'did:publicKeyBase58', '@type': 'xsd:string' },
                   originalPurposes: { '@type': '@json', '@id': 'did:originalPurposes' },
                   proof: { '@id': 'did:proof' }
                 }],
@@ -458,7 +476,7 @@ export const buildDidHelper =
                 suite: await crypto.buildSignSuite({
                   publicKey: key.pubKey,
                   privateKey: <string>key.pk,
-                  id: `${holder}#publicKey-1`,
+                  id: `${id}#publicKey-1`,
                   controller: holder
                 }),
 

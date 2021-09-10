@@ -10,7 +10,7 @@ export type DIDHelper = {
   verifyDID: (did: DIDDocument, key?: CommonCryptoKey) => Promise<boolean>
   parseDIDId: ParseDIDIdMethod
   isDIDId: (id: string) => boolean
-  expandVerificationMethod: (didDoc: DIDDocument, method: string) => DIDVerificationItem
+  expandVerificationMethod: (didDoc: DIDDocument, method: string) => DIDVerificationItem | undefined
   setupDocumentLoader: (loader: BuildDocumentLoader) => void
 }
 
