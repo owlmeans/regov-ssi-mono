@@ -88,7 +88,7 @@ export type CommonBuildPresentationOptions<
   > = {
     type?: string | string[]
     context?: CommonContextType
-    holder: Holder | DIDDocument
+    holder: string
   }
 
 export type CommonSignPresentationMethod = <

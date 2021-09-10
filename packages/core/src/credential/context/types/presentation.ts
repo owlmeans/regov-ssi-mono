@@ -12,8 +12,6 @@ export type CommonPresentation<
   Holder extends CommonPresentationHolder = CommonPresentationHolder
   > = VPV1<Credential, VPV1Type, Holder>
 
-export type CommonPresentationHolder = VPV1Holder & {
-  did?: string
-}
+export type CommonPresentationHolder = VPV1Holder & {}
 
 export type CommonPresentationType = VPV1Type

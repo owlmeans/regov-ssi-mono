@@ -10,7 +10,8 @@ import {
   DIDDocument,
   DIDPURPOSE_ASSERTION,
   DIDPURPOSE_AUTHENTICATION,
-  DIDPURPOSE_VERIFICATION
+  DIDPURPOSE_VERIFICATION,
+  DIDVerificationItem
 } from "@owlmeans/regov-ssi-did"
 import { buildKeyChain } from "../../keys/model"
 
@@ -69,7 +70,7 @@ describe('Credential Context', () => {
     const unsingnedCredentail = await test.ctx.buildCredential({
       id: did.id,
       type: ['VerifiableCredential', 'TestCredential'],
-      holder: did.id,
+      holder: <string>(<DIDVerificationItem[]>did.verificationMethod)[0].controller,
       context: {
         '@version': 1.1,
         exam: 'https://example.org/vc-schema#',
@@ -172,7 +173,7 @@ describe('Credential Context', () => {
     const vp = await test.ctx?.buildPresentation(
       [test.credential],
       {
-        holder: did,
+        holder: <string>(<DIDVerificationItem[]>did.verificationMethod)[0].controller,
         type: 'TestPresentation'
       }
     )

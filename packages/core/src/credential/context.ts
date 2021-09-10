@@ -152,7 +152,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
         id: `urn:uuid:${basicHelper.makeRandomUuid()}`,
         vcs: [...credentails],
         holder: {
-          id: options.holder.id
+          id: options.holder
         },
         context: options.context,
         type: options.type
