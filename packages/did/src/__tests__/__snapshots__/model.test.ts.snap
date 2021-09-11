@@ -29,7 +29,6 @@ Object {
       "controller": Any<String>,
       "id": Any<String>,
       "nonce": Any<String>,
-      "publicKeyBase58": Any<String>,
       "type": "EcdsaSecp256k1VerificationKey2019",
     },
   ],

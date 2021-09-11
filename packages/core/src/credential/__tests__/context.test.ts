@@ -15,8 +15,8 @@ import {
 } from "@owlmeans/regov-ssi-did"
 import { buildKeyChain } from "../../keys/model"
 
-import util from 'util'
 import { Presentation, UnsignedPresentation } from "../types"
+import util from 'util'
 util.inspect.defaultOptions.depth = 8
 
 
@@ -131,7 +131,6 @@ describe('Credential Context', () => {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
     const [result, _] = await test.ctx.verifyCredential(test.credential)
-    console.log(_)
 
     expect(result).toBe(true)
   })
@@ -262,9 +261,7 @@ describe('Credential Context', () => {
       throw 'Previous test didn\'t provide Presentation with id'
     }
 
-    // console.log(test.presentation)
     const [result, _] = await test.ctx.verifyPresentation(test.presentation)
-    // console.log(_)
 
     expect(result).toBe(true)
   })

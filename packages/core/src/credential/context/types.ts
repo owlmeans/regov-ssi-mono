@@ -62,7 +62,6 @@ export type CommonSignCredentialMethod = <
   Promise<CommonCredentail<Subject>>
 
 export type CommonSignCredentialOptions = {
-  controllerRole?: ControllerRole
   buildProofPurposeOptions?: () => Promise<Object>
   keyId?: string
 }
@@ -108,16 +107,11 @@ export type CommonSignPresentationOptions = {
 }
 
 export type CommonVerifyPresentationMethod = (
-  presentation: CommonPresentation
+  presentation: CommonPresentation,
+  didDoc?: DIDDocument
 ) => Promise<[boolean, CommonVerifyPresentationResult]>
 
 export type CommonVerifyPresentationResult<
   Presentation extends CommonPresentation = CommonPresentation
   > = Validatied<Presentation>
 
-export type ControllerRole =
-  typeof COMMON_CONTROLLER_ROLE_ISSUER
-  | typeof COMMON_CONTROLLER_ROLE_HOLDER
-
-export const COMMON_CONTROLLER_ROLE_ISSUER = 'issuer'
-export const COMMON_CONTROLLER_ROLE_HOLDER = 'holder'

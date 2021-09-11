@@ -13,7 +13,7 @@ import {
 } from "@owlmeans/regov-ssi-common"
 import { CommonPresentation, CommonPresentationHolder, CommonUnsignedPresentation } from "./context/types/presentation"
 import { CommonBuildPresentationOptions, CommonSignPresentationOptions } from '.'
-import { DIDDocument, buildDocumentLoader, DIDPURPOSE_AUTHENTICATION, DID_REGISTRY_ERROR_NO_DID, DIDPURPOSE_ASSERTION, DID_REGISTRY_ERROR_NO_KEY_BY_DID } from "@owlmeans/regov-ssi-did"
+import { DIDDocument, buildDocumentLoader, DIDPURPOSE_AUTHENTICATION, DID_REGISTRY_ERROR_NO_DID, DIDPURPOSE_ASSERTION, DID_REGISTRY_ERROR_NO_KEY_BY_DID, VERIFICATION_KEY_HOLDER, VERIFICATION_KEY_CONTROLLER } from "@owlmeans/regov-ssi-did"
 
 /**
  * @TODO Sign and verify VC with nonce from did.
@@ -60,7 +60,11 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       issuer: DIDDocument,
       options?: CommonSignCredentialOptions
     ) => {
-      const key = await did.extractKey(issuer, `${DIDPURPOSE_ASSERTION}-${options?.keyId || '1'}`)
+      const keyId = options?.keyId || did.helper().extractProofController(issuer) === unsingedCredential.holder.id
+        ? VERIFICATION_KEY_HOLDER
+        : VERIFICATION_KEY_CONTROLLER
+
+      const key = await did.extractKey(issuer, keyId)
       if (!key) {
         throw new Error(COMMON_CRYPTO_ERROR_NOKEY)
       }
@@ -75,12 +79,11 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
           unsigned: unsingedCredential,
           issuer: {
             did: issuer.id,
-            keyId: key.fragment || 'publicKey-1',
+            keyId,
             privateKey: key.pk,
             publicKey: key.pubKey
           },
           getSignSuite: (options) => {
-            // console.log('Sign VC',options)
             return crypto.buildSignSuite({
               publicKey: <string>options.publicKey,
               privateKey: options.privateKey,
@@ -108,11 +111,11 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       if (!didDoc) {
         throw new Error(DID_REGISTRY_ERROR_NO_DID)
       }
-      const key = await did.extractKey(didDoc, `${DIDPURPOSE_ASSERTION}-${keyId || '1'}`)
+      const key = await did.extractKey(didDoc, keyId)
       if (!key) {
         throw new Error(DID_REGISTRY_ERROR_NO_KEY_BY_DID)
       }
-      
+
       const result = await validateVCV1({
         getVerifySuite: (options) => {
           if (!key.pubKey) {
@@ -121,12 +124,12 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
           if (typeof didDoc !== 'object') {
             throw new Error(DID_REGISTRY_ERROR_NO_DID)
           }
-          
+
           return crypto.buildSignSuite({
             publicKey: key.pubKey,
             privateKey: '',
             controller: didDoc.id,
-            id: options.verificationMethod // key.id ? key.id : 
+            id: options.verificationMethod
           })
         },
         getProofPurposeOptions: async () => {
@@ -167,7 +170,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       holder: DIDDocument,
       options?: CommonSignPresentationOptions
     ) => {
-      const keyId = `${DIDPURPOSE_AUTHENTICATION}-${options?.keyId || '1'}`
+      const keyId = options?.keyId || did.helper().extractKeyId(holder.proof.verificationMethod)
       const key = await did.extractKey(holder, keyId)
       if (!key) {
         throw new Error(COMMON_CRYPTO_ERROR_NOKEY)
@@ -176,6 +179,9 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       await keys.expandKey(key)
       if (!key.pk) {
         throw new Error(COMMON_CRYPTO_ERROR_NOPK)
+      }
+      if (!key.id) {
+        throw new Error(COMMON_CRYPTO_ERROR_NOID)
       }
 
       return await buildVPV1({
@@ -188,7 +194,6 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
         },
         documentLoader,
         getSignSuite: (options) => {
-          // console.log('Sign VP',options)
           return crypto.buildSignSuite({
             publicKey: <string>options.publicKey,
             privateKey: options.privateKey,
@@ -203,25 +208,27 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       }) as CommonPresentation<C, H>
     },
 
-    verifyPresentation: async (presentation) => {
+    verifyPresentation: async (presentation, didDoc?) => {
       const result = await validateVPV1({
-        documentLoader,
+        documentLoader: didDoc ? buildDocumentLoader(did)(() => didDoc) : documentLoader,
         getVerifySuite: async (options) => {
           const didId = did.helper().parseDIDId(options.verificationMethod)
-          const didDoc = await did.lookUpDid<DIDDocument>(didId.did)
+          didDoc = didDoc || await did.lookUpDid<DIDDocument>(didId.did)
           if (!didDoc) {
             throw new Error(DID_REGISTRY_ERROR_NO_DID)
           }
-          
-          const key = await did.extractKey(didDoc, didId.fragment || `${DIDPURPOSE_AUTHENTICATION}-1`)
+
+          const key = await did.extractKey(
+            didDoc,
+            did.helper().extractKeyId(options.verificationMethod)
+          )
           if (!key) {
             throw new Error(DID_REGISTRY_ERROR_NO_KEY_BY_DID)
           }
-          
+
           if (!key.pubKey) {
             throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
           }
-          // console.log('VP / VC verify',options, key)
           return crypto.buildSignSuite({
             publicKey: key.pubKey,
             privateKey: '',
@@ -229,13 +236,9 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
             id: options.verificationMethod
           })
         },
-        getProofPurposeOptions: async (options) => {
-          const controller = <DIDDocument>await did.lookUpDid(options.controller)
-
-          return {
-            controller//: await did.lookUpDid(key.id as string)
-          }
-        }
+        getProofPurposeOptions: async (options) => ({
+          controller: <DIDDocument>await did.lookUpDid(options.controller)
+        })
       })(presentation)
 
       if (result.kind !== 'valid') {

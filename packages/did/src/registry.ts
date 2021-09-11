@@ -51,44 +51,21 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegis
 
       lookUpDid: _lookUpDid,
 
+      addDID: _buildAddDIDMethod(_registry),
+
+      addPeerDID: _buildAddDIDMethod(_peerRegistry),
+
       extractKey: async (did, keyId) => {
-        if (!keyId) {
-          keyId = `${DIDPURPOSE_VERIFICATION}-1`
-        }
-        if (keyId.split('-').length < 2) {
-          keyId = `${keyId}-1`
-        }
         if (typeof did === 'string') {
           did = <DIDDocument>await _lookUpDid(did)
         }
-        
+
         if (!did) {
           throw new Error(DID_REGISTRY_ERROR_NO_KEY_BY_DID)
         }
 
-        const verificationItem = didHelper.expandVerificationMethod(did, keyId)
-        if (!verificationItem) {
-          return undefined
-        }
-
-        return {
-          id: ((verificationItem: DIDVerificationItem) => {
-            if (verificationItem.controller) {
-              return verificationItem.controller
-            }
-
-            return didHelper.parseDIDId(<string>verificationItem.id).did
-          })(verificationItem),
-          pubKey: verificationItem.publicKeyBase58,
-          nextKeyDigest: (nonce => nonce && nonce.length > 1 ? nonce[1] : undefined)
-            (verificationItem.nonce?.split(':', 2)),
-          fragment: keyId
-        }
+        return didHelper.extractKey(did, keyId)
       },
-
-      addDID: _buildAddDIDMethod(_registry),
-
-      addPeerDID: _buildAddDIDMethod(_peerRegistry),
 
       helper: () => didHelper
     }

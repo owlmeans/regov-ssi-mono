@@ -19,7 +19,7 @@
     "directory": "packages/core"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --testTimeout 30000",
     "build": "tsc -b",
     "build:watch": "tsc -b -w",
     "review": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/context.ts"

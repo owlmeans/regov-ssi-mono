@@ -42,11 +42,35 @@
       "runtimeArgs": [
         "--inspect-brk",
         "${workspaceRoot}/packages/core/node_modules/.bin/ts-node",
+        "--cwd",
+        "${workspaceRoot}/packages/core/",
         "--project",
         "${workspaceRoot}/packages/core/tsconfig.json",
         "--ignore" ,
         ".js",
         "${workspaceRoot}/packages/core/src/debug/context.ts"
+      ],
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug - Did: model",
+      "skipFiles": [
+        "<node_internals>/**",
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "envFile": "${workspaceRoot}/packages/did/.env",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/did/node_modules/.bin/ts-node",
+        "--cwd",
+        "${workspaceRoot}/packages/did/",
+        "--project",
+        "${workspaceRoot}/packages/did/tsconfig.json",
+        "--ignore" ,
+        ".js",
+        "${workspaceRoot}/packages/did/src/debug/model.ts"
       ],
     }
   ]

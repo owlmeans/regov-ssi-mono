@@ -19,9 +19,10 @@
     "directory": "packages/did"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --testTimeout 10000",
     "build": "tsc -b",
-    "build:watch": "tsc -b -w"
+    "build:watch": "tsc -b -w",
+    "review": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/model.ts"
   },
   "bugs": {
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"

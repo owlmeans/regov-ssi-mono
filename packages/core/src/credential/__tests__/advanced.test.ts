@@ -1,99 +1,36 @@
-
 require('dotenv').config()
 
+import { buildCommonContext } from "../context"
+import { CommonContext } from "../context/types"
+import { Credential, UnsignedCredentail } from "../types"
 import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
-
 import {
   buildDidHelper,
   buildDidRegistryWarpper,
+  DIDDocument,
   DIDPURPOSE_ASSERTION,
   DIDPURPOSE_AUTHENTICATION,
   DIDPURPOSE_VERIFICATION,
+  DIDVerificationItem,
   VERIFICATION_KEY_CONTROLLER,
   VERIFICATION_KEY_HOLDER
 } from "@owlmeans/regov-ssi-did"
+import { buildKeyChain } from "../../keys/model"
 
-import { buildKeyChain, buildCommonContext } from "../index"
-
+import { Presentation, UnsignedPresentation } from "../types"
 import util from 'util'
 util.inspect.defaultOptions.depth = 8
 
+const test: {
+  ctxAlice?: CommonContext
+  ctxBob?: CommonContext
+  ctxCharly?: CommonContext
+  did?: DIDDocument
+  cred?: Credential
+} = {}
 
-const _test = async () => {
-  const ctx = await buildCommonContext({
-    keys: await buildKeyChain({
-      password: '11111111',
-      crypto: nodeCryptoHelper
-    }),
-    crypto: nodeCryptoHelper,
-    did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
-  })
-
-  const subject = {
-    data: {
-      '@type': 'TestCredentialSubjectDataType',
-      worker: 'Valentin Michalych'
-    }
-  }
-
-  const key = await ctx.keys.getCryptoKey()
-  const didUnsigned = await ctx.did.helper().createDID(
-    key,
-    {
-      data: JSON.stringify(subject),
-      hash: true,
-      purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
-    }
-  )
-
-  const did = await ctx.did.helper().signDID(key, didUnsigned)
-
-  ctx.did.addDID(did)
-
-  const unsingnedC = await ctx.buildCredential({
-    id: did.id,
-    type: ['VerifiableCredential', 'TestCredential'],
-    holder: ctx.did.helper().extractProofController(did),
-    context: {
-      '@version': 1.1,
-      exam: 'https://example.org/vc-schema#',
-      data: {
-        '@id': 'exam:data',
-        '@type': '@id',
-        '@context': {
-          worker: { '@id': 'exam:worker', '@type': 'xsd:string' }
-        }
-      }
-    },
-    subject
-  })
-
-  const credential = await ctx.signCredential(unsingnedC, did)
-
-  const [result, _] = await ctx.verifyCredential(credential)
-
-  console.log('---- CREDENTIAL VERIFICATION ---')
-  console.log(result, _)
-
-  const unsignedP = await ctx.buildPresentation(
-    [credential],
-    {
-      holder: ctx.did.helper().extractProofController(did), // <string>(<DIDVerificationItem[]>did.verificationMethod)[0].controller,
-      type: 'TestPresentation'
-    }
-  )
-
-  const vp = await ctx.signPresentation(unsignedP, did)
-
-  const [result0, _0] = await ctx.verifyPresentation(vp)
-
-  console.log('---- PRESENTATION VERIFICATION ---')
-  console.log(result0, _0)
-
-  /**
-   * @TODO Transform to tests
-   */
-  await (async () => {
+describe('Presentation Context', () => {
+  it ('supports issuer -> holder -> verifier scenario', async () => {
     const ctxAlice = await buildCommonContext({
       keys: await buildKeyChain({
         password: '11111111',
@@ -162,7 +99,7 @@ const _test = async () => {
     )
 
     const uCred = await ctxAlice.buildCredential({
-      id: did.id,
+      id: uDepDid.id,
       type: ['VerifiableCredential', 'TestCredential'],
       holder: ctxAlice.did.helper().extractProofController(aliceDid),
       context: {
@@ -185,32 +122,50 @@ const _test = async () => {
       VERIFICATION_KEY_CONTROLLER,
       [DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
     )
-    console.log('-- CHARLY CHECKS DEP DID --')
-    console.log(depDid, await ctxCharly.did.helper().verifyDID(depDid))
+    expect(await ctxCharly.did.helper().verifyDID(depDid)).toBe(true)
 
     const cred = await ctxBob.signCredential(uCred, depDid)
     ctxCharly.did.addPeerDID(bobDid)
-    console.log('-- CHARLY VERIFIES CRED --')
-    console.log(await ctxCharly.verifyCredential(cred, depDid))
+    expect(await ctxCharly.verifyCredential(cred, depDid)).toContain(true)
 
-    const uPres = await ctxAlice.buildPresentation<typeof cred>(
-      [cred],
+    test.ctxAlice = ctxAlice
+    test.ctxBob = ctxBob
+    test.ctxCharly = ctxCharly
+    test.did = depDid
+    test.cred = cred
+  })
+
+  it ('support presentation verification', async () => {
+    if (!test.ctxAlice) {
+      throw new Error('Can\'t get Alice from perviouse test')
+    }
+    if (!test.ctxBob) {
+      throw new Error('Can\'t get Bob from perviouse test')
+    }
+    if (!test.ctxCharly) {
+      throw new Error('Can\'t get Charly from perviouse test')
+    }
+    if (!test.cred) {
+      throw new Error('Can\'t get Credential from perviouse test')
+    }
+    if (!test.did) {
+      throw new Error('Can\'t get DID from perviouse test')
+    }
+    
+    const uPres = await test.ctxAlice.buildPresentation<typeof test.cred>(
+      [test.cred],
       {
-        holder: cred.holder.id,
+        holder: test.cred.holder.id,
         type: 'TestPresentation'
       }
     )
 
-    const pres = await ctxAlice.signPresentation(
+    const pres = await test.ctxAlice.signPresentation(
       uPres,
-      depDid,
+      test.did,
       { keyId: VERIFICATION_KEY_HOLDER }
     )
 
-    console.log('-- CHARLY VERIFIES VP --')
-
-    console.log(pres, await ctxCharly.verifyPresentation(pres, depDid))
-  })()
-}
-
-_test()
+    expect(await test.ctxCharly.verifyPresentation(pres, test.did)).toContain(true)
+  })
+})

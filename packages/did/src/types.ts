@@ -2,17 +2,41 @@
 import { CommonCryptoKey } from '@owlmeans/regov-ssi-common'
 
 export type DIDHelper = {
-  createDID: (key: CommonCryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
-  signDID: (key: CommonCryptoKey, didDocUnsigned: DIDDocumentUnsinged, purposes?: DIDDocumentPurpose[]) => Promise<DIDDocument>
   makeDIDId: (key: CommonCryptoKey, options?: MakeDIDIdOptions) => string
-  didToLongForm: (did: DIDDocument) => Promise<string>
-  extractProofController: (did: DIDDocument) => string
-  verifyDID: (did: DIDDocument, key?: CommonCryptoKey) => Promise<boolean>
-  parseDIDId: ParseDIDIdMethod
   isDIDId: (id: string) => boolean
-  expandVerificationMethod: (didDoc: DIDDocument, method: string) => DIDVerificationItem | undefined
+  parseDIDId: ParseDIDIdMethod
+
+  extractProofController: (did: DIDDocument) => string  
+  expandVerificationMethod: ExpandVerificationMethod
+
+  createDID: (key: CommonCryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
+  signDID: (
+    key: CommonCryptoKey, 
+    didDocUnsigned: DIDDocumentUnsinged, 
+    keyId?: SignDID_KeyId,
+    purposes?: DIDDocumentPurpose[]
+  ) => Promise<DIDDocument>
+  verifyDID: (did: DIDDocument) => Promise<boolean>
+  
+  didToLongForm: (did: DIDDocument) => Promise<string>
+  extractKey: ExtractKeyMethod
+  extractKeyId: (key: string) => string
   setupDocumentLoader: (loader: BuildDocumentLoader) => void
 }
+
+export type ExtractKeyMethod = (did: DIDDocument | string, keyId?: string) => Promise<CommonCryptoKey | undefined>
+
+export type ExpandVerificationMethod = (didDoc: DIDDocument, purpose: DIDDocumentPurpose, keyId?: string) =>
+  DIDVerificationItem | never
+
+
+export const VERIFICATION_KEY_HOLDER = 'holder'
+export const VERIFICATION_KEY_CONTROLLER = 'controller'
+
+export const DEFAULT_VERIFICATION_KEY = VERIFICATION_KEY_HOLDER
+
+export type SignDID_KeyId = typeof VERIFICATION_KEY_HOLDER | typeof VERIFICATION_KEY_CONTROLLER
+
 
 export type ParseDIDIdMethod = (id: string) => DIDIDExplained
 
@@ -43,7 +67,7 @@ export type DIDDocumentUnsinged = DIDDocumentPayload & {
 }
 
 export type DIDDocumentPayload = {
-  verificationMethod?: (string | DIDVerificationMethod)[]
+  verificationMethod?: (DIDVerificationMethod)[]
   authentication?: (string | DIDAuthentication)[]
   assertionMethod?: (string | DIDAssertion)[]
   keyAgreement?: (string | DIDKeyAgreement)[]
@@ -71,6 +95,7 @@ export type DIDDocumentPurpose =
   | typeof DIDPURPOSE_CAPABILITY
   | typeof DIDPURPOSE_DELEGATION
 
+export const PUBLICKEY_VERIFICATION = 'publicKey'
 export const DIDPURPOSE_VERIFICATION = 'verificationMethod'
 export const DIDPURPOSE_AUTHENTICATION = 'authentication'
 export const DIDPURPOSE_ASSERTION = 'assertionMethod'
@@ -90,14 +115,14 @@ export const didPurposeList: DIDDocumentPurpose[] = [
 export type DIDDocumentContext = {}
 
 export type DIDVerificationItem = {
-  id?: string
-  type: string
-  controller?: string
-  originalPurposes?: DIDDocumentPurpose[]
-  nonce?: string
-  publicKeyBase58: string
-  proof?: DIDDocumentProof
   '@context'?: any
+  id: string
+  type: string
+  controller: string
+  nonce?: string
+  publicKeyBase58?: string
+  originalPurposes?: DIDDocumentPurpose[]
+  proof?: DIDDocumentProof
 }
 
 export type DIDVerificationMethod = DIDVerificationItem & {}
@@ -123,9 +148,9 @@ export type DIDServiceEndpoint = string | { [key: string]: string } | string[]
 export type DIDDocumentProof = {
   type: string,
   created: string,
-  proofPurpose?: string,
+  proofPurpose?: DIDDocumentPurpose,
   jws: string
-  verificationMethod?: string
+  verificationMethod: string
 }
 
 export type BuildDocumentLoader =
@@ -134,7 +159,10 @@ export type BuildDocumentLoader =
 
 export const DID_ERROR_NOVERIFICATION_METHOD = 'DID_ERROR_NOVERIFICATION_METHOD'
 export const DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS = 'DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS'
+
 export const DID_ERROR_VERIFICATION_METHOD_LOOKUP = 'DID_ERROR_VERIFICATION_METHOD_LOOKUP'
 export const DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD = 'DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD'
+
+export const DID_EXTRACTKEY_WRONG_DID = 'DID_EXTRACTKEY_WRONG_DID'
 
 export const DEFAULT_DID_PREFIX = process.env.DID_PREFIX

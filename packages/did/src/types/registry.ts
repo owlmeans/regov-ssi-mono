@@ -1,4 +1,5 @@
 import { CommonCryptoKey } from "@owlmeans/regov-ssi-common"
+import { ExtractKeyMethod } from ".."
 import { DIDDocument, DIDHelper } from "../types"
 
 export type DIDDocumentWrapper = {
@@ -16,13 +17,15 @@ export type DIDRegistryBundle = {
 }
 
 export type DIDRegistryWrapper = {
-  registry: DIDRegistryBundle,
+  registry: DIDRegistryBundle
 
   lookUpDid: LookUpDidMethod
 
-  extractKey: (did: DIDDocument | string, keyId?: string) => Promise<CommonCryptoKey | undefined>
   addDID: AddDIDMethod
   addPeerDID: AddDIDMethod
+
+  extractKey: ExtractKeyMethod
+
   helper(): DIDHelper
 }
 

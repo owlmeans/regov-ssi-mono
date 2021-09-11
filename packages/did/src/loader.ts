@@ -9,7 +9,7 @@ export const buildDocumentLoader = (did: DIDRegistryWrapper): BuildDocumentLoade
         document: (
           did =>
             JSON.parse(JSON.stringify(
-              did || (fallback ? fallback() : undefined)
+              did || (fallback ? fallback() : {})
             ))
         )(await did.lookUpDid(url)),
         documentUrl: url,

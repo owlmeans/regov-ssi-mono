@@ -1,11 +1,13 @@
 require('dotenv').config()
 
-import { buildDidHelper } from "../model"
-import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "../types"
+import { 
+  buildDidHelper,
+  DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION,
+  buildDidRegistryWarpper, VERIFICATION_KEY_CONTROLLER
+} from "../index"
 import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
 
 import util from 'util'
-import { buildDidRegistryWarpper } from ".."
 util.inspect.defaultOptions.depth = 8
 
 
@@ -45,11 +47,10 @@ describe('DID Helper', () => {
       verificationMethod: [{
         id: expect.any(String),
         nonce: expect.any(String),
-        publicKeyBase58: expect.any(String),
         controller: expect.any(String),
       }],
       assertionMethod: [
-        expect.any(String)
+        expect.any(String),
       ],
       proof: {
         created: expect.any(String),
@@ -84,7 +85,7 @@ describe('DID Helper', () => {
       hash: true
     })
 
-    const didDoc = await didHelper.signDID(bobKey, didDocUnsinged)
+    const didDoc = await didHelper.signDID(bobKey, didDocUnsinged, VERIFICATION_KEY_CONTROLLER)
 
     testContext.holderDoc = didDoc
   })
