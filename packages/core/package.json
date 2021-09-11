@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ssi-core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "It's core package for OwlMeans RegGov SSI",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -39,6 +39,6 @@
   "dependencies": {
     "@affinidi/vc-common": "^1.4.1",
     "@owlmeans/regov-ssi-common": "^0.2.0",
-    "@owlmeans/regov-ssi-did": "^0.2.0"
+    "@owlmeans/regov-ssi-did": "^0.3.0"
   }
 }
