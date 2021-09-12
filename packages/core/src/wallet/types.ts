@@ -24,11 +24,12 @@ export type WalletWrapperBuilder = <Store extends BasicStore = BasicStore>(
   crypto: CryptoHelper,
   password: string,
   store?: Store | string,
-  keyOptions?: WalletOptions
+  options?: WalletOptions
 ) => Promise<WalletWrapper>
 
 export type WalletOptions = {
   prefix?: string
+  defaultSchema?: string,
   key?: CreateKeyOptions
 }
 
@@ -48,6 +49,8 @@ export type WalletWrapper = {
   getRegistry: GetRegistryMethod
 
   export: (_password?: string) => Promise<EncryptedStore>
+
+  getConfig: () => WalletOptions
 }
 
 export type GetRegistryMethod = (type?: RegistryType) => CredentialsRegistryWrapper

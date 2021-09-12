@@ -2,7 +2,7 @@ require('dotenv').config()
 
 import { buildCommonContext } from "../context"
 import { CommonContext } from "../context/types"
-import { Credential, UnsignedCredentail } from "../types"
+import { Credential, UnsignedCredential } from "../types"
 import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
 import {
   buildDidHelper,
@@ -17,12 +17,14 @@ import { buildKeyChain } from "../../keys/model"
 
 import { Presentation, UnsignedPresentation } from "../types"
 import util from 'util'
+import { CommonCredentailSubject, CommonUnsignedCredential, CredentialSubject } from ".."
+import { MaybeArray } from "@affinidi/vc-common"
 util.inspect.defaultOptions.depth = 8
 
 
 const test: {
   ctx?: CommonContext
-  unsigned?: UnsignedCredentail
+  unsigned?: UnsignedCredential<CredentialSubject>
   credential?: Credential
   unsignedP?: UnsignedPresentation
   presentation?: Presentation
@@ -104,7 +106,10 @@ describe('Credential Context', () => {
     }
 
     const did = <DIDDocument>await test.ctx.did.lookUpDid(test.unsigned.id)
-    const credentail = await test.ctx.signCredential(test.unsigned, did)
+    const credentail = await test.ctx.signCredential(
+      test.unsigned, 
+      did
+    )
 
     test.credential = credentail
 

@@ -2,7 +2,7 @@
 import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, buildVPV1, buildVPV1Unsigned, validateVCV1, validateVPV1 } from "@affinidi/vc-common"
 
 import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions } from "./context/types"
-import { CommonCredentail, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./context/types/credential"
+import { CommonCredential, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./context/types/credential"
 import {
   COMMON_CRYPTO_ERROR_NOID,
   COMMON_CRYPTO_ERROR_NOPK,
@@ -22,7 +22,8 @@ import { DIDDocument, buildDocumentLoader, DIDPURPOSE_AUTHENTICATION, DID_REGIST
 export const buildCommonContext: BuildCommonContextMethod = async ({
   keys,
   crypto,
-  did
+  did,
+  defaultSchema
 }) => {
   const documentLoader = buildDocumentLoader(did)(() => undefined)
 
@@ -33,9 +34,19 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
 
     did,
 
+    buildLDContext: (url, extendedCtx?, baseUrl?) => {
+      return {
+        '@version': 1.1,
+        scm: `${baseUrl || defaultSchema || 'https://example.org'}${url ? `/${url}` : ''}#`,
+        data: { '@id': 'scm:data', '@type': '@json' },
+        ...extendedCtx
+      }
+    },
+
     buildCredential: async <
       T extends CommonSubjectType = CommonSubjectType,
-      S extends CommonCredentailSubject<T> = CommonCredentailSubject<T>
+      S extends CommonCredentailSubject<T> = CommonCredentailSubject<T>,
+      U extends CommonUnsignedCredential<S> = CommonUnsignedCredential<S>
     >(options: CommonBuildCredentailOptions<T>) => {
       const skeleton = buildVCV1Skeleton({
         context: options.context,
@@ -50,11 +61,12 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       return buildVCV1Unsigned({
         skeleton,
         issuanceDate: options.issueanceDate || (new Date).toISOString()
-      }) as CommonUnsignedCredential<S>
+      }) as U
     },
 
     signCredential: async <
-      S extends CommonCredentailSubject = CommonCredentailSubject
+      S extends CommonCredentailSubject = CommonCredentailSubject,
+      C extends CommonCredential<S> = CommonCredential<S>
     >(
       unsingedCredential: CommonUnsignedCredential<S>,
       issuer: DIDDocument,
@@ -93,7 +105,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
           },
           documentLoader,
           getProofPurposeOptions: options?.buildProofPurposeOptions
-        }) as CommonCredentail<S>
+        }) as C
       } catch (e: any) {
         console.log(e.details)
 
@@ -148,7 +160,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     },
 
     buildPresentation: async <
-      C extends CommonCredentail = CommonCredentail,
+      C extends CommonCredential = CommonCredential,
       H extends CommonPresentationHolder = CommonPresentationHolder
     >(credentails: C[], options: CommonBuildPresentationOptions<H>) => {
       return buildVPV1Unsigned({
@@ -163,7 +175,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     },
 
     signPresentation: async<
-      C extends CommonCredentail = CommonCredentail,
+      C extends CommonCredential = CommonCredential,
       H extends CommonPresentationHolder = CommonPresentationHolder
     >(
       unsignedPresentation: CommonUnsignedPresentation<C, H>,

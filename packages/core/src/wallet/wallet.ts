@@ -1,5 +1,5 @@
 import { buildDidHelper, buildDidRegistryWarpper } from "@owlmeans/regov-ssi-did";
-import { buildCommonContext, Credential, UnsignedCredentail } from "../credential";
+import { buildCommonContext, Credential, UnsignedCredential } from "../credential";
 import { buildKeyChain } from "../keys";
 import { buildStore } from "../store/store";
 import { SecureStore } from "../store/types";
@@ -83,7 +83,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             }
 
             const wrapperIdx = _registry.credentials[section].findIndex(
-              credWrapper => credWrapper.credential.id === (<Credential | UnsignedCredentail>credential).id
+              credWrapper => credWrapper.credential.id === (<Credential | UnsignedCredential>credential).id
             )
             const wrapper = _registry.credentials[section][wrapperIdx]
             _registry.credentials[section].splice(wrapperIdx, 1)
@@ -133,6 +133,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
           comment: _store.comment,
           dataChunks
         }
+      },
+
+      getConfig: () => {
+        return options || {}
       }
     }
   }

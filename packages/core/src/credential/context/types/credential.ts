@@ -1,16 +1,19 @@
 import { MaybeArray, SimpleThing, VCV1, VCV1Subject, VCV1Type, VCV1Unsigned } from "@affinidi/vc-common";
 
-export type CommonSubjectType = SimpleThing & {}
+export type CommonSubjectType<ExtendedData extends {} = {}> = SimpleThing & ExtendedData
 
-export type CommonCredentailSubject<SubjectType extends CommonSubjectType = CommonSubjectType> 
-  = MaybeArray<VCV1Subject<SubjectType>>
+export type CommonCredentailSubject<
+  SubjectType extends CommonSubjectType = CommonSubjectType,
+  ExtendedType extends {} = {}
+  >
+  = VCV1Subject<SubjectType> & ExtendedType
 
 export type CommonUnsignedCredential<
-  Subject extends CommonCredentailSubject = CommonCredentailSubject
+  Subject extends MaybeArray<CommonCredentailSubject> = MaybeArray<CommonCredentailSubject>
   > = VCV1Unsigned<Subject>
 
-export type CommonCredentail<
-  Subject extends CommonCredentailSubject = CommonCredentailSubject
+export type CommonCredential<
+  Subject extends MaybeArray<CommonCredentailSubject> = MaybeArray<CommonCredentailSubject>
   > = VCV1<Subject>
 
-  export type CommonType = VCV1Type
+export type CommonType = VCV1Type

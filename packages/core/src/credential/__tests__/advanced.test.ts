@@ -2,7 +2,7 @@ require('dotenv').config()
 
 import { buildCommonContext } from "../context"
 import { CommonContext } from "../context/types"
-import { Credential, UnsignedCredentail } from "../types"
+import { Credential, UnsignedCredential } from "../types"
 import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
 import {
   buildDidHelper,

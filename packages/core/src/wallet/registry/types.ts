@@ -1,4 +1,4 @@
-import { Credential, CredentialSubject, CredentialType, UnsignedCredentail } from "../../credential/types"
+import { Credential, CredentialSubject, CredentialType, UnsignedCredential } from "../../credential/types"
 
 
 export type CredentialsRegistry = {
@@ -21,13 +21,13 @@ export type CredentialsRegistryWrapper = {
 
 export type RemoveCredentialMethod =
   (
-    credential: Credential | UnsignedCredentail | CredentialWrapper,
+    credential: Credential | UnsignedCredential | CredentialWrapper,
     section?: string
   ) => Promise<CredentialWrapper>
 
 export type AddCredentialMethod<
   Subject extends CredentialSubject = CredentialSubject,
-  Type extends UnsignedCredentail<Subject> | Credential<Subject> = Credential<Subject>
+  Type extends UnsignedCredential<Subject> | Credential<Subject> = Credential<Subject>
   > = (
     credential: Type,
     section?: string
@@ -35,7 +35,7 @@ export type AddCredentialMethod<
 
 export type LookupCredentialsMethod<
   Subject extends CredentialSubject = CredentialSubject,
-  Type extends UnsignedCredentail<Subject> | Credential<Subject> = Credential<Subject>
+  Type extends UnsignedCredential<Subject> | Credential<Subject> = Credential<Subject>
   > = (
     type: CredentialType,
     section?: string
@@ -43,7 +43,7 @@ export type LookupCredentialsMethod<
 
 export type GetCredentialMethod<
   Subject extends CredentialSubject = CredentialSubject,
-  Type extends UnsignedCredentail<Subject> | Credential<Subject> = Credential<Subject>
+  Type extends UnsignedCredential<Subject> | Credential<Subject> = Credential<Subject>
   > = (
     id?: string,
     section?: string
@@ -61,7 +61,7 @@ export const REGISTRY_SECTION_PEER = 'peer'
 
 export type CredentialWrapper<
   Subject extends CredentialSubject = CredentialSubject,
-  Type extends UnsignedCredentail<Subject> | Credential<Subject> = Credential<Subject>
+  Type extends UnsignedCredential<Subject> | Credential<Subject> = Credential<Subject>
   > = {
     credential: Type
     meta: CredentialWrapperMetadata

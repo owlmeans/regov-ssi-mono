@@ -1,10 +1,10 @@
-import { TContext } from "@affinidi/vc-common"
+import { ContextObj, TContext } from "@affinidi/vc-common"
 import { Validatied } from "@affinidi/vc-common/dist/verifier/util"
 
 import { CryptoHelper, CommonCryptoKey } from "@owlmeans/regov-ssi-common"
 import { KeyChainWrapper } from "../../keys/types"
 import {
-  CommonCredentail,
+  CommonCredential,
   CommonCredentailSubject,
   CommonSubjectType,
   CommonType,
@@ -18,12 +18,14 @@ export type BuildCommonContextMethod = (options: {
   keys: KeyChainWrapper
   crypto: CryptoHelper
   did: DIDRegistryWrapper
+  defaultSchema?: string
 }) => Promise<CommonContext>
 
 export type CommonContext = {
   keys: KeyChainWrapper
   crypto: CryptoHelper
   did: DIDRegistryWrapper
+  buildLDContext: (url: string, extendedCtx?: ContextObj, baseUrl?: string) => ContextObj
   buildCredential: CommonBuildCredentialMethod
   signCredential: CommonSignCredentialMethod
   verifyCredential: CommonVerfiyCredentailMethod
@@ -34,9 +36,9 @@ export type CommonContext = {
 
 export type CommonBuildCredentialMethod = <
   SubjectType extends CommonSubjectType = CommonSubjectType,
-  Subject extends CommonCredentailSubject<SubjectType> = CommonCredentailSubject<SubjectType>
-  >(options: CommonBuildCredentailOptions<SubjectType>) =>
-  Promise<CommonUnsignedCredential<Subject>>
+  Subject extends CommonCredentailSubject<SubjectType> = CommonCredentailSubject<SubjectType>,
+  Unsigned extends CommonUnsignedCredential<Subject> = CommonUnsignedCredential<Subject>
+  >(options: CommonBuildCredentailOptions<SubjectType>) => Promise<Unsigned>
 
 export type CommonContextType = TContext
 
@@ -53,13 +55,15 @@ export type CommonBuildCredentailOptions<
   }
 
 export type CommonSignCredentialMethod = <
-  Subject extends CommonCredentailSubject = CommonCredentailSubject
+  Subject extends CommonCredentailSubject = CommonCredentailSubject,
+  Credential extends CommonCredential<Subject> = CommonCredential<Subject>,
+  CredentialU extends CommonUnsignedCredential<Subject> = CommonUnsignedCredential<Subject>
   >(
-  unsingedCredential: CommonUnsignedCredential<Subject>,
+  unsingedCredential: CredentialU,
   issuer: DIDDocument,
   options?: CommonSignCredentialOptions
 ) =>
-  Promise<CommonCredentail<Subject>>
+  Promise<Credential>
 
 export type CommonSignCredentialOptions = {
   buildProofPurposeOptions?: () => Promise<Object>
@@ -67,15 +71,15 @@ export type CommonSignCredentialOptions = {
 }
 
 export type CommonVerfiyCredentailMethod = (
-  credential: CommonCredentail,
+  credential: CommonCredential,
   did?: DIDDocument | string,
   keyId?: string
 ) => Promise<[boolean, CommonVerificationResult]>
 
-export type CommonVerificationResult<Credential extends CommonCredentail = CommonCredentail> = Validatied<Credential>
+export type CommonVerificationResult<Credential extends CommonCredential = CommonCredential> = Validatied<Credential>
 
 export type CommonBuildPresentationMethod = <
-  Credential extends CommonCredentail = CommonCredentail,
+  Credential extends CommonCredential = CommonCredential,
   Holder extends CommonPresentationHolder = CommonPresentationHolder
   >(
   credentials: Credential[],
@@ -91,7 +95,7 @@ export type CommonBuildPresentationOptions<
   }
 
 export type CommonSignPresentationMethod = <
-  Credential extends CommonCredentail = CommonCredentail,
+  Credential extends CommonCredential = CommonCredential,
   Holder extends CommonPresentationHolder = CommonPresentationHolder
   >(
   unsignedPresentation: CommonUnsignedPresentation<Credential, Holder>,
