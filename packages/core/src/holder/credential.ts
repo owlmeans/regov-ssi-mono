@@ -16,19 +16,29 @@ import {
 } from "../credential/types";
 import { WalletWrapper } from "../wallet/types";
 import { KeyPair } from "../keys/types";
-import { ContextObj, MaybeArray } from "@affinidi/vc-common";
+import { ContextObj } from "@affinidi/vc-common";
 import {
   ClaimSubject,
   ClaimCredential,
   CREDENTIAL_CLAIM_TYPE,
   ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL,
   ClaimBundle,
-  CLAIM_TYPE_PREFFIX
+  CLAIM_TYPE_PREFFIX,
+  ClaimExtenstion,
+  ClaimPayload,
+  ERROR_UNTUSTED_ISSUER
 } from "./types";
-import { CREDENTIAL_OFFER_TYPE, OfferBundle, OfferCredential } from "../issuer/types";
-import { REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from "../wallet/registry/types";
-import { ERROR_UNTUSTED_ISSUER } from ".";
-
+import {
+  CREDENTIAL_OFFER_TYPE,
+  OfferBundle,
+  OfferCredential
+} from "../issuer/types";
+import {
+  REGISTRY_SECTION_PEER,
+  REGISTRY_TYPE_CLAIMS,
+  REGISTRY_TYPE_CREDENTIALS,
+  REGISTRY_TYPE_IDENTITIES
+} from "../wallet/registry/types";
 
 
 export const holderCredentialHelper = (wallet: WalletWrapper) => {
@@ -39,9 +49,9 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       Payload extends {} = {},
       Extension extends {} = {},
       CredentialUT extends UnsignedCredential<
-        MaybeArray<CredentialSubject<CredentialSubjectType<Payload>, Extension>>
+        CredentialSubject<CredentialSubjectType<Payload>, Extension>
       > = UnsignedCredential<
-        MaybeArray<CredentialSubject<CredentialSubjectType<Payload>, Extension>>
+        CredentialSubject<CredentialSubjectType<Payload>, Extension>
       >
     >(
       claimOptions: {
@@ -117,6 +127,16 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           claimUnsigned,
           holder
         ) as ClaimCredential<ClaimSubject<CredentialUT>>
+      },
+
+      register: async (
+        bundle: ClaimBundle<ClaimCredential<ClaimSubject<CredentialUT>>>
+      ) => {
+        await wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
+          .addCredential<
+            CredentialSubject<CredentialSubjectType<Payload>, Extension>,
+            Presentation<ClaimCredential<ClaimSubject<CredentialUT>>>
+          >(bundle.presentation)
       }
     }),
 
@@ -149,7 +169,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         if (! await wallet.did.helper().verifyDID(bundle.did)) {
           throw new Error(ERROR_UNTUSTED_ISSUER)
         }
-        
+
         const issuer = await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
           bundle.presentation.holder.id,
           REGISTRY_SECTION_PEER
@@ -161,7 +181,6 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
 
         const issuerDid = await wallet.did.lookUpDid<DIDDocument>(issuer.credential.holder.id)
 
-
         let [result] = await wallet.ctx.verifyPresentation(
           bundle.presentation,
           issuerDid
@@ -171,13 +190,50 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           result = false
         }
 
-        
+        type Payload = ClaimPayload<BundledClaim>
+        type Extension = ClaimExtenstion<BundledClaim>
 
-        return [
-          result,
-          bundle.presentation.verifiableCredential
-        ] as [boolean, BundledOffer[]]
+        const claims = wallet.getRegistry(REGISTRY_TYPE_CLAIMS).getCredential<
+          CredentialSubject<CredentialSubjectType<Payload>, Extension>,
+          Presentation<ClaimCredential<ClaimSubject<
+            UnsignedCredential<CredentialSubject<CredentialSubjectType<Payload>, Extension>>
+          >>>
+        >(bundle.presentation.id)
+
+        if (result && claims) {
+          result = false
+          if (claims.credential.verifiableCredential.length
+            === bundle.presentation.verifiableCredential.length) {
+            const offers = bundle.presentation.verifiableCredential.map(
+              offer => offer.credentialSubject.data.credential.id
+            )
+            result = claims.credential.verifiableCredential.some(
+              claim => !offers.includes(claim.credentialSubject.data.credential.id)
+            )
+          }
+          if (!result) {
+            console.log()
+          }
+        }
+
+        return [result, bundle.presentation.verifiableCredential] as [boolean, BundledOffer[]]
       },
+
+      store: async (bundle: OfferBundle<BundledOffer>) => {
+        type Payload = ClaimPayload<BundledClaim>
+        type Extension = ClaimExtenstion<BundledClaim>
+        type SubjectT = CredentialSubject<CredentialSubjectType<Payload>, Extension>
+
+        const registry = wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
+        return Promise.all(bundle.presentation.verifiableCredential.map(
+          async (offer) => {
+            wallet.did.addDID(offer.credentialSubject.did)
+            return await registry.addCredential<SubjectT, Credential<SubjectT>>(
+              offer.credentialSubject.data.credential as Credential<SubjectT>
+            )
+          }
+        ))
+      }
     })
   }
 }

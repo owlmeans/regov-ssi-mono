@@ -2,8 +2,6 @@ import { MaybeArray } from "@affinidi/vc-common"
 import { DIDDocument, DIDDocumentUnsinged } from "@owlmeans/regov-ssi-did"
 import { CredentialSubject, CredentialSubjectType, UnsignedCredential, Credential, Presentation } from "../credential/types"
 
-export const ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL = 'ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL'
-
 export type OfferSubject<
   CredentialT extends Credential<MaybeArray<CredentialSubject>> = Credential<MaybeArray<CredentialSubject>>
   > =

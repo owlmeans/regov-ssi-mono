@@ -1,9 +1,9 @@
 import { buildDidHelper, buildDidRegistryWarpper } from "@owlmeans/regov-ssi-did";
-import { buildCommonContext, Credential, UnsignedCredential } from "../credential";
+import { buildCommonContext, Credential, CredentialSubject, CredentialSubjectType, UnsignedCredential } from "../credential";
 import { buildKeyChain } from "../keys";
 import { buildStore } from "../store/store";
 import { SecureStore } from "../store/types";
-import { CredentialsRegistry, CredentialsRegistryWrapper, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES } from "./registry";
+import { CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryItem, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES } from "./registry";
 import { GetRegistryMethod, WalletWrapperBuilder } from "./types";
 
 export const buildWalletWrapper: WalletWrapperBuilder =
@@ -48,11 +48,13 @@ export const buildWalletWrapper: WalletWrapperBuilder =
           addCredential: async (credential, section?: string) => {
             const wrappedCred = {
               credential,
-              meta: { 
+              meta: {
                 secure: false,
               }
             }
-            _registry.credentials[section || _registry.defaultSection].push(wrappedCred)
+            _registry.credentials[section || _registry.defaultSection].push(
+              wrappedCred as CredentialWrapper
+            )
 
             return wrappedCred
           },
@@ -64,7 +66,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             })
           },
 
-          getCredential: (id?: string, section?: string) => {            
+          getCredential: <
+            Subject extends CredentialSubject = CredentialSubject,
+            Type extends RegistryItem<Subject> = Credential<Subject>
+          >(id?: string, section?: string) => {
             id = id || _registry.rootCredential
             if (!id) {
               return
@@ -73,7 +78,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             section = section || _registry.defaultSection
             return _registry.credentials[section].find(
               credWrapper => credWrapper.credential.id === id
-            )
+            ) as CredentialWrapper<Subject, Type> | undefined
           },
 
           removeCredential: async (credential, section?) => {
@@ -83,7 +88,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             }
 
             const wrapperIdx = _registry.credentials[section].findIndex(
-              credWrapper => credWrapper.credential.id === (<Credential | UnsignedCredential>credential).id
+              credWrapper => credWrapper.credential.id === (<RegistryItem>credential).id
             )
             const wrapper = _registry.credentials[section][wrapperIdx]
             _registry.credentials[section].splice(wrapperIdx, 1)

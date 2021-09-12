@@ -89,6 +89,7 @@ export type CommonBuildPresentationMethod = <
 export type CommonBuildPresentationOptions<
   Holder extends CommonPresentationHolder = CommonPresentationHolder
   > = {
+    id?: string
     type?: string | string[]
     context?: CommonContextType
     holder: string

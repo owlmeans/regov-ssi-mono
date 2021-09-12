@@ -22,6 +22,26 @@ export type ClaimBundle<BundledClaim extends ClaimCredential>
     did: DIDDocument
   }
 
+export type ClaimPayload<Claim> = Claim extends ClaimCredential<infer ClaimSubjectT>
+  ? ClaimSubjectT extends ClaimSubject<infer CredentialUT>
+  ? CredentialUT extends UnsignedCredential<infer Subject>
+  ? Subject extends CredentialSubject<infer SourceType, any>
+  ? SourceType extends CredentialSubjectType<infer Payload> ? Payload : never
+  : never
+  : never
+  : never
+  : never
+
+export type ClaimExtenstion<Claim> = Claim extends ClaimCredential<infer ClaimSubjectT>
+  ? ClaimSubjectT extends ClaimSubject<infer CredentialUT>
+  ? CredentialUT extends UnsignedCredential<infer Subject>
+  ? Subject extends CredentialSubject<any, infer Extension>
+  ? Extension
+  : never
+  : never
+  : never
+  : never
+
 export const ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL = 'ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL'
 
 export const ERROR_UNTUSTED_ISSUER = 'ERROR_UNTUSTED_ISSUER'

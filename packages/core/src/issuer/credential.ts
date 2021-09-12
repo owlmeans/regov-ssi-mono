@@ -144,13 +144,14 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
         ] as [boolean, BundledClaim[]]
       },
 
-      build: async (offers: BundledOffer[]) => {
+      build: async (offers: BundledOffer[], id?: string) => {
         issuer = issuer || _identityHelper.getIdentity().did?.did
         if (!issuer) {
           throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
         }
 
         const unsigned = await wallet.ctx.buildPresentation(offers, {
+          id,
           holder: issuer.id,
           type: CREDENTIAL_OFFER_TYPE
         }) as UnsignedPresentation<BundledOffer>
