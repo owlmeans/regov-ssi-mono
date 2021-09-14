@@ -1,9 +1,10 @@
 
-import { DIDDocument, didPurposeList } from '@owlmeans/regov-ssi-did'
-import { holderCredentialHelper, verifierCredentialHelper } from '..'
+import { DIDDocument, DIDDocumentWrapper, didPurposeList } from '@owlmeans/regov-ssi-did'
+import { RequestBundle } from '../verifier/types'
+import { verifierCredentialHelper } from '../verifier/credential'
+import { holderCredentialHelper } from '../holder/credential'
 import { CommonContextType } from '../credential/context/types'
-import { ERROR_INVALID_PRESENTATION } from '../credential/context/types/presentation'
-import { Credential, Presentation, UnsignedPresentation } from '../credential/types'
+import { Credential, Presentation } from '../credential/types'
 import {
   CredentialSubjectType,
   Identity,
@@ -22,6 +23,8 @@ import {
 import { ERROR_DESCRIBE_IDENTITY_WITH_PAYLOAD, ERROR_NO_IDENTITY_PROVIDED } from './identity/types'
 import { REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from './registry/types'
 import { WalletWrapper } from './types'
+import { isPresentation } from '../credential/util'
+import { ERROR_INVALID_PRESENTATION } from '../credential/context/types/presentation'
 
 
 const _getIdentity = <IdentityT extends Identity<IdentitySubject>>(wallet: WalletWrapper) => () => {
@@ -90,6 +93,23 @@ export const identityHelper = <
     >(unsigned, signer || entity.did)
   }
 
+  const _castEntity = async (entity?: EntityIdentity | IdentityParams | boolean) => {
+    if (typeof entity === 'boolean') {
+      if (!entity) {
+        return undefined
+      }
+    }
+    if (typeof entity === 'object') {
+      if ('credential' in entity) {
+        entity = await _buildEntityIdnetity(entity)
+      }
+    } else {
+      entity = await _buildEntityIdnetity()
+    }
+
+    return entity
+  }
+
   const _helper = {
     getIdentity: _getIdentity<Identity<SubjectT>>(wallet),
 
@@ -108,21 +128,15 @@ export const identityHelper = <
 
     buildEntity: _buildEntityIdnetity,
 
+    castEntity: _castEntity,
+
     attachEntity: async (
       credentials: (Credential<any> | EntityIdentity)[],
       entity?: EntityIdentity | IdentityParams | boolean
     ) => {
-      if (typeof entity === 'boolean') {
-        if (!entity) {
-          return undefined
-        }
-      }
-      if (typeof entity === 'object') {
-        if ('credential' in entity) {
-          entity = await _buildEntityIdnetity(entity)
-        }
-      } else {
-        entity = await _buildEntityIdnetity()
+      entity = await _castEntity(entity)
+      if (!entity) {
+        return
       }
 
       credentials.unshift(entity)
@@ -135,7 +149,7 @@ export const identityHelper = <
         cred => cred.type.includes(CREDENTIAL_ENTITY_IDENTITY_TYPE)
       )
       if (entityIdx > -1) {
-        return credentials.splice(entityIdx, 1)[0]
+        return credentials.splice(entityIdx, 1)[0] as EntityIdentity
       }
     },
 
@@ -204,35 +218,62 @@ export const identityBundler = <
   SubjectT extends IdentitySubject<CredentialSubjectType<PayloadT>>
   = IdentitySubject<CredentialSubjectType<PayloadT>>
 >(wallet: WalletWrapper) => {
-  const holderHelper = holderCredentialHelper(wallet)
-
   return {
-    provide: async (
-      identity?: IdentityParams | EntityIdentity | boolean
+    response: async (
+      identity?: IdentityParams | EntityIdentity | RequestBundle
     ): Promise<Presentation<EntityIdentity>> => {
-      return await holderHelper.response({ identity }).build()
-    },
-    
-    /**
-     * @TODO Implement proper identity request
-     * @TODO Implement proper identity response
-     * @TODO Implement proper identity store
-     */
+      if (isPresentation(identity)) {
+        /**
+         * @TODO Verify request presentation (separate method)
+         * 
+         * @TODO Use additional info in domain / challange to lookup identity 
+         * by the issuer not by id.
+         */
+        const credentail = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
+          identity.proof.domain
+        )
+        if (!credentail) {
+          throw new Error(ERROR_NO_IDENTITY_PROVIDED)
+        }
+        const didW = wallet.did.registry.personal.dids.find(
+          didW => didW.did.id === credentail.credential.id
+        ) as DIDDocumentWrapper
+        identity = {
+          credential: credentail.credential,
+          did: didW.did
+        }
+      }
 
-    // register: async (presentation: Presentation<EntityIdentity>) => {
-    //   const { result, entity } = await verifierCredentialHelper(wallet)
-    //     .response().verify(presentation)
-    //   if (!result) {
-    //     throw new Error(ERROR_INVALID_PRESENTATION)
-    //   }
-    //   if (!entity) {
-    //     throw new Error(ERROR_NO_IDENTITY_PROVIDED)
-    //   }
-    //   await wallet.did.addPeerDID(entity.credentialSubject.did)
-    //   return (await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).addCredential(
-    //     entity.credentialSubject.data.identity,
-    //     REGISTRY_SECTION_PEER
-    //   )).credential as Identity<SubjectT>
-    // }
+      return await holderCredentialHelper(wallet).response({ identity })
+        .build() as Presentation<EntityIdentity>
+    },
+
+    request: async (
+      identity?: IdentityParams | EntityIdentity | true,
+      options?: { issuer?: string, type?: string | string[] }
+    ): Promise<RequestBundle> => {
+      identity = await identityHelper(wallet).castEntity(identity) as EntityIdentity
+      return await verifierCredentialHelper(wallet)
+        .request(identity.credentialSubject.did).bundle([], identity, {
+          domain: options?.issuer, /** @TODO Domain shouldn't be used to identify issuer of identity */
+          type: options?.type
+        })
+    },
+
+    trust: async (presentation: Presentation<EntityIdentity>) => {
+      const { result, entity } = await verifierCredentialHelper(wallet)
+        .response().verify(presentation)
+      if (!result) {
+        throw new Error(ERROR_INVALID_PRESENTATION)
+      }
+      if (!entity) {
+        throw new Error(ERROR_NO_IDENTITY_PROVIDED)
+      }
+      await wallet.did.addPeerDID(entity.credentialSubject.did)
+      return (await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).addCredential(
+        entity.credentialSubject.data.identity,
+        REGISTRY_SECTION_PEER
+      )).credential as Identity<SubjectT>
+    }
   }
 }

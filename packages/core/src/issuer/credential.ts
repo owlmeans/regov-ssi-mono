@@ -32,7 +32,6 @@ import { CREDENTIAL_OFFER_TYPE, OfferBundle, OfferCredential, OfferSubject } fro
 import { EntityIdentity, IdentityParams } from "../wallet/identity/types";
 
 
-
 export const issuerCredentialHelper = (wallet: WalletWrapper) => {
   const _identityHelper = identityHelper(wallet)
 
@@ -135,8 +134,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
         const entity = _identityHelper.extractEntity(claims)
 
         const did = entity?.credentialSubject.did
-
-        if (! await wallet.did.helper().verifyDID(did)) {
+        if (!did || !await wallet.did.helper().verifyDID(did)) {
           throw new Error(ERROR_UNTUSTED_ISSUER)
         }
         

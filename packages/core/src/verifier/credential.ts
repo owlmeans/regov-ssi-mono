@@ -14,7 +14,7 @@ import {
   REGISTRY_TYPE_REQUESTS
 } from "../wallet/registry/types"
 import { EntityIdentity, IdentityParams } from "../wallet/identity/types"
-import { CredentialRequestSubjectType, RequestBundle } from "./types"
+import { CredentialRequestSubjectType, ERROR_NO_IDENTITY_TO_VERIFY_CREDENTIAL, RequestBundle } from "./types"
 import {
   CREDENTIAL_RESPONSE_TYPE,
   ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL,
@@ -38,9 +38,7 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
     request: (verifier?: DIDDocument) => {
       return {
         build: async (request: CredentialRequestSubjectType, key?: string | KeyPair) => {
-          const requestSubject = {
-            data: request
-          }
+          const requestSubject = { data: request }
 
           verifier = verifier || _identityHelper.getIdentity().did
           if (!verifier) {
@@ -67,7 +65,8 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
 
         bundle: async (
           requests: RequestCredential[],
-          identity?: IdentityParams | EntityIdentity | boolean
+          identity?: IdentityParams | EntityIdentity | boolean,
+          options?: { domain?: string, challenge?: string, type?: string | string[] }
         ) => {
           requests = [...requests]
           const entity = await _identityHelper.attachEntity(requests, identity)
@@ -80,16 +79,27 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
             requests,
             {
               holder: verifier.id,
-              type: CREDENTIAL_REQUEST_TYPE
+              type: [
+                CREDENTIAL_REQUEST_TYPE,
+                ...(options?.type
+                  ? Array.isArray(options?.type)
+                    ? options.type : [options?.type]
+                  : []
+                )
+              ]
             }
           ) as UnsignedPresentation<RequestCredential>
 
           return await wallet.ctx.signPresentation(
             unsigned, verifier, {
-            challange: wallet.ctx.crypto.hash(basicHelper.makeRandomUuid())
+            challange: options?.challenge || wallet.ctx.crypto.hash(basicHelper.makeRandomUuid()),
+            domain: options?.domain
           }) as RequestBundle
         },
 
+        /**
+         * @TODO Allow to clean up registered request
+         */
         register: async (bundle: RequestBundle) => {
           return await wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
             .addCredential<RequestSubject, RequestBundle>(bundle)
@@ -105,8 +115,7 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
         const entity = _identityHelper.extractEntity(offers)
 
         const did = entity?.credentialSubject.did
-
-        if (!await wallet.did.helper().verifyDID(did)) {
+        if (!did || !await wallet.did.helper().verifyDID(did)) {
           throw new Error(ERROR_UNTUSTED_ISSUER)
         }
 

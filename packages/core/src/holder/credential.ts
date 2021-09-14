@@ -139,6 +139,9 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         ) as ClaimCredential<ClaimSubject<CredentialUT>>
       },
 
+      /**
+       * @TODO Allow to clean up registered claim
+       */
       register: async (
         bundle: ClaimBundle<ClaimCredential<ClaimSubject<CredentialUT>>>
       ) => {
@@ -182,8 +185,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         const entity = _identityHelper.extractEntity(offers)
 
         const did = entity?.credentialSubject.did
-
-        if (! await wallet.did.helper().verifyDID(did)) {
+        if (!did || !await wallet.did.helper().verifyDID(did)) {
           throw new Error(ERROR_UNTUSTED_ISSUER)
         }
 
@@ -255,9 +257,9 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       unbundle: async (bundle: RequestBundle) => {
         const requests = [...bundle.verifiableCredential]
         const entity = _identityHelper.extractEntity(requests)
-        const did = entity?.credentialSubject.did
 
-        if (!await wallet.did.helper().verifyDID(did)) {
+        const did = entity?.credentialSubject.did
+        if (!did || !await wallet.did.helper().verifyDID(did)) {
           throw new Error(ERROR_UNTUSTED_ISSUER)
         }
 
@@ -344,7 +346,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         return await wallet.ctx.signPresentation(unsignedPresentation, holder, {
           challange: requestBundle?.proof.challenge,
           domain: requestBundle?.proof.domain
-        }) as Presentation<EntityIdentity>
+        }) as Presentation<EntityIdentity | Credential>
       }
     })
   }

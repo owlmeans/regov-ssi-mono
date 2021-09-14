@@ -13,20 +13,17 @@ export type EntityIdentitySubject = CredentialSubject<
   EntityIdentitySubjectType, ExntityIdentityExtension
 >
 
-export type IdentityParams = {
-  credential: Credential<any>,
-  did: DIDDocument
-} 
+export type IdentityParams = { credential: Credential<any>, did: DIDDocument } 
 
-export type EntityIdentityPayload = {
-  identity: Credential<any>
-}
+export type EntityIdentityPayload = {identity: Credential<any> }
 
-export type ExntityIdentityExtension = {
-  did: DIDDocument
-}
+export type ExntityIdentityExtension = { did: DIDDocument }
 
 export const ERROR_DESCRIBE_IDENTITY_WITH_PAYLOAD = 'ERROR_DESCRIBE_IDENTITY_WITH_PAYLOAD'
 export const ERROR_NO_IDENTITY_PROVIDED = 'ERROR_NO_IDENTITY_PROVIDED'
 
 export const CREDENTIAL_ENTITY_IDENTITY_TYPE = 'EntityIdentity'
+
+export const IDENTITY_REQUEST_TYPE = 'IdentityRequest'
+
+export const IDENTITY_RESPONSE_TYPE = 'IdentityResponse'
