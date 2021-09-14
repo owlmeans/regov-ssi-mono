@@ -83,12 +83,10 @@ export type CommonBuildPresentationMethod = <
   Holder extends CommonPresentationHolder = CommonPresentationHolder
   >(
   credentials: Credential[],
-  options: CommonBuildPresentationOptions<Holder>
+  options: CommonBuildPresentationOptions
 ) => Promise<CommonUnsignedPresentation<Credential, Holder>>
 
-export type CommonBuildPresentationOptions<
-  Holder extends CommonPresentationHolder = CommonPresentationHolder
-  > = {
+export type CommonBuildPresentationOptions = {
     id?: string
     type?: string | string[]
     context?: CommonContextType

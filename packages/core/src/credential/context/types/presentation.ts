@@ -15,3 +15,5 @@ export type CommonPresentation<
 export type CommonPresentationHolder = VPV1Holder & {}
 
 export type CommonPresentationType = VPV1Type
+
+export const ERROR_INVALID_PRESENTATION = 'ERROR_INVALID_PRESENTATION'

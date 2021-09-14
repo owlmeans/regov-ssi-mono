@@ -60,9 +60,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
           },
 
           lookupCredentials: async (type, section?) => {
+            const types: string[] = Array.isArray(type) ? type : [type]
             section = section || _registry.defaultSection
             return _registry.credentials[section].filter((wrapper) => {
-              return type.every(type => wrapper.credential.type.includes(type))
+              return types.every(type => wrapper.credential.type.includes(type))
             })
           },
 

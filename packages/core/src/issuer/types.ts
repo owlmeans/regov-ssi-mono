@@ -16,7 +16,4 @@ export type OfferCredential<Subject extends OfferSubject = OfferSubject>
   = Credential<Subject>
 
 export type OfferBundle<BundledOffer extends OfferCredential>
-  = {
-    presentation: Presentation<BundledOffer>,
-    did: DIDDocument
-  }
+  = Presentation<BundledOffer>

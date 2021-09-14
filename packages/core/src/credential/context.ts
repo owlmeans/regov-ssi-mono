@@ -162,7 +162,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     buildPresentation: async <
       C extends CommonCredential = CommonCredential,
       H extends CommonPresentationHolder = CommonPresentationHolder
-    >(credentails: C[], options: CommonBuildPresentationOptions<H>) => {
+    >(credentails: C[], options: CommonBuildPresentationOptions) => {
       return buildVPV1Unsigned({
         id: options.id || `urn:uuid:${basicHelper.makeRandomUuid()}`,
         vcs: [...credentails],

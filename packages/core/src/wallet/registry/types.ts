@@ -1,4 +1,5 @@
 import { MaybeArray } from "@affinidi/vc-common"
+import { RequestBundle } from "../.."
 import { Credential, CredentialSubject, CredentialType, Presentation, UnsignedCredential } from "../../credential/types"
 import { ClaimBundle, ClaimCredential, ClaimSubject } from "../../holder"
 
@@ -41,12 +42,13 @@ export type AddCredentialMethod = <
 export type RegistryItem<Subject extends CredentialSubject = CredentialSubject> =
   Credential<Subject> | UnsignedCredential<Subject>
   | Presentation<ClaimCredential<ClaimSubject<UnsignedCredential<MaybeArray<Subject>>>>>
+    | RequestBundle
 
 export type LookupCredentialsMethod<
   Subject extends CredentialSubject = CredentialSubject,
   Type extends RegistryItem<Subject> = Credential<Subject>
   > = (
-    type: CredentialType,
+    type: string | string[],
     section?: string
   ) => Promise<CredentialWrapper<Subject, Type>[]>
 
@@ -65,6 +67,7 @@ export type RegistryType = typeof REGISTRY_TYPE_IDENTITIES
 export const REGISTRY_TYPE_IDENTITIES = 'identities'
 export const REGISTRY_TYPE_CREDENTIALS = 'credentials'
 export const REGISTRY_TYPE_CLAIMS = 'claims'
+export const REGISTRY_TYPE_REQUESTS = 'requests'
 
 export const REGISTRY_SECTION_OWN = 'own'
 export const REGISTRY_SECTION_PEER = 'peer'

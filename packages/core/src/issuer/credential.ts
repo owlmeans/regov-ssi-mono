@@ -25,15 +25,16 @@ import {
   ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL,
   ClaimBundle,
   ERROR_WRONG_CLAIM_SUBJECT_TYPE,
-  CLAIM_TYPE_PREFFIX
+  CLAIM_TYPE_PREFFIX,
+  ERROR_UNTUSTED_ISSUER
 } from "../holder/types";
 import { CREDENTIAL_OFFER_TYPE, OfferBundle, OfferCredential, OfferSubject } from "./types";
+import { EntityIdentity, IdentityParams } from "../wallet/identity/types";
 
 
 
 export const issuerCredentialHelper = (wallet: WalletWrapper) => {
   const _identityHelper = identityHelper(wallet)
-
 
   return {
     claim: <
@@ -57,7 +58,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
         claim: UnsignedClaim,
         key?: KeyPair | string
       ) => {
-        issuer = issuer || _identityHelper.getIdentity().did?.did
+        issuer = issuer || _identityHelper.getIdentity().did
         if (!issuer) {
           throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
         }
@@ -126,26 +127,37 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
       BundledClaim extends ClaimCredential,
       BundledOffer extends OfferCredential = OfferCredential
     >(
-      issuer?: DIDDocument
+      issuer?: DIDDocument,
+      identity?: IdentityParams | EntityIdentity | boolean
     ) => ({
       unbudle: async (bundle: ClaimBundle<BundledClaim>) => {
-        let [result] = await wallet.ctx.verifyPresentation(
-          bundle.presentation,
-          bundle.did
-        )
+        const claims = [...bundle.verifiableCredential]
+        const entity = _identityHelper.extractEntity(claims)
 
-        if (!bundle.presentation.type.includes(CREDENTIAL_CLAIM_TYPE)) {
-          result = false
+        const did = entity?.credentialSubject.did
+
+        if (! await wallet.did.helper().verifyDID(did)) {
+          throw new Error(ERROR_UNTUSTED_ISSUER)
         }
+        
+        let [result] = await wallet.ctx.verifyPresentation(bundle, did)
 
-        return [
-          result,
-          bundle.presentation.verifiableCredential
-        ] as [boolean, BundledClaim[]]
+        result = result && bundle.type.includes(CREDENTIAL_CLAIM_TYPE)
+
+        return { result, claims, entity } as {
+          result: boolean
+          claims: BundledClaim[],
+          entity?: EntityIdentity
+        }
       },
 
-      build: async (offers: BundledOffer[], id?: string) => {
-        issuer = issuer || _identityHelper.getIdentity().did?.did
+      build: async (
+        offers: BundledOffer[], 
+        id?: string
+      ) => {
+        offers = [...offers]
+        await _identityHelper.attachEntity(offers, identity)
+        issuer = issuer || _identityHelper.getIdentity().did
         if (!issuer) {
           throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
         }
@@ -156,10 +168,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
           type: CREDENTIAL_OFFER_TYPE
         }) as UnsignedPresentation<BundledOffer>
 
-        return {
-          presentation: await wallet.ctx.signPresentation(unsigned, issuer),
-          did: issuer
-        } as OfferBundle<BundledOffer>
+        return await wallet.ctx.signPresentation(unsigned, issuer) as OfferBundle<BundledOffer>
       }
     })
   }
