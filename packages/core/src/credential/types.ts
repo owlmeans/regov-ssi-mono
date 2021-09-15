@@ -30,8 +30,7 @@ export type Identity<Subject extends MaybeArray<IdentitySubject> = MaybeArray<Id
 export type IdentitySubject<
   Type extends WrappedDocument = WrappedDocument,
   ExtendedType extends {} = {}
-  >
-  = CredentialSubject<Type, ExtendedType>
+  > = CredentialSubject<Type, ExtendedType>
 
 export type CredentialSubjectProperty<Type extends CredentialSubject = CredentialSubject>
   = Type

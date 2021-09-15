@@ -1,8 +1,8 @@
 require('dotenv').config()
 
-import { buildCommonContext } from "../context"
-import { CommonContext } from "../context/types"
-import { Credential, UnsignedCredential } from "../types"
+import { buildCommonContext } from "../credential/context"
+import { CommonContext } from "../credential/context/types"
+import { Credential, UnsignedCredential } from "../credential/types"
 import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
 import {
   buildDidHelper,
@@ -15,9 +15,9 @@ import {
   VERIFICATION_KEY_CONTROLLER,
   VERIFICATION_KEY_HOLDER
 } from "@owlmeans/regov-ssi-did"
-import { buildKeyChain } from "../../keys/model"
+import { buildKeyChain } from "../keys/model"
 
-import { Presentation, UnsignedPresentation } from "../types"
+import { Presentation, UnsignedPresentation } from "../credential/types"
 import util from 'util'
 util.inspect.defaultOptions.depth = 8
 

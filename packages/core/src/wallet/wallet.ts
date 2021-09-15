@@ -1,13 +1,22 @@
 import { buildDidHelper, buildDidRegistryWarpper } from "@owlmeans/regov-ssi-did";
-import { buildCommonContext, Credential, CredentialSubject, WrappedDocument, UnsignedCredential } from "../credential";
+import { buildCommonContext, Credential, CredentialSubject } from "../credential";
 import { buildKeyChain } from "../keys";
 import { buildStore } from "../store/store";
 import { SecureStore } from "../store/types";
-import { CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryItem, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES } from "./registry";
+import {
+  CredentialsRegistry,
+  CredentialsRegistryWrapper,
+  CredentialWrapper,
+  RegistryItem,
+  REGISTRY_SECTION_OWN,
+  REGISTRY_TYPE_CREDENTIALS,
+  REGISTRY_TYPE_IDENTITIES
+} from "./registry";
 import { GetRegistryMethod, WalletWrapperBuilder } from "./types";
 
+
 export const buildWalletWrapper: WalletWrapperBuilder =
-  async (crypto, password, store = undefined, options = undefined) => {
+  async (crypto, password, store?, options?) => {
     const _store: SecureStore = await buildStore(crypto, password, store)
 
     _store.data = _store.data || {}

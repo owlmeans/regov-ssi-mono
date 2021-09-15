@@ -189,6 +189,11 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           throw new Error(ERROR_UNTUSTED_ISSUER)
         }
 
+        /**
+         * @TODO we should be able to deal with untrusted issuer.
+         * 
+         * !!! In this case the initial claim should be addressed to a specific issuer.
+         */
         const issuer = await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
           bundle.holder.id, REGISTRY_SECTION_PEER
         )

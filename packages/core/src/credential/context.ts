@@ -1,19 +1,19 @@
 
-import { 
-  buildVCV1, 
-  buildVCV1Skeleton, 
-  buildVCV1Unsigned, 
-  buildVPV1, 
-  buildVPV1Unsigned, 
-  validateVCV1, 
-  validateVPV1 
+import {
+  buildVCV1,
+  buildVCV1Skeleton,
+  buildVCV1Unsigned,
+  buildVPV1,
+  buildVPV1Unsigned,
+  validateVCV1,
+  validateVPV1
 } from "@affinidi/vc-common"
 
 import {
   BuildCommonContextMethod,
   BuildCredentailOptions,
   SignCredentialOptions,
-  BuildPresentationOptions, 
+  BuildPresentationOptions,
   SignPresentationOptions,
 } from "./context/types"
 import {
@@ -61,10 +61,20 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     did,
 
     buildLDContext: (url, extendedCtx?, baseUrl?) => {
+      const uri = `${baseUrl || defaultSchema || 'https://example.org'}${url ? `/${url}` : ''}#`
       return {
         '@version': 1.1,
-        scm: `${baseUrl || defaultSchema || 'https://example.org'}${url ? `/${url}` : ''}#`,
-        data: { '@id': 'scm:data', '@type': '@json' },
+        scm: uri,
+        data: extendedCtx
+          ? {
+            '@context': {
+              '@version': 1.1,
+              'scmdata': `${baseUrl || defaultSchema || 'https://example.org'}${url ? `/${url}/data` : ''}#`
+            },
+            '@id': `scmdata:id`,
+            '@type': 'scmdata:type'
+          }
+          : { '@id': 'scm:data', '@type': '@json' },
         ...extendedCtx
       }
     },

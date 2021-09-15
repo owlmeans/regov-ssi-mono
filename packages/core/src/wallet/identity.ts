@@ -20,7 +20,7 @@ import {
   CREDENTIAL_ENTITY_IDENTITY_TYPE,
   IdentityParams
 } from './identity/types'
-import { ERROR_DESCRIBE_IDENTITY_WITH_PAYLOAD, ERROR_NO_IDENTITY_PROVIDED } from './identity/types'
+import { ERROR_DESCRIBE_IDENTITY_WITH_EXTENSION, ERROR_NO_IDENTITY_PROVIDED } from './identity/types'
 import { REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from './registry/types'
 import { WalletWrapper } from './types'
 import { isPresentation } from '../credential/util'
@@ -51,8 +51,8 @@ const _extractIdentitySubjectData = <
 
 export const identityHelper = <
   PayloadT extends {} = {},
-  SubjectT extends IdentitySubject<WrappedDocument<PayloadT>> = IdentitySubject<WrappedDocument<PayloadT>>
->(wallet: WalletWrapper) => {
+  SubjectT extends IdentitySubject<WrappedDocument<PayloadT>> = IdentitySubject<WrappedDocument<PayloadT>, {}>
+>(wallet: WalletWrapper, idtContext?: CredentialContextType) => {
   const _buildEntityIdnetity = async (entity?: IdentityParams, signer?: DIDDocument) => {
     if (!entity) {
       const identity = _getIdentity(wallet)()
@@ -158,8 +158,7 @@ export const identityHelper = <
     >(
       type: string,
       payload: PayloadT,
-      extension: SubjectT extends IdentitySubject<any, infer Extension> ? Extension : never,
-      idtContext?: CredentialContextType
+      extension?: SubjectT extends IdentitySubject<any, infer Extension> ? Extension : never
     ) => {
       const identitySubject = {
         data: {
@@ -170,8 +169,8 @@ export const identityHelper = <
       } as SubjectT
 
       if (!idtContext) {
-        if (payload) {
-          throw new Error(ERROR_DESCRIBE_IDENTITY_WITH_PAYLOAD)
+        if (payload || extension) {
+          throw new Error(ERROR_DESCRIBE_IDENTITY_WITH_EXTENSION)
         }
         idtContext = wallet.ctx.buildLDContext('identity')
       }

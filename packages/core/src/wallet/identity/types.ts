@@ -19,7 +19,7 @@ export type EntityIdentityPayload = {identity: Credential<any> }
 
 export type ExntityIdentityExtension = { did: DIDDocument }
 
-export const ERROR_DESCRIBE_IDENTITY_WITH_PAYLOAD = 'ERROR_DESCRIBE_IDENTITY_WITH_PAYLOAD'
+export const ERROR_DESCRIBE_IDENTITY_WITH_EXTENSION = 'ERROR_DESCRIBE_IDENTITY_WITH_EXTENSION'
 export const ERROR_NO_IDENTITY_PROVIDED = 'ERROR_NO_IDENTITY_PROVIDED'
 
 export const CREDENTIAL_ENTITY_IDENTITY_TYPE = 'EntityIdentity'
