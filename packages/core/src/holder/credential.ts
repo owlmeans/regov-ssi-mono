@@ -8,15 +8,15 @@ import { identityHelper } from "../wallet/identity"
 import {
   CredentialSubject,
   Credential,
-  CredentialSubjectType,
+  WrappedDocument,
   BASE_CREDENTIAL_TYPE,
   UnsignedCredential,
   UnsignedPresentation,
-  Presentation
+  Presentation,
+  ContextSchema
 } from "../credential/types"
 import { WalletWrapper } from "../wallet/types"
 import { KeyPair } from "../keys/types"
-import { ContextObj } from "@affinidi/vc-common"
 import {
   ClaimSubject,
   ClaimCredential,
@@ -59,15 +59,15 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       Payload extends {} = {},
       Extension extends {} = {},
       CredentialUT extends UnsignedCredential<
-        CredentialSubject<CredentialSubjectType<Payload>, Extension>
+        CredentialSubject<WrappedDocument<Payload>, Extension>
       > = UnsignedCredential<
-        CredentialSubject<CredentialSubjectType<Payload>, Extension>
+        CredentialSubject<WrappedDocument<Payload>, Extension>
       >
     >(
       claimOptions: {
         type: string,
         schemaUri?: string,
-        crdContext?: ContextObj,
+        crdContext?: ContextSchema,
         holder?: DIDDocument,
       }
     ) => ({
@@ -98,8 +98,8 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         }
 
         const unsignedCredential = await wallet.ctx.buildCredential<
-          CredentialSubjectType<Payload>,
-          CredentialSubject<CredentialSubjectType<Payload>, Extension>
+          WrappedDocument<Payload>,
+          CredentialSubject<WrappedDocument<Payload>, Extension>
         >({
           id: didUnsigned.id,
           type: [BASE_CREDENTIAL_TYPE, claimOptions.type],
@@ -120,7 +120,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         }
 
         const claimUnsigned = await wallet.ctx.buildCredential<
-          CredentialSubjectType<{ credential: CredentialUT }>,
+          WrappedDocument<{ credential: CredentialUT }>,
           ClaimSubject<CredentialUT>
         >({
           id: didUnsigned.id,
@@ -147,7 +147,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       ) => {
         await wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
           .addCredential<
-            CredentialSubject<CredentialSubjectType<Payload>, Extension>,
+            CredentialSubject<WrappedDocument<Payload>, Extension>,
             Presentation<ClaimCredential<ClaimSubject<CredentialUT>>>
           >(bundle)
       }
@@ -158,7 +158,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       BundledOffer extends OfferCredential = OfferCredential
     >(bundleOptions: {
       schemaUri?: string,
-      crdContext?: ContextObj,
+      crdContext?: ContextSchema,
       holder?: DIDDocument,
     }) => ({
       build: async (
@@ -207,9 +207,9 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         type Extension = ClaimExtenstion<BundledClaim>
 
         const claims = wallet.getRegistry(REGISTRY_TYPE_CLAIMS).getCredential<
-          CredentialSubject<CredentialSubjectType<Payload>, Extension>,
+          CredentialSubject<WrappedDocument<Payload>, Extension>,
           Presentation<ClaimCredential<ClaimSubject<
-            UnsignedCredential<CredentialSubject<CredentialSubjectType<Payload>, Extension>>
+            UnsignedCredential<CredentialSubject<WrappedDocument<Payload>, Extension>>
           >>>
         >(bundle.id)
 
@@ -239,7 +239,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       store: async (bundle: OfferBundle<BundledOffer>) => {
         type Payload = ClaimPayload<BundledClaim>
         type Extension = ClaimExtenstion<BundledClaim>
-        type SubjectT = CredentialSubject<CredentialSubjectType<Payload>, Extension>
+        type SubjectT = CredentialSubject<WrappedDocument<Payload>, Extension>
 
         const registry = wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
         return Promise.all(bundle.verifiableCredential.map(

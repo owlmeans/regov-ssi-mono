@@ -2,7 +2,7 @@
 import { DIDDocument, DIDDocumentUnsinged } from "@owlmeans/regov-ssi-did"
 import {
   CredentialSubject,
-  CredentialSubjectType,
+  WrappedDocument,
   Credential,
   Presentation,
   CredentialType
@@ -10,9 +10,9 @@ import {
 import { EntityIdentity } from "../wallet/identity/types"
 
 
-export type RequestSubject = CredentialSubject<CredentialRequestSubjectType, {}>
+export type RequestSubject = CredentialSubject<CredentialRequestDoc, {}>
 
-export type CredentialRequestSubjectType = CredentialSubjectType<{
+export type CredentialRequestDoc = WrappedDocument<{
   issuer?: { id?: string, capabilities?: string[] }
   holder?: string,
   source?: string

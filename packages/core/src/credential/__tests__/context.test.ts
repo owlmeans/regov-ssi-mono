@@ -1,8 +1,5 @@
 require('dotenv').config()
 
-import { buildCommonContext } from "../context"
-import { CommonContext } from "../context/types"
-import { Credential, UnsignedCredential } from "../types"
 import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
 import {
   buildDidHelper,
@@ -10,15 +7,23 @@ import {
   DIDDocument,
   DIDPURPOSE_ASSERTION,
   DIDPURPOSE_AUTHENTICATION,
-  DIDPURPOSE_VERIFICATION,
-  DIDVerificationItem
+  DIDPURPOSE_VERIFICATION
 } from "@owlmeans/regov-ssi-did"
-import { buildKeyChain } from "../../keys/model"
 
-import { Presentation, UnsignedPresentation } from "../types"
+import { 
+  Presentation, 
+  UnsignedPresentation, 
+  buildCommonContext,
+  CredentialSubject,
+  CommonContext,
+  Credential, 
+  UnsignedCredential,
+  buildKeyChain,
+  MaybeArray
+} from "../../index"
+
+
 import util from 'util'
-import { CommonCredentailSubject, CommonUnsignedCredential, CredentialSubject } from ".."
-import { MaybeArray } from "@affinidi/vc-common"
 util.inspect.defaultOptions.depth = 8
 
 

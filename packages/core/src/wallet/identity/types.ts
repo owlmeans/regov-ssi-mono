@@ -1,13 +1,13 @@
 
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
-import { Credential, CredentialSubject, CredentialSubjectType, UnsignedCredential } from "../../credential/types"
+import { Credential, CredentialSubject, WrappedDocument, UnsignedCredential } from "../../credential/types"
 
 
 export type EntityIdentity = Credential<EntityIdentitySubject>
 
 export type UnsignedEntityIdentity = UnsignedCredential<EntityIdentitySubject>
 
-export type EntityIdentitySubjectType = CredentialSubjectType<EntityIdentityPayload>
+export type EntityIdentitySubjectType = WrappedDocument<EntityIdentityPayload>
 
 export type EntityIdentitySubject = CredentialSubject<
   EntityIdentitySubjectType, ExntityIdentityExtension

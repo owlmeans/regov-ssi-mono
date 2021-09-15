@@ -14,7 +14,11 @@ import {
   REGISTRY_TYPE_REQUESTS
 } from "../wallet/registry/types"
 import { EntityIdentity, IdentityParams } from "../wallet/identity/types"
-import { CredentialRequestSubjectType, ERROR_NO_IDENTITY_TO_VERIFY_CREDENTIAL, RequestBundle } from "./types"
+import {
+  CredentialRequestDoc,
+  ERROR_NO_IDENTITY_TO_VERIFY_CREDENTIAL,
+  RequestBundle
+} from "./types"
 import {
   CREDENTIAL_RESPONSE_TYPE,
   ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL,
@@ -37,7 +41,7 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
   return {
     request: (verifier?: DIDDocument) => {
       return {
-        build: async (request: CredentialRequestSubjectType, key?: string | KeyPair) => {
+        build: async (request: CredentialRequestDoc, key?: string | KeyPair) => {
           const requestSubject = { data: request }
 
           verifier = verifier || _identityHelper.getIdentity().did

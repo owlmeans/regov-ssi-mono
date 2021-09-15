@@ -1,23 +1,34 @@
-import { MaybeArray } from "@affinidi/vc-common"
-import { CommonContextType } from "./context/types"
 import {
-  CommonCredential,
-  CommonCredentailSubject,
-  CommonSubjectType,
-  CommonType,
-  CommonUnsignedCredential
-} from "./context/types/credential"
-import { CommonPresentation, CommonPresentationHolder, CommonPresentationType, CommonUnsignedPresentation } from "./context/types/presentation"
+  MaybeArray as AffinidiMaybeArray,
+  SimpleThing,
+  TContext,
+  VCV1,
+  VCV1Subject,
+  VCV1Type,
+  VCV1Unsigned,
+  VPV1,
+  VPV1Holder,
+  VPV1Type,
+  VPV1Unsigned,
+  ContextObj
+} from "@affinidi/vc-common";
 
+import { Validatied as AffinidiValidatied } from "@affinidi/vc-common/dist/verifier/util"
+
+export type Validated<T> = AffinidiValidatied<T>
+
+export type MaybeArray<T> = AffinidiMaybeArray<T>
+
+export type ContextSchema = ContextObj
 
 export type Credential<Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>>
-  = CommonCredential<Subject>
+  = VCV1<Subject>
 
 export type Identity<Subject extends MaybeArray<IdentitySubject> = MaybeArray<IdentitySubject>>
   = Credential<Subject>
 
 export type IdentitySubject<
-  Type extends CredentialSubjectType = CredentialSubjectType,
+  Type extends WrappedDocument = WrappedDocument,
   ExtendedType extends {} = {}
   >
   = CredentialSubject<Type, ExtendedType>
@@ -26,34 +37,36 @@ export type CredentialSubjectProperty<Type extends CredentialSubject = Credentia
   = Type
 
 export type CredentialSubject<
-  SubjectType extends CredentialSubjectType = CredentialSubjectType,
+  SubjectType extends WrappedDocument = WrappedDocument,
   ExtendedType extends {} = {}
-  > =
-  CommonCredentailSubject<SubjectType, ExtendedType>
+  > = VCV1Subject<SubjectType> & ExtendedType
 
-export type CredentialSubjectType<ExtendedData extends {} = {}> = CommonSubjectType<ExtendedData>
+export type WrappedDocument<ExtendedData extends {} = {}> = SimpleThing & ExtendedData
 
-export type CredentialContextType = CommonContextType & {}
+export type CredentialContextType = TContext
 
 export type UnsignedCredential<
   Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>
-  > = CommonUnsignedCredential<Subject> & {}
+  > = VCV1Unsigned<Subject>
 
-export type CredentialType = CommonType
+export type CredentialType = VCV1Type
 
 export type UnsignedPresentation<
-  C extends Credential = Credential,
-  H extends PresentationHolder = PresentationHolder,
-  > = CommonUnsignedPresentation<C, H>
+  CredentialT extends Credential = Credential,
+  Holder extends PresentationHolder = PresentationHolder,
+  > = VPV1Unsigned<CredentialT, PresentationType, Holder>
+
 
 export type Presentation<
-  C extends Credential = Credential,
-  H extends PresentationHolder = PresentationHolder
-  > = CommonPresentation<C, H>
+  CredentialT extends Credential = Credential,
+  Holder extends PresentationHolder = PresentationHolder
+  > = VPV1<CredentialT, PresentationType, Holder>
 
-export type PresentationHolder = CommonPresentationHolder
+export type PresentationHolder = VPV1Holder
 
-export type PresentationType = CommonPresentationType
+export type PresentationType = VPV1Type
 
 export const BASE_CREDENTIAL_TYPE = 'VerifiableCredential'
 export const BASE_PRESENTATION_TYPE = 'VerifiablePresentation'
+
+export const ERROR_INVALID_PRESENTATION = 'ERROR_INVALID_PRESENTATION'

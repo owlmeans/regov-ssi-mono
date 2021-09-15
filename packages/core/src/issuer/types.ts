@@ -1,12 +1,17 @@
-import { MaybeArray } from "@affinidi/vc-common"
-import { DIDDocument, DIDDocumentUnsinged } from "@owlmeans/regov-ssi-did"
-import { CredentialSubject, CredentialSubjectType, UnsignedCredential, Credential, Presentation } from "../credential/types"
+import { DIDDocument } from "@owlmeans/regov-ssi-did"
+import {
+  CredentialSubject,
+  WrappedDocument,
+  Credential,
+  Presentation,
+  MaybeArray
+} from "../credential/types"
 
 export type OfferSubject<
   CredentialT extends Credential<MaybeArray<CredentialSubject>> = Credential<MaybeArray<CredentialSubject>>
   > =
   CredentialSubject<
-    CredentialSubjectType<{ credential: CredentialT }>,
+    WrappedDocument<{ credential: CredentialT }>,
     { did: DIDDocument }
   >
 

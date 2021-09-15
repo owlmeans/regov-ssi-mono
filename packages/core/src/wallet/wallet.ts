@@ -1,5 +1,5 @@
 import { buildDidHelper, buildDidRegistryWarpper } from "@owlmeans/regov-ssi-did";
-import { buildCommonContext, Credential, CredentialSubject, CredentialSubjectType, UnsignedCredential } from "../credential";
+import { buildCommonContext, Credential, CredentialSubject, WrappedDocument, UnsignedCredential } from "../credential";
 import { buildKeyChain } from "../keys";
 import { buildStore } from "../store/store";
 import { SecureStore } from "../store/types";

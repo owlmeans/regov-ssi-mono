@@ -1,7 +1,12 @@
-import { MaybeArray } from "@affinidi/vc-common"
-import { RequestBundle } from "../.."
-import { Credential, CredentialSubject, CredentialType, Presentation, UnsignedCredential } from "../../credential/types"
-import { ClaimBundle, ClaimCredential, ClaimSubject } from "../../holder"
+import { RequestBundle } from "../../verifier/types"
+import {
+  Credential,
+  CredentialSubject,
+  Presentation,
+  UnsignedCredential,
+  MaybeArray
+} from "../../credential/types"
+import { ClaimCredential, ClaimSubject } from "../../holder"
 
 
 export type CredentialsRegistry<
@@ -42,7 +47,7 @@ export type AddCredentialMethod = <
 export type RegistryItem<Subject extends CredentialSubject = CredentialSubject> =
   Credential<Subject> | UnsignedCredential<Subject>
   | Presentation<ClaimCredential<ClaimSubject<UnsignedCredential<MaybeArray<Subject>>>>>
-    | RequestBundle
+  | RequestBundle
 
 export type LookupCredentialsMethod<
   Subject extends CredentialSubject = CredentialSubject,

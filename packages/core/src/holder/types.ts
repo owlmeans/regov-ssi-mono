@@ -1,14 +1,19 @@
-import { MaybeArray } from "@affinidi/vc-common"
 import { DIDDocument, DIDDocumentUnsinged } from "@owlmeans/regov-ssi-did"
-import { CredentialSubject, CredentialSubjectType, UnsignedCredential, Credential, Presentation } from "../credential/types"
-import { EntityIdentity } from "../wallet/identity/types"
+import { 
+  CredentialSubject, 
+  WrappedDocument, 
+  UnsignedCredential, 
+  Credential, 
+  Presentation,
+  MaybeArray
+} from "../credential/types"
 
 
 export type ClaimSubject<
   CredentialUT extends UnsignedCredential<MaybeArray<CredentialSubject>> = UnsignedCredential<MaybeArray<CredentialSubject>>
   > =
   CredentialSubject<
-    CredentialSubjectType<{ credential: CredentialUT }>,
+    WrappedDocument<{ credential: CredentialUT }>,
     { did: DIDDocumentUnsinged }
   >
 
@@ -24,7 +29,7 @@ export type ClaimPayload<Claim> = Claim extends ClaimCredential<infer ClaimSubje
   ? ClaimSubjectT extends ClaimSubject<infer CredentialUT>
   ? CredentialUT extends UnsignedCredential<infer Subject>
   ? Subject extends CredentialSubject<infer SourceType, any>
-  ? SourceType extends CredentialSubjectType<infer Payload> ? Payload : never
+  ? SourceType extends WrappedDocument<infer Payload> ? Payload : never
   : never
   : never
   : never
@@ -42,7 +47,7 @@ export type ClaimExtenstion<Claim> = Claim extends ClaimCredential<infer ClaimSu
 
 export type SatelliteSubject = CredentialSubject<SetelliteSubjectType, {}>
 
-export type SetelliteSubjectType = CredentialSubjectType<{ did: DIDDocument }>
+export type SetelliteSubjectType = WrappedDocument<{ did: DIDDocument }>
 
 export const CREDENTIAL_SATELLITE_TYPE = 'CredentialSatellit'
 

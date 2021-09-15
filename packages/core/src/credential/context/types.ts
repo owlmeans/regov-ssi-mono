@@ -1,17 +1,20 @@
-import { ContextObj, TContext } from "@affinidi/vc-common"
-import { Validatied } from "@affinidi/vc-common/dist/verifier/util"
-
-import { CryptoHelper, CommonCryptoKey } from "@owlmeans/regov-ssi-common"
+import { CryptoHelper } from "@owlmeans/regov-ssi-common"
 import { KeyChainWrapper } from "../../keys/types"
-import {
-  CommonCredential,
-  CommonCredentailSubject,
-  CommonSubjectType,
-  CommonType,
-  CommonUnsignedCredential
-} from "./types/credential"
+
 import { DIDDocument, DIDRegistryWrapper } from '@owlmeans/regov-ssi-did'
-import { CommonPresentation, CommonPresentationHolder, CommonUnsignedPresentation } from "./types/presentation"
+import {
+  Credential,
+  CredentialContextType,
+  CredentialSubject,
+  WrappedDocument,
+  CredentialType,
+  Presentation,
+  PresentationHolder,
+  UnsignedCredential,
+  UnsignedPresentation,
+  ContextSchema,
+  Validated
+} from "../types"
 
 
 export type BuildCommonContextMethod = (options: {
@@ -25,96 +28,96 @@ export type CommonContext = {
   keys: KeyChainWrapper
   crypto: CryptoHelper
   did: DIDRegistryWrapper
-  buildLDContext: (url: string, extendedCtx?: ContextObj, baseUrl?: string) => ContextObj
-  buildCredential: CommonBuildCredentialMethod
-  signCredential: CommonSignCredentialMethod
-  verifyCredential: CommonVerfiyCredentailMethod
-  buildPresentation: CommonBuildPresentationMethod
-  signPresentation: CommonSignPresentationMethod
-  verifyPresentation: CommonVerifyPresentationMethod
+  buildLDContext: (url: string, extendedCtx?: ContextSchema, baseUrl?: string) => ContextSchema
+  buildCredential: BuildCredentialMethod
+  signCredential: SignCredentialMethod
+  verifyCredential: VerfiyCredentailMethod
+  buildPresentation: BuildPresentationMethod
+  signPresentation: SignPresentationMethod
+  verifyPresentation: VerifyPresentationMethod
 }
 
-export type CommonBuildCredentialMethod = <
-  SubjectType extends CommonSubjectType = CommonSubjectType,
-  Subject extends CommonCredentailSubject<SubjectType> = CommonCredentailSubject<SubjectType>,
-  Unsigned extends CommonUnsignedCredential<Subject> = CommonUnsignedCredential<Subject>
-  >(options: CommonBuildCredentailOptions<SubjectType>) => Promise<Unsigned>
+export type BuildCredentialMethod = <
+  SubjectType extends WrappedDocument = WrappedDocument,
+  Subject extends CredentialSubject<SubjectType> = CredentialSubject<SubjectType>,
+  Unsigned extends UnsignedCredential<Subject> = UnsignedCredential<Subject>
+  >(options: BuildCredentailOptions<SubjectType>) => Promise<Unsigned>
 
-export type CommonContextType = TContext
+// export type CommonContextType = TContext
 
-export type CommonBuildCredentailOptions<
-  SubjectType extends CommonSubjectType = CommonSubjectType,
-  Subject extends CommonCredentailSubject<SubjectType> = CommonCredentailSubject<SubjectType>
+export type BuildCredentailOptions<
+  SubjectType extends WrappedDocument = WrappedDocument,
+  Subject extends CredentialSubject<SubjectType> = CredentialSubject<SubjectType>
   > = {
     id: string,
-    type: CommonType
+    type: CredentialType
     holder: string,
     subject: Subject,
     issueanceDate?: string
-    context: CommonContextType
+    context: CredentialContextType
   }
 
-export type CommonSignCredentialMethod = <
-  Subject extends CommonCredentailSubject = CommonCredentailSubject,
-  Credential extends CommonCredential<Subject> = CommonCredential<Subject>,
-  CredentialU extends CommonUnsignedCredential<Subject> = CommonUnsignedCredential<Subject>
+export type SignCredentialMethod = <
+  Subject extends CredentialSubject = CredentialSubject,
+  CredentialT extends Credential<Subject> = Credential<Subject>,
+  CredentialU extends UnsignedCredential<Subject> = UnsignedCredential<Subject>
   >(
   unsingedCredential: CredentialU,
   issuer: DIDDocument,
-  options?: CommonSignCredentialOptions
+  options?: SignCredentialOptions
 ) =>
-  Promise<Credential>
+  Promise<CredentialT>
 
-export type CommonSignCredentialOptions = {
+export type SignCredentialOptions = {
   buildProofPurposeOptions?: () => Promise<Object>
   keyId?: string
 }
 
-export type CommonVerfiyCredentailMethod = (
-  credential: CommonCredential,
+export type VerfiyCredentailMethod = (
+  credential: Credential,
   did?: DIDDocument | string,
   keyId?: string
-) => Promise<[boolean, CommonVerificationResult]>
+) => Promise<[boolean, VerificationResult]>
 
-export type CommonVerificationResult<Credential extends CommonCredential = CommonCredential> = Validatied<Credential>
+export type VerificationResult<CredentialT extends Credential = Credential>
+  = Validated<CredentialT>
 
-export type CommonBuildPresentationMethod = <
-  Credential extends CommonCredential = CommonCredential,
-  Holder extends CommonPresentationHolder = CommonPresentationHolder
+export type BuildPresentationMethod = <
+  CredentialT extends Credential = Credential,
+  Holder extends PresentationHolder = PresentationHolder
   >(
-  credentials: Credential[],
-  options: CommonBuildPresentationOptions
-) => Promise<CommonUnsignedPresentation<Credential, Holder>>
+  credentials: CredentialT[],
+  options: BuildPresentationOptions
+) => Promise<UnsignedPresentation<CredentialT, Holder>>
 
-export type CommonBuildPresentationOptions = {
-    id?: string
-    type?: string | string[]
-    context?: CommonContextType
-    holder: string
-  }
+export type BuildPresentationOptions = {
+  id?: string
+  type?: string | string[]
+  context?: CredentialContextType
+  holder: string
+}
 
-export type CommonSignPresentationMethod = <
-  Credential extends CommonCredential = CommonCredential,
-  Holder extends CommonPresentationHolder = CommonPresentationHolder
+export type SignPresentationMethod = <
+  CredentialT extends Credential = Credential,
+  Holder extends PresentationHolder = PresentationHolder
   >(
-  unsignedPresentation: CommonUnsignedPresentation<Credential, Holder>,
+  unsignedPresentation: UnsignedPresentation<CredentialT, Holder>,
   holder: DIDDocument,
-  options?: CommonSignPresentationOptions
-) => Promise<CommonPresentation<Credential, Holder>>
+  options?: SignPresentationOptions
+) => Promise<Presentation<CredentialT, Holder>>
 
-export type CommonSignPresentationOptions = {
+export type SignPresentationOptions = {
   buildProofPurposeOptions?: () => Promise<Object>
   challange?: string
   domain?: string
   keyId?: string
 }
 
-export type CommonVerifyPresentationMethod = (
-  presentation: CommonPresentation,
+export type VerifyPresentationMethod = (
+  presentation: Presentation,
   didDoc?: DIDDocument
-) => Promise<[boolean, CommonVerifyPresentationResult]>
+) => Promise<[boolean, VerifyPresentationResult]>
 
-export type CommonVerifyPresentationResult<
-  Presentation extends CommonPresentation = CommonPresentation
-  > = Validatied<Presentation>
+export type VerifyPresentationResult<PresentationT extends Presentation = Presentation>
+  = Validated<PresentationT>
 

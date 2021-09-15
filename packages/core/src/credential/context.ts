@@ -1,19 +1,45 @@
 
-import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, buildVPV1, buildVPV1Unsigned, validateVCV1, validateVPV1 } from "@affinidi/vc-common"
+import { 
+  buildVCV1, 
+  buildVCV1Skeleton, 
+  buildVCV1Unsigned, 
+  buildVPV1, 
+  buildVPV1Unsigned, 
+  validateVCV1, 
+  validateVPV1 
+} from "@affinidi/vc-common"
 
-import { BuildCommonContextMethod, CommonBuildCredentailOptions, CommonSignCredentialOptions } from "./context/types"
-import { CommonCredential, CommonCredentailSubject, CommonSubjectType, CommonUnsignedCredential } from "./context/types/credential"
+import {
+  BuildCommonContextMethod,
+  BuildCredentailOptions,
+  SignCredentialOptions,
+  BuildPresentationOptions, 
+  SignPresentationOptions,
+} from "./context/types"
+import {
+  Credential,
+  CredentialSubject,
+  WrappedDocument,
+  UnsignedCredential,
+  Presentation,
+  PresentationHolder,
+  UnsignedPresentation,
+} from './types'
 import {
   COMMON_CRYPTO_ERROR_NOID,
   COMMON_CRYPTO_ERROR_NOPK,
   COMMON_CRYPTO_ERROR_NOPUBKEY,
-  CommonCryptoKey,
   basicHelper,
   COMMON_CRYPTO_ERROR_NOKEY
 } from "@owlmeans/regov-ssi-common"
-import { CommonPresentation, CommonPresentationHolder, CommonUnsignedPresentation } from "./context/types/presentation"
-import { CommonBuildPresentationOptions, CommonSignPresentationOptions } from '.'
-import { DIDDocument, buildDocumentLoader, DIDPURPOSE_AUTHENTICATION, DID_REGISTRY_ERROR_NO_DID, DIDPURPOSE_ASSERTION, DID_REGISTRY_ERROR_NO_KEY_BY_DID, VERIFICATION_KEY_HOLDER, VERIFICATION_KEY_CONTROLLER } from "@owlmeans/regov-ssi-did"
+import {
+  DIDDocument,
+  buildDocumentLoader,
+  DID_REGISTRY_ERROR_NO_DID,
+  DID_REGISTRY_ERROR_NO_KEY_BY_DID,
+  VERIFICATION_KEY_HOLDER,
+  VERIFICATION_KEY_CONTROLLER
+} from "@owlmeans/regov-ssi-did"
 
 /**
  * @TODO Sign and verify VC with nonce from did.
@@ -44,10 +70,10 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     },
 
     buildCredential: async <
-      T extends CommonSubjectType = CommonSubjectType,
-      S extends CommonCredentailSubject<T> = CommonCredentailSubject<T>,
-      U extends CommonUnsignedCredential<S> = CommonUnsignedCredential<S>
-    >(options: CommonBuildCredentailOptions<T>) => {
+      T extends WrappedDocument = WrappedDocument,
+      S extends CredentialSubject<T> = CredentialSubject<T>,
+      U extends UnsignedCredential<S> = UnsignedCredential<S>
+    >(options: BuildCredentailOptions<T>) => {
       const skeleton = buildVCV1Skeleton({
         context: options.context,
         id: options.id,
@@ -65,12 +91,12 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     },
 
     signCredential: async <
-      S extends CommonCredentailSubject = CommonCredentailSubject,
-      C extends CommonCredential<S> = CommonCredential<S>
+      S extends CredentialSubject = CredentialSubject,
+      C extends Credential<S> = Credential<S>
     >(
-      unsingedCredential: CommonUnsignedCredential<S>,
+      unsingedCredential: UnsignedCredential<S>,
       issuer: DIDDocument,
-      options?: CommonSignCredentialOptions
+      options?: SignCredentialOptions
     ) => {
       const keyId = options?.keyId || did.helper().extractProofController(issuer) === unsingedCredential.holder.id
         ? VERIFICATION_KEY_HOLDER
@@ -160,9 +186,9 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
     },
 
     buildPresentation: async <
-      C extends CommonCredential = CommonCredential,
-      H extends CommonPresentationHolder = CommonPresentationHolder
-    >(credentails: C[], options: CommonBuildPresentationOptions) => {
+      C extends Credential = Credential,
+      H extends PresentationHolder = PresentationHolder
+    >(credentails: C[], options: BuildPresentationOptions) => {
       return buildVPV1Unsigned({
         id: options.id || `urn:uuid:${basicHelper.makeRandomUuid()}`,
         vcs: [...credentails],
@@ -171,16 +197,16 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
         },
         context: options.context,
         type: options.type
-      }) as CommonUnsignedPresentation<C, H>
+      }) as UnsignedPresentation<C, H>
     },
 
     signPresentation: async<
-      C extends CommonCredential = CommonCredential,
-      H extends CommonPresentationHolder = CommonPresentationHolder
+      C extends Credential = Credential,
+      H extends PresentationHolder = PresentationHolder
     >(
-      unsignedPresentation: CommonUnsignedPresentation<C, H>,
+      unsignedPresentation: UnsignedPresentation<C, H>,
       holder: DIDDocument,
-      options?: CommonSignPresentationOptions
+      options?: SignPresentationOptions
     ) => {
       const keyId = options?.keyId || did.helper().extractKeyId(holder.proof.verificationMethod)
       const key = await did.extractKey(holder, keyId)
@@ -217,7 +243,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
           challenge: options?.challange || unsignedPresentation.id || basicHelper.makeRandomUuid(),
           domain: options?.domain || holder.id
         }),
-      }) as CommonPresentation<C, H>
+      }) as Presentation<C, H>
     },
 
     verifyPresentation: async (presentation, didDoc?) => {

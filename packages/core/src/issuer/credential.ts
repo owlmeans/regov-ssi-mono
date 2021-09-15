@@ -1,23 +1,19 @@
 import {
   DIDDocument,
-  DIDPURPOSE_ASSERTION,
-  DIDPURPOSE_AUTHENTICATION,
-  DIDPURPOSE_VERIFICATION,
   VERIFICATION_KEY_CONTROLLER
 } from "@owlmeans/regov-ssi-did";
 import { identityHelper } from "../wallet/identity";
 import {
   CredentialSubject,
   Credential,
-  CredentialSubjectType,
+  WrappedDocument,
   BASE_CREDENTIAL_TYPE,
   UnsignedCredential,
   UnsignedPresentation,
-  Presentation
+  MaybeArray,
 } from "../credential/types";
 import { WalletWrapper } from "../wallet/types";
 import { KeyPair } from "../keys/types";
-import { ContextObj, MaybeArray } from "@affinidi/vc-common";
 import {
   ClaimSubject,
   ClaimCredential,
@@ -28,7 +24,12 @@ import {
   CLAIM_TYPE_PREFFIX,
   ERROR_UNTUSTED_ISSUER
 } from "../holder/types";
-import { CREDENTIAL_OFFER_TYPE, OfferBundle, OfferCredential, OfferSubject } from "./types";
+import {
+  CREDENTIAL_OFFER_TYPE,
+  OfferBundle,
+  OfferCredential,
+  OfferSubject
+} from "./types";
 import { EntityIdentity, IdentityParams } from "../wallet/identity/types";
 
 
@@ -40,15 +41,15 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
       Payload extends {} = {},
       Extension extends {} = {},
       CredentialT extends Credential<
-        MaybeArray<CredentialSubject<CredentialSubjectType<Payload>, Extension>>
+        MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
       > = Credential<
-        MaybeArray<CredentialSubject<CredentialSubjectType<Payload>, Extension>>
+        MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
       >
     >(issuer?: DIDDocument) => {
       type UnsignedClaim = ClaimCredential<
         ClaimSubject<
           UnsignedCredential<
-            CredentialSubject<CredentialSubjectType<Payload>, Extension>
+            CredentialSubject<WrappedDocument<Payload>, Extension>
           >
         >
       >
@@ -90,7 +91,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
         }
 
         const offerUnsigned = await wallet.ctx.buildCredential<
-          CredentialSubjectType<{ credential: CredentialT }>,
+          WrappedDocument<{ credential: CredentialT }>,
           OfferSubject<CredentialT>
         >(
           {
@@ -137,7 +138,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
         if (!did || !await wallet.did.helper().verifyDID(did)) {
           throw new Error(ERROR_UNTUSTED_ISSUER)
         }
-        
+
         let [result] = await wallet.ctx.verifyPresentation(bundle, did)
 
         result = result && bundle.type.includes(CREDENTIAL_CLAIM_TYPE)
@@ -150,7 +151,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
       },
 
       build: async (
-        offers: BundledOffer[], 
+        offers: BundledOffer[],
         id?: string
       ) => {
         offers = [...offers]

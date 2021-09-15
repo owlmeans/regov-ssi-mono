@@ -1,16 +1,16 @@
 
-import { DIDDocument, DIDDocumentWrapper, didPurposeList } from '@owlmeans/regov-ssi-did'
+import { DIDDocument, didPurposeList } from '@owlmeans/regov-ssi-did'
 import { RequestBundle } from '../verifier/types'
 import { verifierCredentialHelper } from '../verifier/credential'
 import { holderCredentialHelper } from '../holder/credential'
-import { CommonContextType } from '../credential/context/types'
 import { Credential, Presentation } from '../credential/types'
 import {
-  CredentialSubjectType,
+  WrappedDocument,
   Identity,
   IdentitySubject,
   BASE_CREDENTIAL_TYPE,
-  UnsignedCredential
+  UnsignedCredential,
+  CredentialContextType
 } from '../credential/types'
 import {
   EntityIdentity,
@@ -24,8 +24,7 @@ import { ERROR_DESCRIBE_IDENTITY_WITH_PAYLOAD, ERROR_NO_IDENTITY_PROVIDED } from
 import { REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from './registry/types'
 import { WalletWrapper } from './types'
 import { isPresentation } from '../credential/util'
-import { ERROR_INVALID_PRESENTATION } from '../credential/context/types/presentation'
-import { basicHelper } from '@owlmeans/regov-ssi-common'
+import { ERROR_INVALID_PRESENTATION } from '../credential/types'
 
 
 const _getIdentity = <IdentityT extends Identity<IdentitySubject>>(wallet: WalletWrapper) => () => {
@@ -33,7 +32,7 @@ const _getIdentity = <IdentityT extends Identity<IdentitySubject>>(wallet: Walle
   const identity = registry.getCredential()
 
   return {
-    identity: identity?.credential,
+    identity: identity?.credential as IdentityT,
     did: wallet.did.registry.personal.dids.find(
       did => did.did.id === identity?.credential.id
     )?.did
@@ -41,7 +40,7 @@ const _getIdentity = <IdentityT extends Identity<IdentitySubject>>(wallet: Walle
 }
 
 const _extractIdentitySubjectData = <
-  SubjectT extends IdentitySubject<CredentialSubjectType>
+  SubjectT extends IdentitySubject<WrappedDocument>
 >(subject: SubjectT) => {
   if (Array.isArray(subject)) {
     return (<typeof subject[number]>subject[0]).data
@@ -52,7 +51,7 @@ const _extractIdentitySubjectData = <
 
 export const identityHelper = <
   PayloadT extends {} = {},
-  SubjectT extends IdentitySubject<CredentialSubjectType<PayloadT>> = IdentitySubject<CredentialSubjectType<PayloadT>>
+  SubjectT extends IdentitySubject<WrappedDocument<PayloadT>> = IdentitySubject<WrappedDocument<PayloadT>>
 >(wallet: WalletWrapper) => {
   const _buildEntityIdnetity = async (entity?: IdentityParams, signer?: DIDDocument) => {
     if (!entity) {
@@ -160,7 +159,7 @@ export const identityHelper = <
       type: string,
       payload: PayloadT,
       extension: SubjectT extends IdentitySubject<any, infer Extension> ? Extension : never,
-      idtContext?: CommonContextType
+      idtContext?: CredentialContextType
     ) => {
       const identitySubject = {
         data: {
@@ -185,7 +184,7 @@ export const identityHelper = <
       wallet.did.addDID(did)
 
       const unsignedIdenity = await wallet.ctx.buildCredential<
-        CredentialSubjectType<PayloadT>,
+        WrappedDocument<PayloadT>,
         SubjectT,
         UnsignedCredential<SubjectT>
       >({
@@ -216,8 +215,8 @@ export const identityHelper = <
 
 export const identityBundler = <
   PayloadT extends {} = {},
-  SubjectT extends IdentitySubject<CredentialSubjectType<PayloadT>>
-  = IdentitySubject<CredentialSubjectType<PayloadT>>
+  SubjectT extends IdentitySubject<WrappedDocument<PayloadT>>
+  = IdentitySubject<WrappedDocument<PayloadT>>
 >(wallet: WalletWrapper) => {
   return {
     response: async (
@@ -232,8 +231,16 @@ export const identityBundler = <
             const query = wallet.did.helper().parseDIDId(queryId)
             const cred = reg.credentials[REGISTRY_SECTION_OWN].find((cred) => {
               if (query.query && query.query['issuer']) {
-                if (query.query['issuer'] !== cred.credential.issuer) {
-                  return false
+                if (Array.isArray(query.query['issuer'])) {
+                  if (!query.query['issuer'].find(issuer =>
+                    issuer === cred.credential.issuer
+                  )) {
+                    return false
+                  }
+                } else {
+                  if (cred.credential.issuer !== query.query['issuer']) {
+                    return false
+                  }
                 }
               }
               if (query.query && query.query['type']) {
@@ -277,7 +284,7 @@ export const identityBundler = <
 
     request: async (
       identity?: IdentityParams | EntityIdentity | true,
-      options?: { issuer?: string, type?: string | string[] }
+      options?: { issuer?: string | string[], type?: string | string[] }
     ): Promise<RequestBundle> => {
       identity = await identityHelper(wallet).castEntity(identity) as EntityIdentity
       return await verifierCredentialHelper(wallet)
