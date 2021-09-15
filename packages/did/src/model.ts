@@ -5,7 +5,12 @@ import {
   COMMON_CRYPTO_ERROR_NOPUBKEY,
   COMMON_CRYPTO_ERROR_NOID
 } from '@owlmeans/regov-ssi-common'
-import { DEFAULT_VERIFICATION_KEY, PUBLICKEY_VERIFICATION, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER } from '.'
+import { URLSearchParams } from 'url'
+import {
+  QueryDict,
+  DEFAULT_VERIFICATION_KEY,
+  VERIFICATION_KEY_HOLDER
+} from './types'
 
 import {
   DIDDocument,
@@ -58,15 +63,30 @@ export const buildDidHelper =
           options.data && options.hash ? crypto.hash(options.data) : options.data,
           options.expand
         )
+        }${key.fragment ? `#${key.fragment}` : ''}${options.query
+          ? Object.entries(options.query).reduce((query, [key, value]) => {
+            return `${query === '?' ? query : `${query}&`}${Array.isArray(value)
+              ? value.reduce((query, value) => {
+                return `${query === '' ? '' : '&'}${key}[]=${value}`
+              }, '')
+              : `${key}=${value}`
+              }`
+          }, '?')
+          : ''
         }`
     }
 
     const _isDIDId = (id: string) => id.split(':').length > 2
 
     const _parseDIDId: ParseDIDIdMethod = (id) => {
-      const [noFragmentId, fragment] = id.split('#')
-      const [noQueryId, query] = noFragmentId.split('?')
-      const [, method, cleanId, ...others] = noQueryId.split(':')
+      const [noQueryId, query] = id.split('?')
+      const queryParams = query ? Array.from(new URLSearchParams(query).entries()).reduce<QueryDict>(
+        (query: QueryDict, [key, value]: [string, string | string[] | undefined]) => {
+          return { ...query, [key]: value }
+        }, {}
+      ) : {} as QueryDict
+      const [noFragmentId, fragment] = noQueryId.split('#')
+      const [, method, cleanId, ...others] = noFragmentId.split(':')
       const [purpose, keyIdx] = (
         (items) => items && items.length > 0 ? items : [undefined, undefined]
       )(fragment?.split('-', 2))
@@ -75,7 +95,7 @@ export const buildDidHelper =
         did: noFragmentId || id,
         method,
         id: cleanId,
-        query,
+        query: queryParams,
         fragment,
         ...(others.length > 0 ? { subjectId: others.join(':') } : {}),
         ...(keyIdx ? {
@@ -256,7 +276,7 @@ export const buildDidHelper =
       }
 
       const verificationMethod = did.verificationMethod?.find(
-        _method => _extractKeyId(_method.id) === keyId 
+        _method => _extractKeyId(_method.id) === keyId
       )
 
       return {

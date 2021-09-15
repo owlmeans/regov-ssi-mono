@@ -42,14 +42,16 @@ export type ParseDIDIdMethod = (id: string) => DIDIDExplained
 
 export type DIDIDExplained = {
   method: string
-  id: string,
-  subjectId?: string,
+  id: string
+  subjectId?: string
   fragment?: string
-  query?: string
+  query?: QueryDict
   did: string
   purpose?: string
   keyIdx?: number
 }
+
+export type QueryDict = { [key: string]: string | string[] | undefined }
 
 export type DIDDocument = DIDDocumentUnsinged & {
   proof: DIDDocumentProof
@@ -80,6 +82,7 @@ export type MakeDIDIdOptions = {
   data?: string
   expand?: boolean
   hash?: boolean
+  query?: QueryDict
 }
 
 export type CreateDIDMethodOptions = MakeDIDIdOptions & {

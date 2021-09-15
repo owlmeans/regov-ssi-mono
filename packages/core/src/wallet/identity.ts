@@ -21,10 +21,11 @@ import {
   IdentityParams
 } from './identity/types'
 import { ERROR_DESCRIBE_IDENTITY_WITH_PAYLOAD, ERROR_NO_IDENTITY_PROVIDED } from './identity/types'
-import { REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from './registry/types'
+import { REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from './registry/types'
 import { WalletWrapper } from './types'
 import { isPresentation } from '../credential/util'
 import { ERROR_INVALID_PRESENTATION } from '../credential/context/types/presentation'
+import { basicHelper } from '@owlmeans/regov-ssi-common'
 
 
 const _getIdentity = <IdentityT extends Identity<IdentitySubject>>(wallet: WalletWrapper) => () => {
@@ -223,24 +224,50 @@ export const identityBundler = <
       identity?: IdentityParams | EntityIdentity | RequestBundle
     ): Promise<Presentation<EntityIdentity>> => {
       if (isPresentation(identity)) {
-        /**
-         * @TODO Verify request presentation (separate method)
-         * 
-         * @TODO Use additional info in domain / challange to lookup identity 
-         * by the issuer not by id.
-         */
-        const credentail = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
-          identity.proof.domain
-        )
-        if (!credentail) {
+        let credential = identityHelper(wallet).getIdentity()
+        if (identity.proof.challenge.startsWith('with-params')) {
+          const [, queryId] = identity.proof.challenge.split(':')
+          const reg = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).registry
+          if (typeof queryId === 'string') {
+            const query = wallet.did.helper().parseDIDId(queryId)
+            const cred = reg.credentials[REGISTRY_SECTION_OWN].find((cred) => {
+              if (query.query && query.query['issuer']) {
+                if (query.query['issuer'] !== cred.credential.issuer) {
+                  return false
+                }
+              }
+              if (query.query && query.query['type']) {
+                if (Array.isArray(query.query['type'])) {
+                  if (!query.query['type'].every(type => cred.credential.type.includes(type))) {
+                    return false
+                  }
+                } else {
+                  if (!cred.credential.type.includes(query.query['type'])) {
+                    return false
+                  }
+                }
+              }
+              return true
+            })?.credential as Identity<SubjectT> | undefined
+            if (cred) {
+              credential = {
+                identity: cred,
+                did: await wallet.did.lookUpDid<DIDDocument>(cred.id) as DIDDocument
+              }
+            }
+          }
+        }
+
+        if (!credential) {
           throw new Error(ERROR_NO_IDENTITY_PROVIDED)
         }
-        const didW = wallet.did.registry.personal.dids.find(
-          didW => didW.did.id === credentail.credential.id
-        ) as DIDDocumentWrapper
+        if (!credential.identity) {
+          throw new Error(ERROR_NO_IDENTITY_PROVIDED)
+        }
+
         identity = {
-          credential: credentail.credential,
-          did: didW.did
+          credential: credential.identity,
+          did: credential.did as DIDDocument
         }
       }
 
@@ -255,8 +282,14 @@ export const identityBundler = <
       identity = await identityHelper(wallet).castEntity(identity) as EntityIdentity
       return await verifierCredentialHelper(wallet)
         .request(identity.credentialSubject.did).bundle([], identity, {
-          domain: options?.issuer, /** @TODO Domain shouldn't be used to identify issuer of identity */
-          type: options?.type
+          challenge: options ? `with-params:${wallet.did.helper().makeDIDId(
+            { id: identity.credentialSubject.did.id },
+            {
+              hash: false, query: {
+                ...(options?.issuer ? { issuer: options?.issuer } : {}),
+                ...(options?.type ? { type: options?.type } : {})
+              }
+            })}` : undefined
         })
     },
 
