@@ -121,3 +121,5 @@ export type VerifyPresentationMethod = (
 export type VerifyPresentationResult<PresentationT extends Presentation = Presentation>
   = Validated<PresentationT>
 
+export const ERROR_NO_PRESENTATION_SIGNING_KEY = 'ERROR_NO_PRESENTATION_SIGNING_KEY'
+export const ERROR_NO_CREDENTIAL_SIGNING_KEY = 'ERROR_NO_CREDENTIAL_SIGNING_KEY'

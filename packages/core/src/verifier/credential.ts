@@ -22,7 +22,7 @@ import {
 import {
   CREDENTIAL_RESPONSE_TYPE,
   ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL,
-  ERROR_UNTUSTED_ISSUER,
+  ERROR_UNTRUSTED_ISSUER,
   SatelliteCredential
 } from "../holder/types"
 import {
@@ -101,6 +101,15 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
           }) as RequestBundle
         },
 
+        cleanup: async (response: Presentation<EntityIdentity | Credential>) => {
+          const request = wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
+            .getCredential<RequestSubject, RequestBundle>(response.id)
+          if (request) {
+            return await wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
+              .removeCredential(request.credential)
+          }
+        },
+
         /**
          * @TODO Allow to clean up registered request
          */
@@ -120,7 +129,7 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
 
         const did = entity?.credentialSubject.did
         if (!did || !await wallet.did.helper().verifyDID(did)) {
-          throw new Error(ERROR_UNTUSTED_ISSUER)
+          throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
         let [result] = await wallet.ctx.verifyPresentation(presentation, did)

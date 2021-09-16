@@ -81,7 +81,13 @@ export const identityHelper = <
       holder: wallet.did.helper().extractProofController(entity.did),
       context: wallet.ctx.buildLDContext(
         'entity/idnetity',
-        { did: { '@id': 'scm:did', '@type': '@json' } }
+        /**
+         * @TODO Decribe context properly
+         */
+        { 
+          did: { '@id': 'scm:did', '@type': '@json' },
+          identity: { '@id': 'scm:identity', '@type': '@json' }
+        }
       ),
       subject: credentialSubject
     })

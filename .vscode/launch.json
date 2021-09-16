@@ -54,6 +54,50 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Debug - Core: identity",
+      "skipFiles": [
+        "<node_internals>/**",
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "envFile": "${workspaceRoot}/packages/core/.env",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/core/node_modules/.bin/ts-node",
+        "--cwd",
+        "${workspaceRoot}/packages/core/",
+        "--project",
+        "${workspaceRoot}/packages/core/tsconfig.json",
+        "--ignore" ,
+        ".js",
+        "${workspaceRoot}/packages/core/src/debug/identity.ts"
+      ],
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug - Core: credential",
+      "skipFiles": [
+        "<node_internals>/**",
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "envFile": "${workspaceRoot}/packages/core/.env",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/core/node_modules/.bin/ts-node",
+        "--cwd",
+        "${workspaceRoot}/packages/core/",
+        "--project",
+        "${workspaceRoot}/packages/core/tsconfig.json",
+        "--ignore" ,
+        ".js",
+        "${workspaceRoot}/packages/core/src/debug/credential.ts"
+      ],
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Debug - Did: model",
       "skipFiles": [
         "<node_internals>/**",

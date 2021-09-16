@@ -1,6 +1,7 @@
 import {
   DIDDocument,
-  VERIFICATION_KEY_CONTROLLER
+  VERIFICATION_KEY_CONTROLLER,
+  VERIFICATION_KEY_HOLDER
 } from "@owlmeans/regov-ssi-did";
 import { identityHelper } from "../wallet/identity";
 import {
@@ -22,7 +23,7 @@ import {
   ClaimBundle,
   ERROR_WRONG_CLAIM_SUBJECT_TYPE,
   CLAIM_TYPE_PREFFIX,
-  ERROR_UNTUSTED_ISSUER
+  ERROR_UNTRUSTED_ISSUER
 } from "../holder/types";
 import {
   CREDENTIAL_OFFER_TYPE,
@@ -69,7 +70,9 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
 
         const credential = await wallet.ctx.signCredential(
           claim.credentialSubject.data.credential,
-          issuer
+          issuer, {
+            keyId: VERIFICATION_KEY_HOLDER
+          }
         ) as CredentialT
 
         if (typeof claim.credentialSubject.data["@type"] !== 'string') {
@@ -101,7 +104,13 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
             subject: offerSubject,
             context: wallet.ctx.buildLDContext(
               'credential/claim',
-              { did: { '@id': 'scm:did', '@type': '@json' } }
+              /**
+               * @TODO Use some proper schema
+               */
+              { 
+                did: { '@id': 'scm:did', '@type': '@json' },
+                credential: { '@id': 'scm:credential', '@type': '@json' },
+              }
             )
           }
         )
@@ -136,7 +145,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
 
         const did = entity?.credentialSubject.did
         if (!did || !await wallet.did.helper().verifyDID(did)) {
-          throw new Error(ERROR_UNTUSTED_ISSUER)
+          throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
         let [result] = await wallet.ctx.verifyPresentation(bundle, did)

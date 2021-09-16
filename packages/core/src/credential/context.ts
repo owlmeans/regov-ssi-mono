@@ -15,6 +15,8 @@ import {
   SignCredentialOptions,
   BuildPresentationOptions,
   SignPresentationOptions,
+  ERROR_NO_PRESENTATION_SIGNING_KEY,
+  ERROR_NO_CREDENTIAL_SIGNING_KEY,
 } from "./context/types"
 import {
   Credential,
@@ -114,7 +116,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
 
       const key = await did.extractKey(issuer, keyId)
       if (!key) {
-        throw new Error(COMMON_CRYPTO_ERROR_NOKEY)
+        throw new Error(ERROR_NO_CREDENTIAL_SIGNING_KEY)
       }
 
       await keys.expandKey(key)
@@ -221,7 +223,7 @@ export const buildCommonContext: BuildCommonContextMethod = async ({
       const keyId = options?.keyId || did.helper().extractKeyId(holder.proof.verificationMethod)
       const key = await did.extractKey(holder, keyId)
       if (!key) {
-        throw new Error(COMMON_CRYPTO_ERROR_NOKEY)
+        throw new Error(ERROR_NO_PRESENTATION_SIGNING_KEY)
       }
 
       await keys.expandKey(key)
