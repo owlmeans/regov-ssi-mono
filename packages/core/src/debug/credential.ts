@@ -17,12 +17,12 @@ const _test = async () => {
   await charly.produceIdentity()
 
   /**
-   * @Case 1
+   * @CASE 1
    * 1. Charly provide his identity to Bob
    * 2. Alice claims a document from Charly
    * 3. Charly signs the document
    * 4. Charly offers the signed document to Alice
-   * 5. Alice confirms the signed document (Claim should be cleaned up) <- @PROCEED We are here
+   * 5. Alice confirms the signed document (Claim should be cleaned up)
    * 6. Bob requests the signed document from Alice by type and issuer
    * 7. Alice provides the requested document to Bob
    * 8. Bob verifies the document (Request should be cleaned up)
@@ -76,17 +76,13 @@ const _test = async () => {
 
   const offer = await charly.signClaims(reqClaims)
 
-  /**
-   * @PROCEED
-   * @TODO We are here and we need to make alice be able to accept documents
-   * from untrusted issuer.
-   * The option is to make Alice trust Charly before accept documents from him...
-   * 
-   * The last option looks more plosable. So on the SDK level it's a good idea
-   * to support capability to accept offers from untrusted issuer. (Probably)
-   * But we will use the case when the offerer should be trusted to accept documents
-   * from him or her.
-   */
+  try {
+    await alice.trustIdentity(govResponse)
+  } catch (e) {
+    console.log(e)
+    return
+  }
+
   const {result, offers, entity: issuerEntity} = await alice.unbundleOffer(offer)
 
   if (result) {
@@ -96,14 +92,28 @@ const _test = async () => {
     return 
   }
 
-  /**
-   * @TODO Should we support this case in general? Why Alice send documents
-   * to Bob without request by Bob?
-   * 
-   * @Given Case 2
-   * 6. Alice provides the signed document to Bob
-   * 7. Bob verifies the document (Request should be cleaned up)
-   */
+  await alice.storeOffer(offer)
+
+  const requestCred = await bob.requestCreds()
+
+  const validRequest = await alice.validateRequest(requestCred)
+  if (validRequest) {
+    console.log('BOB REQUESTED CREDS FROM ALICE - AND REQUEST IS OK')
+  } else {
+    console.log('BOB\'S REQUEST IS BROKEN')
+    return
+  }
+
+  const responseCred = await alice.provideCreds(requestCred)
+
+  const responseValid = await bob.validateResponse(responseCred)
+
+  if (responseValid) {
+    console.log('ALICE SENT TO BOB A VALID RESPONSE WITH CREDS')
+  } else {
+    console.log('ALICE\'S RESPONSE IS BROKEN')
+    return
+  }
 }
 
 _test()

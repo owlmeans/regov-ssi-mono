@@ -144,5 +144,37 @@ export namespace TestUtil {
       return await holderCredentialHelper(this.wallet)
         .bundle<TestClaim, TestOffer>().unbudle(offer)
     }
+
+    async storeOffer(offer: OfferBundle<TestOffer>) {
+      await holderCredentialHelper(this.wallet)
+        .bundle<TestClaim, TestOffer>().store(offer)
+    }
+
+    async requestCreds() {
+      const req = await verifierCredentialHelper(this.wallet)
+        .request().build({ '@type': 'TestDocument' })
+
+      return await verifierCredentialHelper(this.wallet)
+        .request().bundle([req])
+    }
+
+    async provideCreds(request: RequestBundle) {
+      const { requests } = await holderCredentialHelper(this.wallet)
+        .request().unbundle(request)
+
+      return await holderCredentialHelper(this.wallet)
+        .response().build<TestCredential>(requests, request)
+    }
+
+    async validateResponse(response: Presentation<EntityIdentity | TestCredential>) {
+      const { result } = await verifierCredentialHelper(this.wallet)
+        .response().verify<EntityIdentity | TestCredential>(response)
+
+      if (!result) {
+        return false
+      }
+
+      return true
+    }
   }
 }

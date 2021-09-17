@@ -132,7 +132,19 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        let [result] = await wallet.ctx.verifyPresentation(presentation, did)
+        /**
+         * @PROCEED
+         * @TODO We need to provide a custom loader to exteact 
+         * dids from satelite credentials to verify all credentials 
+         * in prsentation
+         */
+        let [result, info] = await wallet.ctx.verifyPresentation(presentation, did)
+
+        if (!result) {
+          console.log(info)
+
+          return { result, credentials: [], dids: [], entity, info }
+        }
 
         result = result && presentation.type.includes(type || CREDENTIAL_RESPONSE_TYPE)
 
@@ -161,6 +173,10 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
                 if (!result) {
                   return false
                 }
+                /**
+                 * @TODO Typefield can be not usable for custom purposes,
+                 * or type should be reformated to some jsonld format
+                 */
                 const types: string[] = Array.isArray(request["@type"])
                   ? request["@type"] : [request["@type"]]
                 return -1 < credentials.findIndex(

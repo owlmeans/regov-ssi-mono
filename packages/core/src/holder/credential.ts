@@ -43,7 +43,7 @@ import {
   REGISTRY_TYPE_IDENTITIES
 } from "../wallet/registry/types"
 import { EntityIdentity, IdentityParams } from "../wallet/identity/types"
-import { RequestBundle, RequestCredential } from ".."
+import { CREDENTIAL_REQUEST_TYPE, RequestBundle, RequestCredential } from ".."
 import { CREDENTIAL_RESPONSE_TYPE, CREDENTIAL_SATELLITE_TYPE, SatelliteCredential } from "."
 
 
@@ -260,8 +260,10 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         type Extension = ClaimExtenstion<BundledClaim>
         type SubjectT = CredentialSubject<WrappedDocument<Payload>, Extension>
 
+        const offers = [...bundle.verifiableCredential]
+        await _identityHelper.extractEntity(offers)
         const registry = wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
-        return Promise.all(bundle.verifiableCredential.map(
+        return Promise.all(offers.map(
           async (offer) => {
             wallet.did.addDID(offer.credentialSubject.did)
             return await registry.addCredential<SubjectT, Credential<SubjectT>>(
@@ -284,7 +286,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
 
         let [result] = await wallet.ctx.verifyPresentation(bundle, did)
 
-        result = result && bundle.type.includes(CREDENTIAL_CLAIM_TYPE)
+        result = result && bundle.type.includes(CREDENTIAL_REQUEST_TYPE)
 
         return { result, requests, entity }
       },
@@ -305,7 +307,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       holder?: DIDDocument,
       identity?: IdentityParams | EntityIdentity | boolean
     } = {}) => ({
-      build: async (requests: RequestCredential[] = [], requestBundle?: RequestBundle) => {
+      build: async <CredentialT extends Credential = Credential>(requests: RequestCredential[] = [], requestBundle?: RequestBundle) => {
         const wraps = await requests.reduce(
           async (accum, { credentialSubject: { data: req } }) => {
             const wraps = await wallet.getRegistry(req.source || REGISTRY_TYPE_CREDENTIALS)
@@ -376,7 +378,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         return await wallet.ctx.signPresentation(unsignedPresentation, holder, {
           challange: requestBundle?.proof.challenge,
           domain: requestBundle?.proof.domain
-        }) as Presentation<EntityIdentity | Credential>
+        }) as Presentation<EntityIdentity | CredentialT>
       }
     })
   }
