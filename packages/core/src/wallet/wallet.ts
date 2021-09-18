@@ -1,5 +1,5 @@
 import { buildDidHelper, buildDidRegistryWarpper } from "@owlmeans/regov-ssi-did";
-import { buildCommonContext, Credential, CredentialSubject } from "../credential";
+import { buildSSICore, Credential, CredentialSubject } from "../vc";
 import { buildKeyChain } from "../keys";
 import { buildStore } from "../store/store";
 import { SecureStore } from "../store/types";
@@ -34,7 +34,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
     )
     _store.data.registry = did.registry
 
-    const ctx = await buildCommonContext({
+    const ctx = await buildSSICore({
       keys: keyChain,
       crypto,
       did

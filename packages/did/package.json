@@ -1,7 +1,7 @@
 {
   "name": "@owlmeans/regov-ssi-did",
   "version": "0.3.0",
-  "description": "OwlMeans RegGov SSI DID Library",
+  "description": "OwlMeans Regov SSI DID Library",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",

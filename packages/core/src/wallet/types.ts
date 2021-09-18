@@ -1,6 +1,6 @@
 import { DIDRegistryBundle, DIDRegistryWrapper } from "@owlmeans/regov-ssi-did"
 import { CryptoHelper } from "@owlmeans/regov-ssi-common"
-import { CommonContext } from "../credential/context/types"
+import { SSICore } from "../vc/ssi/types"
 import { CreateKeyOptions, KeyChain, KeyChainWrapper } from "../keys/types"
 import { BasicStore, EncryptedStore, SecureStore } from "../store/types"
 import { CredentialsRegistry, CredentialsRegistryWrapper, RegistryType } from './registry/types'
@@ -18,7 +18,7 @@ export type Wallet = {
   credentials?: CredentialsRegistry
 }
 
-export type WalletWrapperMethodBuilder<Method extends Function> = (wallet: Wallet, context: CommonContext) => Method
+export type WalletWrapperMethodBuilder<Method extends Function> = (wallet: Wallet, context: SSICore) => Method
 
 export type WalletWrapperBuilder = <Store extends BasicStore = BasicStore>(
   crypto: CryptoHelper,
@@ -42,7 +42,7 @@ export type WalletWrapper = {
 
   keys: KeyChainWrapper
 
-  ctx: CommonContext
+  ctx: SSICore
 
   hasIdentity: () => boolean
 

@@ -17,6 +17,8 @@ export type DIDHelper = {
     purposes?: DIDDocumentPurpose[]
   ) => Promise<DIDDocument>
   verifyDID: (did: DIDDocument) => Promise<boolean>
+
+  isDIDDocument: (obj: Object) => obj is DIDDocument
   
   didToLongForm: (did: DIDDocument) => Promise<string>
   extractKey: ExtractKeyMethod
@@ -158,7 +160,13 @@ export type DIDDocumentProof = {
 
 export type BuildDocumentLoader =
   (fallback?: () => DIDDocument | DIDDocumentUnsinged | undefined) =>
-    (url: string) => Promise<any>
+    (url: string) => Promise<LoadedDocument>
+
+export type LoadedDocument = {
+  contextUrl: string | null
+  document: DIDDocument | Object,
+  documentUrl: string,
+}
 
 export const DID_ERROR_NOVERIFICATION_METHOD = 'DID_ERROR_NOVERIFICATION_METHOD'
 export const DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS = 'DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS'

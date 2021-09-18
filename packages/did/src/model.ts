@@ -516,6 +516,12 @@ export const buildDidHelper =
 
       extractKeyId: _extractKeyId,
 
+      isDIDDocument: (obj): obj is DIDDocument => {
+        return obj.hasOwnProperty('id') 
+          && obj.hasOwnProperty('publicKey')
+          && obj.hasOwnProperty('@context')
+      },
+
       setupDocumentLoader: (loader) => {
         __buildDocumentLoader = loader
       }

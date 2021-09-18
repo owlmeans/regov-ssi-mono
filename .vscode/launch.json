@@ -7,7 +7,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Jest Tests - Core: context",
+      "name": "Debug Jest Tests - Core: SSI",
       "skipFiles": [
         "<node_internals>/**",
       ],
@@ -26,13 +26,13 @@
         "${workspaceRoot}/packages/core/jest.config.js",
         "--testTimeout",
         "180000",
-        "context"
+        "ssi-credential"
       ],
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug - Core: context",
+      "name": "Debug - Core: SSI",
       "skipFiles": [
         "<node_internals>/**",
       ],
@@ -48,51 +48,51 @@
         "${workspaceRoot}/packages/core/tsconfig.json",
         "--ignore" ,
         ".js",
-        "${workspaceRoot}/packages/core/src/debug/context.ts"
+        "${workspaceRoot}/packages/core/src/debug/ssi.ts"
       ],
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug - Core: identity",
+      "name": "Debug - Agent: identity",
       "skipFiles": [
         "<node_internals>/**",
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "envFile": "${workspaceRoot}/packages/core/.env",
+      "envFile": "${workspaceRoot}/packages/agent/.env",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/core/node_modules/.bin/ts-node",
+        "${workspaceRoot}/packages/agent/node_modules/.bin/ts-node",
         "--cwd",
-        "${workspaceRoot}/packages/core/",
+        "${workspaceRoot}/packages/agent/",
         "--project",
-        "${workspaceRoot}/packages/core/tsconfig.json",
+        "${workspaceRoot}/packages/agent/tsconfig.json",
         "--ignore" ,
         ".js",
-        "${workspaceRoot}/packages/core/src/debug/identity.ts"
+        "${workspaceRoot}/packages/agent/src/debug/identity.ts"
       ],
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug - Core: credential",
+      "name": "Debug - Agent: credential",
       "skipFiles": [
         "<node_internals>/**",
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "envFile": "${workspaceRoot}/packages/core/.env",
+      "envFile": "${workspaceRoot}/packages/agent/.env",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/core/node_modules/.bin/ts-node",
+        "${workspaceRoot}/packages/agent/node_modules/.bin/ts-node",
         "--cwd",
-        "${workspaceRoot}/packages/core/",
+        "${workspaceRoot}/packages/agent/",
         "--project",
-        "${workspaceRoot}/packages/core/tsconfig.json",
+        "${workspaceRoot}/packages/agent/tsconfig.json",
         "--ignore" ,
         ".js",
-        "${workspaceRoot}/packages/core/src/debug/credential.ts"
+        "${workspaceRoot}/packages/agent/src/debug/credential.ts"
       ],
     },
     {

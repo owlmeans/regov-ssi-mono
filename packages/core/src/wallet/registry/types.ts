@@ -1,12 +1,9 @@
-import { RequestBundle } from "../../verifier/types"
 import {
   Credential,
   CredentialSubject,
   Presentation,
   UnsignedCredential,
-  MaybeArray
-} from "../../credential/types"
-import { ClaimCredential, ClaimSubject } from "../../holder"
+} from "../../vc/types"
 
 
 export type CredentialsRegistry<
@@ -44,10 +41,13 @@ export type AddCredentialMethod = <
   section?: string
 ) => Promise<CredentialWrapper<Subject, Type>>
 
-export type RegistryItem<Subject extends CredentialSubject = CredentialSubject> =
+export type RegistryItem<
+  Subject extends CredentialSubject = CredentialSubject,
+  PresentationT extends Presentation = Presentation
+> =
   Credential<Subject> | UnsignedCredential<Subject>
-  | Presentation<ClaimCredential<ClaimSubject<UnsignedCredential<MaybeArray<Subject>>>>>
-  | RequestBundle
+  | Presentation
+  | PresentationT
 
 export type LookupCredentialsMethod<
   Subject extends CredentialSubject = CredentialSubject,
