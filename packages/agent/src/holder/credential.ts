@@ -79,7 +79,8 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           data: {
             '@type': claimOptions.type,
             ...payload
-          }
+          },
+          ...(options?.extension ? options?.extension : {})
         }
 
         const key = await wallet.keys.getCryptoKey(options?.key)
@@ -291,6 +292,9 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         return { result, requests, entity }
       },
 
+      /**
+       * @TODO Remove unnecessay verify methods, because it's part of unbandeling
+       */
       verify: async (bundle: RequestBundle) => {
         const credentials = [...bundle.verifiableCredential]
         const identity = await _identityHelper.extractEntity(credentials)

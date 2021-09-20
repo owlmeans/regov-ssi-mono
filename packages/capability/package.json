@@ -1,7 +1,7 @@
 {
-  "name": "@owlmeans/regov-ssi-agent",
+  "name": "@owlmeans/regov-ssi-capability",
   "version": "0.1.0",
-  "description": "Basic agent for OwlMeans Regov SSI",
+  "description": "Capability library for OwlMeans Regov SSI that allows to governence credentials",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
@@ -15,14 +15,12 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/owlmeans/regov-ssi-mono.git",
-    "directory": "packages/agent"
+    "directory": "packages/capability"
   },
   "scripts": {
     "test": "jest --testTimeout 30000",
     "build": "tsc -b",
-    "build:watch": "tsc -b -w",
-    "review:identity": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/identity.ts",
-    "review:credential": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/credential.ts"
+    "build:watch": "tsc -b -w"
   },
   "bugs": {
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"
@@ -37,6 +35,6 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@owlmeans/regov-ssi-core": "^0.3.0"
+    "@owlmeans/regov-ssi-agent": "^0.1.0"
   }
 }
