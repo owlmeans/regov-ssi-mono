@@ -65,7 +65,7 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
       return claim
     },
 
-    claimGovernanceCapability: async (
+    claimGovernance: async (
       source: Credential,
       descr: {
         root?: Credential,

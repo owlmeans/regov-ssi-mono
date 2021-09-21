@@ -1,4 +1,4 @@
-import { CommonCryptoKey, CryptoHelper } from "@owlmeans/regov-ssi-common"
+import { CryptoKey, CryptoHelper } from "@owlmeans/regov-ssi-common"
 
 export type KeyChain = {
   defaultKey: string
@@ -14,9 +14,9 @@ export type KeyChainWrapper = {
 
   createKey: (alias: string, password?: string, options?: CreateKeyOptions) => Promise<KeyPair>
 
-  getCryptoKey: (key?: KeyPair | string, _password?: string, options?: KeyPairToCryptoKeyOptions) => Promise<CommonCryptoKey>
+  getCryptoKey: (key?: KeyPair | string, _password?: string, options?: KeyPairToCryptoKeyOptions) => Promise<CryptoKey>
   
-  expandKey: (key: CommonCryptoKey, _password?: string) => Promise<void>
+  expandKey: (key: CryptoKey, _password?: string) => Promise<void>
 }
 
 export type BuildKeyChainWrapperMethod =

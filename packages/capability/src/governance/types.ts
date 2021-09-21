@@ -39,7 +39,7 @@ export type CapabilityDocument<
   ExtensionProps extends {} = {},
   CredentialProps extends {} = {}
   > = {
-    '@type': string[]
+    '@type': string | string[]
     credentialSchema?: ContextSchema
     subjectSchema?: ContextSchema
     credentialProps?: CredentialProps
@@ -52,3 +52,5 @@ export type CapabilityDocument<
 
 export const CREDENTIAL_CAPABILITY_TYPE = 'CredentialCapability'
 export const CREDENTIAL_GOVERNANCE_TYPE = 'GovernanceCapability'
+
+export const REGISTRY_SECTION_CAPABILITY = 'capability'

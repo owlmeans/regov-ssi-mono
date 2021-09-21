@@ -34,8 +34,8 @@ import {
   ERROR_UNTRUSTED_ISSUER,
   ERROR_NO_RELATED_DID_FOUND,
   ERROR_CLAIM_OFFER_DONT_MATCH,
-  CREDENTIAL_RESPONSE_TYPE, 
-  CREDENTIAL_SATELLITE_TYPE, 
+  CREDENTIAL_RESPONSE_TYPE,
+  CREDENTIAL_SATELLITE_TYPE,
   SatelliteCredential
 } from "./types"
 import {
@@ -313,7 +313,10 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       holder?: DIDDocument,
       identity?: IdentityParams | EntityIdentity | boolean
     } = {}) => ({
-      build: async <CredentialT extends Credential = Credential>(requests: RequestCredential[] = [], requestBundle?: RequestBundle) => {
+      build: async <CredentialT extends Credential = Credential>(
+        requests: RequestCredential[] = [],
+        requestBundle?: RequestBundle
+      ) => {
         const wraps = await requests.reduce(
           async (accum, { credentialSubject: { data: req } }) => {
             const wraps = await wallet.getRegistry(req.source || REGISTRY_TYPE_CREDENTIALS)

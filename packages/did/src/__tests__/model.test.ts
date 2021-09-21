@@ -48,6 +48,7 @@ describe('DID Helper', () => {
         id: expect.any(String),
         nonce: expect.any(String),
         controller: expect.any(String),
+        publicKeyBase58: expect.any(String),
       }],
       assertionMethod: [
         expect.any(String),
@@ -56,11 +57,7 @@ describe('DID Helper', () => {
         created: expect.any(String),
         jws: expect.any(String),
         verificationMethod: expect.any(String),
-      },
-      publicKey: [{
-        id: expect.any(String),
-        publicKeyBase58: expect.any(String),
-      }]
+      }
     })
   })
 
@@ -106,9 +103,8 @@ describe('DID Helper', () => {
 
     const brokenDoc = <DIDDocument>JSON.parse(JSON.stringify(testContext.holderDoc))
     if (brokenDoc.verificationMethod && brokenDoc.verificationMethod[0]
-      && typeof brokenDoc.verificationMethod[0] === 'object'
-      && typeof brokenDoc.verificationMethod[0].proof === 'object') {
-      brokenDoc.verificationMethod[0].proof.created = new Date().toUTCString()
+      && typeof brokenDoc.proof === 'object') {
+      brokenDoc.proof.created = new Date().toUTCString()
     }
     const result = await didHelper.verifyDID(brokenDoc)
 

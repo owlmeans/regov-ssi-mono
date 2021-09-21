@@ -44,18 +44,18 @@ export type AddCredentialMethod = <
 export type RegistryItem<
   Subject extends CredentialSubject = CredentialSubject,
   PresentationT extends Presentation = Presentation
-> =
+  > =
   Credential<Subject> | UnsignedCredential<Subject>
   | Presentation
   | PresentationT
 
-export type LookupCredentialsMethod<
+export type LookupCredentialsMethod = <
   Subject extends CredentialSubject = CredentialSubject,
   Type extends RegistryItem<Subject> = Credential<Subject>
-  > = (
-    type: string | string[],
-    section?: string
-  ) => Promise<CredentialWrapper<Subject, Type>[]>
+  >(
+  type: string | string[],
+  section?: string
+) => Promise<CredentialWrapper<Subject, Type>[]>
 
 export type GetCredentialMethod = <
   Subject extends CredentialSubject = CredentialSubject,

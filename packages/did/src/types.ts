@@ -1,32 +1,38 @@
 
-import { CommonCryptoKey } from '@owlmeans/regov-ssi-common'
+import { CryptoKey } from '@owlmeans/regov-ssi-common'
 
 export type DIDHelper = {
-  makeDIDId: (key: CommonCryptoKey, options?: MakeDIDIdOptions) => string
+  makeDIDId: (key: CryptoKey, options?: MakeDIDIdOptions) => string
   isDIDId: (id: string) => boolean
   parseDIDId: ParseDIDIdMethod
 
-  extractProofController: (did: DIDDocument) => string  
+  extractProofController: (did: DIDDocument) => string
   expandVerificationMethod: ExpandVerificationMethod
 
-  createDID: (key: CommonCryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
+  createDID: (key: CryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
   signDID: (
-    key: CommonCryptoKey, 
-    didDocUnsigned: DIDDocumentUnsinged, 
+    key: CryptoKey,
+    didDocUnsigned: DIDDocumentUnsinged | DIDDocument,
     keyId?: SignDID_KeyId,
+    purposes?: DIDDocumentPurpose[]
+  ) => Promise<DIDDocument>
+  delegate: (
+    key: CryptoKey,
+    source: DIDDocument,
+    delegatee: string,
     purposes?: DIDDocumentPurpose[]
   ) => Promise<DIDDocument>
   verifyDID: (did: DIDDocument) => Promise<boolean>
 
   isDIDDocument: (obj: Object) => obj is DIDDocument
-  
+
   didToLongForm: (did: DIDDocument) => Promise<string>
   extractKey: ExtractKeyMethod
   extractKeyId: (key: string) => string
   setupDocumentLoader: (loader: BuildDocumentLoader) => void
 }
 
-export type ExtractKeyMethod = (did: DIDDocument | string, keyId?: string) => Promise<CommonCryptoKey | undefined>
+export type ExtractKeyMethod = (did: DIDDocument | string, keyId?: string) => Promise<CryptoKey | undefined>
 
 export type ExpandVerificationMethod = (didDoc: DIDDocument, purpose: DIDDocumentPurpose, keyId?: string) =>
   DIDVerificationItem | never
@@ -34,10 +40,13 @@ export type ExpandVerificationMethod = (didDoc: DIDDocument, purpose: DIDDocumen
 
 export const VERIFICATION_KEY_HOLDER = 'holder'
 export const VERIFICATION_KEY_CONTROLLER = 'controller'
+export const VERIFICATION_KEY_DELEGATEE = 'delegatee'
 
 export const DEFAULT_VERIFICATION_KEY = VERIFICATION_KEY_HOLDER
 
-export type SignDID_KeyId = typeof VERIFICATION_KEY_HOLDER | typeof VERIFICATION_KEY_CONTROLLER
+export type SignDID_KeyId = typeof VERIFICATION_KEY_HOLDER
+  | typeof VERIFICATION_KEY_CONTROLLER
+  | typeof VERIFICATION_KEY_DELEGATEE
 
 
 export type ParseDIDIdMethod = (id: string) => DIDIDExplained
@@ -62,12 +71,8 @@ export type DIDDocument = DIDDocumentUnsinged & {
 export type DIDDocumentUnsinged = DIDDocumentPayload & {
   '@context': string | string[] | DIDDocumentContext | DIDDocumentContext[]
   id: string
+  alsoKnownAs?: string[]
   controller?: string
-  publicKey: {
-    id: string,
-    type: string,
-    publicKeyBase58: string,
-  }[]
 }
 
 export type DIDDocumentPayload = {
@@ -90,6 +95,9 @@ export type MakeDIDIdOptions = {
 export type CreateDIDMethodOptions = MakeDIDIdOptions & {
   id?: string
   purpose?: DIDDocumentPurpose | DIDDocumentPurpose[]
+  alsoKnownAs?: string[],
+  source?: DIDDocument | DIDDocumentUnsinged,
+  keyId?: SignDID_KeyId
 }
 
 export type DIDDocumentPurpose =
@@ -100,7 +108,6 @@ export type DIDDocumentPurpose =
   | typeof DIDPURPOSE_CAPABILITY
   | typeof DIDPURPOSE_DELEGATION
 
-export const PUBLICKEY_VERIFICATION = 'publicKey'
 export const DIDPURPOSE_VERIFICATION = 'verificationMethod'
 export const DIDPURPOSE_AUTHENTICATION = 'authentication'
 export const DIDPURPOSE_ASSERTION = 'assertionMethod'
@@ -126,8 +133,6 @@ export type DIDVerificationItem = {
   controller: string
   nonce?: string
   publicKeyBase58?: string
-  originalPurposes?: DIDDocumentPurpose[]
-  proof?: DIDDocumentProof
 }
 
 export type DIDVerificationMethod = DIDVerificationItem & {}

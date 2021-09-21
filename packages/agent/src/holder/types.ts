@@ -45,13 +45,14 @@ export type ClaimExtenstion<Claim> = Claim extends ClaimCredential<infer ClaimSu
   : never
   : never
 
-export type SatelliteSubject = CredentialSubject<SetelliteSubjectType, {}>
+export type SatelliteSubject<DocExtension extends {} = {}> 
+  = CredentialSubject<SetelliteSubjectType<DocExtension>, {}>
 
-export type SetelliteSubjectType = WrappedDocument<{ did: DIDDocument }>
+export type SetelliteSubjectType<DocExtension extends {} = {}> 
+  = WrappedDocument<{ did: DIDDocument } & DocExtension>
 
-export const CREDENTIAL_SATELLITE_TYPE = 'CredentialSatellit'
-
-export type SatelliteCredential = Credential<SatelliteSubject>
+export type SatelliteCredential<Subject extends SatelliteSubject = SatelliteSubject> 
+  = Credential<Subject>
 
 export type ResponseBundle<CredentialT extends Credential> = {
   presentation: Presentation<CredentialT | SatelliteCredential>,
@@ -69,3 +70,5 @@ export const ERROR_WRONG_CLAIM_SUBJECT_TYPE = 'ERROR_WRONG_CLAIM_SUBJECT_TYPE'
 export const CLAIM_TYPE_PREFFIX = 'Claim'
 
 export const CREDENTIAL_RESPONSE_TYPE = 'CredentialResponse'
+
+export const CREDENTIAL_SATELLITE_TYPE = 'CredentialSatellit'

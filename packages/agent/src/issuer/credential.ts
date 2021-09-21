@@ -27,6 +27,7 @@ import {
 } from "../holder/types";
 import {
   CREDENTIAL_OFFER_TYPE,
+  IssuerVisiter,
   OfferBundle,
   OfferCredential,
   OfferSubject
@@ -34,7 +35,7 @@ import {
 import { EntityIdentity, IdentityParams } from "../identity/types";
 
 
-export const issuerCredentialHelper = (wallet: WalletWrapper) => {
+export const issuerCredentialHelper = (wallet: WalletWrapper, visiter?: IssuerVisiter) => {
   const _identityHelper = identityHelper(wallet)
 
   return {
@@ -118,6 +119,9 @@ export const issuerCredentialHelper = (wallet: WalletWrapper) => {
             )
           }
         )
+
+        visiter?.claim?.signClaim?.patchOffer 
+          && visiter.claim.signClaim.patchOffer<CredentialT>(offerUnsigned)
 
         return await wallet.ctx.signCredential(
           offerUnsigned,

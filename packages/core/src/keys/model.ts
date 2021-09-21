@@ -10,7 +10,7 @@ import {
   KeyPairToCryptoKeyOptions,
   KeyRotation
 } from "./types"
-import { CommonCryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from '@owlmeans/regov-ssi-common'
+import { CryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from '@owlmeans/regov-ssi-common'
 
 
 export const buildKeyChain: BuildKeyChainWrapperMethod =
@@ -128,7 +128,7 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
     const _keyPairToCryptoKey = (keys: KeyChain) =>
       async (
         key?: KeyPair | string, _password?: string, options?: KeyPairToCryptoKeyOptions
-      ): Promise<CommonCryptoKey> => {
+      ): Promise<CryptoKey> => {
         if (!key) {
           key = keys.defaultKey
         }
