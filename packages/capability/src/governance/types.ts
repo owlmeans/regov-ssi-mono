@@ -51,3 +51,4 @@ export type CapabilityDocument<
   }
 
 export const CREDENTIAL_CAPABILITY_TYPE = 'CredentialCapability'
+export const CREDENTIAL_GOVERNANCE_TYPE = 'GovernanceCapability'

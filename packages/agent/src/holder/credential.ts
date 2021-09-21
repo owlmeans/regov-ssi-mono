@@ -65,7 +65,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       >
     >(
       claimOptions: {
-        type: string,
+        type: string | string[],
         schemaUri?: string,
         crdContext?: ContextSchema,
         holder?: DIDDocument,
@@ -98,15 +98,17 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
         }
 
+        const types = Array.isArray(claimOptions.type) ? claimOptions.type : [claimOptions.type]
+
         const unsignedCredential = await wallet.ctx.buildCredential<
           WrappedDocument<Payload>,
           CredentialSubject<WrappedDocument<Payload>, Extension>
         >({
           id: didUnsigned.id,
-          type: [BASE_CREDENTIAL_TYPE, claimOptions.type],
+          type: [BASE_CREDENTIAL_TYPE, ...types],
           holder: wallet.did.helper().extractProofController(holder),
           context: wallet.ctx.buildContext(
-            claimOptions.schemaUri || claimOptions.type.toLowerCase(),
+            claimOptions.schemaUri || types.join('/').toLowerCase(),
             claimOptions.crdContext
           ),
           subject: credentialSubject

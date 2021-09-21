@@ -7,7 +7,8 @@ import {
   CREDENTIAL_CAPABILITY_TYPE,
   UnsignedCapabilityCredential,
   CapabilityExtension,
-  CapabilitySubject
+  CapabilitySubject,
+  CREDENTIAL_GOVERNANCE_TYPE
 } from "./types"
 
 
@@ -22,7 +23,8 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
       descr: {
         root?: Credential,
         name: string,
-        description?: string
+        description?: string,
+        type?: string | string[]
       },
       capability: CapabilityDocument<PayloadProps, ExtensionProps, CredentialProps>
     ) => {
@@ -33,7 +35,10 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
         CapabilityExtension,
         UnsignedCapabilityCredential<CapabilitySubject<PayloadProps, ExtensionProps, CredentialProps>>
       >({
-        type: CREDENTIAL_CAPABILITY_TYPE,
+        type: [
+          CREDENTIAL_CAPABILITY_TYPE,
+          ...(descr.type ? Array.isArray(descr.type) ? descr.type : [descr.type] : [])
+        ],
         schemaUri: 'governance/capability',
         crdContext: {
           credentialSchema: { '@id': 'scm:credentialSchema', '@type': '@json' },
@@ -46,6 +51,9 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
         },
         holder
       }).build(capability, {
+        /**
+         * @TODO Did needs an invocation? capability
+         */
         extension: {
           source: source.id,
           name: descr.name,
@@ -57,7 +65,7 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
       return claim
     },
 
-    claimAbstractCapability: async (
+    claimGovernanceCapability: async (
       source: Credential,
       descr: {
         root?: Credential,
@@ -65,7 +73,10 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
         description?: string
       }
     ) => {
-      return await _helper.claim(source, descr, { '@type': [CREDENTIAL_CAPABILITY_TYPE] })
+      return await _helper.claim(source, {
+        ...descr,
+        type: CREDENTIAL_GOVERNANCE_TYPE
+      }, { '@type': [CREDENTIAL_GOVERNANCE_TYPE] })
     }
   }
 
