@@ -26,19 +26,22 @@ export type OfferCredential<Subject extends OfferSubject = OfferSubject>
 export type OfferBundle<BundledOffer extends OfferCredential>
   = Presentation<BundledOffer>
 
-export type IssuerVisiterBuilder<
-  Extension extends {} = {}
-  > = (wallet: WalletWrapper) => IssuerVisiter<Extension>
+export type IssuerVisitorBuilder<
+  Extension extends {} = {},
+  CredentialT extends Credential<MaybeArray<CredentialSubject>>
+  = Credential<MaybeArray<CredentialSubject>>
+  > = (wallet: WalletWrapper) => IssuerVisitor<Extension, CredentialT>
 
-export type IssuerVisiter<Extension extends {} = {}> = {
-  claim?: {
-    signClaim?: {
-      patchOffer?: <
-        CredentialT extends Credential<MaybeArray<CredentialSubject>>
-        = Credential<MaybeArray<CredentialSubject>>
-        >(
-        unsigned: UnsignedCredential<OfferSubject<CredentialT, Extension>>
-      ) => Promise<void>
+export type IssuerVisitor<
+  Extension extends {} = {},
+  CredentialT extends Credential<MaybeArray<CredentialSubject>>
+  = Credential<MaybeArray<CredentialSubject>>
+  > = {
+    claim?: {
+      signClaim?: {
+        patchOffer?: (
+          unsigned: UnsignedCredential<OfferSubject<CredentialT, Extension>>
+        ) => Promise<void>
+      }
     }
   }
-}

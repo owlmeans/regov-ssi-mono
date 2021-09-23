@@ -27,7 +27,7 @@ import {
 } from "../holder/types";
 import {
   CREDENTIAL_OFFER_TYPE,
-  IssuerVisiter,
+  IssuerVisitor,
   OfferBundle,
   OfferCredential,
   OfferSubject
@@ -35,19 +35,20 @@ import {
 import { EntityIdentity, IdentityParams } from "../identity/types";
 
 
-export const issuerCredentialHelper = (wallet: WalletWrapper, visiter?: IssuerVisiter) => {
+export const issuerCredentialHelper = <
+  Payload extends {} = {},
+  Extension extends {} = {},
+  CredentialT extends Credential<
+    MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
+  > = Credential<
+    MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
+  >,
+  VisitorExtension extends {} = {}
+>(wallet: WalletWrapper, visitor?: IssuerVisitor<VisitorExtension, CredentialT>) => {
   const _identityHelper = identityHelper(wallet)
 
   return {
-    claim: <
-      Payload extends {} = {},
-      Extension extends {} = {},
-      CredentialT extends Credential<
-        MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
-      > = Credential<
-        MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
-      >
-    >(issuer?: DIDDocument) => {
+    claim: (issuer?: DIDDocument) => {
       type UnsignedClaim = ClaimCredential<
         ClaimSubject<
           UnsignedCredential<
@@ -68,7 +69,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper, visiter?: IssuerVi
         const signingKey = await wallet.keys.getCryptoKey(key)
 
         const did = await wallet.did.helper().signDID(
-          signingKey, 
+          signingKey,
           claim.credentialSubject.did,
           VERIFICATION_KEY_CONTROLLER
         )
@@ -76,15 +77,15 @@ export const issuerCredentialHelper = (wallet: WalletWrapper, visiter?: IssuerVi
         const credential = await wallet.ctx.signCredential(
           claim.credentialSubject.data.credential,
           issuer, {
-            keyId: VERIFICATION_KEY_HOLDER
-          }
+          keyId: VERIFICATION_KEY_HOLDER
+        }
         ) as CredentialT
 
-        if (typeof claim.credentialSubject.data["@type"] !== 'string') {
-          throw new Error(ERROR_WRONG_CLAIM_SUBJECT_TYPE)
-        }
+        let subjectType: string | string[] = claim.credentialSubject.data["@type"]
+        subjectType = Array.isArray(subjectType) ? subjectType : [subjectType]
 
-        const [prefix, type] = claim.credentialSubject.data["@type"].split(':', 2)
+        const mainType = subjectType[0]
+        const [prefix, type] = mainType.split(':', 2)
 
         if (!type && prefix !== CLAIM_TYPE_PREFFIX) {
           throw new Error(ERROR_WRONG_CLAIM_SUBJECT_TYPE)
@@ -100,7 +101,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper, visiter?: IssuerVi
 
         const offerUnsigned = await wallet.ctx.buildCredential<
           WrappedDocument<{ credential: CredentialT }>,
-          OfferSubject<CredentialT>
+          OfferSubject<CredentialT, VisitorExtension>
         >(
           {
             id: did.id,
@@ -112,7 +113,7 @@ export const issuerCredentialHelper = (wallet: WalletWrapper, visiter?: IssuerVi
               /**
                * @TODO Use some proper schema
                */
-              { 
+              {
                 did: { '@id': 'scm:did', '@type': '@json' },
                 credential: { '@id': 'scm:credential', '@type': '@json' },
               }
@@ -120,8 +121,8 @@ export const issuerCredentialHelper = (wallet: WalletWrapper, visiter?: IssuerVi
           }
         )
 
-        visiter?.claim?.signClaim?.patchOffer 
-          && visiter.claim.signClaim.patchOffer<CredentialT>(offerUnsigned)
+        visitor?.claim?.signClaim?.patchOffer
+          && visitor.claim.signClaim.patchOffer(offerUnsigned)
 
         return await wallet.ctx.signCredential(
           offerUnsigned,

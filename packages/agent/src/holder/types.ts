@@ -1,20 +1,22 @@
 import { DIDDocument, DIDDocumentUnsinged } from "@owlmeans/regov-ssi-did"
-import { 
-  CredentialSubject, 
-  WrappedDocument, 
-  UnsignedCredential, 
-  Credential, 
+import {
+  CredentialSubject,
+  WrappedDocument,
+  UnsignedCredential,
+  Credential,
   Presentation,
   MaybeArray
 } from "@owlmeans/regov-ssi-core"
 
 
 export type ClaimSubject<
-  CredentialUT extends UnsignedCredential<MaybeArray<CredentialSubject>> = UnsignedCredential<MaybeArray<CredentialSubject>>
+  CredentialUT extends UnsignedCredential<MaybeArray<CredentialSubject>>
+  = UnsignedCredential<MaybeArray<CredentialSubject>>,
+  Extension extends {} = {} 
   > =
   CredentialSubject<
     WrappedDocument<{ credential: CredentialUT }>,
-    { did: DIDDocumentUnsinged }
+    { did: DIDDocumentUnsinged } & Extension
   >
 
 export const CREDENTIAL_CLAIM_TYPE = 'CredentialClaim'
@@ -45,13 +47,13 @@ export type ClaimExtenstion<Claim> = Claim extends ClaimCredential<infer ClaimSu
   : never
   : never
 
-export type SatelliteSubject<DocExtension extends {} = {}> 
+export type SatelliteSubject<DocExtension extends {} = {}>
   = CredentialSubject<SetelliteSubjectType<DocExtension>, {}>
 
-export type SetelliteSubjectType<DocExtension extends {} = {}> 
+export type SetelliteSubjectType<DocExtension extends {} = {}>
   = WrappedDocument<{ did: DIDDocument } & DocExtension>
 
-export type SatelliteCredential<Subject extends SatelliteSubject = SatelliteSubject> 
+export type SatelliteCredential<Subject extends SatelliteSubject = SatelliteSubject>
   = Credential<Subject>
 
 export type ResponseBundle<CredentialT extends Credential> = {

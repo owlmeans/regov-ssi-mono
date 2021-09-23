@@ -1,4 +1,5 @@
 
+import { ClaimSubject } from "@owlmeans/regov-ssi-agent"
 import {
   ContextSchema,
   Credential,
@@ -6,6 +7,7 @@ import {
   UnsignedCredential,
   WrappedDocument,
 } from "@owlmeans/regov-ssi-core"
+import { DIDDocument } from "@owlmeans/regov-ssi-did"
 
 
 export type CapabilityCredential<
@@ -26,6 +28,20 @@ export type CapabilitySubject<
     >,
     CapabilityExtension
   >
+
+export type CapabilityClaimSubject<
+  PayloadProps extends {} = {},
+  ExtensionProps extends {} = {},
+  CredentialProps extends {} = {}
+  > = ClaimSubject<
+    UnsignedCapabilityCredential<
+      CapabilitySubject<PayloadProps, ExtensionProps, CredentialProps>
+    >
+  >
+
+export type OfferCapabilityExtension = {
+  chain: DIDDocument[]
+}
 
 export type CapabilityExtension = {
   root?: string

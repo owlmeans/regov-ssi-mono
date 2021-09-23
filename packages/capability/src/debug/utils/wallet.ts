@@ -22,7 +22,7 @@ import {
   ClaimCredential,
   ClaimSubject,
   holderCredentialHelper
-} from '../../index'
+} from "@owlmeans/regov-ssi-agent"
 
 
 export namespace TestUtil {

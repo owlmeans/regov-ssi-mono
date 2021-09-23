@@ -322,9 +322,9 @@ export const buildDidHelper =
           }
 
           didDocUnsigned.verificationMethod = didDocUnsigned.verificationMethod || []
-          const verifications = <DIDVerificationItem[]>didDocUnsigned[DIDPURPOSE_VERIFICATION]
+          const verifications = <DIDVerificationItem[]>didDocUnsigned.verificationMethod
           const sameVerificationIdx = verifications.findIndex(
-            _verification => _verification.id === verification.id
+            _verification => _verification.controller === verification.controller
           )
           if (-1 === sameVerificationIdx) {
             verifications.push(verification)

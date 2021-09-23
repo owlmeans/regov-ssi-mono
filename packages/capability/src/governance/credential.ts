@@ -1,14 +1,30 @@
 
-import { holderCredentialHelper } from "@owlmeans/regov-ssi-agent"
-import { WalletWrapper, Credential } from "@owlmeans/regov-ssi-core"
-import { DIDDocument } from "@owlmeans/regov-ssi-did"
+import {
+  ClaimCredential,
+  holderCredentialHelper,
+  issuerCredentialHelper
+} from "@owlmeans/regov-ssi-agent"
+import {
+  WalletWrapper,
+  Credential,
+  KeyPair
+} from "@owlmeans/regov-ssi-core"
+import {
+  DIDDocument,
+  DIDPURPOSE_CAPABILITY,
+  DIDPURPOSE_DELEGATION
+} from "@owlmeans/regov-ssi-did"
+import { issuerGovernanceVisitor } from "./issuer"
 import {
   CapabilityDocument,
   CREDENTIAL_CAPABILITY_TYPE,
   UnsignedCapabilityCredential,
   CapabilityExtension,
   CapabilitySubject,
-  CREDENTIAL_GOVERNANCE_TYPE
+  CREDENTIAL_GOVERNANCE_TYPE,
+  CapabilityCredential,
+  CapabilityClaimSubject,
+  OfferCapabilityExtension
 } from "./types"
 
 
@@ -46,6 +62,8 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
           credentialProps: { '@id': 'scm:credentialProps', '@type': '@json' },
           subjectProps: { '@id': 'scm:subjectProps', '@type': '@json' },
           selfIssuing: { '@id': 'scm:selfIssuing', '@type': 'xsd:boolean' },
+          name: { '@id': 'scm:name', '@type': 'xsd:string' },
+          source: { '@id': 'scm:source', '@type': 'xsd:string' },
           ...(capability.credentialSchema ? capability.credentialSchema : {}),
           ...(capability.subjectSchema ? capability.subjectSchema : {})
         },
@@ -71,12 +89,41 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
         root?: Credential,
         name: string,
         description?: string
+        key?: KeyPair | string
       }
     ) => {
-      return await _helper.claim(source, {
+      const claim = await _helper.claim(source, {
         ...descr,
         type: CREDENTIAL_GOVERNANCE_TYPE
       }, { '@type': [CREDENTIAL_GOVERNANCE_TYPE] })
+
+      const key = await wallet.keys.getCryptoKey(descr?.key)
+
+      claim.credentialSubject.did = await wallet.did.helper().createDID(key, {
+        source: claim.credentialSubject.did,
+        purpose: [
+          DIDPURPOSE_CAPABILITY,
+          DIDPURPOSE_DELEGATION,
+        ]
+      })
+
+      return claim as ClaimCredential<CapabilityClaimSubject>
+    },
+
+    offer: async <
+      PayloadProps extends {} = {},
+      ExtensionProps extends {} = {},
+      CredentialProps extends {} = {},
+    >(
+      claim: ClaimCredential<CapabilityClaimSubject<PayloadProps, ExtensionProps, CredentialProps>>
+    ) => {
+
+      return await issuerCredentialHelper<
+        CapabilityDocument<PayloadProps, ExtensionProps, CredentialProps>, 
+        CapabilityExtension, 
+        CapabilityCredential<CapabilitySubject<PayloadProps, ExtensionProps, CredentialProps>>,
+        OfferCapabilityExtension
+      >(wallet, issuerGovernanceVisitor(wallet)).claim().signClaim(claim)
     }
   }
 

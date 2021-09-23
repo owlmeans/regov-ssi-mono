@@ -1,5 +1,5 @@
 import {
-  IssuerVisiterBuilder,
+  IssuerVisitorBuilder,
 } from "@owlmeans/regov-ssi-agent"
 import {
   REGISTRY_TYPE_CREDENTIALS,
@@ -29,7 +29,7 @@ import {
  * Case 2: The same. But Bob hires Emma and delegate capability to her.
  * Emma signs credential istead of Bob. But Dan still aknowledges it.
  */
-export const issuerVisiter: IssuerVisiterBuilder<ByCapabilityExtension> = (wallet: WalletWrapper) => {
+export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (wallet: WalletWrapper) => {
   return {
     claim: {
       signClaim: {

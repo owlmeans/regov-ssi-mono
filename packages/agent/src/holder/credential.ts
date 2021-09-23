@@ -114,9 +114,12 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           subject: credentialSubject
         }) as CredentialUT
 
+        const claimTypes = [...types]
+        claimTypes.shift()
+        const mainType = claimTypes.shift()
         const claimSubject: ClaimSubject<CredentialUT> = {
           data: {
-            '@type': `${CLAIM_TYPE_PREFFIX}:${claimOptions.type}`,
+            '@type': [`${CLAIM_TYPE_PREFFIX}:${mainType}`, ...claimTypes],
             credential: unsignedCredential
           },
           did: didUnsigned
