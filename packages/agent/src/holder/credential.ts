@@ -170,8 +170,12 @@ export const holderCredentialHelper = <
     },
 
     bundle: <
-      BundledClaim extends ClaimCredential,
-      BundledOffer extends OfferCredential = OfferCredential
+      BundledClaim extends ClaimCredential<
+        ClaimSubject<CredentialUT, VisitorExtension>
+      > = ClaimCredential<ClaimSubject<CredentialUT, VisitorExtension>>,
+      BundledOffer extends OfferCredential<
+        OfferSubject<CredentialT, VisitorExtension>
+      > = OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
     >(bundleOptions?: { holder?: DIDDocument }) => ({
       build: async (
         claims: BundledClaim[],
@@ -264,10 +268,6 @@ export const holderCredentialHelper = <
       },
 
       store: async (bundle: OfferBundle<BundledOffer>) => {
-        type PayloadT = ClaimPayload<BundledClaim>
-        type ExtensionT = ClaimExtenstion<BundledClaim>
-        type SubjectT = CredentialSubject<WrappedDocument<PayloadT>, ExtensionT>
-
         const offers = [...bundle.verifiableCredential]
         await _identityHelper.extractEntity(offers)
         const registry = wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
@@ -275,10 +275,12 @@ export const holderCredentialHelper = <
           async (offer) => {
             wallet.did.addDID(offer.credentialSubject.did)
             visitor?.bundle?.store?.storeOffer
-              && await visitor?.bundle?.store?.storeOffer(offer as any)
-            return await registry.addCredential<SubjectT, Credential<SubjectT>>(
-              offer.credentialSubject.data.credential as Credential<SubjectT>
-            )
+              && await visitor?.bundle?.store?.storeOffer(offer)
+
+            return await registry.addCredential<
+              CredentialSubject<WrappedDocument<Payload>, Extension>,
+              CredentialT
+            >(offer.credentialSubject.data.credential)
           }
         ))
       }

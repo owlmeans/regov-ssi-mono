@@ -115,7 +115,7 @@ export namespace TestUtil {
     }
 
     async trustIdentity(response: Presentation<EntityIdentity>) {
-      await identityBundler(this.wallet).trust(response)
+      return await identityBundler(this.wallet).trust(response)
     }
 
     async claimTestDoc(data: (TestDocumentData1 | TestDocumentData2)[]) {

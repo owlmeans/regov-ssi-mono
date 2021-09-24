@@ -16,11 +16,13 @@ export type ClaimSubject<
   CredentialUT extends UnsignedCredential<MaybeArray<CredentialSubject>>
   = UnsignedCredential<MaybeArray<CredentialSubject>>,
   Extension extends {} = {}
-  > =
-  CredentialSubject<
-    WrappedDocument<{ credential: CredentialUT }>,
-    { did: DIDDocumentUnsinged } & Extension
-  >
+  > = CredentialSubject<ClaimDocument<CredentialUT>, ClaimSubjectExtension<Extension>>
+
+export type ClaimDocument<CredentialUT extends UnsignedCredential<MaybeArray<CredentialSubject>>
+  = UnsignedCredential<MaybeArray<CredentialSubject>>>
+  = WrappedDocument<{ credential: CredentialUT }>
+
+export type ClaimSubjectExtension<Extension extends {} = {}> = { did: DIDDocumentUnsinged } & Extension
 
 export const CREDENTIAL_CLAIM_TYPE = 'CredentialClaim'
 

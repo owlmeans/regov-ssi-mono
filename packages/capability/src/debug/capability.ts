@@ -4,8 +4,8 @@ import { governanceCredentialHelper } from '../governance/credential'
 import { TestUtil as Util } from './utils/wallet'
 
 import util from 'util'
-import { ClaimCredential, ClaimSubject, holderCredentialHelper, issuerCredentialHelper, OfferCredential, OfferSubject } from '@owlmeans/regov-ssi-agent';
-import { CapabilityCredential, CapabilitySubject, ClaimCapability, OfferCapability, OfferCapabilityExtension } from '../governance/types';
+import { ClaimCredential, ClaimSubject, ClaimDocument, ClaimSubjectExtension, holderCredentialHelper, issuerCredentialHelper, OfferCredential, OfferSubject } from '@owlmeans/regov-ssi-agent';
+import { CapabilityCredential, CapabilityDocument, CapabilityExtension, CapabilitySubject, ClaimCapability, OfferCapability, OfferCapabilityExtension } from '../governance/types';
 import { holderGovernanceVisitor } from '../governance/holder';
 util.inspect.defaultOptions.depth = 8;
 
@@ -25,6 +25,8 @@ util.inspect.defaultOptions.depth = 8;
 
   const identity = charlyIdentity.verifiableCredential[0].credentialSubject.data.identity
 
+  await bob.trustIdentity(charlyIdentity)
+
   const claim = await governanceCredentialHelper(charly.wallet).claimGovernance(
     identity, { name: 'Governance Claim' }
   )
@@ -34,8 +36,14 @@ util.inspect.defaultOptions.depth = 8;
   const offerBundle = await issuerCredentialHelper(charly.wallet)
     .bundle<ClaimCapability, OfferCapability>().build([offer])
 
-  await holderCredentialHelper(charly.wallet, holderGovernanceVisitor(charly.wallet))
-    .bundle<ClaimCapability, OfferCapability>().store(offerBundle)
+  await holderCredentialHelper<
+    CapabilityDocument,
+    CapabilityExtension,
+    CapabilityCredential,
+    OfferCapabilityExtension
+  >(
+    charly.wallet, holderGovernanceVisitor(charly.wallet)
+  ).bundle().store(offerBundle)
 
   console.log(offer)
 })()
