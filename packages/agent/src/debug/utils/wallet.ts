@@ -120,18 +120,20 @@ export namespace TestUtil {
 
     async claimTestDoc(data: (TestDocumentData1 | TestDocumentData2)[]) {
       const claims = await Promise.all(data.map(
-        async data => await holderCredentialHelper(this.wallet).claim<
+        async data => await holderCredentialHelper<
           TestDocumentData1 | TestDocumentData2
-        >({ type: 'TestDocument' }).build(data)
+        >(this.wallet)
+          .claim({ type: 'TestDocument' }).build(data)
       ))
 
       const requestClaim = await holderCredentialHelper(this.wallet).bundle<
         TestClaim
       >().build(claims)
 
-      await holderCredentialHelper(this.wallet).claim<
+      await holderCredentialHelper<
         TestDocumentData1 | TestDocumentData2
-      >({ type: 'TestDocument' }).register(requestClaim)
+      >(this.wallet)
+        .claim({ type: 'TestDocument' }).register(requestClaim)
 
       return requestClaim
     }

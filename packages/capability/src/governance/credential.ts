@@ -46,11 +46,11 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
     ) => {
       const holder = await wallet.did.lookUpDid<DIDDocument>(source.id)
 
-      const claim = await holderCredentialHelper(wallet).claim<
+      const claim = await holderCredentialHelper<
         CapabilityDocument<PayloadProps, ExtensionProps, CredentialProps>,
         CapabilityExtension,
-        UnsignedCapabilityCredential<CapabilitySubject<PayloadProps, ExtensionProps, CredentialProps>>
-      >({
+        CapabilityCredential<CapabilitySubject<PayloadProps, ExtensionProps, CredentialProps>>
+      >(wallet).claim({
         type: [
           CREDENTIAL_CAPABILITY_TYPE,
           ...(descr.type ? Array.isArray(descr.type) ? descr.type : [descr.type] : [])
@@ -114,13 +114,13 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
       PayloadProps extends {} = {},
       ExtensionProps extends {} = {},
       CredentialProps extends {} = {},
-    >(
-      claim: ClaimCredential<CapabilityClaimSubject<PayloadProps, ExtensionProps, CredentialProps>>
-    ) => {
+      >(
+        claim: ClaimCredential<CapabilityClaimSubject<PayloadProps, ExtensionProps, CredentialProps>>
+      ) => {
 
       return await issuerCredentialHelper<
-        CapabilityDocument<PayloadProps, ExtensionProps, CredentialProps>, 
-        CapabilityExtension, 
+        CapabilityDocument<PayloadProps, ExtensionProps, CredentialProps>,
+        CapabilityExtension,
         CapabilityCredential<CapabilitySubject<PayloadProps, ExtensionProps, CredentialProps>>,
         OfferCapabilityExtension
       >(wallet, issuerGovernanceVisitor(wallet)).claim().signClaim(claim)

@@ -128,7 +128,7 @@ export const issuerCredentialHelper = <
           offerUnsigned,
           issuer,
           { keyId: VERIFICATION_KEY_CONTROLLER }
-        ) as OfferCredential<OfferSubject<CredentialT>>
+        ) as OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
       }
 
       return {

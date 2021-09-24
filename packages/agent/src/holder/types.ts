@@ -5,14 +5,17 @@ import {
   UnsignedCredential,
   Credential,
   Presentation,
-  MaybeArray
+  MaybeArray,
+  WalletWrapper,
+  CredentialType
 } from "@owlmeans/regov-ssi-core"
+import { OfferCredential, OfferSubject } from "../issuer/types"
 
 
 export type ClaimSubject<
   CredentialUT extends UnsignedCredential<MaybeArray<CredentialSubject>>
   = UnsignedCredential<MaybeArray<CredentialSubject>>,
-  Extension extends {} = {} 
+  Extension extends {} = {}
   > =
   CredentialSubject<
     WrappedDocument<{ credential: CredentialUT }>,
@@ -60,6 +63,26 @@ export type ResponseBundle<CredentialT extends Credential> = {
   presentation: Presentation<CredentialT | SatelliteCredential>,
   did: DIDDocument
 }
+
+export type HolderVisitorBuilder<
+  CredentialT extends Credential = Credential,
+  Extension extends {} = {},
+  Offer extends OfferCredential<OfferSubject<CredentialT, Extension>>
+  = OfferCredential<OfferSubject<CredentialT, Extension>>
+  > = (wallet: WalletWrapper) => HolderVisitor<CredentialT, Extension, Offer>
+
+export type HolderVisitor<
+  CredentialT extends Credential = Credential,
+  Extension extends {} = {},
+  Offer extends OfferCredential<OfferSubject<CredentialT, Extension>>
+  = OfferCredential<OfferSubject<CredentialT, Extension>>
+  > = {
+    bundle?: {
+      store?: {
+        storeOffer: (offer: Offer) => Promise<void>
+      }
+    }
+  }
 
 export const ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL = 'ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL'
 

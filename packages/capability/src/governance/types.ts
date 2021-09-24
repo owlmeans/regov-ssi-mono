@@ -1,5 +1,5 @@
 
-import { ClaimSubject } from "@owlmeans/regov-ssi-agent"
+import { ClaimCredential, ClaimSubject, OfferCredential, OfferSubject } from "@owlmeans/regov-ssi-agent"
 import {
   ContextSchema,
   Credential,
@@ -42,6 +42,12 @@ export type CapabilityClaimSubject<
 export type OfferCapabilityExtension = {
   chain: DIDDocument[]
 }
+
+export type ClaimCapability 
+  = ClaimCredential<ClaimSubject<CapabilityCredential>>
+
+export type OfferCapability
+  = OfferCredential<OfferSubject<CapabilityCredential, OfferCapabilityExtension>>
 
 export type CapabilityExtension = {
   root?: string

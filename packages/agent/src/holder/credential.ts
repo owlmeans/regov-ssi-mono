@@ -36,12 +36,14 @@ import {
   ERROR_CLAIM_OFFER_DONT_MATCH,
   CREDENTIAL_RESPONSE_TYPE,
   CREDENTIAL_SATELLITE_TYPE,
-  SatelliteCredential
+  SatelliteCredential,
+  HolderVisitor
 } from "./types"
 import {
   CREDENTIAL_OFFER_TYPE,
   OfferBundle,
-  OfferCredential
+  OfferCredential,
+  OfferSubject
 } from "../issuer/types"
 import { EntityIdentity, IdentityParams } from "../identity/types"
 import { CREDENTIAL_REQUEST_TYPE, RequestBundle, RequestCredential } from "../verifier/types"
@@ -51,119 +53,121 @@ export const isSatellite = (crednetial: Credential): crednetial is SatelliteCred
   return crednetial.type.includes(CREDENTIAL_SATELLITE_TYPE)
 }
 
-export const holderCredentialHelper = (wallet: WalletWrapper) => {
+export const holderCredentialHelper = <
+  Payload extends {} = {},
+  Extension extends {} = {},
+  CredentialT extends Credential<CredentialSubject<WrappedDocument<Payload>, Extension>>
+  = Credential<CredentialSubject<WrappedDocument<Payload>, Extension>>,
+  VisitorExtension extends {} = {}
+>(wallet: WalletWrapper, visitor?: HolderVisitor<CredentialT, VisitorExtension>) => {
+  type SubjectUT = CredentialT extends Credential<infer Subject> ? Subject : never
+  type CredentialUT = UnsignedCredential<SubjectUT>
   const _identityHelper = identityHelper(wallet)
 
   return {
-    claim: <
-      Payload extends {} = {},
-      Extension extends {} = {},
-      CredentialUT extends UnsignedCredential<
-        CredentialSubject<WrappedDocument<Payload>, Extension>
-      > = UnsignedCredential<
-        CredentialSubject<WrappedDocument<Payload>, Extension>
-      >
-    >(
+    claim: (
       claimOptions: {
         type: string | string[],
         schemaUri?: string,
         crdContext?: ContextSchema,
         holder?: DIDDocument,
       }
-    ) => ({
-      build: async (payload: Payload, options?: {
-        key?: KeyPair | string,
-        extension?: Extension
-      }) => {
-        const credentialSubject = {
-          data: {
-            '@type': claimOptions.type,
-            ...payload
-          },
-          ...(options?.extension ? options?.extension : {})
-        }
-
-        const key = await wallet.keys.getCryptoKey(options?.key)
-        const didUnsigned = await wallet.did.helper().createDID(
-          key,
-          {
-            data: JSON.stringify(credentialSubject),
-            hash: true,
-            purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
+    ) => {
+      return {
+        build: async (payload: Payload, options?: {
+          key?: KeyPair | string,
+          extension?: Extension
+        }) => {
+          const credentialSubject = {
+            data: {
+              '@type': claimOptions.type,
+              ...payload
+            },
+            ...(options?.extension ? options?.extension : {})
           }
-        )
 
-        const holder = claimOptions.holder || _identityHelper.getIdentity().did
-        if (!holder) {
-          throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
-        }
-
-        const types = Array.isArray(claimOptions.type) ? claimOptions.type : [claimOptions.type]
-
-        const unsignedCredential = await wallet.ctx.buildCredential<
-          WrappedDocument<Payload>,
-          CredentialSubject<WrappedDocument<Payload>, Extension>
-        >({
-          id: didUnsigned.id,
-          type: [BASE_CREDENTIAL_TYPE, ...types],
-          holder: wallet.did.helper().extractProofController(holder),
-          context: wallet.ctx.buildContext(
-            claimOptions.schemaUri || types.join('/').toLowerCase(),
-            claimOptions.crdContext
-          ),
-          subject: credentialSubject
-        }) as CredentialUT
-
-        const claimTypes = [...types]
-        claimTypes.shift()
-        const mainType = claimTypes.shift()
-        const claimSubject: ClaimSubject<CredentialUT> = {
-          data: {
-            '@type': [`${CLAIM_TYPE_PREFFIX}:${mainType}`, ...claimTypes],
-            credential: unsignedCredential
-          },
-          did: didUnsigned
-        }
-
-        const claimUnsigned = await wallet.ctx.buildCredential<
-          WrappedDocument<{ credential: CredentialUT }>,
-          ClaimSubject<CredentialUT>
-        >({
-          id: didUnsigned.id,
-          type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_CLAIM_TYPE],
-          holder: wallet.did.helper().extractProofController(holder),
-          subject: claimSubject,
-          context: wallet.ctx.buildContext(
-            'credential/claim',
-            /**
-             * @TODO Proper context description required
-             */
+          const key = await wallet.keys.getCryptoKey(options?.key)
+          const didUnsigned = await wallet.did.helper().createDID(
+            key,
             {
-              did: { '@id': 'scm:did', '@type': '@json' },
-              credential: { '@id': 'scm:credential', '@type': '@json' }
+              data: JSON.stringify(credentialSubject),
+              hash: true,
+              purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
             }
           )
-        })
 
-        return await wallet.ctx.signCredential(
-          claimUnsigned,
-          holder
-        ) as ClaimCredential<ClaimSubject<CredentialUT>>
-      },
+          const holder = claimOptions.holder || _identityHelper.getIdentity().did
+          if (!holder) {
+            throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
+          }
 
-      /**
-       * @TODO Allow to clean up registered claim
-       */
-      register: async (
-        bundle: ClaimBundle<ClaimCredential<ClaimSubject<CredentialUT>>>
-      ) => {
-        await wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
-          .addCredential<
-            CredentialSubject<WrappedDocument<Payload>, Extension>,
-            Presentation<ClaimCredential<ClaimSubject<CredentialUT>>>
-          >(bundle)
+          const types = Array.isArray(claimOptions.type) ? claimOptions.type : [claimOptions.type]
+
+          const unsignedCredential = await wallet.ctx.buildCredential<
+            WrappedDocument<Payload>,
+            CredentialSubject<WrappedDocument<Payload>, Extension>
+          >({
+            id: didUnsigned.id,
+            type: [BASE_CREDENTIAL_TYPE, ...types],
+            holder: wallet.did.helper().extractProofController(holder),
+            context: wallet.ctx.buildContext(
+              claimOptions.schemaUri || types.join('/').toLowerCase(),
+              claimOptions.crdContext
+            ),
+            subject: credentialSubject
+          }) as CredentialUT
+
+          const claimTypes = [...types]
+          claimTypes.shift()
+          const mainType = claimTypes.shift()
+          const claimSubject: ClaimSubject<CredentialUT> = {
+            data: {
+              '@type': [`${CLAIM_TYPE_PREFFIX}:${mainType}`, ...claimTypes],
+              credential: unsignedCredential
+            },
+            did: didUnsigned
+          }
+
+          const claimUnsigned = await wallet.ctx.buildCredential<
+            WrappedDocument<{ credential: CredentialUT }>,
+            ClaimSubject<CredentialUT>
+          >({
+            id: didUnsigned.id,
+            type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_CLAIM_TYPE],
+            holder: wallet.did.helper().extractProofController(holder),
+            subject: claimSubject,
+            context: wallet.ctx.buildContext(
+              'credential/claim',
+              /**
+               * @TODO Proper context description required
+               */
+              {
+                did: { '@id': 'scm:did', '@type': '@json' },
+                credential: { '@id': 'scm:credential', '@type': '@json' }
+              }
+            )
+          })
+
+          return await wallet.ctx.signCredential(
+            claimUnsigned,
+            holder
+          ) as ClaimCredential<ClaimSubject<CredentialUT>>
+        },
+
+        /**
+         * @TODO Allow to clean up registered claim
+         */
+        register: async (
+          bundle: ClaimBundle<ClaimCredential<ClaimSubject<CredentialUT>>>
+        ) => {
+          await wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
+            .addCredential<
+              CredentialSubject<WrappedDocument<Payload>, Extension>,
+              Presentation<ClaimCredential<ClaimSubject<CredentialUT>>>
+            >(bundle)
+        }
       }
-    }),
+    },
 
     bundle: <
       BundledClaim extends ClaimCredential,
@@ -216,14 +220,12 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
 
         result = result && bundle.type.includes(CREDENTIAL_OFFER_TYPE)
 
-        type Payload = ClaimPayload<BundledClaim>
-        type Extension = ClaimExtenstion<BundledClaim>
+        type PayloadT = ClaimPayload<BundledClaim>
+        type ExtensionT = ClaimExtenstion<BundledClaim>
 
         const claims = wallet.getRegistry(REGISTRY_TYPE_CLAIMS).getCredential<
-          CredentialSubject<WrappedDocument<Payload>, Extension>,
-          Presentation<ClaimCredential<ClaimSubject<
-            UnsignedCredential<CredentialSubject<WrappedDocument<Payload>, Extension>>
-          >>>
+          CredentialSubject<WrappedDocument<PayloadT>, ExtensionT>,
+          Presentation<ClaimCredential<ClaimSubject<CredentialUT>>>
         >(bundle.id)
 
         if (result && claims) {
@@ -250,9 +252,9 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       },
 
       cleanup: async (response: OfferBundle<BundledOffer>) => {
-        type Payload = ClaimPayload<BundledClaim>
-        type Extension = ClaimExtenstion<BundledClaim>
-        type SubjectT = CredentialSubject<WrappedDocument<Payload>, Extension>
+        type PayloadT = ClaimPayload<BundledClaim>
+        type ExtensionT = ClaimExtenstion<BundledClaim>
+        type SubjectT = CredentialSubject<WrappedDocument<PayloadT>, ExtensionT>
         const claim = wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
           .getCredential<SubjectT, ClaimBundle<BundledOffer>>(response.id)
         if (claim) {
@@ -262,9 +264,9 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       },
 
       store: async (bundle: OfferBundle<BundledOffer>) => {
-        type Payload = ClaimPayload<BundledClaim>
-        type Extension = ClaimExtenstion<BundledClaim>
-        type SubjectT = CredentialSubject<WrappedDocument<Payload>, Extension>
+        type PayloadT = ClaimPayload<BundledClaim>
+        type ExtensionT = ClaimExtenstion<BundledClaim>
+        type SubjectT = CredentialSubject<WrappedDocument<PayloadT>, ExtensionT>
 
         const offers = [...bundle.verifiableCredential]
         await _identityHelper.extractEntity(offers)
@@ -272,6 +274,8 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
         return Promise.all(offers.map(
           async (offer) => {
             wallet.did.addDID(offer.credentialSubject.did)
+            visitor?.bundle?.store?.storeOffer
+              && await visitor?.bundle?.store?.storeOffer(offer as any)
             return await registry.addCredential<SubjectT, Credential<SubjectT>>(
               offer.credentialSubject.data.credential as Credential<SubjectT>
             )
