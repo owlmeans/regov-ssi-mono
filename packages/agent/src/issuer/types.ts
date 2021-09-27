@@ -6,7 +6,8 @@ import {
   Presentation,
   MaybeArray,
   UnsignedCredential,
-  WalletWrapper
+  WalletWrapper,
+  UnsignedPresentation
 } from "@owlmeans/regov-ssi-core"
 
 export type OfferSubject<
@@ -32,6 +33,14 @@ export type IssuerVisitorBuilder<
   = Credential<MaybeArray<CredentialSubject>>
   > = (wallet: WalletWrapper) => IssuerVisitor<Extension, CredentialT>
 
+
+type InferUnsignedCredential<
+  Type extends Credential<MaybeArray<CredentialSubject>>
+  = Credential<MaybeArray<CredentialSubject>>
+  > = Type extends Credential<infer Subject>
+  ? UnsignedCredential<Subject>
+  : never
+
 export type IssuerVisitor<
   Extension extends {} = {},
   CredentialT extends Credential<MaybeArray<CredentialSubject>>
@@ -39,6 +48,10 @@ export type IssuerVisitor<
   > = {
     claim?: {
       signClaim?: {
+        clarifyIssuer?: (
+          unsigned: InferUnsignedCredential<CredentialT>
+        ) => Promise<DIDDocument>
+
         patchOffer?: (
           unsigned: UnsignedCredential<OfferSubject<CredentialT, Extension>>
         ) => Promise<void>

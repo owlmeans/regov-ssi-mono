@@ -1,64 +1,71 @@
 import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
 import {
   buildWalletWrapper,
-  WalletWrapper,
-  WrappedDocument,
   Presentation,
+  REGISTRY_TYPE_REQUESTS,
   Credential,
   CredentialSubject,
+  WrappedDocument,
   UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
 import {
   EntityIdentity,
-  identityBundler,
   identityHelper,
-  RequestBundle,
-  verifierCredentialHelper,
   issuerCredentialHelper,
-  OfferBundle,
-  OfferCredential,
-  OfferSubject,
-  ClaimBundle,
+  holderCredentialHelper,
+  verifierCredentialHelper,
+  RequestBundle,
   ClaimCredential,
   ClaimSubject,
-  holderCredentialHelper
+  OfferCredential,
+  OfferSubject,
+  OfferBundle,
+  ClaimBundle
 } from "@owlmeans/regov-ssi-agent"
+import { governanceCredentialHelper } from "../../governance/credential"
+import {
+  CapabilityCredential,
+  CapabilityDocument,
+  CapabilityExtension,
+  ClaimCapability,
+  CREDENTIAL_GOVERNANCE_TYPE,
+  OfferCapability,
+  OfferCapabilityExtension,
+  UnsignedCapabilityCredential
+} from "../../governance/types"
+import { holderGovernanceVisitor } from '../../governance/holder'
+
+import { TestUtil as AgentTestUtil } from '@owlmeans/regov-ssi-agent/src/debug/utils/wallet'
+import { issuerVisitor } from "../.."
+import { ByCapabilityExtension } from "../../issuer/types"
 
 
 export namespace TestUtil {
-  export type IdentityFields = {
-    firstname: string
-    lastname: string
-  }
+  export const CAPABILITY_TEST_CREDENTIAL_TYPE = 'TestCapabilityCredential'
 
-  export type TestDocumentData1 = {
-    key: string
-    comment: string
-  }
+  export type CapabilityCredentialTestParams = TestDocPayload & TestDocExtension
 
-  export type TestDocumentData2 = {
-    id: string
+  export type TestDocPayload = {
     description: string
   }
 
+  export type TestDocExtension = {
+    info: string
+  }
+
   export type TestCredential = Credential<CredentialSubject<
-    WrappedDocument<TestDocumentData2 | TestDocumentData1>, {}
+    WrappedDocument<TestDocPayload>, TestDocExtension
   >>
 
   export type TestClaim = ClaimCredential<ClaimSubject<
     UnsignedCredential<CredentialSubject<
-      WrappedDocument<TestDocumentData2 | TestDocumentData1>, {}
+      WrappedDocument<TestDocPayload>, TestDocExtension
     >>
   >>
 
   export type TestOffer = OfferCredential<OfferSubject<TestCredential>>
 
-  export const IDENTITY_TYPE = 'TestUtilIdentity'
-
-  export class Wallet {
-
-    constructor(public wallet: WalletWrapper, public name: string) {
-    }
+  export class Wallet extends AgentTestUtil.Wallet {
 
     static async setup(name: string) {
       const walletUtil = new Wallet(await buildWalletWrapper(nodeCryptoHelper, '11111111',
@@ -73,7 +80,7 @@ export namespace TestUtil {
     }
 
     async produceIdentity() {
-      return await identityHelper<IdentityFields>(
+      return await identityHelper<AgentTestUtil.IdentityFields>(
         this.wallet,
         this.wallet.ctx.buildContext('identity', {
           xsd: 'http://www.w3.org/2001/XMLSchema#',
@@ -81,7 +88,7 @@ export namespace TestUtil {
           lastname: { '@id': 'scm:lastname', '@type': 'xsd:string' }
         })
       ).createIdentity(
-        IDENTITY_TYPE,
+        AgentTestUtil.IDENTITY_TYPE,
         {
           firstname: this.name,
           lastname: 'Lastname'
@@ -89,97 +96,181 @@ export namespace TestUtil {
       )
     }
 
-    async requestIdentity() {
-      return await identityBundler(this.wallet).request()
+    async requestGovernance() {
+      const req = await verifierCredentialHelper(this.wallet).request()
+        .build({ '@type': CREDENTIAL_GOVERNANCE_TYPE })
+
+      return await verifierCredentialHelper(this.wallet).request().bundle([req])
     }
 
-    async validateRequest(request: RequestBundle) {
-      const [result, info] = await holderCredentialHelper(this.wallet)
-        .request().verify(request)
-      if (!result) {
-        console.log(request, info)
+    async responseGovernance(request: RequestBundle) {
+      const { requests } = await holderCredentialHelper(this.wallet)
+        .request().unbundle(request)
+
+      return await holderCredentialHelper(this.wallet)
+        .response().build<CapabilityCredential>(requests, request)
+    }
+
+    async selfIssueGovernance(idPresentation: Presentation<EntityIdentity>) {
+      const identity = idPresentation.verifiableCredential[0].credentialSubject.data.identity
+
+      const claim = await governanceCredentialHelper(this.wallet).claimGovernance(
+        identity, { name: 'Governance Claim' }
+      )
+
+      const offer = await governanceCredentialHelper(this.wallet).offer(claim)
+
+      const offerBundle = await issuerCredentialHelper(this.wallet)
+        .bundle<ClaimCapability, OfferCapability>().build([offer])
+
+      return await holderCredentialHelper<
+        CapabilityDocument,
+        CapabilityExtension,
+        CapabilityCredential,
+        OfferCapabilityExtension
+      >(
+        this.wallet, holderGovernanceVisitor(this.wallet)
+      ).bundle().store(offerBundle)
+    }
+
+    async claimCapability(
+      rootPresentation: Presentation<EntityIdentity | CapabilityCredential>,
+      type: string,
+      doc: CapabilityCredentialTestParams
+    ) {
+      const source = this.wallet.getRegistry(REGISTRY_TYPE_REQUESTS).getCredential()?.credential
+      if (!source) {
+        throw new Error('No identity to claim for')
       }
+      const root = rootPresentation.verifiableCredential.find(
+        cap => cap.type.includes(CREDENTIAL_GOVERNANCE_TYPE)
+      )
 
-      return result
+      const claim = await governanceCredentialHelper(this.wallet).claim(
+        source,
+        {
+          root,
+          name: 'Test Capability',
+          type: [CAPABILITY_TEST_CREDENTIAL_TYPE, type]
+        },
+        {
+          '@type': [CAPABILITY_TEST_CREDENTIAL_TYPE, type],
+          subjectSchema: {
+            'tcap': 'https://example.org/test/capability',
+            description: { '@id': 'tcap:description', '@type': 'xsd:string' },
+            info: { '@id': 'tcap:info', '@type': 'xsd:string' },
+          },
+          subjectProps: {
+            payload: {
+              description: doc.description
+            },
+            extension: {
+              info: doc.info
+            }
+          }
+        }
+      )
+
+      const claimPres = await holderCredentialHelper(this.wallet).bundle().build([claim])
+      await holderCredentialHelper(this.wallet).claim({ type }).register(claimPres)
+
+      return claimPres as Presentation<ClaimCapability>
     }
 
-    async validateIdentityResponse(response: Presentation<EntityIdentity>) {
-      const { result, entity } = await verifierCredentialHelper(this.wallet)
-        .response().verify(response)
+    async signCapability(claimPres: Presentation<ClaimCapability>) {
+      const { result, claims, entity }
+        = await issuerCredentialHelper(this.wallet)
+          .bundle<ClaimCapability, OfferCapability>().unbudle(claimPres)
 
-      return [result, entity]
-    }
-
-    async provideIdentity(request?: RequestBundle) {
-      return await identityBundler(this.wallet).response(request)
-    }
-
-    async trustIdentity(response: Presentation<EntityIdentity>) {
-      return await identityBundler(this.wallet).trust(response)
-    }
-
-    async claimTestDoc(data: (TestDocumentData1 | TestDocumentData2)[]) {
-      const claims = await Promise.all(data.map(
-        async data => await holderCredentialHelper<
-          TestDocumentData1 | TestDocumentData2
-        >(this.wallet).claim({ type: 'TestDocument' }).build(data)
+      const offers = await Promise.all(claims.map(
+        async claim => await governanceCredentialHelper(this.wallet).offer(claim)
       ))
 
-      const requestClaim = await holderCredentialHelper(this.wallet).bundle<
-        TestClaim
-      >().build(claims)
+      return await issuerCredentialHelper(this.wallet)
+        .bundle<ClaimCapability, OfferCapability>().build(offers)
+    }
 
-      await holderCredentialHelper<
-        TestDocumentData1 | TestDocumentData2
-      >(this.wallet).claim({ type: 'TestDocument' }).register(requestClaim)
+    async storeCapability(offerBundle: OfferBundle<OfferCapability>) {
+      return await holderCredentialHelper<
+        CapabilityDocument,
+        CapabilityExtension,
+        CapabilityCredential,
+        OfferCapabilityExtension
+      >(this.wallet, holderGovernanceVisitor(this.wallet))
+        .bundle().store(offerBundle)
+    }
+
+    async claimCapabilityCreds(type: string, data: CapabilityCredentialTestParams[]) {
+      const claims = await Promise.all(data.map(
+        async data => await holderCredentialHelper<
+          TestDocPayload,
+          TestDocExtension,
+          TestCredential
+        >(this.wallet)
+          .claim({ type }).build(
+            { description: data.description },
+            { extension: { info: data.info } }
+          )
+      ))
+
+      const requestClaim = await holderCredentialHelper(this.wallet)
+        .bundle<TestClaim>().build(claims)
+
+      await holderCredentialHelper<TestDocPayload, TestDocExtension, TestCredential>(this.wallet)
+        .claim({ type }).register(requestClaim)
 
       return requestClaim
     }
 
-    async unbundleClaim(claimRequest: ClaimBundle<TestClaim>) {
-      return await issuerCredentialHelper(this.wallet)
+    async offerCapabilityCreds(claimRequest: ClaimBundle<TestClaim>) {
+      const { result, claims } = await issuerCredentialHelper(this.wallet)
         .bundle<TestClaim, TestOffer>().unbudle(claimRequest)
-    }
 
-    async signClaims(claims: TestClaim[]) {
+      if (!result) {
+        console.log(claimRequest)
+
+        throw new Error('Capability request is broken')
+      }
+
       const offers = await issuerCredentialHelper<
-        TestDocumentData1 | TestDocumentData2, {},
-        TestCredential
-      >(this.wallet).claim().signClaims(claims)
+        TestDocPayload, 
+        TestDocExtension, 
+        TestCredential,
+        ByCapabilityExtension
+      >(this.wallet, issuerVisitor(this.wallet)).claim().signClaims(claims)
 
       return await issuerCredentialHelper(this.wallet)
         .bundle<TestClaim, TestOffer>().build(offers)
     }
 
-    async unbundleOffer(offer: OfferBundle<TestOffer>) {
-      return await holderCredentialHelper(this.wallet)
+    async storeCapabilityCreds(offer: OfferBundle<TestOffer>) {
+      /**
+       * @PROCEED
+       * @TODO Verify offer with bundled chain
+       */
+      const { result } = await holderCredentialHelper(this.wallet)
         .bundle<TestClaim, TestOffer>().unbudle(offer)
-    }
 
-    async storeOffer(offer: OfferBundle<TestOffer>) {
+      if (!result) {
+        console.log(offer)
+        throw new Error('Offer is broken and can\'t be stored')
+      }
+
+      /**
+       * @TODO Store offer with the chain
+       */
       await holderCredentialHelper(this.wallet)
         .bundle<TestClaim, TestOffer>().store(offer)
     }
 
-    async requestCreds() {
-      const req = await verifierCredentialHelper(this.wallet)
-        .request().build({ '@type': 'TestDocument' })
-
-      return await verifierCredentialHelper(this.wallet)
-        .request().bundle([req])
-    }
-
-    async provideCreds(request: RequestBundle) {
-      const { requests } = await holderCredentialHelper(this.wallet)
-        .request().unbundle(request)
-
-      return await holderCredentialHelper(this.wallet)
-        .response().build<TestCredential>(requests, request)
-    }
-
-    async validateResponse(response: Presentation<EntityIdentity | TestCredential>) {
+    async validateResponse<Type extends Credential = TestCredential>(
+      response: Presentation<EntityIdentity | Type>
+    ) {
+      /**
+       * @TODO Verify chain of credential
+       */
       const { result } = await verifierCredentialHelper(this.wallet)
-        .response().verify<EntityIdentity | TestCredential>(response)
+        .response().verify<EntityIdentity | Type>(response)
 
       if (!result) {
         return false

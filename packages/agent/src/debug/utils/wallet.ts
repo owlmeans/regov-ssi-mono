@@ -163,25 +163,27 @@ export namespace TestUtil {
         .bundle<TestClaim, TestOffer>().store(offer)
     }
 
-    async requestCreds() {
+    async requestCreds(type = 'TestDocument') {
       const req = await verifierCredentialHelper(this.wallet)
-        .request().build({ '@type': 'TestDocument' })
+        .request().build({ '@type': type })
 
       return await verifierCredentialHelper(this.wallet)
         .request().bundle([req])
     }
 
-    async provideCreds(request: RequestBundle) {
+    async provideCreds<Type extends Credential = TestCredential>(request: RequestBundle) {
       const { requests } = await holderCredentialHelper(this.wallet)
         .request().unbundle(request)
 
       return await holderCredentialHelper(this.wallet)
-        .response().build<TestCredential>(requests, request)
+        .response().build<Type>(requests, request)
     }
 
-    async validateResponse(response: Presentation<EntityIdentity | TestCredential>) {
+    async validateResponse<Type extends Credential = TestCredential>(
+      response: Presentation<EntityIdentity | Type>
+    ) {
       const { result } = await verifierCredentialHelper(this.wallet)
-        .response().verify<EntityIdentity | TestCredential>(response)
+        .response().verify<EntityIdentity | Type>(response)
 
       if (!result) {
         return false

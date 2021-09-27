@@ -40,7 +40,8 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
         root?: Credential,
         name: string,
         description?: string,
-        type?: string | string[]
+        type?: string | string[],
+        key?: string | KeyPair
       },
       capability: CapabilityDocument<PayloadProps, ExtensionProps, CredentialProps>
     ) => {
@@ -69,6 +70,7 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
         },
         holder
       }).build(capability, {
+        key: descr.key,
         /**
          * @TODO Did needs an invocation? capability
          */
@@ -78,6 +80,16 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
           ...(descr.description ? { description: descr.description } : {}),
           ...(descr.root ? { root: descr.root.id } : {})
         }
+      })
+
+      const key = await wallet.keys.getCryptoKey(descr?.key)
+
+      claim.credentialSubject.did = await wallet.did.helper().createDID(key, {
+        source: claim.credentialSubject.did,
+        purpose: [
+          DIDPURPOSE_CAPABILITY,
+          DIDPURPOSE_DELEGATION,
+        ]
       })
 
       return claim
@@ -96,16 +108,6 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
         ...descr,
         type: CREDENTIAL_GOVERNANCE_TYPE
       }, { '@type': [CREDENTIAL_GOVERNANCE_TYPE] })
-
-      const key = await wallet.keys.getCryptoKey(descr?.key)
-
-      claim.credentialSubject.did = await wallet.did.helper().createDID(key, {
-        source: claim.credentialSubject.did,
-        purpose: [
-          DIDPURPOSE_CAPABILITY,
-          DIDPURPOSE_DELEGATION,
-        ]
-      })
 
       return claim as ClaimCredential<CapabilityClaimSubject>
     },

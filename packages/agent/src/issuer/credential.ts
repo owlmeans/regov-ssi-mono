@@ -74,11 +74,18 @@ export const issuerCredentialHelper = <
           VERIFICATION_KEY_CONTROLLER
         )
 
+        const signingIssuer = visitor?.claim?.signClaim?.clarifyIssuer 
+          ? await visitor?.claim?.signClaim?.clarifyIssuer(
+            claim.credentialSubject.data.credential as any
+          )
+          : issuer
+
         const credential = await wallet.ctx.signCredential(
           claim.credentialSubject.data.credential,
-          issuer, {
-          keyId: VERIFICATION_KEY_HOLDER
-        }
+          issuer,
+          {
+            keyId: VERIFICATION_KEY_HOLDER
+          }
         ) as CredentialT
 
         let subjectType: string | string[] = claim.credentialSubject.data["@type"]
@@ -122,7 +129,7 @@ export const issuerCredentialHelper = <
         )
 
         visitor?.claim?.signClaim?.patchOffer
-          && visitor.claim.signClaim.patchOffer(offerUnsigned)
+          && await visitor.claim.signClaim.patchOffer(offerUnsigned)
 
         return await wallet.ctx.signCredential(
           offerUnsigned,
@@ -143,7 +150,8 @@ export const issuerCredentialHelper = <
 
     bundle: <
       BundledClaim extends ClaimCredential,
-      BundledOffer extends OfferCredential = OfferCredential
+      BundledOffer extends OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
+      = OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
     >(
       issuer?: DIDDocument,
       identity?: IdentityParams | EntityIdentity | boolean

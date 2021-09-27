@@ -1,12 +1,8 @@
 require('dotenv').config()
 
-import { governanceCredentialHelper } from '../governance/credential'
 import { TestUtil as Util } from './utils/wallet'
 
 import util from 'util'
-import { ClaimCredential, ClaimSubject, ClaimDocument, ClaimSubjectExtension, holderCredentialHelper, issuerCredentialHelper, OfferCredential, OfferSubject } from '@owlmeans/regov-ssi-agent';
-import { CapabilityCredential, CapabilityDocument, CapabilityExtension, CapabilitySubject, ClaimCapability, OfferCapability, OfferCapabilityExtension } from '../governance/types';
-import { holderGovernanceVisitor } from '../governance/holder';
 util.inspect.defaultOptions.depth = 8;
 
 
@@ -23,27 +19,46 @@ util.inspect.defaultOptions.depth = 8;
 
   const charlyIdentity = await charly.provideIdentity()
 
-  const identity = charlyIdentity.verifiableCredential[0].credentialSubject.data.identity
+  await charly.selfIssueGovernance(charlyIdentity)
 
   await bob.trustIdentity(charlyIdentity)
+  await alice.trustIdentity(charlyIdentity)
+  await dan.trustIdentity(charlyIdentity)
 
-  const claim = await governanceCredentialHelper(charly.wallet).claimGovernance(
-    identity, { name: 'Governance Claim' }
+  const requestGov = await bob.requestGovernance()
+
+  const gov = await charly.responseGovernance(requestGov)
+
+  const CRED_TYPE = 'TestCapabilityBasedCredential1'
+
+  const claimCap = await bob.claimCapability(
+    gov, CRED_TYPE, {
+    description: 'Test capability 1',
+    info: 'Info for capability 1'
+  })
+
+  const claimBundle = await charly.signCapability(claimCap)
+
+  await bob.storeCapability(claimBundle)
+
+  const aliceClaim = await alice.claimCapabilityCreds(
+    CRED_TYPE,
+    [{
+      description: 'Alice cred',
+      info: 'Capability based cred for Alice'
+    }]
   )
 
-  const offer = await governanceCredentialHelper(charly.wallet).offer(claim)
+  const bobOffer = await bob.offerCapabilityCreds(aliceClaim)
 
-  const offerBundle = await issuerCredentialHelper(charly.wallet)
-    .bundle<ClaimCapability, OfferCapability>().build([offer])
+  await alice.storeCapabilityCreds(bobOffer)
 
-  await holderCredentialHelper<
-    CapabilityDocument,
-    CapabilityExtension,
-    CapabilityCredential,
-    OfferCapabilityExtension
-  >(
-    charly.wallet, holderGovernanceVisitor(charly.wallet)
-  ).bundle().store(offerBundle)
+  const danCredRequest = await dan.requestCreds(CRED_TYPE)
+  const aliceCreds = await alice.provideCreds<Util.TestCredential>(danCredRequest)
+  const result = await dan.validateResponse<Util.TestCredential>(aliceCreds)
 
-  console.log(offer)
+  console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')
+  if (!result) {
+    console.log(aliceCreds)
+  }
 })()

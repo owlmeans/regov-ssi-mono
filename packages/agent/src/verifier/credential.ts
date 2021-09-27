@@ -131,7 +131,6 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
         }
 
         /**
-         * @PROCEED
          * @TODO We need to provide a custom loader to exteact 
          * dids from satelite credentials to verify all credentials 
          * in prsentation
