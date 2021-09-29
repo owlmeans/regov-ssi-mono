@@ -32,7 +32,7 @@ util.inspect.defaultOptions.depth = 8;
   const CRED_TYPE = 'TestCapabilityBasedCredential1'
 
   const claimCap = await bob.claimCapability(
-    gov, CRED_TYPE, {
+    gov as any, CRED_TYPE, {
     description: 'Test capability 1',
     info: 'Info for capability 1'
   })
@@ -54,7 +54,7 @@ util.inspect.defaultOptions.depth = 8;
   await alice.storeCapabilityCreds(bobOffer)
 
   const danCredRequest = await dan.requestCreds(CRED_TYPE)
-  const aliceCreds = await alice.provideCreds<Util.TestCredential>(danCredRequest)
+  const aliceCreds = await alice.provideCredsByCaps(danCredRequest)
   const result = await dan.validateResponse<Util.TestCredential>(aliceCreds)
 
   console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')

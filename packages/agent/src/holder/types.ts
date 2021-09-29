@@ -7,9 +7,10 @@ import {
   Presentation,
   MaybeArray,
   WalletWrapper,
-  CredentialType
+  CredentialType,
+  CredentialWrapper
 } from "@owlmeans/regov-ssi-core"
-import { OfferCredential, OfferSubject } from "../issuer/types"
+import { OfferBundle, OfferCredential, OfferSubject } from "../issuer/types"
 
 
 export type ClaimSubject<
@@ -61,6 +62,9 @@ export type SetelliteSubjectType<DocExtension extends {} = {}>
 export type SatelliteCredential<Subject extends SatelliteSubject = SatelliteSubject>
   = Credential<Subject>
 
+export type UnsisgnedSatellite<Subject extends SatelliteSubject = SatelliteSubject>
+  = UnsignedCredential<Subject>
+
 export type ResponseBundle<CredentialT extends Credential> = {
   presentation: Presentation<CredentialT | SatelliteCredential>,
   did: DIDDocument
@@ -81,7 +85,30 @@ export type HolderVisitor<
   > = {
     bundle?: {
       store?: {
-        storeOffer: (offer: Offer) => Promise<void>
+        storeOffer?: (offer: Offer) => Promise<void>
+      },
+
+      unbundle?: {
+        updateIssuer?: (
+          offer: OfferBundle<Offer>,
+          holder: string
+        ) => Promise<CredentialWrapper<CredentialSubject> | undefined>
+
+        updateDid?: (
+          offer: OfferBundle<Offer>,
+          holder: string
+        ) => Promise<DIDDocument | undefined>
+
+        verifyHolder?: (offer: OfferBundle<Offer>, did: DIDDocument) => Promise<boolean>
+      }
+
+      response?: {
+        build?: {
+          createCapability?: (
+            unsignedSatellite: UnsignedCredential<SatelliteSubject<Extension>>,
+            credential: CredentialT
+          ) => Promise<void>
+        }
       }
     }
   }

@@ -117,7 +117,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
     return {
       did,
 
-      ctx,
+      ssi: ctx,
 
       store: _store,
 

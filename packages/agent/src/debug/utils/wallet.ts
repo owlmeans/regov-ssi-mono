@@ -75,7 +75,7 @@ export namespace TestUtil {
     async produceIdentity() {
       return await identityHelper<IdentityFields>(
         this.wallet,
-        this.wallet.ctx.buildContext('identity', {
+        this.wallet.ssi.buildContext('identity', {
           xsd: 'http://www.w3.org/2001/XMLSchema#',
           firstname: { '@id': 'scm:firstname', '@type': 'xsd:string' },
           lastname: { '@id': 'scm:lastname', '@type': 'xsd:string' }
@@ -171,12 +171,16 @@ export namespace TestUtil {
         .request().bundle([req])
     }
 
-    async provideCreds<Type extends Credential = TestCredential>(request: RequestBundle) {
+    async provideCreds(request: RequestBundle) {
       const { requests } = await holderCredentialHelper(this.wallet)
         .request().unbundle(request)
 
-      return await holderCredentialHelper(this.wallet)
-        .response().build<Type>(requests, request)
+      return await holderCredentialHelper<
+        WrappedDocument<TestDocumentData2 | TestDocumentData1>,
+        {},
+        TestCredential
+      >(this.wallet)
+        .response().build(requests, request)
     }
 
     async validateResponse<Type extends Credential = TestCredential>(

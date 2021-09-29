@@ -80,7 +80,7 @@ export const issuerCredentialHelper = <
           )
           : issuer
 
-        const credential = await wallet.ctx.signCredential(
+        const credential = await wallet.ssi.signCredential(
           claim.credentialSubject.data.credential,
           issuer,
           {
@@ -106,7 +106,7 @@ export const issuerCredentialHelper = <
           did: did
         }
 
-        const offerUnsigned = await wallet.ctx.buildCredential<
+        const offerUnsigned = await wallet.ssi.buildCredential<
           WrappedDocument<{ credential: CredentialT }>,
           OfferSubject<CredentialT, VisitorExtension>
         >(
@@ -115,7 +115,7 @@ export const issuerCredentialHelper = <
             type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_OFFER_TYPE],
             holder: wallet.did.helper().extractProofController(issuer),
             subject: offerSubject,
-            context: wallet.ctx.buildContext(
+            context: wallet.ssi.buildContext(
               'credential/claim',
               /**
                * @TODO Use some proper schema
@@ -131,7 +131,7 @@ export const issuerCredentialHelper = <
         visitor?.claim?.signClaim?.patchOffer
           && await visitor.claim.signClaim.patchOffer(offerUnsigned)
 
-        return await wallet.ctx.signCredential(
+        return await wallet.ssi.signCredential(
           offerUnsigned,
           issuer,
           { keyId: VERIFICATION_KEY_CONTROLLER }
@@ -165,7 +165,7 @@ export const issuerCredentialHelper = <
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        let [result] = await wallet.ctx.verifyPresentation(bundle, did)
+        let [result] = await wallet.ssi.verifyPresentation(bundle, did)
 
         result = result && bundle.type.includes(CREDENTIAL_CLAIM_TYPE)
 
@@ -187,13 +187,13 @@ export const issuerCredentialHelper = <
           throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
         }
 
-        const unsigned = await wallet.ctx.buildPresentation(offers, {
+        const unsigned = await wallet.ssi.buildPresentation(offers, {
           id,
           holder: issuer.id,
           type: CREDENTIAL_OFFER_TYPE
         }) as UnsignedPresentation<BundledOffer>
 
-        return await wallet.ctx.signPresentation(unsigned, issuer) as OfferBundle<BundledOffer>
+        return await wallet.ssi.signPresentation(unsigned, issuer) as OfferBundle<BundledOffer>
       }
     })
   }

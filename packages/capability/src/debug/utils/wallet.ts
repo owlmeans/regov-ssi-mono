@@ -20,7 +20,8 @@ import {
   OfferCredential,
   OfferSubject,
   OfferBundle,
-  ClaimBundle
+  ClaimBundle,
+  HolderVisitor
 } from "@owlmeans/regov-ssi-agent"
 import { governanceCredentialHelper } from "../../governance/credential"
 import {
@@ -38,6 +39,7 @@ import { holderGovernanceVisitor } from '../../governance/holder'
 import { TestUtil as AgentTestUtil } from '@owlmeans/regov-ssi-agent/src/debug/utils/wallet'
 import { issuerVisitor } from "../.."
 import { ByCapabilityExtension } from "../../issuer/types"
+import { holderCapabilityVisitor } from "../../holder/capability"
 
 
 export namespace TestUtil {
@@ -63,7 +65,7 @@ export namespace TestUtil {
     >>
   >>
 
-  export type TestOffer = OfferCredential<OfferSubject<TestCredential>>
+  export type TestOffer = OfferCredential<OfferSubject<TestCredential, ByCapabilityExtension>>
 
   export class Wallet extends AgentTestUtil.Wallet {
 
@@ -82,7 +84,7 @@ export namespace TestUtil {
     async produceIdentity() {
       return await identityHelper<AgentTestUtil.IdentityFields>(
         this.wallet,
-        this.wallet.ctx.buildContext('identity', {
+        this.wallet.ssi.buildContext('identity', {
           xsd: 'http://www.w3.org/2001/XMLSchema#',
           firstname: { '@id': 'scm:firstname', '@type': 'xsd:string' },
           lastname: { '@id': 'scm:lastname', '@type': 'xsd:string' }
@@ -107,8 +109,12 @@ export namespace TestUtil {
       const { requests } = await holderCredentialHelper(this.wallet)
         .request().unbundle(request)
 
-      return await holderCredentialHelper(this.wallet)
-        .response().build<CapabilityCredential>(requests, request)
+      return await holderCredentialHelper<
+        TestDocPayload,
+        TestDocExtension,
+        TestCredential
+      >(this.wallet)
+        .response().build(requests, request)
     }
 
     async selfIssueGovernance(idPresentation: Presentation<EntityIdentity>) {
@@ -233,8 +239,8 @@ export namespace TestUtil {
       }
 
       const offers = await issuerCredentialHelper<
-        TestDocPayload, 
-        TestDocExtension, 
+        TestDocPayload,
+        TestDocExtension,
         TestCredential,
         ByCapabilityExtension
       >(this.wallet, issuerVisitor(this.wallet)).claim().signClaims(claims)
@@ -244,29 +250,53 @@ export namespace TestUtil {
     }
 
     async storeCapabilityCreds(offer: OfferBundle<TestOffer>) {
-      /**
-       * @PROCEED
-       * @TODO Verify offer with bundled chain
-       */
-      const { result } = await holderCredentialHelper(this.wallet)
-        .bundle<TestClaim, TestOffer>().unbudle(offer)
+      const { result } = await holderCredentialHelper<
+        TestDocPayload,
+        TestDocExtension,
+        TestCredential,
+        ByCapabilityExtension
+      >(
+        this.wallet,
+        holderCapabilityVisitor<TestDocPayload, TestDocExtension>()(this.wallet)
+      ).bundle().unbudle(offer)
 
       if (!result) {
         console.log(offer)
         throw new Error('Offer is broken and can\'t be stored')
       }
 
-      /**
-       * @TODO Store offer with the chain
-       */
-      await holderCredentialHelper(this.wallet)
-        .bundle<TestClaim, TestOffer>().store(offer)
+      await holderCredentialHelper<
+        TestDocPayload,
+        TestDocExtension,
+        TestCredential,
+        ByCapabilityExtension
+      >(
+        this.wallet,
+        holderCapabilityVisitor<TestDocPayload, TestDocExtension>()(this.wallet)
+      ).bundle().store(offer)
+    }
+
+    async provideCredsByCaps(request: RequestBundle) {
+      const { requests } = await holderCredentialHelper(this.wallet)
+        .request().unbundle(request)
+
+      return await holderCredentialHelper<
+        TestDocPayload,
+        TestDocExtension,
+        TestCredential,
+        ByCapabilityExtension
+      >(this.wallet, holderCapabilityVisitor<
+        TestDocPayload,
+        TestDocExtension
+      >()(this.wallet))
+        .response().build(requests, request)
     }
 
     async validateResponse<Type extends Credential = TestCredential>(
       response: Presentation<EntityIdentity | Type>
     ) {
       /**
+       * @PROCEED - make sure that the the chain and capability are verified
        * @TODO Verify chain of credential
        */
       const { result } = await verifierCredentialHelper(this.wallet)

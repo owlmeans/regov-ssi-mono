@@ -42,7 +42,7 @@ export type WalletWrapper = {
 
   keys: KeyChainWrapper
 
-  ctx: SSICore
+  ssi: SSICore
 
   hasIdentity: () => boolean
 

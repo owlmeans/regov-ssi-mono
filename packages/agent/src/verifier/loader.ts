@@ -7,11 +7,10 @@ import { identityHelper } from "../identity/identity";
 
 
 export const buildLocalLoader: (
-  wallet: WalletWrapper,
-  idHelper: typeof identityHelper
+  wallet: WalletWrapper
 ) =>
   LocalDocumentLoader
-  = (wallet, idHelper) => (
+  = (wallet) => (
     didHelper,
     loaderBuilder,
     presentation,

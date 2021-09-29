@@ -1,7 +1,8 @@
+import { VerifierVisitorBuilder } from "@owlmeans/regov-ssi-agent";
 import { WalletWrapper } from "@owlmeans/regov-ssi-core";
 
 
-export const verifierCapabilityHelper = (wallet: WalletWrapper) => {
+export const verifierCapabilityVisitor: VerifierVisitorBuilder = (wallet: WalletWrapper) => {
   return {
     
   }

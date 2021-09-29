@@ -4,6 +4,7 @@ import {
   WrappedDocument,
   Credential,
   Presentation,
+  WalletWrapper,
 } from "@owlmeans/regov-ssi-core"
 
 
@@ -14,6 +15,16 @@ export type CredentialRequestDoc = WrappedDocument<{
   holder?: string,
   source?: string
 }>
+
+export type VerifierVisitorBuilder = (wallet: WalletWrapper) => VerifierVisitor
+
+export type VerifierVisitor = {
+  response?: {
+    verify?: {
+      
+    }
+  }
+}
 
 export const CREDENTIAL_REQUEST_TYPE = 'CredentialRequest'
 
