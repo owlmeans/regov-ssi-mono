@@ -16,16 +16,6 @@ export type CredentialRequestDoc = WrappedDocument<{
   source?: string
 }>
 
-export type VerifierVisitorBuilder = (wallet: WalletWrapper) => VerifierVisitor
-
-export type VerifierVisitor = {
-  response?: {
-    verify?: {
-      
-    }
-  }
-}
-
 export const CREDENTIAL_REQUEST_TYPE = 'CredentialRequest'
 
 export type RequestCredential = Credential<RequestSubject>

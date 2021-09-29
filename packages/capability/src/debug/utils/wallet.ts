@@ -37,7 +37,7 @@ import {
 import { holderGovernanceVisitor } from '../../governance/holder'
 
 import { TestUtil as AgentTestUtil } from '@owlmeans/regov-ssi-agent/src/debug/utils/wallet'
-import { issuerVisitor } from "../.."
+import { issuerVisitor, verifierCapabilityHelper } from "../.."
 import { ByCapabilityExtension } from "../../issuer/types"
 import { holderCapabilityVisitor } from "../../holder/capability"
 
@@ -295,12 +295,8 @@ export namespace TestUtil {
     async validateResponse<Type extends Credential = TestCredential>(
       response: Presentation<EntityIdentity | Type>
     ) {
-      /**
-       * @PROCEED - make sure that the the chain and capability are verified
-       * @TODO Verify chain of credential
-       */
-      const { result } = await verifierCredentialHelper(this.wallet)
-        .response().verify<EntityIdentity | Type>(response)
+      const { result } = await verifierCapabilityHelper<Type>(this.wallet)
+        .response().verify(response)
 
       if (!result) {
         return false

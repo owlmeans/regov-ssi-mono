@@ -22,17 +22,11 @@ export const didShape = {
     expect.any(String)
   ],
   proof: proofShape,
-  publicKey: [
-    {
-      id: expect.any(String),
-      publicKeyBase58: expect.any(String),
-    }
-  ],
   verificationMethod: [
     {
       controller: expect.any(String),
       id: expect.any(String),
-      nonce: expect.any(String),
+      // nonce: expect.any(String),
     }
   ]
 }
@@ -45,18 +39,11 @@ export const unsginedDidShape = {
     expect.any(String),
   ],
   id: expect.any(String),
-  publicKey: [
-    {
-      id: expect.any(String),
-      publicKeyBase58: expect.any(String),
-    }
-  ],
   verificationMethod: [
     {
       controller: expect.any(String),
       id: expect.any(String),
-      nonce: expect.any(String),
-      proof: proofShape
+      // nonce: expect.any(String),
     }
   ]
 }
@@ -69,27 +56,16 @@ export const doubleDidShape = {
     expect.any(String),
   ],
   id: expect.any(String),
-  publicKey: [
-    {
-      id: expect.any(String),
-      publicKeyBase58: expect.any(String),
-    },
-    {
-      id: expect.any(String),
-      publicKeyBase58: expect.any(String),
-    }
-  ],
   verificationMethod: [
     {
       controller: expect.any(String),
       id: expect.any(String),
-      nonce: expect.any(String),
-      proof: proofShape
+      // nonce: expect.any(String),
     },
     {
       controller: expect.any(String),
       id: expect.any(String),
-      nonce: expect.any(String),
+      // nonce: expect.any(String),
     }
   ],
   proof: proofShape

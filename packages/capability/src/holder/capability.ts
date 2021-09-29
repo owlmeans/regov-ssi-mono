@@ -1,8 +1,25 @@
-import { HolderVisitorBuilder, OfferBundle, OfferCredential, OfferSubject } from "@owlmeans/regov-ssi-agent";
-import { CredentialSubject, WalletWrapper, Credential, WrappedDocument, REGISTRY_TYPE_CREDENTIALS } from "@owlmeans/regov-ssi-core";
-import { DIDDocument } from "@owlmeans/regov-ssi-did";
-import { CapabilityCredential, CapabilitySubject, OfferCapability, REGISTRY_SECTION_CAPABILITY } from "../governance/types";
-import { ByCapabilityExtension } from "../issuer/types";
+import { 
+  HolderVisitorBuilder, 
+  OfferBundle, 
+  OfferCredential, 
+  OfferSubject 
+} from "@owlmeans/regov-ssi-agent"
+import { 
+  CredentialSubject, 
+  WalletWrapper, 
+  Credential, 
+  WrappedDocument, 
+  REGISTRY_TYPE_CREDENTIALS 
+} from "@owlmeans/regov-ssi-core"
+import { DIDDocument } from "@owlmeans/regov-ssi-did"
+import { verifierCapabilityHelper } from "../verifier/capability"
+import { 
+  CapabilityCredential, 
+  CapabilitySubject, 
+  OfferCapability, 
+  REGISTRY_SECTION_CAPABILITY 
+} from "../governance/types"
+import { ByCapabilityExtension } from "../issuer/types"
 
 
 export const holderCapabilityVisitor = <
@@ -67,47 +84,7 @@ export const holderCapabilityVisitor = <
             return false
           }
 
-          return await chain.reduce(async (result, _did) => {
-            if (!await result) {
-              return false
-            }
-            if (await wallet.did.helper().verifyDID(_did)) {
-              if (did.alsoKnownAs && did.alsoKnownAs.includes(_did.id)) {
-                if (_did.capabilityDelegation) {
-                  if (_did.capabilityDelegation.find(
-                    tmp => wallet.did.helper().extractProofController(did)
-                      === (
-                        typeof tmp === 'string'
-                          ? wallet.did.helper().parseDIDId(tmp).did
-                          : tmp.controller
-                      )
-                  )) {
-                    did = _did
-                    return true
-                  }
-
-                  return false
-                }
-              }
-              if (_did.capabilityInvocation) {
-                if (_did.capabilityInvocation.find(
-                  tmp => wallet.did.helper().extractProofController(did)
-                    === (
-                      typeof tmp === 'string'
-                        ? wallet.did.helper().parseDIDId(tmp).did
-                        : tmp.controller
-                    )
-                )) {
-                  did = _did
-                  return true
-                }
-
-                return false
-              }
-            }
-
-            return false
-          }, Promise.resolve(true))
+          return await verifierCapabilityHelper(wallet).verifyChain(chain, did)
         }
       },
 

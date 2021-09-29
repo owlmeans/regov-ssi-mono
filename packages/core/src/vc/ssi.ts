@@ -273,8 +273,8 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           } else {
             if (localLoader) {
               const doc = await localLoader(
-                did.helper(), 
-                buildDocumentLoader(did), 
+                did.helper(),
+                buildDocumentLoader(did),
                 presentation,
                 didDoc
               )(didId.did)
@@ -299,6 +299,14 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
           }
 
+          // console.log(
+          //   '>>> BUILD VERIFIABLE SUITE',
+          //   { options,
+          //   didDoc,
+          //   key,
+          //   didId }
+          // )
+
           return crypto.buildSignSuite({
             publicKey: key.pubKey,
             privateKey: '',
@@ -306,9 +314,40 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             id: options.verificationMethod
           })
         },
-        getProofPurposeOptions: async (options) => ({
-          controller: <DIDDocument>await did.lookUpDid(options.controller)
-        })
+        getProofPurposeOptions: async (options) => {
+          let controller = <DIDDocument>await did.lookUpDid(options.controller)
+
+          /**
+           * @PROCEED 
+           * @TODO There is, PROBABLY, some problem here.
+           * agent/verifier/crednetial/response/verify doesnt' work in test
+           * No other methods in credential test of agent can find the controller.
+           * So there is a question if the signature really prooved on previous steps.
+           */
+          if (!controller) {
+            console.log(1)
+            if (localLoader) {
+              console.log(2)
+              const doc = await localLoader(
+                did.helper(),
+                buildDocumentLoader(did),
+                presentation,
+                didDoc
+              )(options.controller)
+              if (doc && did.helper().isDIDDocument(doc.document)) {
+                console.log(3)
+                controller = doc.document
+              }
+            }
+          }
+          // if (!controller) {
+          //   // console.log('Failed', {controller, options})
+          //   throw new Error(DID_REGISTRY_ERROR_NO_DID)
+          // }
+
+          // console.log('PROIVDE CONTROLLER', {controller, options})
+          return { controller }
+        }
       })(presentation)
 
       if (result.kind !== 'valid') {

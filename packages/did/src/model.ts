@@ -146,7 +146,7 @@ export const buildDidHelper =
           ? didDoc.verificationMethod?.find(publicKey => _parseDIDId(publicKey.id).fragment === keyId)
           : methodToExpand?.publicKeyBase58
             ? methodToExpand
-            : didDoc.verificationMethod?.find(publicKey => _parseDIDId(methodToExpand.id).fragment === keyId)
+            : didDoc.verificationMethod?.find(publicKey => _parseDIDId(publicKey.id).fragment === keyId)
 
         return expandedMethod === methodToExpand ? methodToExpand
           : {

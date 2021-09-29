@@ -5,7 +5,19 @@ import { TestUtil as Util } from './utils/wallet'
 import util from 'util'
 util.inspect.defaultOptions.depth = 8;
 
-
+/**
+ * @TODO It looks like we need to start developing test
+ * cases and bundle helpers based on them.
+ * Case 1: 
+ * 1. Charly provides Bob a Capability. 
+ * 2. Bob signs a capability based credentail to Alice. 
+ * 3. Dan trusts charly. 
+ * 4. Alice shows the credential to Dan. 
+ * 5. Dan aknowledge credential as trusted.
+ * 
+ * Case 2: The same. But Bob hires Emma and delegate capability to her.
+ * Emma signs credential istead of Bob. But Dan still aknowledges it.
+ */
 (async () => {
   const alice = await Util.Wallet.setup('alice')
   const bob = await Util.Wallet.setup('bob')

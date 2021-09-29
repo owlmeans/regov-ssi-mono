@@ -186,6 +186,8 @@ export namespace TestUtil {
     async validateResponse<Type extends Credential = TestCredential>(
       response: Presentation<EntityIdentity | Type>
     ) {
+      let x = 3
+      x++
       const { result } = await verifierCredentialHelper(this.wallet)
         .response().verify<EntityIdentity | Type>(response)
 

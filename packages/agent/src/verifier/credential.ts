@@ -31,10 +31,9 @@ import {
 import { basicHelper } from "@owlmeans/regov-ssi-common"
 import { isSatellite } from "../holder/credential"
 import { buildLocalLoader } from "./loader"
-import { VerifierVisitor } from "./types"
 
 
-export const verifierCredentialHelper = (wallet: WalletWrapper, visitor?: VerifierVisitor) => {
+export const verifierCredentialHelper = (wallet: WalletWrapper) => {
   const _identityHelper = identityHelper(wallet)
 
   return {
@@ -131,14 +130,8 @@ export const verifierCredentialHelper = (wallet: WalletWrapper, visitor?: Verifi
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        /**
-         * @TODO We need to provide a custom loader to exteact 
-         * dids from satelite credentials to verify all credentials 
-         * in prsentation
-         */
         let [result, info] = await wallet.ssi.verifyPresentation(
-          presentation, did,
-          buildLocalLoader(wallet)
+          presentation, did, buildLocalLoader(wallet)
         )
 
         if (!result) {

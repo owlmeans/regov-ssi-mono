@@ -11,7 +11,7 @@ import util from 'util'
 util.inspect.defaultOptions.depth = 8
 
 
-const testContext: {
+const ctx: {
   didDoc?: DIDDocument
   holderDoc?: DIDDocument
 } = {}
@@ -41,7 +41,7 @@ describe('DID Helper', () => {
 
     const didDoc = await didHelper.signDID(key, didDocUnsinged)
 
-    testContext['didDoc'] = didDoc
+    ctx['didDoc'] = didDoc
     expect(didDoc).toMatchSnapshot({
       id: expect.any(String),
       verificationMethod: [{
@@ -62,10 +62,10 @@ describe('DID Helper', () => {
   })
 
   it('verifies DID Document from itself', async () => {
-    if (!testContext.didDoc) {
+    if (!ctx.didDoc) {
       throw new Error('No DID doc from pervious test')
     }
-    const result = await didHelper.verifyDID(testContext.didDoc)
+    const result = await didHelper.verifyDID(ctx.didDoc)
 
     expect(result).toBe(true)
   })
@@ -82,26 +82,31 @@ describe('DID Helper', () => {
       hash: true
     })
 
-    const didDoc = await didHelper.signDID(bobKey, didDocUnsinged, VERIFICATION_KEY_CONTROLLER)
+    const didDoc = await didHelper.signDID(
+      bobKey, 
+      didDocUnsinged, 
+      VERIFICATION_KEY_CONTROLLER,
+      [DIDPURPOSE_ASSERTION]
+    )
 
-    testContext.holderDoc = didDoc
+    ctx.holderDoc = didDoc
   })
 
   it('verifies holder veriable did', async () => {
-    if (!testContext.holderDoc) {
+    if (!ctx.holderDoc) {
       throw new Error('No DID doc from pervious test')
     }
-    const result = await didHelper.verifyDID(testContext.holderDoc)
+    const result = await didHelper.verifyDID(ctx.holderDoc)
 
     expect(result).toBe(true)
   })
 
   it('fails on tempered data', async () => {
-    if (!testContext.holderDoc) {
+    if (!ctx.holderDoc) {
       throw new Error('No DID doc from pervious test')
     }
 
-    const brokenDoc = <DIDDocument>JSON.parse(JSON.stringify(testContext.holderDoc))
+    const brokenDoc = <DIDDocument>JSON.parse(JSON.stringify(ctx.holderDoc))
     if (brokenDoc.verificationMethod && brokenDoc.verificationMethod[0]
       && typeof brokenDoc.proof === 'object') {
       brokenDoc.proof.created = new Date().toUTCString()

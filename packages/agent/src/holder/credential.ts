@@ -93,7 +93,7 @@ export const holderCredentialHelper = <
             {
               data: JSON.stringify(credentialSubject),
               hash: true,
-              purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
+              purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_AUTHENTICATION]
             }
           )
 

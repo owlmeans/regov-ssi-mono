@@ -20,19 +20,6 @@ import {
 } from "./types"
 
 
-/**
- * @TODO It looks like we need to start developing test
- * cases and bundle helpers based on them.
- * Case 1: 
- * 1. Charly provides Bob a Capability. 
- * 2. Bob signs a capability based credentail to Alice. 
- * 3. Dan trusts charly. 
- * 4. Alice shows the credential to Dan. 
- * 5. Dan aknowledge credential as trusted.
- * 
- * Case 2: The same. But Bob hires Emma and delegate capability to her.
- * Emma signs credential istead of Bob. But Dan still aknowledges it.
- */
 export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (wallet: WalletWrapper) => {
   return {
     claim: {

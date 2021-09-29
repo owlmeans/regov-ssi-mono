@@ -1,5 +1,6 @@
 import {
   DIDDocument,
+  DIDPURPOSE_ASSERTION,
   VERIFICATION_KEY_CONTROLLER,
   VERIFICATION_KEY_HOLDER
 } from "@owlmeans/regov-ssi-did";
@@ -71,7 +72,8 @@ export const issuerCredentialHelper = <
         const did = await wallet.did.helper().signDID(
           signingKey,
           claim.credentialSubject.did,
-          VERIFICATION_KEY_CONTROLLER
+          VERIFICATION_KEY_CONTROLLER,
+          [DIDPURPOSE_ASSERTION]
         )
 
         const signingIssuer = visitor?.claim?.signClaim?.clarifyIssuer 
@@ -84,7 +86,7 @@ export const issuerCredentialHelper = <
           claim.credentialSubject.data.credential,
           issuer,
           {
-            keyId: VERIFICATION_KEY_HOLDER
+            keyId: VERIFICATION_KEY_CONTROLLER
           }
         ) as CredentialT
 

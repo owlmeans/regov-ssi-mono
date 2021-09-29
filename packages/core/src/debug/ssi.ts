@@ -155,7 +155,7 @@ const _test = async () => {
     const uDepDid = await ctxAlice.did.helper().createDID(
       await ctxAlice.keys.getCryptoKey(),
       {
-        purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION],
+        purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_AUTHENTICATION],
         data: JSON.stringify(subject),
         hash: true
       }
@@ -183,7 +183,7 @@ const _test = async () => {
       await ctxBob.keys.getCryptoKey(),
       uDepDid,
       VERIFICATION_KEY_CONTROLLER,
-      [DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
+      [DIDPURPOSE_ASSERTION]
     )
     console.log('-- CHARLY CHECKS DEP DID --')
     console.log(depDid, await ctxCharly.did.helper().verifyDID(depDid))
