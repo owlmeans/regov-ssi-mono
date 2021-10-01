@@ -76,3 +76,5 @@ export const CREDENTIAL_CAPABILITY_TYPE = 'CredentialCapability'
 export const CREDENTIAL_GOVERNANCE_TYPE = 'GovernanceCapability'
 
 export const REGISTRY_SECTION_CAPABILITY = 'capability'
+
+export const ERROR_WRONG_GOVERNANCE_CHAIN = 'ERROR_WRONG_GOVERNANCE_CHAIN'

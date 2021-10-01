@@ -20,7 +20,8 @@ import {
   REGISTRY_SECTION_PEER,
   REGISTRY_TYPE_CLAIMS,
   REGISTRY_TYPE_CREDENTIALS,
-  REGISTRY_TYPE_IDENTITIES
+  REGISTRY_TYPE_IDENTITIES,
+  REGISTRY_SECTION_OWN
 } from "@owlmeans/regov-ssi-core"
 import {
   ClaimSubject,
@@ -300,10 +301,14 @@ export const holderCredentialHelper = <
             visitor?.bundle?.store?.storeOffer
               && await visitor?.bundle?.store?.storeOffer(offer)
 
+            const section = visitor?.bundle?.store?.castSection
+              ? visitor.bundle.store.castSection(offer)
+              : undefined
+
             return await registry.addCredential<
               CredentialSubject<WrappedDocument<Payload>, Extension>,
               CredentialT
-            >(offer.credentialSubject.data.credential)
+            >(offer.credentialSubject.data.credential, section)
           }
         ))
       }
@@ -401,8 +406,8 @@ export const holderCredentialHelper = <
               )
             }) as UnsignedCredential<SatelliteSubject<VisitorExtension>>
 
-            visitor?.bundle?.response?.build?.createCapability
-              && visitor.bundle.response.build.createCapability(
+            visitor?.bundle?.response?.build?.createSatellite
+              && visitor.bundle.response.build.createSatellite(
                 unsignedSatellite,
                 wrap.credential as CredentialT
               )

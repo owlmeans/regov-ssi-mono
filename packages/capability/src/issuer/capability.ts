@@ -2,6 +2,7 @@ import {
   IssuerVisitorBuilder,
 } from "@owlmeans/regov-ssi-agent"
 import {
+  ContextSchema,
   REGISTRY_TYPE_CREDENTIALS,
   WalletWrapper
 } from "@owlmeans/regov-ssi-core"
@@ -58,6 +59,25 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
               throw new Error(ERROR_AMBIGOUS_CAPABILITY_TO_PATCH)
             }
 
+            const context = unsigned["@context"] as (string | ContextSchema)[]
+            context.push(
+              wallet.ssi.buildContext(
+                'offer/with-capability',
+                { 
+                  capability: { '@id': 'scm:capability', '@type': '@json' },
+                  chain: { '@id': 'scm:chain', '@type': '@json' },
+                }
+              )
+            )
+
+            /**
+             * @PROCEED
+             * @TODO We need to use chain helper to build proper chain:
+             * 1. Go through capability chain 
+             * 2. And finish with governance chain
+             * 
+             * !!!It's important to solve other: gatherChain calls afterwards!
+             */
             unsigned.credentialSubject = {
               ...unsigned.credentialSubject,
               chain: await wallet.did.gatherChain(

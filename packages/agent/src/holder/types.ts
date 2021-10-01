@@ -86,6 +86,8 @@ export type HolderVisitor<
     bundle?: {
       store?: {
         storeOffer?: (offer: Offer) => Promise<void>
+
+        castSection?: (offer: Offer) => string | undefined
       },
 
       unbundle?: {
@@ -104,7 +106,7 @@ export type HolderVisitor<
 
       response?: {
         build?: {
-          createCapability?: (
+          createSatellite?: (
             unsignedSatellite: UnsignedCredential<SatelliteSubject<Extension>>,
             credential: CredentialT
           ) => Promise<void>

@@ -9,7 +9,8 @@ import {
   WalletWrapper, 
   Credential, 
   WrappedDocument, 
-  REGISTRY_TYPE_CREDENTIALS 
+  REGISTRY_TYPE_CREDENTIALS, 
+  ContextSchema
 } from "@owlmeans/regov-ssi-core"
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
 import { verifierCapabilityHelper } from "../verifier/capability"
@@ -39,7 +40,7 @@ export const holderCapabilityVisitor = <
     bundle: {
       store: {
         storeOffer: async (offer) => {
-          offer.credentialSubject.chain.map(
+          offer.credentialSubject.chain?.map(
             async did => {
               if (![
                 ...wallet.did.registry.personal.dids,
@@ -54,7 +55,7 @@ export const holderCapabilityVisitor = <
       unbundle: {
         updateIssuer: async (offer: OfferBundleT, holder: string) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.capability.id === holder
+            offer => offer.credentialSubject.capability?.id === holder
           )
           if (offerWithCap) {
             return {
@@ -66,7 +67,7 @@ export const holderCapabilityVisitor = <
 
         updateDid: async (offer: OfferBundleT, holder: string) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.capability.id === holder
+            offer => offer.credentialSubject.capability?.id === holder
           )
 
           if (offerWithCap) {
@@ -76,7 +77,7 @@ export const holderCapabilityVisitor = <
 
         verifyHolder: async (offer: OfferBundleT, did: DIDDocument) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.capability.id === did.id
+            offer => offer.credentialSubject.capability?.id === did.id
           )
 
           const chain = offerWithCap?.credentialSubject.chain
@@ -90,7 +91,7 @@ export const holderCapabilityVisitor = <
 
       response: {
         build: {
-          createCapability: async (unsignedSatellite, credential) => {
+          createSatellite: async (unsignedSatellite, credential) => {
             const wraps = await wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS).lookupCredentials<
               CapabilitySubject,
               CapabilityCredential
@@ -100,6 +101,17 @@ export const holderCapabilityVisitor = <
             )
 
             if (wraps.length > 0) {
+              const context = unsignedSatellite["@context"] as (string | ContextSchema)[]
+              context.push(
+                wallet.ssi.buildContext(
+                  'capability/satellite',
+                  { 
+                    capability: { '@id': 'scm:capability', '@type': '@json' },
+                    chain: { '@id': 'scm:chain', '@type': '@json' },
+                  }
+                )
+              )
+
               unsignedSatellite.credentialSubject.data = {
                 ...unsignedSatellite.credentialSubject.data,
                 capability: wraps[0].credential,

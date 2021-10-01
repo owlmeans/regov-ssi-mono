@@ -28,6 +28,17 @@ import {
 } from "./types"
 
 
+export const isCapability = (credential: Credential | undefined): credential is CapabilityCredential => {
+  return credential?.type.includes(CREDENTIAL_CAPABILITY_TYPE) || false
+}
+
+export const isGovernanceCapability = (credential: Credential | undefined): credential is CapabilityCredential => {
+  return (
+    credential?.type.includes(CREDENTIAL_CAPABILITY_TYPE)
+    && credential.type.includes(CREDENTIAL_GOVERNANCE_TYPE)
+  ) || false
+}
+
 export const governanceCredentialHelper = (wallet: WalletWrapper) => {
   const _helper = {
     claim: async <
@@ -65,6 +76,7 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
           selfIssuing: { '@id': 'scm:selfIssuing', '@type': 'xsd:boolean' },
           name: { '@id': 'scm:name', '@type': 'xsd:string' },
           source: { '@id': 'scm:source', '@type': 'xsd:string' },
+          root: { '@id': 'scm:root', '@type': 'xsd:root' },
           ...(capability.credentialSchema ? capability.credentialSchema : {}),
           ...(capability.subjectSchema ? capability.subjectSchema : {})
         },

@@ -5,9 +5,10 @@ import {
 } from "@owlmeans/regov-ssi-agent"
 import {
   ContextSchema,
+  REGISTRY_SECTION_OWN,
   WalletWrapper
 } from "@owlmeans/regov-ssi-core"
-import { OfferCapability } from "."
+import { CREDENTIAL_CAPABILITY_TYPE, OfferCapability, REGISTRY_SECTION_CAPABILITY } from "."
 import {
   CapabilityCredential,
   OfferCapabilityExtension,
@@ -33,6 +34,13 @@ export const holderGovernanceVisitor: HolderVisitorBuilder<
               }
             }
           )
+        },
+
+        castSection: (offer) => {
+          return offer.credentialSubject.data
+            .credential.type.includes(CREDENTIAL_CAPABILITY_TYPE)
+            ? REGISTRY_SECTION_CAPABILITY
+            : undefined
         }
       }
     }

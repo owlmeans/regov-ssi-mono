@@ -6,7 +6,8 @@ import {
   Credential,
   CredentialSubject,
   WrappedDocument,
-  UnsignedCredential
+  UnsignedCredential,
+  REGISTRY_TYPE_IDENTITIES
 } from "@owlmeans/regov-ssi-core"
 import {
   EntityIdentity,
@@ -32,6 +33,7 @@ import {
   CREDENTIAL_GOVERNANCE_TYPE,
   OfferCapability,
   OfferCapabilityExtension,
+  REGISTRY_SECTION_CAPABILITY,
   UnsignedCapabilityCredential
 } from "../../governance/types"
 import { holderGovernanceVisitor } from '../../governance/holder'
@@ -144,7 +146,7 @@ export namespace TestUtil {
       type: string,
       doc: CapabilityCredentialTestParams
     ) {
-      const source = this.wallet.getRegistry(REGISTRY_TYPE_REQUESTS).getCredential()?.credential
+      const source = this.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential()?.credential
       if (!source) {
         throw new Error('No identity to claim for')
       }
@@ -162,9 +164,9 @@ export namespace TestUtil {
         {
           '@type': [CAPABILITY_TEST_CREDENTIAL_TYPE, type],
           subjectSchema: {
-            'tcap': 'https://example.org/test/capability',
-            description: { '@id': 'tcap:description', '@type': 'xsd:string' },
-            info: { '@id': 'tcap:info', '@type': 'xsd:string' },
+            // 'tcap': 'https://example.org/test/capability',
+            description: { '@id': 'scm:description', '@type': 'xsd:string' },
+            info: { '@id': 'scm:info', '@type': 'xsd:string' },
           },
           subjectProps: {
             payload: {
@@ -197,6 +199,11 @@ export namespace TestUtil {
     }
 
     async storeCapability(offerBundle: OfferBundle<OfferCapability>) {
+      const {result} = await holderCredentialHelper(this.wallet).bundle().unbudle(offerBundle)
+      if (!result) {
+        throw new Error('Invalid bundle with capability')
+      }
+      
       return await holderCredentialHelper<
         CapabilityDocument,
         CapabilityExtension,
@@ -213,7 +220,13 @@ export namespace TestUtil {
           TestDocExtension,
           TestCredential
         >(this.wallet)
-          .claim({ type }).build(
+          .claim({ 
+            type,
+            crdContext: {
+              description: { '@id': 'scm:description', '@type': 'xsd:string' },
+              info: { '@id': 'scm:info', '@type': 'xsd:string' },
+            }
+          }).build(
             { description: data.description },
             { extension: { info: data.info } }
           )

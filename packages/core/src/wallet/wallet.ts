@@ -61,6 +61,9 @@ export const buildWalletWrapper: WalletWrapperBuilder =
                 secure: false,
               }
             }
+            if (section && !_registry.credentials[section]) {
+              _registry.credentials[section] = []
+            }
             _registry.credentials[section || _registry.defaultSection].push(
               wrappedCred as CredentialWrapper
             )

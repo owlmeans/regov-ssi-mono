@@ -223,7 +223,7 @@ export const buildDidHelper =
 
     const _isDIDDocument = (obj: Object): obj is DIDDocument => {
       return obj.hasOwnProperty('id')
-        && obj.hasOwnProperty('publicKey')
+        && obj.hasOwnProperty(DIDPURPOSE_VERIFICATION)
         && obj.hasOwnProperty('@context')
         && obj.hasOwnProperty('proof')
     }
@@ -277,6 +277,12 @@ export const buildDidHelper =
             ..._buildKeyPayload(key.pubKey)
           })
         }
+
+        const nonce = await _makeNonce(key)
+
+        didDocUnsigned.verificationMethod?.forEach(
+          method => method.nonce = nonce
+        )
 
         if (options.alsoKnownAs) {
           didDocUnsigned.alsoKnownAs = options.alsoKnownAs

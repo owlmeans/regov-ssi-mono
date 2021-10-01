@@ -37,9 +37,15 @@ util.inspect.defaultOptions.depth = 8;
   await alice.trustIdentity(charlyIdentity)
   await dan.trustIdentity(charlyIdentity)
 
+  console.log('Everybody trusts Charly')
+
   const requestGov = await bob.requestGovernance()
 
+  console.log('Charly provides his governance credentials to Bob')
+
   const gov = await charly.responseGovernance(requestGov)
+
+  console.log('Bob tries to request Capability from Charly')
 
   const CRED_TYPE = 'TestCapabilityBasedCredential1'
 
@@ -49,9 +55,15 @@ util.inspect.defaultOptions.depth = 8;
     info: 'Info for capability 1'
   })
 
+  console.log('Charly signs capability for Bob')
+
   const claimBundle = await charly.signCapability(claimCap)
 
+  console.log('Bob stores capability provided by charly')
+
   await bob.storeCapability(claimBundle)
+
+  console.log('Alice claims capability based credentials from Bob')
 
   const aliceClaim = await alice.claimCapabilityCreds(
     CRED_TYPE,
@@ -61,12 +73,21 @@ util.inspect.defaultOptions.depth = 8;
     }]
   )
 
+  console.log('Bob offers capability based credential to Alice')
+
   const bobOffer = await bob.offerCapabilityCreds(aliceClaim)
+
+  console.log('Alice stores capability proved by Bob')
 
   await alice.storeCapabilityCreds(bobOffer)
 
+  console.log('Dan requests credential from Alice')
   const danCredRequest = await dan.requestCreds(CRED_TYPE)
+
+  console.log('Alice provides capability based credentials to Dan')
   const aliceCreds = await alice.provideCredsByCaps(danCredRequest)
+
+  console.log('Dan verifies credentials provided by Alice')
   const result = await dan.validateResponse<Util.TestCredential>(aliceCreds)
 
   console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')
