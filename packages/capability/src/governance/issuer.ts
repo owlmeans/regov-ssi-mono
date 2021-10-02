@@ -7,12 +7,13 @@ import {
   REGISTRY_TYPE_IDENTITIES,
   WalletWrapper
 } from "@owlmeans/regov-ssi-core"
-import { CapabilitySubject, REGISTRY_SECTION_CAPABILITY } from "."
-import { didChainHelper } from "../did/chain"
-import {
+import { 
+  CapabilitySubject, 
   CapabilityCredential,
   OfferCapabilityExtension,
+  REGISTRY_SECTION_CAPABILITY 
 } from "./types"
+import { didChainHelper } from "../did/chain"
 
 
 export const issuerGovernanceVisitor: IssuerVisitorBuilder<
@@ -26,10 +27,11 @@ export const issuerGovernanceVisitor: IssuerVisitorBuilder<
           (unsigned['@context'] as ContextSchema[])[1].chain
             = { '@id': 'scm:chain', '@type': '@json' }
 
-          unsigned.credentialSubject.chain = await didChainHelper(wallet).collectGovernanceChain(
-            unsigned.credentialSubject.data.credential.credentialSubject.source,
-            unsigned.credentialSubject.data.credential.credentialSubject.root
-          )
+          unsigned.credentialSubject.chain = await didChainHelper(wallet)
+            .collectForGovernance(
+              unsigned.credentialSubject.data.credential.credentialSubject.source,
+              unsigned.credentialSubject.data.credential.credentialSubject.root
+            )
         }
       }
     }

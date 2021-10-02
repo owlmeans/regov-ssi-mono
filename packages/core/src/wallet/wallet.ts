@@ -92,6 +92,9 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             }
 
             section = section || _registry.defaultSection
+            if (!_registry.credentials[section]) {
+              return undefined
+            }
             return _registry.credentials[section].find(
               credWrapper => credWrapper.credential.id === id
             ) as CredentialWrapper<Subject, Type> | undefined

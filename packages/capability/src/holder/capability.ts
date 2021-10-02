@@ -55,7 +55,7 @@ export const holderCapabilityVisitor = <
       unbundle: {
         updateIssuer: async (offer: OfferBundleT, holder: string) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.capability?.id === holder
+            offer => offer.credentialSubject.capability?.holder.id === holder
           )
           if (offerWithCap) {
             return {
@@ -77,7 +77,7 @@ export const holderCapabilityVisitor = <
 
         verifyHolder: async (offer: OfferBundleT, did: DIDDocument) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.capability?.id === did.id
+            offer => offer.credentialSubject.did?.id === did.id
           )
 
           const chain = offerWithCap?.credentialSubject.chain

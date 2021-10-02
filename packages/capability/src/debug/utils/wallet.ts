@@ -22,7 +22,8 @@ import {
   OfferSubject,
   OfferBundle,
   ClaimBundle,
-  HolderVisitor
+  HolderVisitor,
+  CREDENTIAL_ENTITY_IDENTITY_TYPE
 } from "@owlmeans/regov-ssi-agent"
 import { governanceCredentialHelper } from "../../governance/credential"
 import {
@@ -39,7 +40,8 @@ import {
 import { holderGovernanceVisitor } from '../../governance/holder'
 
 import { TestUtil as AgentTestUtil } from '@owlmeans/regov-ssi-agent/src/debug/utils/wallet'
-import { issuerVisitor, verifierCapabilityHelper } from "../.."
+import { verifierCapabilityHelper } from "../../verifier/capability"
+import { issuerVisitor } from "../../issuer/capability"
 import { ByCapabilityExtension } from "../../issuer/types"
 import { holderCapabilityVisitor } from "../../holder/capability"
 
@@ -152,6 +154,7 @@ export namespace TestUtil {
       }
       const root = rootPresentation.verifiableCredential.find(
         cap => cap.type.includes(CREDENTIAL_GOVERNANCE_TYPE)
+          || cap.type.includes(CREDENTIAL_ENTITY_IDENTITY_TYPE)
       )
 
       const claim = await governanceCredentialHelper(this.wallet).claim(
@@ -199,11 +202,18 @@ export namespace TestUtil {
     }
 
     async storeCapability(offerBundle: OfferBundle<OfferCapability>) {
-      const {result} = await holderCredentialHelper(this.wallet).bundle().unbudle(offerBundle)
+      const { result } = await holderCredentialHelper<
+        CapabilityDocument,
+        CapabilityExtension,
+        CapabilityCredential,
+        OfferCapabilityExtension
+      >(
+        this.wallet, holderGovernanceVisitor(this.wallet)
+      ).bundle().unbudle(offerBundle)
       if (!result) {
         throw new Error('Invalid bundle with capability')
       }
-      
+
       return await holderCredentialHelper<
         CapabilityDocument,
         CapabilityExtension,
@@ -220,7 +230,7 @@ export namespace TestUtil {
           TestDocExtension,
           TestCredential
         >(this.wallet)
-          .claim({ 
+          .claim({
             type,
             crdContext: {
               description: { '@id': 'scm:description', '@type': 'xsd:string' },
@@ -274,7 +284,7 @@ export namespace TestUtil {
       ).bundle().unbudle(offer)
 
       if (!result) {
-        console.log(offer)
+        // console.log(offer)
         throw new Error('Offer is broken and can\'t be stored')
       }
 

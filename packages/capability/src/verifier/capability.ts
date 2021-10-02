@@ -9,9 +9,14 @@ import {
 import {
   Presentation,
   WalletWrapper,
-  Credential
+  Credential,
+  REGISTRY_TYPE_IDENTITIES,
+  REGISTRY_SECTION_PEER,
+  Identity,
+  IdentitySubject,
+  REGISTRY_SECTION_OWN
 } from "@owlmeans/regov-ssi-core"
-import { DIDDocument } from "@owlmeans/regov-ssi-did"
+import { DIDDocument, VERIFICATION_KEY_HOLDER } from "@owlmeans/regov-ssi-did"
 import { ByCapabilityExtension } from "../issuer/types"
 
 
@@ -70,16 +75,25 @@ export const verifierCapabilityHelper = <
         if (!await result) {
           return false
         }
+        if ([REGISTRY_SECTION_PEER, REGISTRY_SECTION_OWN].map(
+          section => wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential<
+            IdentitySubject, Identity<IdentitySubject>
+          >(_did.id, section)?.credential
+        ).find(id => id)) {
+          did = _did
+          return true
+        }
         if (await wallet.did.helper().verifyDID(_did)) {
           if (did.alsoKnownAs && did.alsoKnownAs.includes(_did.id)) {
             if (_did.capabilityDelegation) {
               if (_did.capabilityDelegation.find(
-                tmp => wallet.did.helper().extractProofController(did)
-                  === (
-                    typeof tmp === 'string'
+                tmp => {
+                  const controller = wallet.did.helper().extractProofController(did)
+                  return controller ===
+                    (typeof tmp === 'string'
                       ? wallet.did.helper().parseDIDId(tmp).did
-                      : tmp.controller
-                  )
+                      : tmp.controller)
+                }
               )) {
                 did = _did
                 return true
@@ -90,12 +104,15 @@ export const verifierCapabilityHelper = <
           }
           if (_did.capabilityInvocation) {
             if (_did.capabilityInvocation.find(
-              tmp => wallet.did.helper().extractProofController(did)
-                === (
-                  typeof tmp === 'string'
-                    ? wallet.did.helper().parseDIDId(tmp).did
-                    : tmp.controller
+              tmp => {
+                const controller = wallet.did.helper().extractProofController(
+                  did, VERIFICATION_KEY_HOLDER
                 )
+                return controller ===
+                  (typeof tmp === 'string'
+                    ? wallet.did.helper().parseDIDId(tmp).did
+                    : tmp.controller)
+              }
             )) {
               did = _did
               return true

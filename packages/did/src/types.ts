@@ -6,7 +6,7 @@ export type DIDHelper = {
   isDIDId: (id: string) => boolean
   parseDIDId: ParseDIDIdMethod
 
-  extractProofController: (did: DIDDocument) => string
+  extractProofController: (did: DIDDocument, keyId?: string) => string
   expandVerificationMethod: ExpandVerificationMethod
 
   createDID: (key: CryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>

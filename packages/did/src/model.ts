@@ -6,6 +6,7 @@ import {
   COMMON_CRYPTO_ERROR_NOID
 } from '@owlmeans/regov-ssi-common'
 import { URLSearchParams } from 'url'
+import { VERIFICATION_KEY_CONTROLLER } from '.'
 import {
   QueryDict,
   DEFAULT_VERIFICATION_KEY,
@@ -113,12 +114,12 @@ export const buildDidHelper =
       return _isDIDId(key) ? _parseDIDId(key).fragment || DEFAULT_VERIFICATION_KEY : key
     }
 
-    const _extractProofController = (did: DIDDocument) => {
+    const _extractProofController = (did: DIDDocument, keyId?: string) => {
       if (!did.proof.verificationMethod) {
         throw new Error(DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD)
       }
       return _expandVerificationMethod(
-        did, DIDPURPOSE_VERIFICATION, did.proof.verificationMethod
+        did, DIDPURPOSE_VERIFICATION, keyId || did.proof.verificationMethod
       )?.controller || did.id
     }
 

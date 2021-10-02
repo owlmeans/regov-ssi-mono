@@ -79,15 +79,12 @@ export const issuerCredentialHelper = <
         const signingIssuer = visitor?.claim?.signClaim?.clarifyIssuer 
           ? await visitor?.claim?.signClaim?.clarifyIssuer(
             claim.credentialSubject.data.credential as any
-          )
-          : issuer
+          ) : issuer
 
         const credential = await wallet.ssi.signCredential(
           claim.credentialSubject.data.credential,
-          issuer,
-          {
-            keyId: VERIFICATION_KEY_CONTROLLER
-          }
+          signingIssuer,
+          { keyId: VERIFICATION_KEY_CONTROLLER }
         ) as CredentialT
 
         let subjectType: string | string[] = claim.credentialSubject.data["@type"]
@@ -103,9 +100,9 @@ export const issuerCredentialHelper = <
         const offerSubject: OfferSubject<CredentialT> = {
           data: {
             '@type': `Offer:${type}`,
-            credential: credential,
+            credential,
           },
-          did: did
+          did
         }
 
         const offerUnsigned = await wallet.ssi.buildCredential<
@@ -134,8 +131,7 @@ export const issuerCredentialHelper = <
           && await visitor.claim.signClaim.patchOffer(offerUnsigned)
 
         return await wallet.ssi.signCredential(
-          offerUnsigned,
-          issuer,
+          offerUnsigned, issuer,
           { keyId: VERIFICATION_KEY_CONTROLLER }
         ) as OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
       }

@@ -75,7 +75,7 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
           subjectProps: { '@id': 'scm:subjectProps', '@type': '@json' },
           selfIssuing: { '@id': 'scm:selfIssuing', '@type': 'xsd:boolean' },
           name: { '@id': 'scm:name', '@type': 'xsd:string' },
-          source: { '@id': 'scm:source', '@type': 'xsd:string' },
+          source: { '@id': 'scm:source', '@type': '@json' },
           root: { '@id': 'scm:root', '@type': 'xsd:root' },
           ...(capability.credentialSchema ? capability.credentialSchema : {}),
           ...(capability.subjectSchema ? capability.subjectSchema : {})
@@ -87,7 +87,7 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
          * @TODO Did needs an invocation? capability
          */
         extension: {
-          source: source.id,
+          source: await wallet.did.lookUpDid(source.id) as DIDDocument,
           name: descr.name,
           ...(descr.description ? { description: descr.description } : {}),
           ...(descr.root ? { root: descr.root.id } : {})

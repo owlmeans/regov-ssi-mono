@@ -7,6 +7,7 @@ import {
   WalletWrapper
 } from "@owlmeans/regov-ssi-core"
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
+import { didChainHelper } from "../did/chain"
 import {
   CapabilityCredential,
   CapabilitySubject,
@@ -63,26 +64,20 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
             context.push(
               wallet.ssi.buildContext(
                 'offer/with-capability',
-                { 
+                {
                   capability: { '@id': 'scm:capability', '@type': '@json' },
                   chain: { '@id': 'scm:chain', '@type': '@json' },
                 }
               )
             )
 
-            /**
-             * @PROCEED
-             * @TODO We need to use chain helper to build proper chain:
-             * 1. Go through capability chain 
-             * 2. And finish with governance chain
-             * 
-             * !!!It's important to solve other: gatherChain calls afterwards!
-             */
+            const chain = await didChainHelper(wallet).collectForCapability(
+              capabilities[0].credential
+            )
+            
             unsigned.credentialSubject = {
               ...unsigned.credentialSubject,
-              chain: await wallet.did.gatherChain(
-                unsigned.credentialSubject.data.credential.issuer
-              ),
+              chain,
               capability: capabilities[0].credential
             }
           }
