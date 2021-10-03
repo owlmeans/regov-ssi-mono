@@ -90,6 +90,20 @@ export const credentialShape = {
   proof: proofShape
 }
 
+export const satelliteShape = {
+  ...credentialShape,
+  credentialSubject: {
+    data: {
+      did: (did => {
+        const _did = {...did}
+        delete (<any>_did).keyAgreement
+        
+        return _did
+      })(didShape)
+    }
+  }
+}
+
 export const presentationShape = {
   holder: {
     id: expect.any(String),

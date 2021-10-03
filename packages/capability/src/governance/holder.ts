@@ -101,7 +101,7 @@ export const holderGovernanceVisitor: HolderVisitorBuilder<
             /**
              * It isn't required here, because the credential is capability itself
              */
-            // capability: offerWithCap.credentialSubject.data.credential
+            capability: offerWithCap?.credentialSubject.data.credential
           })
         }
       }

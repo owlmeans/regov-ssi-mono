@@ -1,11 +1,12 @@
 require('dotenv').config()
 
 import { TestUtil as Util } from '../debug/utils/wallet'
-
-import util from 'util'
 import { govrnanceShape } from '../debug/utils/shapes'
 import { Presentation } from '@owlmeans/regov-ssi-core'
-import { CapabilityCredential } from '..'
+import { CapabilityCredential } from '../governance/types'
+import { credentialShape, didShape, presentationShape, satelliteShape } from '@owlmeans/regov-ssi-agent/src/debug/utils/shapes'
+
+import util from 'util'
 util.inspect.defaultOptions.depth = 8
 
 
@@ -46,6 +47,21 @@ describe('Capability helpers', () => {
   it ('allow to request governance capability', async () => {
     const request = await ctx.bob.requestGovernance()
     const gov = await ctx.charly.responseGovernance(request)
-    expect(gov).toMatchSnapshot()
+    expect(gov).toMatchSnapshot({
+      ...presentationShape,
+      verifiableCredential: [
+        {
+          ...credentialShape,
+          credentialSubject: {
+            data: {
+              identity: credentialShape
+            },
+            did: didShape
+          }
+        },
+        govrnanceShape,
+        satelliteShape
+      ]
+    })
   })
 }) 

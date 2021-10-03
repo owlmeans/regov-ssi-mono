@@ -26,28 +26,23 @@ export const didChainHelper = (wallet: WalletWrapper) => {
      */
     collectForGovernance: async (did: DIDDocument | string, root?: string): Promise<DIDDocument[]> => {
       const id = typeof did === 'string' ? did : did.id
+      if (typeof did === 'string') {
+        did = await wallet.did.lookUpDid<DIDDocument>(did) || did
+      }
+      if (typeof did === 'string') {
+        throw new Error(ERROR_WRONG_GOVERNANCE_CHAIN)
+      }
       const capability = wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).getCredential<
         CapabilitySubject, CapabilityCredential
-      >(id)?.credential
+      >(root)?.credential // id
       if (isGovernanceCapability(capability)) {
-        const source = capability.credentialSubject.source
-        const chain = [
-          ...await wallet.did.gatherChain(id)
+        return [
+          did,
+          ...await _helper.collectForGovernance(
+              capability.credentialSubject.source, 
+              capability.credentialSubject.root
+            )
         ]
-        if (root === source.id) {
-          return chain
-        }
-        /**
-         * Empty root is a self issuer identity
-         */
-        let _root = capability.credentialSubject.root
-          || wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential()?.credential.id
-
-        if (_root) {
-          return [...chain, ...await _helper.collectForGovernance(_root, root || _root)]
-        }
-
-        throw new Error(ERROR_WRONG_GOVERNANCE_CHAIN)
       }
 
       const identity = [REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER].map(
@@ -56,10 +51,6 @@ export const didChainHelper = (wallet: WalletWrapper) => {
       ).find(credential => credential)
       if (identity) {
         return [...await wallet.did.gatherChain(id, root)]
-      }
-
-      if (typeof did === 'string') {
-        throw new Error(ERROR_WRONG_GOVERNANCE_CHAIN)
       }
 
       return [did, ...(root ? await wallet.did.gatherChain(root) : [])]
