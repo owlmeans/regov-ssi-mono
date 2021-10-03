@@ -87,7 +87,7 @@ export type HolderVisitor<
       store?: {
         storeOffer?: (offer: Offer) => Promise<void>
 
-        castSection?: (offer: Offer) => string | undefined
+        castRegistry?: (offer: Offer) => string | undefined
       },
 
       unbundle?: {

@@ -3,6 +3,9 @@ require('dotenv').config()
 import { TestUtil as Util } from '../debug/utils/wallet'
 
 import util from 'util'
+import { govrnanceShape } from '../debug/utils/shapes'
+import { Presentation } from '@owlmeans/regov-ssi-core'
+import { CapabilityCredential } from '..'
 util.inspect.defaultOptions.depth = 8
 
 
@@ -11,6 +14,7 @@ let ctx: {
   bob: Util.Wallet
   charly: Util.Wallet
   dan: Util.Wallet
+  gov?: Presentation<CapabilityCredential>
 }
 
 beforeAll(async () => {
@@ -35,8 +39,13 @@ beforeAll(async () => {
 
 describe('Capability helpers', () => {
   it ('allow to self issue gavernance', async () => {
-    const result = await ctx.charly.selfIssueGovernance(await ctx.charly.provideIdentity())
-    let x = 3
-    ++x
+    const [governance] = await ctx.charly.selfIssueGovernance(await ctx.charly.provideIdentity())
+    expect(governance.credential).toMatchSnapshot(govrnanceShape)
+  })
+
+  it ('allow to request governance capability', async () => {
+    const request = await ctx.bob.requestGovernance()
+    const gov = await ctx.charly.responseGovernance(request)
+    expect(gov).toMatchSnapshot()
   })
 }) 

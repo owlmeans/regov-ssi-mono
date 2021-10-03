@@ -124,7 +124,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
       return _registryWrappers[type]
     }
 
-    return {
+    const _wallet = {
       did,
 
       ssi: ctx,
@@ -167,4 +167,6 @@ export const buildWalletWrapper: WalletWrapperBuilder =
         return options || {}
       }
     }
+
+    return _wallet
   }

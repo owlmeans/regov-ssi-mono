@@ -138,6 +138,31 @@
         ".js",
         "${workspaceRoot}/packages/capability/src/debug/capability.ts"
       ],
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Jest Tests - Capability",
+      "skipFiles": [
+        "<node_internals>/**",
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "envFile": "${workspaceRoot}/packages/capability/.env",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/capability/node_modules/.bin/jest",
+        "--runInBand",
+        "--coverage",
+        "false",
+        "--rootDir",
+        "${workspaceRoot}/packages/capability/",
+        "--config",
+        "${workspaceRoot}/packages/capability/jest.config.js",
+        "--testTimeout",
+        "180000",
+        "capability"
+      ],
+    },
   ]
 }

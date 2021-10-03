@@ -12,7 +12,7 @@ import {
   CapabilityCredential,
   CapabilitySubject,
   CREDENTIAL_CAPABILITY_TYPE,
-  REGISTRY_SECTION_CAPABILITY
+  REGISTRY_TYPE_CAPABILITY
 } from "../governance/types"
 import {
   ByCapabilityExtension,
@@ -27,11 +27,10 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
     claim: {
       signClaim: {
         clarifyIssuer: async (unsigned) => {
-          const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS).lookupCredentials<
+          const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials<
             CapabilitySubject, CapabilityCredential<CapabilitySubject>
           >(
-            [CREDENTIAL_CAPABILITY_TYPE, ...unsigned.type],
-            REGISTRY_SECTION_CAPABILITY
+            [CREDENTIAL_CAPABILITY_TYPE, ...unsigned.type]
           )
 
           const did = await wallet.did.lookUpDid<DIDDocument>(capabilities[0].credential.id)
@@ -44,11 +43,10 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
 
         patchOffer: async (unsigned, did) => {
           unsigned.type.push(CAPABILITY_BYOFFER_TYPE)
-          const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS).lookupCredentials<
+          const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials<
             CapabilitySubject, CapabilityCredential<CapabilitySubject>
           >(
-            [CREDENTIAL_CAPABILITY_TYPE, ...unsigned.credentialSubject.data.credential.type],
-            REGISTRY_SECTION_CAPABILITY
+            [CREDENTIAL_CAPABILITY_TYPE, ...unsigned.credentialSubject.data.credential.type]
           )
           if (capabilities.length > 0) {
             /**

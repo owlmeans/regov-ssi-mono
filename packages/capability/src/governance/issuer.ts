@@ -11,7 +11,7 @@ import {
   CapabilitySubject, 
   CapabilityCredential,
   OfferCapabilityExtension,
-  REGISTRY_SECTION_CAPABILITY 
+  REGISTRY_TYPE_CAPABILITY 
 } from "./types"
 import { didChainHelper } from "../did/chain"
 

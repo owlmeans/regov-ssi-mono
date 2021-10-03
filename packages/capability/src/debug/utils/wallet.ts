@@ -34,7 +34,7 @@ import {
   CREDENTIAL_GOVERNANCE_TYPE,
   OfferCapability,
   OfferCapabilityExtension,
-  REGISTRY_SECTION_CAPABILITY,
+  REGISTRY_TYPE_CAPABILITY,
   UnsignedCapabilityCredential
 } from "../../governance/types"
 import { holderGovernanceVisitor } from '../../governance/holder'
@@ -105,7 +105,10 @@ export namespace TestUtil {
 
     async requestGovernance() {
       const req = await verifierCredentialHelper(this.wallet).request()
-        .build({ '@type': CREDENTIAL_GOVERNANCE_TYPE })
+        .build({
+          '@type': CREDENTIAL_GOVERNANCE_TYPE,
+          source: REGISTRY_TYPE_CAPABILITY
+        })
 
       return await verifierCredentialHelper(this.wallet).request().bundle([req])
     }
@@ -155,7 +158,7 @@ export namespace TestUtil {
       }
       const root = rootPresentation.verifiableCredential.find(
         cap => cap.type.includes(CREDENTIAL_GOVERNANCE_TYPE)
-          || cap.type.includes(CREDENTIAL_ENTITY_IDENTITY_TYPE)
+//          || cap.type.includes(CREDENTIAL_ENTITY_IDENTITY_TYPE)
       )
 
       const claim = await governanceCredentialHelper(this.wallet).claim(

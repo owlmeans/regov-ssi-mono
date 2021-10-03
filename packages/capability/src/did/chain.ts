@@ -14,7 +14,7 @@ import {
   CapabilitySubject,
   ERROR_WRONG_GOVERNANCE_CHAIN,
   OfferCapability,
-  REGISTRY_SECTION_CAPABILITY
+  REGISTRY_TYPE_CAPABILITY
 } from "../governance/types"
 
 
@@ -26,9 +26,9 @@ export const didChainHelper = (wallet: WalletWrapper) => {
      */
     collectForGovernance: async (did: DIDDocument | string, root?: string): Promise<DIDDocument[]> => {
       const id = typeof did === 'string' ? did : did.id
-      const capability = wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS).getCredential<
+      const capability = wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).getCredential<
         CapabilitySubject, CapabilityCredential
-      >(id, REGISTRY_SECTION_CAPABILITY)?.credential
+      >(id)?.credential
       if (isGovernanceCapability(capability)) {
         const source = capability.credentialSubject.source
         const chain = [

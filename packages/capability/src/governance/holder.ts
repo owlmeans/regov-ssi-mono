@@ -19,7 +19,7 @@ import {
   OfferCapabilityExtension,
   CREDENTIAL_CAPABILITY_TYPE,
   OfferCapability,
-  REGISTRY_SECTION_CAPABILITY
+  REGISTRY_TYPE_CAPABILITY
 } from "./types"
 
 
@@ -46,10 +46,10 @@ export const holderGovernanceVisitor: HolderVisitorBuilder<
           )
         },
 
-        castSection: (offer) => {
+        castRegistry: (offer) => {
           return offer.credentialSubject.data
             .credential.type.includes(CREDENTIAL_CAPABILITY_TYPE)
-            ? REGISTRY_SECTION_CAPABILITY
+            ? REGISTRY_TYPE_CAPABILITY
             : undefined
         }
       },

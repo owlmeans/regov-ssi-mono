@@ -19,7 +19,7 @@ import {
   CapabilityCredential,
   CapabilitySubject,
   OfferCapability,
-  REGISTRY_SECTION_CAPABILITY
+  REGISTRY_TYPE_CAPABILITY
 } from "../governance/types"
 import { ByCapabilityExtension } from "../issuer/types"
 import { isCapability } from ".."
@@ -102,12 +102,11 @@ export const holderCapabilityVisitor = <
       response: {
         build: {
           createSatellite: async (unsignedSatellite, credential) => {
-            const wraps = await wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS).lookupCredentials<
+            const wraps = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials<
               CapabilitySubject,
               CapabilityCredential
             >(
-              credential.credentialSubject.data["@type"],
-              REGISTRY_SECTION_CAPABILITY
+              credential.credentialSubject.data["@type"]
             )
 
             if (wraps.length > 0) {

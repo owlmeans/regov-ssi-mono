@@ -262,6 +262,20 @@ export const buildSSICore: BuildSSICoreMethod = async ({
     },
 
     verifyPresentation: async (presentation, didDoc?, localLoader?) => {
+      const _updateDidDoc = async (didId: string): Promise<DIDDocument | undefined> => {
+        if (localLoader) {
+          const doc = await localLoader(
+            did.helper(),
+            buildDocumentLoader(did),
+            presentation,
+            didDoc
+          )(didId)
+          if (doc && did.helper().isDIDDocument(doc.document)) {
+            return doc.document
+          }
+        }
+      }
+
       const result = await validateVPV1({
         documentLoader:
           localLoader
@@ -274,17 +288,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           if (_didDoc) {
             didDoc = _didDoc
           } else {
-            if (localLoader) {
-              const doc = await localLoader(
-                did.helper(),
-                buildDocumentLoader(did),
-                presentation,
-                didDoc
-              )(didId.did)
-              if (doc && did.helper().isDIDDocument(doc.document)) {
-                didDoc = doc.document
-              }
-            }
+            didDoc = await _updateDidDoc(didId.did) || didDoc
           }
           if (!didDoc) {
             throw new Error(DID_REGISTRY_ERROR_NO_DID)
@@ -313,24 +317,13 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           let controller = <DIDDocument>await did.lookUpDid(options.controller)
 
           /**
-           * @PROCEED 
            * @TODO There is, PROBABLY, some problem here.
            * agent/verifier/crednetial/response/verify doesnt' work in test
            * No other methods in credential test of agent can find the controller.
            * So there is a question if the signature really prooved on previous steps.
            */
           if (!controller) {
-            if (localLoader) {
-              const doc = await localLoader(
-                did.helper(),
-                buildDocumentLoader(did),
-                presentation,
-                didDoc
-              )(options.controller)
-              if (doc && did.helper().isDIDDocument(doc.document)) {
-                controller = doc.document
-              }
-            }
+            controller = await _updateDidDoc(options.controller) as DIDDocument
           }
 
           return { controller }

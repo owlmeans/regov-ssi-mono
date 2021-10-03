@@ -226,7 +226,6 @@ export const holderCredentialHelper = <
         }
 
         let issuerDid = await wallet.did.lookUpDid<DIDDocument>(issuer.credential.holder.id)
-        debugger
         if (substituteIssuer && visitor?.bundle?.unbundle?.updateDid) {
           issuerDid = await visitor.bundle.unbundle.updateDid(
             bundle, substituteIssuer.credential.id
@@ -294,21 +293,22 @@ export const holderCredentialHelper = <
       store: async (bundle: OfferBundle<BundledOffer>) => {
         const offers = [...bundle.verifiableCredential]
         await _identityHelper.extractEntity(offers)
-        const registry = wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
+        
         return Promise.all(offers.map(
           async (offer) => {
             wallet.did.addDID(offer.credentialSubject.did)
             visitor?.bundle?.store?.storeOffer
               && await visitor?.bundle?.store?.storeOffer(offer)
 
-            const section = visitor?.bundle?.store?.castSection
-              ? visitor.bundle.store.castSection(offer)
-              : undefined
+              const registryCode = visitor?.bundle?.store?.castRegistry
+              ? visitor.bundle.store.castRegistry(offer)
+              : REGISTRY_TYPE_CREDENTIALS
+              const registry = wallet.getRegistry(registryCode)
 
             return await registry.addCredential<
               CredentialSubject<WrappedDocument<Payload>, Extension>,
               CredentialT
-            >(offer.credentialSubject.data.credential, section)
+            >(offer.credentialSubject.data.credential)
           }
         ))
       }
