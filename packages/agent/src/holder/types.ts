@@ -101,7 +101,7 @@ export type HolderVisitor<
           holder: string
         ) => Promise<DIDDocument | undefined>
 
-        verifyHolder?: (offer: OfferBundle<Offer>, did: DIDDocument) => Promise<boolean>
+        verifyHolder?: (offer: OfferBundle<Offer>, issuerDid: DIDDocument) => Promise<boolean>
       }
 
       response?: {

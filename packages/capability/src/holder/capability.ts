@@ -1,26 +1,28 @@
-import { 
-  HolderVisitorBuilder, 
-  OfferBundle, 
-  OfferCredential, 
-  OfferSubject 
+import {
+  HolderVisitorBuilder,
+  identityHelper,
+  OfferBundle,
+  OfferCredential,
+  OfferSubject
 } from "@owlmeans/regov-ssi-agent"
-import { 
-  CredentialSubject, 
-  WalletWrapper, 
-  Credential, 
-  WrappedDocument, 
-  REGISTRY_TYPE_CREDENTIALS, 
+import {
+  CredentialSubject,
+  WalletWrapper,
+  Credential,
+  WrappedDocument,
+  REGISTRY_TYPE_CREDENTIALS,
   ContextSchema
 } from "@owlmeans/regov-ssi-core"
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
 import { verifierCapabilityHelper } from "../verifier/capability"
-import { 
-  CapabilityCredential, 
-  CapabilitySubject, 
-  OfferCapability, 
-  REGISTRY_SECTION_CAPABILITY 
+import {
+  CapabilityCredential,
+  CapabilitySubject,
+  OfferCapability,
+  REGISTRY_SECTION_CAPABILITY
 } from "../governance/types"
 import { ByCapabilityExtension } from "../issuer/types"
+import { isCapability } from ".."
 
 
 export const holderCapabilityVisitor = <
@@ -71,13 +73,18 @@ export const holderCapabilityVisitor = <
           )
 
           if (offerWithCap) {
-            return offerWithCap.credentialSubject.did
+            const entity = identityHelper(wallet).extractEntity([...offer.verifiableCredential])
+            return entity?.credentialSubject.did
           }
         },
 
-        verifyHolder: async (offer: OfferBundleT, did: DIDDocument) => {
+        verifyHolder: async (offer: OfferBundleT, issuerDid: DIDDocument) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.did?.id === did.id
+            offer =>
+              isCapability(offer.credentialSubject.capability)
+              && offer.credentialSubject.did?.verificationMethod?.some(
+                method => method.controller === issuerDid.id
+              )
           )
 
           const chain = offerWithCap?.credentialSubject.chain
@@ -85,7 +92,10 @@ export const holderCapabilityVisitor = <
             return false
           }
 
-          return await verifierCapabilityHelper(wallet).verifyChain(chain, did)
+          return await verifierCapabilityHelper(wallet).verifyChain(chain, {
+            did: offerWithCap?.credentialSubject.did || issuerDid,
+            capability: offerWithCap?.credentialSubject.capability
+          })
         }
       },
 
@@ -105,7 +115,7 @@ export const holderCapabilityVisitor = <
               context.push(
                 wallet.ssi.buildContext(
                   'capability/satellite',
-                  { 
+                  {
                     capability: { '@id': 'scm:capability', '@type': '@json' },
                     chain: { '@id': 'scm:chain', '@type': '@json' },
                   }

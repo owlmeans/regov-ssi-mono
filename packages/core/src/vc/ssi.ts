@@ -110,9 +110,12 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       issuer: DIDDocument,
       options?: SignCredentialOptions
     ) => {
-      const keyId = options?.keyId || did.helper().extractProofController(issuer) === unsingedCredential.holder.id
+      const keyId = options?.keyId 
+      || (
+        did.helper().extractProofController(issuer) === unsingedCredential.holder.id
         ? VERIFICATION_KEY_HOLDER
         : VERIFICATION_KEY_CONTROLLER
+      )
 
       const key = await did.extractKey(issuer, keyId)
       if (!key) {

@@ -58,92 +58,93 @@ export const issuerCredentialHelper = <
         >
       >
 
-      const _signClaim = async (
-        claim: UnsignedClaim,
-        key?: KeyPair | string
-      ) => {
-        issuer = issuer || _identityHelper.getIdentity().did
-        if (!issuer) {
-          throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
-        }
-
-        const signingKey = await wallet.keys.getCryptoKey(key)
-
-        const did = await wallet.did.helper().signDID(
-          signingKey,
-          claim.credentialSubject.did,
-          VERIFICATION_KEY_CONTROLLER,
-          [DIDPURPOSE_ASSERTION]
-        )
-
-        const signingIssuer = visitor?.claim?.signClaim?.clarifyIssuer 
-          ? await visitor?.claim?.signClaim?.clarifyIssuer(
-            claim.credentialSubject.data.credential as any
-          ) : issuer
-
-        const credential = await wallet.ssi.signCredential(
-          claim.credentialSubject.data.credential,
-          signingIssuer,
-          { keyId: VERIFICATION_KEY_CONTROLLER }
-        ) as CredentialT
-
-        let subjectType: string | string[] = claim.credentialSubject.data["@type"]
-        subjectType = Array.isArray(subjectType) ? subjectType : [subjectType]
-
-        const mainType = subjectType[0]
-        const [prefix, type] = mainType.split(':', 2)
-
-        if (!type && prefix !== CLAIM_TYPE_PREFFIX) {
-          throw new Error(ERROR_WRONG_CLAIM_SUBJECT_TYPE)
-        }
-
-        const offerSubject: OfferSubject<CredentialT> = {
-          data: {
-            '@type': `Offer:${type}`,
-            credential,
-          },
-          did
-        }
-
-        const offerUnsigned = await wallet.ssi.buildCredential<
-          WrappedDocument<{ credential: CredentialT }>,
-          OfferSubject<CredentialT, VisitorExtension>
-        >(
-          {
-            id: did.id,
-            type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_OFFER_TYPE],
-            holder: wallet.did.helper().extractProofController(issuer),
-            subject: offerSubject,
-            context: wallet.ssi.buildContext(
-              'credential/claim',
-              /**
-               * @TODO Use some proper schema
-               */
-              {
-                did: { '@id': 'scm:did', '@type': '@json' },
-                credential: { '@id': 'scm:credential', '@type': '@json' },
-              }
-            )
+      const _claimHelper = {
+        signClaim: async (
+          claim: UnsignedClaim,
+          key?: KeyPair | string
+        ) => {
+          issuer = issuer || _identityHelper.getIdentity().did
+          if (!issuer) {
+            throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
           }
-        )
 
-        visitor?.claim?.signClaim?.patchOffer
-          && await visitor.claim.signClaim.patchOffer(offerUnsigned)
+          const signingKey = await wallet.keys.getCryptoKey(key)
 
-        return await wallet.ssi.signCredential(
-          offerUnsigned, issuer,
-          { keyId: VERIFICATION_KEY_CONTROLLER }
-        ) as OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
-      }
+          const did = await wallet.did.helper().signDID(
+            signingKey,
+            claim.credentialSubject.did,
+            VERIFICATION_KEY_CONTROLLER,
+            [DIDPURPOSE_ASSERTION]
+          )
 
-      return {
-        signClaim: _signClaim,
+          const signingIssuer = visitor?.claim?.signClaim?.clarifyIssuer
+            ? await visitor?.claim?.signClaim?.clarifyIssuer(
+              claim.credentialSubject.data.credential as any
+            ) : did // issuer <- it's ok for self issueing
+
+          const credential = await wallet.ssi.signCredential(
+            claim.credentialSubject.data.credential,
+            did, // signingIssuer, <- Actually this is totally wrong approach
+            { keyId: VERIFICATION_KEY_CONTROLLER }
+          ) as CredentialT
+
+          let subjectType: string | string[] = claim.credentialSubject.data["@type"]
+          subjectType = Array.isArray(subjectType) ? subjectType : [subjectType]
+
+          const mainType = subjectType[0]
+          const [prefix, type] = mainType.split(':', 2)
+
+          if (!type && prefix !== CLAIM_TYPE_PREFFIX) {
+            throw new Error(ERROR_WRONG_CLAIM_SUBJECT_TYPE)
+          }
+
+          const offerSubject: OfferSubject<CredentialT> = {
+            data: {
+              '@type': `Offer:${type}`,
+              credential,
+            },
+            did
+          }
+
+          const offerUnsigned = await wallet.ssi.buildCredential<
+            WrappedDocument<{ credential: CredentialT }>,
+            OfferSubject<CredentialT, VisitorExtension>
+          >(
+            {
+              id: did.id,
+              type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_OFFER_TYPE],
+              holder: wallet.did.helper().extractProofController(issuer),
+              subject: offerSubject,
+              context: wallet.ssi.buildContext(
+                'credential/claim',
+                /**
+                 * @TODO Use some proper schema
+                 */
+                {
+                  did: { '@id': 'scm:did', '@type': '@json' },
+                  credential: { '@id': 'scm:credential', '@type': '@json' },
+                }
+              )
+            }
+          )
+
+          visitor?.claim?.signClaim?.patchOffer
+            && await visitor.claim.signClaim.patchOffer(offerUnsigned, signingIssuer)
+
+          return await wallet.ssi.signCredential(
+            offerUnsigned, issuer,
+            //            { keyId: VERIFICATION_KEY_CONTROLLER }
+          ) as OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
+        },
+
         signClaims: async (claims: UnsignedClaim[], key?: KeyPair | string) => {
           return await Promise.all(
-            claims.map(claim => _signClaim(claim, key))
+            claims.map(claim => _claimHelper.signClaim(claim, key))
           )
         }
       }
+
+      return _claimHelper
     },
 
     bundle: <

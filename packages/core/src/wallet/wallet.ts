@@ -77,6 +77,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
           >(type: string | string[], section?: string) => {
             const types: string[] = Array.isArray(type) ? type : [type]
             section = section || _registry.defaultSection
+
+            if (!_registry.credentials[section]) {
+              return []
+            }
             return _registry.credentials[section].filter((wrapper) => {
               return types.every(type => wrapper.credential.type.includes(type))
             }) as CredentialWrapper<Subject, Type>[]

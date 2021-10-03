@@ -53,7 +53,8 @@ export type IssuerVisitor<
         ) => Promise<DIDDocument>
 
         patchOffer?: (
-          unsigned: UnsignedCredential<OfferSubject<CredentialT, Extension>>
+          unsigned: UnsignedCredential<OfferSubject<CredentialT, Extension>>,
+          did?: DIDDocument
         ) => Promise<void>
       }
     }

@@ -42,7 +42,7 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
           return did
         },
 
-        patchOffer: async (unsigned) => {
+        patchOffer: async (unsigned, did) => {
           unsigned.type.push(CAPABILITY_BYOFFER_TYPE)
           const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS).lookupCredentials<
             CapabilitySubject, CapabilityCredential<CapabilitySubject>
@@ -71,10 +71,10 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
               )
             )
 
-            const chain = await didChainHelper(wallet).collectForCapability(
-              capabilities[0].credential
+            const chain = await didChainHelper(wallet).collectForIssuedCredential(
+              capabilities[0].credential, did
             )
-            
+
             unsigned.credentialSubject = {
               ...unsigned.credentialSubject,
               chain,

@@ -44,6 +44,7 @@ import { verifierCapabilityHelper } from "../../verifier/capability"
 import { issuerVisitor } from "../../issuer/capability"
 import { ByCapabilityExtension } from "../../issuer/types"
 import { holderCapabilityVisitor } from "../../holder/capability"
+import { issuerGovernanceVisitor } from "../../governance/issuer"
 
 
 export namespace TestUtil {

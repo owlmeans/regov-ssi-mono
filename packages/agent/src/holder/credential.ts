@@ -226,7 +226,7 @@ export const holderCredentialHelper = <
         }
 
         let issuerDid = await wallet.did.lookUpDid<DIDDocument>(issuer.credential.holder.id)
-
+        debugger
         if (substituteIssuer && visitor?.bundle?.unbundle?.updateDid) {
           issuerDid = await visitor.bundle.unbundle.updateDid(
             bundle, substituteIssuer.credential.id

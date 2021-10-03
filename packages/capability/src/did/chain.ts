@@ -65,13 +65,36 @@ export const didChainHelper = (wallet: WalletWrapper) => {
       return [did, ...(root ? await wallet.did.gatherChain(root) : [])]
     },
 
-    collectForCapability: async (source: CapabilityCredential): Promise<DIDDocument[]> => {
+    collectForIssuedCredential: async (
+      source: CapabilityCredential, did?: DIDDocument
+    ): Promise<DIDDocument[]> => {
       /**
-       * @PROCEED
-       * @TOOD Just collect did chain the way it was built
-       * for the governance capability + did of this capability
+       * Structure:
+       * 1. Provided capability by issuer
+       * 2. Self-issued governance capability of issuer
+       * 3. Self-issued identity of issuer 
        */
-      return []
+      const trustedIdentityDid =
+        source.credentialSubject.root
+          ? await wallet.did.lookUpDid<DIDDocument>(source.credentialSubject.root)
+          : undefined
+
+      const capabilitySubchain = did ? await wallet.did.gatherChain(did.id) || [did] : []
+      const sourceSubchain = source.credentialSubject.source
+        ? await wallet.did.gatherChain(source.credentialSubject.source.id)
+        || [source.credentialSubject.source]
+        : []
+      const trustedSubchain = trustedIdentityDid
+        ? await wallet.did.gatherChain(trustedIdentityDid.id) || [trustedIdentityDid]
+        : []
+
+      const chain: DIDDocument[] = [
+        ...capabilitySubchain,
+        ...sourceSubchain,
+        ...trustedSubchain
+      ]
+
+      return chain
     },
 
   }

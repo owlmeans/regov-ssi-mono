@@ -16,7 +16,8 @@ import {
   IdentitySubject,
   REGISTRY_SECTION_OWN
 } from "@owlmeans/regov-ssi-core"
-import { DIDDocument, VERIFICATION_KEY_HOLDER } from "@owlmeans/regov-ssi-did"
+import { DIDDocument, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER } from "@owlmeans/regov-ssi-did"
+import { CapabilityCredential } from ".."
 import { ByCapabilityExtension } from "../issuer/types"
 
 
@@ -51,7 +52,9 @@ export const verifierCapabilityHelper = <
                   if (result) {
                     return await _helper.verifyChain(
                       satellite.credentialSubject.data.chain,
-                      satellite.credentialSubject.data.did
+                      {
+                        did: satellite.credentialSubject.data.did
+                      }
                     )
                   } else {
                     console.log(info)
@@ -70,43 +73,61 @@ export const verifierCapabilityHelper = <
       }
     },
 
-    verifyChain: async (chain: DIDDocument[], did: DIDDocument) => {
-      return await chain.reduce(async (result, _did) => {
+    verifyChain: async (
+      chain: DIDDocument[],
+      options: {
+        did: DIDDocument,
+        capability?: CapabilityCredential
+      }
+    ) => {
+      return await chain.reduce(async (result, did) => {
         if (!await result) {
           return false
+        }
+        if(options.capability && did.id === options.capability.id) {
+          const didVerificationResult = await wallet.did.helper().verifyDID(did) 
+          const [credentialVerificationResult, info] = await wallet.ssi.verifyCredential(
+            options.capability, did,
+            VERIFICATION_KEY_CONTROLLER
+          )
+          if (!credentialVerificationResult) {
+            console.log(info)
+          }
+          options.did = did
+          return didVerificationResult && credentialVerificationResult
         }
         if ([REGISTRY_SECTION_PEER, REGISTRY_SECTION_OWN].map(
           section => wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential<
             IdentitySubject, Identity<IdentitySubject>
-          >(_did.id, section)?.credential
+          >(did.id, section)?.credential
         ).find(id => id)) {
-          did = _did
+          options.did = did
           return true
         }
-        if (await wallet.did.helper().verifyDID(_did)) {
-          if (did.alsoKnownAs && did.alsoKnownAs.includes(_did.id)) {
-            if (_did.capabilityDelegation) {
-              if (_did.capabilityDelegation.find(
+        if (await wallet.did.helper().verifyDID(did)) {
+          if (options.did.alsoKnownAs && options.did.alsoKnownAs.includes(did.id)) {
+            if (did.capabilityDelegation) {
+              if (did.capabilityDelegation.find(
                 tmp => {
-                  const controller = wallet.did.helper().extractProofController(did)
+                  const controller = wallet.did.helper().extractProofController(options.did)
                   return controller ===
                     (typeof tmp === 'string'
                       ? wallet.did.helper().parseDIDId(tmp).did
                       : tmp.controller)
                 }
               )) {
-                did = _did
+                options.did = did
                 return true
               }
 
               return false
             }
           }
-          if (_did.capabilityInvocation) {
-            if (_did.capabilityInvocation.find(
+          if (did.capabilityInvocation) {
+            if (did.capabilityInvocation.find(
               tmp => {
                 const controller = wallet.did.helper().extractProofController(
-                  did, VERIFICATION_KEY_HOLDER
+                  options.did, VERIFICATION_KEY_HOLDER
                 )
                 return controller ===
                   (typeof tmp === 'string'
@@ -114,7 +135,7 @@ export const verifierCapabilityHelper = <
                     : tmp.controller)
               }
             )) {
-              did = _did
+              options.did = did
               return true
             }
 

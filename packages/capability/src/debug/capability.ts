@@ -77,7 +77,7 @@ util.inspect.defaultOptions.depth = 8;
 
   const bobOffer = await bob.offerCapabilityCreds(aliceClaim)
 
-  console.log('Alice stores capability proved by Bob')
+  console.log('Alice stores capability based credential provided by Bob')
 
   await alice.storeCapabilityCreds(bobOffer)
 

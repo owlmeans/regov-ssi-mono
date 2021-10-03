@@ -11,7 +11,8 @@ import {
   REGISTRY_TYPE_IDENTITIES,
   WalletWrapper
 } from "@owlmeans/regov-ssi-core"
-import { DIDDocument } from "@owlmeans/regov-ssi-did"
+import { DIDDocument, DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER } from "@owlmeans/regov-ssi-did"
+import { isCapability } from "."
 import { verifierCapabilityHelper } from "../verifier/capability"
 import {
   CapabilityCredential,
@@ -77,9 +78,17 @@ export const holderGovernanceVisitor: HolderVisitorBuilder<
           }
         },
 
-        verifyHolder: async (offer: OfferBundleT, did: DIDDocument) => {
+        verifyHolder: async (offer: OfferBundleT, issuerDid: DIDDocument) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.data.credential?.id === did.id
+            offer => {
+              const did = offer.credentialSubject.did
+              const keyId = did.verificationMethod && did.verificationMethod.length > 1
+                ? VERIFICATION_KEY_CONTROLLER
+                : VERIFICATION_KEY_HOLDER
+              return isCapability(offer.credentialSubject.data.credential)
+                && issuerDid.id
+                === wallet.did.helper().extractProofController(did, keyId)
+            }
           )
 
           const chain = offerWithCap?.credentialSubject.chain
@@ -87,7 +96,13 @@ export const holderGovernanceVisitor: HolderVisitorBuilder<
             return false
           }
 
-          return await verifierCapabilityHelper(wallet).verifyChain(chain, did)
+          return await verifierCapabilityHelper(wallet).verifyChain(chain, {
+            did: issuerDid,
+            /**
+             * It isn't required here, because the credential is capability itself
+             */
+            // capability: offerWithCap.credentialSubject.data.credential
+          })
         }
       }
     }
