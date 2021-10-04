@@ -5,6 +5,7 @@
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
+  "type": "commonjs",
   "main": "src/index.ts",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -38,5 +39,6 @@
   },
   "dependencies": {
     "@owlmeans/regov-ssi-core": "^0.4.0"
-  }
+  },
+  "gitHead": "cc8f3baf1b0ef75156f7dbc9571d69446653aac8"
 }

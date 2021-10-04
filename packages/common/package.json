@@ -43,5 +43,6 @@
     "secp256k1": "^4.0.2",
     "tiny-secp256k1": "^2.0.0",
     "uuid": "^8.3.2"
-  }
+  },
+  "gitHead": "cc8f3baf1b0ef75156f7dbc9571d69446653aac8"
 }

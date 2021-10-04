@@ -39,5 +39,6 @@
   "dependencies": {
     "@owlmeans/regov-ssi-common": "^0.2.1",
     "jsonld-signatures": "^7.0.0"
-  }
+  },
+  "gitHead": "cc8f3baf1b0ef75156f7dbc9571d69446653aac8"
 }

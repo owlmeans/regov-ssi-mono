@@ -37,5 +37,6 @@
   },
   "dependencies": {
     "@owlmeans/regov-ssi-agent": "^0.1.0"
-  }
+  },
+  "gitHead": "cc8f3baf1b0ef75156f7dbc9571d69446653aac8"
 }

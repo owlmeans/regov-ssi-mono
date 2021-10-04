@@ -6,3 +6,5 @@ export * from './issuer/index'
 export * from './holder/index'
 
 export * from './verifier/index'
+
+export * from './did/index'
