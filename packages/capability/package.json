@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ssi-capability",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Capability library for OwlMeans Regov SSI that allows to governence credentials",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -36,7 +36,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@owlmeans/regov-ssi-agent": "^0.1.1"
+    "@owlmeans/regov-ssi-agent": "^0.1.0"
   },
   "gitHead": "cc8f3baf1b0ef75156f7dbc9571d69446653aac8"
 }
