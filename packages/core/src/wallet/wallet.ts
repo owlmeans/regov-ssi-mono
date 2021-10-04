@@ -61,6 +61,9 @@ export const buildWalletWrapper: WalletWrapperBuilder =
                 secure: false,
               }
             }
+            if (section && !_registry.credentials[section]) {
+              _registry.credentials[section] = []
+            }
             _registry.credentials[section || _registry.defaultSection].push(
               wrappedCred as CredentialWrapper
             )
@@ -68,12 +71,19 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             return wrappedCred
           },
 
-          lookupCredentials: async (type, section?) => {
+          lookupCredentials: async <
+            Subject extends CredentialSubject = CredentialSubject,
+            Type extends RegistryItem<Subject> = Credential<Subject>
+          >(type: string | string[], section?: string) => {
             const types: string[] = Array.isArray(type) ? type : [type]
             section = section || _registry.defaultSection
+
+            if (!_registry.credentials[section]) {
+              return []
+            }
             return _registry.credentials[section].filter((wrapper) => {
               return types.every(type => wrapper.credential.type.includes(type))
-            })
+            }) as CredentialWrapper<Subject, Type>[]
           },
 
           getCredential: <
@@ -86,6 +96,9 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             }
 
             section = section || _registry.defaultSection
+            if (!_registry.credentials[section]) {
+              return undefined
+            }
             return _registry.credentials[section].find(
               credWrapper => credWrapper.credential.id === id
             ) as CredentialWrapper<Subject, Type> | undefined
@@ -111,10 +124,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
       return _registryWrappers[type]
     }
 
-    return {
+    const _wallet = {
       did,
 
-      ctx,
+      ssi: ctx,
 
       store: _store,
 
@@ -154,4 +167,6 @@ export const buildWalletWrapper: WalletWrapperBuilder =
         return options || {}
       }
     }
+
+    return _wallet
   }

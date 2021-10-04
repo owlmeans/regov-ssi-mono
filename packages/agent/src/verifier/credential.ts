@@ -52,17 +52,17 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
             hash: true
           })
 
-          const unsigned = await wallet.ctx.buildCredential({
+          const unsigned = await wallet.ssi.buildCredential({
             id: id,
             type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_REQUEST_TYPE],
             holder: wallet.did.helper().extractProofController(verifier),
-            context: wallet.ctx.buildContext(
+            context: wallet.ssi.buildContext(
               'credential/request'
             ),
             subject: requestSubject
           })
 
-          return await wallet.ctx.signCredential(unsigned, verifier) as RequestCredential
+          return await wallet.ssi.signCredential(unsigned, verifier) as RequestCredential
         },
 
         bundle: async (
@@ -77,7 +77,7 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
             throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
           }
 
-          const unsigned = await wallet.ctx.buildPresentation(
+          const unsigned = await wallet.ssi.buildPresentation(
             requests,
             {
               holder: verifier.id,
@@ -92,9 +92,9 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
             }
           ) as UnsignedPresentation<RequestCredential>
 
-          return await wallet.ctx.signPresentation(
+          return await wallet.ssi.signPresentation(
             unsigned, verifier, {
-            challange: options?.challenge || wallet.ctx.crypto.hash(basicHelper.makeRandomUuid()),
+            challange: options?.challenge || wallet.ssi.crypto.hash(basicHelper.makeRandomUuid()),
             domain: options?.domain
           }) as RequestBundle
         },
@@ -130,15 +130,8 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        /**
-         * @PROCEED
-         * @TODO We need to provide a custom loader to exteact 
-         * dids from satelite credentials to verify all credentials 
-         * in prsentation
-         */
-        let [result, info] = await wallet.ctx.verifyPresentation(
-          presentation, did, 
-          buildLocalLoader(wallet, identityHelper)
+        let [result, info] = await wallet.ssi.verifyPresentation(
+          presentation, did, buildLocalLoader(wallet)
         )
 
         if (!result) {

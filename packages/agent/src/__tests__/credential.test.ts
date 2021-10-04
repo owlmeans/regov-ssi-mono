@@ -34,7 +34,7 @@ beforeAll(async () => {
 })
 
 describe('Credential helpers', () => {
-  it('setups trust relationshop between identities', async () => {
+  it('setup trust relationshop between identities', async () => {
     const request = await ctx.bob.requestIdentity()
     const valid = await ctx.charly.validateRequest(request)
     expect(valid).toBe(true)
@@ -47,7 +47,7 @@ describe('Credential helpers', () => {
     await ctx.alice.trustIdentity(response)
   })
 
-  it('claims credentials', async () => {
+  it('claim credentials', async () => {
     ctx.claimed = await ctx.alice.claimTestDoc([
       {
         key: 'testdoc1',
@@ -93,7 +93,7 @@ describe('Credential helpers', () => {
     })
   })
 
-  it('offers credentials', async () => {
+  it('offer credentials', async () => {
     if (!ctx.claimed) {
       throw new Error('No claim from previous step')
     }
@@ -139,7 +139,7 @@ describe('Credential helpers', () => {
     await ctx.alice.storeOffer(offer)
   })
 
-  it('requests credentials', async () => {
+  it('request credentials', async () => {
     const request = await ctx.bob.requestCreds()
 
     const verified = await ctx.alice.validateRequest(request)
@@ -180,7 +180,7 @@ describe('Credential helpers', () => {
     })
   })
 
-  it('verifies credentials', async () => {
+  it('verifie credentials', async () => {
     if (!ctx.response) {
       throw new Error('No response from previous step')
     }

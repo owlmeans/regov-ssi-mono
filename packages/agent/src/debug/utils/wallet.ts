@@ -5,7 +5,7 @@ import {
   WrappedDocument,
   Presentation,
   Credential,
-  CredentialSubject, 
+  CredentialSubject,
   UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
 import {
@@ -14,13 +14,13 @@ import {
   identityHelper,
   RequestBundle,
   verifierCredentialHelper,
-  issuerCredentialHelper, 
-  OfferBundle, 
-  OfferCredential, 
+  issuerCredentialHelper,
+  OfferBundle,
+  OfferCredential,
   OfferSubject,
-  ClaimBundle, 
-  ClaimCredential, 
-  ClaimSubject, 
+  ClaimBundle,
+  ClaimCredential,
+  ClaimSubject,
   holderCredentialHelper
 } from '../../index'
 
@@ -75,7 +75,7 @@ export namespace TestUtil {
     async produceIdentity() {
       return await identityHelper<IdentityFields>(
         this.wallet,
-        this.wallet.ctx.buildContext('identity', {
+        this.wallet.ssi.buildContext('identity', {
           xsd: 'http://www.w3.org/2001/XMLSchema#',
           firstname: { '@id': 'scm:firstname', '@type': 'xsd:string' },
           lastname: { '@id': 'scm:lastname', '@type': 'xsd:string' }
@@ -120,18 +120,20 @@ export namespace TestUtil {
 
     async claimTestDoc(data: (TestDocumentData1 | TestDocumentData2)[]) {
       const claims = await Promise.all(data.map(
-        async data => await holderCredentialHelper(this.wallet).claim<
+        async data => await holderCredentialHelper<
           TestDocumentData1 | TestDocumentData2
-        >({ type: 'TestDocument' }).build(data)
+        >(this.wallet)
+          .claim({ type: 'TestDocument' }).build(data)
       ))
 
       const requestClaim = await holderCredentialHelper(this.wallet).bundle<
         TestClaim
       >().build(claims)
 
-      await holderCredentialHelper(this.wallet).claim<
+      await holderCredentialHelper<
         TestDocumentData1 | TestDocumentData2
-      >({ type: 'TestDocument' }).register(requestClaim)
+      >(this.wallet)
+        .claim({ type: 'TestDocument' }).register(requestClaim)
 
       return requestClaim
     }
@@ -142,10 +144,10 @@ export namespace TestUtil {
     }
 
     async signClaims(claims: TestClaim[]) {
-      const offers = await issuerCredentialHelper(this.wallet).claim<
+      const offers = await issuerCredentialHelper<
         TestDocumentData1 | TestDocumentData2, {},
         TestCredential
-      >().signClaims(claims)
+      >(this.wallet).claim().signClaims(claims)
 
       return await issuerCredentialHelper(this.wallet)
         .bundle<TestClaim, TestOffer>().build(offers)
@@ -161,9 +163,9 @@ export namespace TestUtil {
         .bundle<TestClaim, TestOffer>().store(offer)
     }
 
-    async requestCreds() {
+    async requestCreds(type = 'TestDocument') {
       const req = await verifierCredentialHelper(this.wallet)
-        .request().build({ '@type': 'TestDocument' })
+        .request().build({ '@type': type })
 
       return await verifierCredentialHelper(this.wallet)
         .request().bundle([req])
@@ -173,13 +175,19 @@ export namespace TestUtil {
       const { requests } = await holderCredentialHelper(this.wallet)
         .request().unbundle(request)
 
-      return await holderCredentialHelper(this.wallet)
-        .response().build<TestCredential>(requests, request)
+      return await holderCredentialHelper<
+        WrappedDocument<TestDocumentData2 | TestDocumentData1>,
+        {},
+        TestCredential
+      >(this.wallet)
+        .response().build(requests, request)
     }
 
-    async validateResponse(response: Presentation<EntityIdentity | TestCredential>) {
+    async validateResponse<Type extends Credential = TestCredential>(
+      response: Presentation<EntityIdentity | Type>
+    ) {
       const { result } = await verifierCredentialHelper(this.wallet)
-        .response().verify<EntityIdentity | TestCredential>(response)
+        .response().verify<EntityIdentity | Type>(response)
 
       if (!result) {
         return false

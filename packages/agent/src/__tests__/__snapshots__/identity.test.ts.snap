@@ -30,18 +30,12 @@ Object {
       "type": "EcdsaSecp256k1Signature2019",
       "verificationMethod": Any<String>,
     },
-    "publicKey": Array [
-      Object {
-        "id": Any<String>,
-        "publicKeyBase58": Any<String>,
-        "type": "EcdsaSecp256k1VerificationKey2019",
-      },
-    ],
     "verificationMethod": Array [
       Object {
         "controller": Any<String>,
         "id": Any<String>,
         "nonce": Any<String>,
+        "publicKeyBase58": Any<String>,
         "type": "EcdsaSecp256k1VerificationKey2019",
       },
     ],
@@ -129,18 +123,12 @@ Object {
       "type": "EcdsaSecp256k1Signature2019",
       "verificationMethod": Any<String>,
     },
-    "publicKey": Array [
-      Object {
-        "id": Any<String>,
-        "publicKeyBase58": Any<String>,
-        "type": "EcdsaSecp256k1VerificationKey2019",
-      },
-    ],
     "verificationMethod": Array [
       Object {
         "controller": Any<String>,
         "id": Any<String>,
         "nonce": Any<String>,
+        "publicKeyBase58": Any<String>,
         "type": "EcdsaSecp256k1VerificationKey2019",
       },
     ],
@@ -327,18 +315,12 @@ Object {
             "type": "EcdsaSecp256k1Signature2019",
             "verificationMethod": Any<String>,
           },
-          "publicKey": Array [
-            Object {
-              "id": Any<String>,
-              "publicKeyBase58": Any<String>,
-              "type": "EcdsaSecp256k1VerificationKey2019",
-            },
-          ],
           "verificationMethod": Array [
             Object {
               "controller": Any<String>,
               "id": Any<String>,
               "nonce": Any<String>,
+              "publicKeyBase58": Any<String>,
               "type": "EcdsaSecp256k1VerificationKey2019",
             },
           ],
@@ -495,18 +477,12 @@ Object {
             "type": "EcdsaSecp256k1Signature2019",
             "verificationMethod": Any<String>,
           },
-          "publicKey": Array [
-            Object {
-              "id": Any<String>,
-              "publicKeyBase58": Any<String>,
-              "type": "EcdsaSecp256k1VerificationKey2019",
-            },
-          ],
           "verificationMethod": Array [
             Object {
               "controller": Any<String>,
               "id": Any<String>,
               "nonce": Any<String>,
+              "publicKeyBase58": Any<String>,
               "type": "EcdsaSecp256k1VerificationKey2019",
             },
           ],
@@ -641,18 +617,12 @@ Object {
         "type": "EcdsaSecp256k1Signature2019",
         "verificationMethod": Any<String>,
       },
-      "publicKey": Array [
-        Object {
-          "id": Any<String>,
-          "publicKeyBase58": Any<String>,
-          "type": "EcdsaSecp256k1VerificationKey2019",
-        },
-      ],
       "verificationMethod": Array [
         Object {
           "controller": Any<String>,
           "id": Any<String>,
           "nonce": Any<String>,
+          "publicKeyBase58": Any<String>,
           "type": "EcdsaSecp256k1VerificationKey2019",
         },
       ],

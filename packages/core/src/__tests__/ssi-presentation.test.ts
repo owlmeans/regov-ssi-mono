@@ -90,7 +90,7 @@ describe('SSI Presentation', () => {
     const uDepDid = await ssiAlice.did.helper().createDID(
       await ssiAlice.keys.getCryptoKey(),
       {
-        purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION],
+        purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_AUTHENTICATION],
         data: JSON.stringify(subject),
         hash: true
       }
@@ -118,7 +118,7 @@ describe('SSI Presentation', () => {
       await ssiBob.keys.getCryptoKey(),
       uDepDid,
       VERIFICATION_KEY_CONTROLLER,
-      [DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
+      [DIDPURPOSE_ASSERTION]
     )
     expect(await ssiCharly.did.helper().verifyDID(depDid)).toBe(true)
 

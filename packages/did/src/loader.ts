@@ -1,6 +1,8 @@
 import { BuildDocumentLoader, DIDDocument, DIDDocumentUnsinged } from "./types"
 import { DIDRegistryWrapper } from "./types/registry"
 
+const documentCache: {[key: string]: any} = {}
+
 export const buildDocumentLoader = (did: DIDRegistryWrapper): BuildDocumentLoader =>
   (fallback?) => async (url) => {
     if (url.startsWith('did:')) {
@@ -16,5 +18,9 @@ export const buildDocumentLoader = (did: DIDRegistryWrapper): BuildDocumentLoade
       }
     }
 
-    return require('jsonld').documentLoader(url)
+    if (documentCache[url]) {
+      return documentCache[url]
+    }
+
+    return documentCache[url] = await require('jsonld').documentLoader(url)
   }

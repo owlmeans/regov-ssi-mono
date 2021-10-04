@@ -105,6 +105,8 @@ const _test = async () => {
 
   const responseCred = await alice.provideCreds(requestCred)
 
+  console.log('ALICE SENT A RESPONSE TO BOB')
+
   const responseValid = await bob.validateResponse(responseCred)
 
   if (responseValid) {

@@ -2,7 +2,7 @@ import { Secp256k1Key, Secp256k1Signature } from "@affinidi/tiny-lds-ecdsa-secp2
 
 import { KeysService } from '@affinidi/common'
 import { fromSeed, BIP32Interface } from 'bip32'
-import { Base58Lib, CryptoHelper, CommonCryptoKey } from "../types"
+import { Base58Lib, CryptoHelper, CryptoKey } from "../types"
 import { encode as encode58, decode as decode58 } from './base58'
 
 
@@ -151,7 +151,7 @@ export const nodeCryptoHelper: CryptoHelper = {
 
   base58: _base58,
 
-  getKey: (seed: Uint8Array, derivationPath?: string): CommonCryptoKey & { dp: string } => {
+  getKey: (seed: Uint8Array, derivationPath?: string): CryptoKey & { dp: string } => {
     const bufferedSeed = <Buffer>seed
     derivationPath = derivationPath || _makeDerivationPath()
     const _key = `${bufferedSeed.toString('hex')}_${derivationPath}`

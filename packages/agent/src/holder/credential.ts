@@ -20,7 +20,8 @@ import {
   REGISTRY_SECTION_PEER,
   REGISTRY_TYPE_CLAIMS,
   REGISTRY_TYPE_CREDENTIALS,
-  REGISTRY_TYPE_IDENTITIES
+  REGISTRY_TYPE_IDENTITIES,
+  REGISTRY_SECTION_OWN
 } from "@owlmeans/regov-ssi-core"
 import {
   ClaimSubject,
@@ -34,137 +35,149 @@ import {
   ERROR_UNTRUSTED_ISSUER,
   ERROR_NO_RELATED_DID_FOUND,
   ERROR_CLAIM_OFFER_DONT_MATCH,
-  CREDENTIAL_RESPONSE_TYPE, 
-  CREDENTIAL_SATELLITE_TYPE, 
-  SatelliteCredential
+  CREDENTIAL_RESPONSE_TYPE,
+  CREDENTIAL_SATELLITE_TYPE,
+  SatelliteCredential,
+  HolderVisitor
 } from "./types"
 import {
   CREDENTIAL_OFFER_TYPE,
   OfferBundle,
-  OfferCredential
+  OfferCredential,
+  OfferSubject
 } from "../issuer/types"
 import { EntityIdentity, IdentityParams } from "../identity/types"
 import { CREDENTIAL_REQUEST_TYPE, RequestBundle, RequestCredential } from "../verifier/types"
+import { SatelliteSubject } from "."
 
 
 export const isSatellite = (crednetial: Credential): crednetial is SatelliteCredential => {
   return crednetial.type.includes(CREDENTIAL_SATELLITE_TYPE)
 }
 
-export const holderCredentialHelper = (wallet: WalletWrapper) => {
+export const holderCredentialHelper = <
+  Payload extends {} = {},
+  Extension extends {} = {},
+  CredentialT extends Credential<CredentialSubject<WrappedDocument<Payload>, Extension>>
+  = Credential<CredentialSubject<WrappedDocument<Payload>, Extension>>,
+  VisitorExtension extends {} = {}
+>(wallet: WalletWrapper, visitor?: HolderVisitor<CredentialT, VisitorExtension>) => {
+  type SubjectUT = CredentialT extends Credential<infer Subject> ? Subject : never
+  type CredentialUT = UnsignedCredential<SubjectUT>
   const _identityHelper = identityHelper(wallet)
 
   return {
-    claim: <
-      Payload extends {} = {},
-      Extension extends {} = {},
-      CredentialUT extends UnsignedCredential<
-        CredentialSubject<WrappedDocument<Payload>, Extension>
-      > = UnsignedCredential<
-        CredentialSubject<WrappedDocument<Payload>, Extension>
-      >
-    >(
+    claim: (
       claimOptions: {
         type: string | string[],
         schemaUri?: string,
         crdContext?: ContextSchema,
         holder?: DIDDocument,
       }
-    ) => ({
-      build: async (payload: Payload, options?: {
-        key?: KeyPair | string,
-        extension?: Extension
-      }) => {
-        const credentialSubject = {
-          data: {
-            '@type': claimOptions.type,
-            ...payload
-          },
-          ...(options?.extension ? options?.extension : {})
-        }
-
-        const key = await wallet.keys.getCryptoKey(options?.key)
-        const didUnsigned = await wallet.did.helper().createDID(
-          key,
-          {
-            data: JSON.stringify(credentialSubject),
-            hash: true,
-            purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
+    ) => {
+      return {
+        build: async (payload: Payload, options?: {
+          key?: KeyPair | string,
+          extension?: Extension
+        }) => {
+          const credentialSubject = {
+            data: {
+              '@type': claimOptions.type,
+              ...payload
+            },
+            ...(options?.extension ? options?.extension : {})
           }
-        )
 
-        const holder = claimOptions.holder || _identityHelper.getIdentity().did
-        if (!holder) {
-          throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
-        }
-
-        const types = Array.isArray(claimOptions.type) ? claimOptions.type : [claimOptions.type]
-
-        const unsignedCredential = await wallet.ctx.buildCredential<
-          WrappedDocument<Payload>,
-          CredentialSubject<WrappedDocument<Payload>, Extension>
-        >({
-          id: didUnsigned.id,
-          type: [BASE_CREDENTIAL_TYPE, ...types],
-          holder: wallet.did.helper().extractProofController(holder),
-          context: wallet.ctx.buildContext(
-            claimOptions.schemaUri || types.join('/').toLowerCase(),
-            claimOptions.crdContext
-          ),
-          subject: credentialSubject
-        }) as CredentialUT
-
-        const claimSubject: ClaimSubject<CredentialUT> = {
-          data: {
-            '@type': `${CLAIM_TYPE_PREFFIX}:${claimOptions.type}`,
-            credential: unsignedCredential
-          },
-          did: didUnsigned
-        }
-
-        const claimUnsigned = await wallet.ctx.buildCredential<
-          WrappedDocument<{ credential: CredentialUT }>,
-          ClaimSubject<CredentialUT>
-        >({
-          id: didUnsigned.id,
-          type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_CLAIM_TYPE],
-          holder: wallet.did.helper().extractProofController(holder),
-          subject: claimSubject,
-          context: wallet.ctx.buildContext(
-            'credential/claim',
-            /**
-             * @TODO Proper context description required
-             */
+          const key = await wallet.keys.getCryptoKey(options?.key)
+          const didUnsigned = await wallet.did.helper().createDID(
+            key,
             {
-              did: { '@id': 'scm:did', '@type': '@json' },
-              credential: { '@id': 'scm:credential', '@type': '@json' }
+              data: JSON.stringify(credentialSubject),
+              hash: true,
+              purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_AUTHENTICATION]
             }
           )
-        })
 
-        return await wallet.ctx.signCredential(
-          claimUnsigned,
-          holder
-        ) as ClaimCredential<ClaimSubject<CredentialUT>>
-      },
+          const holder = claimOptions.holder || _identityHelper.getIdentity().did
+          if (!holder) {
+            throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
+          }
 
-      /**
-       * @TODO Allow to clean up registered claim
-       */
-      register: async (
-        bundle: ClaimBundle<ClaimCredential<ClaimSubject<CredentialUT>>>
-      ) => {
-        await wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
-          .addCredential<
-            CredentialSubject<WrappedDocument<Payload>, Extension>,
-            Presentation<ClaimCredential<ClaimSubject<CredentialUT>>>
-          >(bundle)
+          const types = Array.isArray(claimOptions.type) ? claimOptions.type : [claimOptions.type]
+
+          const unsignedCredential = await wallet.ssi.buildCredential<
+            WrappedDocument<Payload>,
+            CredentialSubject<WrappedDocument<Payload>, Extension>
+          >({
+            id: didUnsigned.id,
+            type: [BASE_CREDENTIAL_TYPE, ...types],
+            holder: wallet.did.helper().extractProofController(holder),
+            context: wallet.ssi.buildContext(
+              claimOptions.schemaUri || types.join('/').toLowerCase(),
+              claimOptions.crdContext
+            ),
+            subject: credentialSubject
+          }) as CredentialUT
+
+          const claimTypes = [...types]
+          claimTypes.shift()
+          const mainType = claimTypes.shift()
+          const claimSubject: ClaimSubject<CredentialUT> = {
+            data: {
+              '@type': [`${CLAIM_TYPE_PREFFIX}:${mainType}`, ...claimTypes],
+              credential: unsignedCredential
+            },
+            did: didUnsigned
+          }
+
+          const claimUnsigned = await wallet.ssi.buildCredential<
+            WrappedDocument<{ credential: CredentialUT }>,
+            ClaimSubject<CredentialUT>
+          >({
+            id: didUnsigned.id,
+            type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_CLAIM_TYPE],
+            holder: wallet.did.helper().extractProofController(holder),
+            subject: claimSubject,
+            context: wallet.ssi.buildContext(
+              'credential/claim',
+              /**
+               * @TODO Proper context description required
+               */
+              {
+                did: { '@id': 'scm:did', '@type': '@json' },
+                credential: { '@id': 'scm:credential', '@type': '@json' }
+              }
+            )
+          })
+
+          return await wallet.ssi.signCredential(
+            claimUnsigned,
+            holder
+          ) as ClaimCredential<ClaimSubject<CredentialUT>>
+        },
+
+        /**
+         * @TODO Allow to clean up registered claim
+         */
+        register: async (
+          bundle: ClaimBundle<ClaimCredential<ClaimSubject<CredentialUT>>>
+        ) => {
+          await wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
+            .addCredential<
+              CredentialSubject<WrappedDocument<Payload>, Extension>,
+              Presentation<ClaimCredential<ClaimSubject<CredentialUT>>>
+            >(bundle)
+        }
       }
-    }),
+    },
 
     bundle: <
-      BundledClaim extends ClaimCredential,
-      BundledOffer extends OfferCredential = OfferCredential
+      BundledClaim extends ClaimCredential<
+        ClaimSubject<CredentialUT, VisitorExtension>
+      > = ClaimCredential<ClaimSubject<CredentialUT, VisitorExtension>>,
+      BundledOffer extends OfferCredential<
+        OfferSubject<CredentialT, VisitorExtension>
+      > = OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
     >(bundleOptions?: { holder?: DIDDocument }) => ({
       build: async (
         claims: BundledClaim[],
@@ -177,12 +190,12 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
         }
 
-        const unsigned = await wallet.ctx.buildPresentation(claims, {
+        const unsigned = await wallet.ssi.buildPresentation(claims, {
           holder: holder.id,
           type: CREDENTIAL_CLAIM_TYPE
         }) as UnsignedPresentation<BundledClaim>
 
-        return await wallet.ctx.signPresentation(unsigned, holder) as ClaimBundle<BundledClaim>
+        return await wallet.ssi.signPresentation(unsigned, holder) as ClaimBundle<BundledClaim>
       },
 
       unbudle: async (bundle: OfferBundle<BundledOffer>) => {
@@ -199,28 +212,47 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
          * 
          * !!! In this case the initial claim should be addressed to a specific issuer.
          */
-        const issuer = await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
+        let issuer = await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
           bundle.holder.id, REGISTRY_SECTION_PEER
         )
+
+        const substituteIssuer = visitor?.bundle?.unbundle?.updateIssuer
+          && await visitor.bundle.unbundle.updateIssuer(bundle, bundle.holder.id)
+
+        issuer = substituteIssuer || issuer
 
         if (!issuer) {
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        const issuerDid = await wallet.did.lookUpDid<DIDDocument>(issuer.credential.holder.id)
+        let issuerDid = await wallet.did.lookUpDid<DIDDocument>(issuer.credential.holder.id)
+        if (substituteIssuer && visitor?.bundle?.unbundle?.updateDid) {
+          issuerDid = await visitor.bundle.unbundle.updateDid(
+            bundle, substituteIssuer.credential.id
+          )
+        }
 
-        let [result] = await wallet.ctx.verifyPresentation(bundle, issuerDid)
+        if (!issuerDid) {
+          throw new Error(ERROR_NO_RELATED_DID_FOUND)
+        }
+
+        let result = visitor?.bundle?.unbundle?.verifyHolder
+          ? await visitor.bundle.unbundle.verifyHolder(bundle, issuerDid)
+          : true
+
+        if (result) {
+          const [verificationResult] = await wallet.ssi.verifyPresentation(bundle, issuerDid)
+          result = verificationResult
+        }
 
         result = result && bundle.type.includes(CREDENTIAL_OFFER_TYPE)
 
-        type Payload = ClaimPayload<BundledClaim>
-        type Extension = ClaimExtenstion<BundledClaim>
+        type PayloadT = ClaimPayload<BundledClaim>
+        type ExtensionT = ClaimExtenstion<BundledClaim>
 
         const claims = wallet.getRegistry(REGISTRY_TYPE_CLAIMS).getCredential<
-          CredentialSubject<WrappedDocument<Payload>, Extension>,
-          Presentation<ClaimCredential<ClaimSubject<
-            UnsignedCredential<CredentialSubject<WrappedDocument<Payload>, Extension>>
-          >>>
+          CredentialSubject<WrappedDocument<PayloadT>, ExtensionT>,
+          Presentation<ClaimCredential<ClaimSubject<CredentialUT>>>
         >(bundle.id)
 
         if (result && claims) {
@@ -247,9 +279,9 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       },
 
       cleanup: async (response: OfferBundle<BundledOffer>) => {
-        type Payload = ClaimPayload<BundledClaim>
-        type Extension = ClaimExtenstion<BundledClaim>
-        type SubjectT = CredentialSubject<WrappedDocument<Payload>, Extension>
+        type PayloadT = ClaimPayload<BundledClaim>
+        type ExtensionT = ClaimExtenstion<BundledClaim>
+        type SubjectT = CredentialSubject<WrappedDocument<PayloadT>, ExtensionT>
         const claim = wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
           .getCredential<SubjectT, ClaimBundle<BundledOffer>>(response.id)
         if (claim) {
@@ -259,19 +291,24 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       },
 
       store: async (bundle: OfferBundle<BundledOffer>) => {
-        type Payload = ClaimPayload<BundledClaim>
-        type Extension = ClaimExtenstion<BundledClaim>
-        type SubjectT = CredentialSubject<WrappedDocument<Payload>, Extension>
-
         const offers = [...bundle.verifiableCredential]
         await _identityHelper.extractEntity(offers)
-        const registry = wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
+        
         return Promise.all(offers.map(
           async (offer) => {
             wallet.did.addDID(offer.credentialSubject.did)
-            return await registry.addCredential<SubjectT, Credential<SubjectT>>(
-              offer.credentialSubject.data.credential as Credential<SubjectT>
-            )
+            visitor?.bundle?.store?.storeOffer
+              && await visitor?.bundle?.store?.storeOffer(offer)
+
+              const registryCode = visitor?.bundle?.store?.castRegistry
+              ? visitor.bundle.store.castRegistry(offer)
+              : REGISTRY_TYPE_CREDENTIALS
+              const registry = wallet.getRegistry(registryCode)
+
+            return await registry.addCredential<
+              CredentialSubject<WrappedDocument<Payload>, Extension>,
+              CredentialT
+            >(offer.credentialSubject.data.credential)
           }
         ))
       }
@@ -287,7 +324,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        let [result] = await wallet.ctx.verifyPresentation(bundle, did)
+        let [result] = await wallet.ssi.verifyPresentation(bundle, did)
 
         result = result && bundle.type.includes(CREDENTIAL_REQUEST_TYPE)
 
@@ -305,7 +342,7 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        return await wallet.ctx.verifyPresentation(bundle, did)
+        return await wallet.ssi.verifyPresentation(bundle, did)
       }
     }),
 
@@ -313,7 +350,11 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
       holder?: DIDDocument,
       identity?: IdentityParams | EntityIdentity | boolean
     } = {}) => ({
-      build: async <CredentialT extends Credential = Credential>(requests: RequestCredential[] = [], requestBundle?: RequestBundle) => {
+      build: async (
+        requests: RequestCredential[] = [],
+        requestBundle?: RequestBundle
+      ) => {
+
         const wraps = await requests.reduce(
           async (accum, { credentialSubject: { data: req } }) => {
             const wraps = await wallet.getRegistry(req.source || REGISTRY_TYPE_CREDENTIALS)
@@ -354,18 +395,24 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
               }
             }
 
-            const unsignedSatellite = await wallet.ctx.buildCredential({
+            const unsignedSatellite = await wallet.ssi.buildCredential({
               id: did.id,
               type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_SATELLITE_TYPE],
               holder: holder.id,
               subject: satelliteSubject,
-              context: wallet.ctx.buildContext(
+              context: wallet.ssi.buildContext(
                 'credential/satellite',
                 { did: { '@id': 'scm:did', '@type': '@json' } }
               )
-            })
+            }) as UnsignedCredential<SatelliteSubject<VisitorExtension>>
 
-            const satellite = await wallet.ctx.signCredential(
+            visitor?.bundle?.response?.build?.createSatellite
+              && visitor.bundle.response.build.createSatellite(
+                unsignedSatellite,
+                wrap.credential as CredentialT
+              )
+
+            const satellite = await wallet.ssi.signCredential(
               unsignedSatellite,
               holder
             )
@@ -374,14 +421,14 @@ export const holderCredentialHelper = (wallet: WalletWrapper) => {
           }
         ))).flat(1).map(cred => responses.push(cred))
 
-        const unsignedPresentation = await wallet.ctx.buildPresentation(
+        const unsignedPresentation = await wallet.ssi.buildPresentation(
           responses, {
           id: requestBundle?.id,
           holder: holder.id,
           type: CREDENTIAL_RESPONSE_TYPE
         })
 
-        return await wallet.ctx.signPresentation(unsignedPresentation, holder, {
+        return await wallet.ssi.signPresentation(unsignedPresentation, holder, {
           challange: requestBundle?.proof.challenge,
           domain: requestBundle?.proof.domain
         }) as Presentation<EntityIdentity | CredentialT>

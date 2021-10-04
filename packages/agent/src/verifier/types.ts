@@ -4,6 +4,7 @@ import {
   WrappedDocument,
   Credential,
   Presentation,
+  WalletWrapper,
 } from "@owlmeans/regov-ssi-core"
 
 

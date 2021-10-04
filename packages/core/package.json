@@ -22,9 +22,7 @@
     "test": "jest --testTimeout 30000",
     "build": "tsc -b",
     "build:watch": "tsc -b -w",
-    "review:context": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/context.ts",
-    "review:identity": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/identity.ts",
-    "review:credential": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/credential.ts"
+    "review:ssi": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/ssi.ts"
   },
   "bugs": {
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"

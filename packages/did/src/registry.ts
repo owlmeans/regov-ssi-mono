@@ -1,7 +1,16 @@
-import { AddDIDMethod, DIDDocumentWrapper, DIDRegistry, DIDRegistryWrapper, DIDRegistryBundle, DID_REGISTRY_ERROR_NO_KEY_BY_DID, LookUpDidMethod } from "./types/registry"
-import { DIDDocumentPurpose, DIDDocument, DIDHelper, DIDPURPOSE_VERIFICATION, DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD, DIDVerificationItem } from "./types"
-import { CommonCryptoKey } from "@owlmeans/regov-ssi-common"
-import { DIDPURPOSE_ASSERTION, DID_ERROR_VERIFICATION_METHOD_LOOKUP } from "."
+import {
+  AddDIDMethod,
+  DIDRegistry,
+  DIDRegistryWrapper,
+  DIDRegistryBundle,
+  DID_REGISTRY_ERROR_NO_KEY_BY_DID,
+  LookUpDidMethod,
+  DID_CHAIN_DEAD_END
+} from "./types/registry"
+import {
+  DIDDocument,
+  DIDHelper
+} from "./types"
 import { buildDocumentLoader } from "./loader"
 
 export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegistryBundle) =>
@@ -50,6 +59,22 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegis
       registry,
 
       lookUpDid: _lookUpDid,
+
+      gatherChain: async (to, from?) => {
+        const toDid = await _lookUpDid<DIDDocument>(to)
+        if (toDid) {
+          if (toDid.alsoKnownAs) {
+            if (!from || from !== toDid.id ) {
+              return [toDid, ...await wrapper.gatherChain(toDid.alsoKnownAs[0], from)]
+            }
+          } else if (from && toDid.id !== from) {
+            throw new Error(DID_CHAIN_DEAD_END)
+          }
+
+          return [toDid]
+        }
+        return []
+      },
 
       addDID: _buildAddDIDMethod(_registry),
 

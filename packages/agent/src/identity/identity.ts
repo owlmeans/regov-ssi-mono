@@ -78,13 +78,13 @@ export const identityHelper = <
       did: entity.did
     }
 
-    const unsigned = await wallet.ctx.buildCredential<
+    const unsigned = await wallet.ssi.buildCredential<
       EntityIdentitySubjectType, EntityIdentitySubject, UnsignedEntityIdentity
     >({
       id: entity.did.id,
       type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_ENTITY_IDENTITY_TYPE],
       holder: wallet.did.helper().extractProofController(entity.did),
-      context: wallet.ctx.buildContext(
+      context: wallet.ssi.buildContext(
         'entity/idnetity',
         /**
          * @TODO Decribe context properly
@@ -97,7 +97,7 @@ export const identityHelper = <
       subject: credentialSubject
     })
 
-    return await wallet.ctx.signCredential<
+    return await wallet.ssi.signCredential<
       EntityIdentitySubject,
       EntityIdentity,
       UnsignedEntityIdentity
@@ -183,7 +183,7 @@ export const identityHelper = <
         if (payload || extension) {
           throw new Error(ERROR_DESCRIBE_IDENTITY_WITH_EXTENSION)
         }
-        idtContext = wallet.ctx.buildContext('identity')
+        idtContext = wallet.ssi.buildContext('identity')
       }
 
       const key = await wallet.keys.getCryptoKey()
@@ -193,19 +193,19 @@ export const identityHelper = <
       const did = await wallet.did.helper().signDID(key, didUnsigned)
       wallet.did.addDID(did)
 
-      const unsignedIdenity = await wallet.ctx.buildCredential<
+      const unsignedIdenity = await wallet.ssi.buildCredential<
         WrappedDocument<PayloadT>,
         SubjectT,
         UnsignedCredential<SubjectT>
       >({
         id: did.id,
         type: [BASE_CREDENTIAL_TYPE, type],
-        holder: wallet.ctx.did.helper().extractProofController(did),
+        holder: wallet.ssi.did.helper().extractProofController(did),
         context: idtContext,
         subject: identitySubject
       })
 
-      const identity = await wallet.ctx.signCredential<SubjectT, IdentityT>(
+      const identity = await wallet.ssi.signCredential<SubjectT, IdentityT>(
         unsignedIdenity, did
       )
 

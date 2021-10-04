@@ -1,21 +1,29 @@
 import { DIDDocument, DIDDocumentUnsinged } from "@owlmeans/regov-ssi-did"
-import { 
-  CredentialSubject, 
-  WrappedDocument, 
-  UnsignedCredential, 
-  Credential, 
+import {
+  CredentialSubject,
+  WrappedDocument,
+  UnsignedCredential,
+  Credential,
   Presentation,
-  MaybeArray
+  MaybeArray,
+  WalletWrapper,
+  CredentialType,
+  CredentialWrapper
 } from "@owlmeans/regov-ssi-core"
+import { OfferBundle, OfferCredential, OfferSubject } from "../issuer/types"
 
 
 export type ClaimSubject<
-  CredentialUT extends UnsignedCredential<MaybeArray<CredentialSubject>> = UnsignedCredential<MaybeArray<CredentialSubject>>
-  > =
-  CredentialSubject<
-    WrappedDocument<{ credential: CredentialUT }>,
-    { did: DIDDocumentUnsinged }
-  >
+  CredentialUT extends UnsignedCredential<MaybeArray<CredentialSubject>>
+  = UnsignedCredential<MaybeArray<CredentialSubject>>,
+  Extension extends {} = {}
+  > = CredentialSubject<ClaimDocument<CredentialUT>, ClaimSubjectExtension<Extension>>
+
+export type ClaimDocument<CredentialUT extends UnsignedCredential<MaybeArray<CredentialSubject>>
+  = UnsignedCredential<MaybeArray<CredentialSubject>>>
+  = WrappedDocument<{ credential: CredentialUT }>
+
+export type ClaimSubjectExtension<Extension extends {} = {}> = { did: DIDDocumentUnsinged } & Extension
 
 export const CREDENTIAL_CLAIM_TYPE = 'CredentialClaim'
 
@@ -45,18 +53,67 @@ export type ClaimExtenstion<Claim> = Claim extends ClaimCredential<infer ClaimSu
   : never
   : never
 
-export type SatelliteSubject = CredentialSubject<SetelliteSubjectType, {}>
+export type SatelliteSubject<DocExtension extends {} = {}>
+  = CredentialSubject<SetelliteSubjectType<DocExtension>, {}>
 
-export type SetelliteSubjectType = WrappedDocument<{ did: DIDDocument }>
+export type SetelliteSubjectType<DocExtension extends {} = {}>
+  = WrappedDocument<{ did: DIDDocument } & DocExtension>
 
-export const CREDENTIAL_SATELLITE_TYPE = 'CredentialSatellit'
+export type SatelliteCredential<Subject extends SatelliteSubject = SatelliteSubject>
+  = Credential<Subject>
 
-export type SatelliteCredential = Credential<SatelliteSubject>
+export type UnsisgnedSatellite<Subject extends SatelliteSubject = SatelliteSubject>
+  = UnsignedCredential<Subject>
 
 export type ResponseBundle<CredentialT extends Credential> = {
   presentation: Presentation<CredentialT | SatelliteCredential>,
   did: DIDDocument
 }
+
+export type HolderVisitorBuilder<
+  CredentialT extends Credential = Credential,
+  Extension extends {} = {},
+  Offer extends OfferCredential<OfferSubject<CredentialT, Extension>>
+  = OfferCredential<OfferSubject<CredentialT, Extension>>
+  > = (wallet: WalletWrapper) => HolderVisitor<CredentialT, Extension, Offer>
+
+export type HolderVisitor<
+  CredentialT extends Credential = Credential,
+  Extension extends {} = {},
+  Offer extends OfferCredential<OfferSubject<CredentialT, Extension>>
+  = OfferCredential<OfferSubject<CredentialT, Extension>>
+  > = {
+    bundle?: {
+      store?: {
+        storeOffer?: (offer: Offer) => Promise<void>
+
+        castRegistry?: (offer: Offer) => string | undefined
+      },
+
+      unbundle?: {
+        updateIssuer?: (
+          offer: OfferBundle<Offer>,
+          holder: string
+        ) => Promise<CredentialWrapper<CredentialSubject> | undefined>
+
+        updateDid?: (
+          offer: OfferBundle<Offer>,
+          holder: string
+        ) => Promise<DIDDocument | undefined>
+
+        verifyHolder?: (offer: OfferBundle<Offer>, issuerDid: DIDDocument) => Promise<boolean>
+      }
+
+      response?: {
+        build?: {
+          createSatellite?: (
+            unsignedSatellite: UnsignedCredential<SatelliteSubject<Extension>>,
+            credential: CredentialT
+          ) => Promise<void>
+        }
+      }
+    }
+  }
 
 export const ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL = 'ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL'
 
@@ -69,3 +126,5 @@ export const ERROR_WRONG_CLAIM_SUBJECT_TYPE = 'ERROR_WRONG_CLAIM_SUBJECT_TYPE'
 export const CLAIM_TYPE_PREFFIX = 'Claim'
 
 export const CREDENTIAL_RESPONSE_TYPE = 'CredentialResponse'
+
+export const CREDENTIAL_SATELLITE_TYPE = 'CredentialSatellit'
