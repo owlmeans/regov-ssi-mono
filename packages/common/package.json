@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ssi-common",
-  "version": "0.2.1",
+  "version": "0.2.0",
   "description": "OwlMeans Regov SSI Common Library with types and contexts",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
