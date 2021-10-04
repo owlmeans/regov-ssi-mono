@@ -60,6 +60,10 @@ export namespace TestUtil {
     info: string
   }
 
+  export type GovCapabilityPresentation = Presentation<EntityIdentity | CapabilityCredential>
+
+  export const CRED_TYPE = 'TestCapabilityBasedCredential1'
+
   export type TestCredential = Credential<CredentialSubject<
     WrappedDocument<TestDocPayload>, TestDocExtension
   >>
@@ -118,11 +122,8 @@ export namespace TestUtil {
         .request().unbundle(request)
 
       return await holderCredentialHelper<
-        TestDocPayload,
-        TestDocExtension,
-        TestCredential
-      >(this.wallet)
-        .response().build(requests, request)
+        {}, {}, CapabilityCredential
+      >(this.wallet).response().build(requests, request)
     }
 
     async selfIssueGovernance(idPresentation: Presentation<EntityIdentity>) {

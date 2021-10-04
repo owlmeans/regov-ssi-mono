@@ -90,6 +90,15 @@ export const credentialShape = {
   proof: proofShape
 }
 
+export const keyLessDoubleDidShape = {
+  ...(did => {
+    const _did = {...did}
+    delete (<any>_did).keyAgreement
+    
+    return _did
+  })(doubleDidShape)
+}
+
 export const satelliteShape = {
   ...credentialShape,
   credentialSubject: {

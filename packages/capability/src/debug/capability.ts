@@ -47,10 +47,10 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Bob tries to request Capability from Charly')
 
-  const CRED_TYPE = 'TestCapabilityBasedCredential1'
+  
 
   const claimCap = await bob.claimCapability(
-    gov as any, CRED_TYPE, {
+    gov, Util.CRED_TYPE, {
     description: 'Test capability 1',
     info: 'Info for capability 1'
   })
@@ -66,7 +66,7 @@ util.inspect.defaultOptions.depth = 8;
   console.log('Alice claims capability based credentials from Bob')
 
   const aliceClaim = await alice.claimCapabilityCreds(
-    CRED_TYPE,
+    Util.CRED_TYPE,
     [{
       description: 'Alice cred',
       info: 'Capability based cred for Alice'
@@ -82,7 +82,7 @@ util.inspect.defaultOptions.depth = 8;
   await alice.storeCapabilityCreds(bobOffer)
 
   console.log('Dan requests credential from Alice')
-  const danCredRequest = await dan.requestCreds(CRED_TYPE)
+  const danCredRequest = await dan.requestCreds(Util.CRED_TYPE)
 
   console.log('Alice provides capability based credentials to Dan')
   const aliceCreds = await alice.provideCredsByCaps(danCredRequest)
