@@ -7,7 +7,8 @@ import {
   CredentialSubject,
   WrappedDocument,
   UnsignedCredential,
-  REGISTRY_TYPE_IDENTITIES
+  REGISTRY_TYPE_IDENTITIES,
+  Identity
 } from "@owlmeans/regov-ssi-core"
 import {
   EntityIdentity,
@@ -126,11 +127,32 @@ export namespace TestUtil {
       >(this.wallet).response().build(requests, request)
     }
 
+    async claimGovernance(
+      rootPresentation: Presentation<EntityIdentity | CapabilityCredential>
+    ) {
+      const {
+        entity: rootEntity,
+        credentials
+      } = await verifierCredentialHelper(this.wallet).response()
+        .verify<CapabilityCredential | EntityIdentity>(rootPresentation)
+
+      const identity = this.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+        .getCredential()?.credential as Identity
+
+      return await governanceCredentialHelper(this.wallet).claimGovernance(
+        identity,
+        {
+          root: credentials[0],
+          name: 'Organization Governance'
+        }
+      )
+    }
+
     async selfIssueGovernance(idPresentation: Presentation<EntityIdentity>) {
       const identity = idPresentation.verifiableCredential[0].credentialSubject.data.identity
 
       const claim = await governanceCredentialHelper(this.wallet).claimGovernance(
-        identity, { name: 'Governance Claim' }
+        identity, { name: 'Root Governance' }
       )
 
       const offer = await governanceCredentialHelper(this.wallet).offer(claim)
@@ -167,10 +189,10 @@ export namespace TestUtil {
         {
           root,
           name: 'Test Capability',
-          type: [CAPABILITY_TEST_CREDENTIAL_TYPE, type]
+          type: [type, CAPABILITY_TEST_CREDENTIAL_TYPE]
         },
         {
-          '@type': [CAPABILITY_TEST_CREDENTIAL_TYPE, type],
+          '@type': [type, CAPABILITY_TEST_CREDENTIAL_TYPE],
           subjectSchema: {
             // 'tcap': 'https://example.org/test/capability',
             description: { '@id': 'scm:description', '@type': 'xsd:string' },

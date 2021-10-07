@@ -29,7 +29,7 @@ import {
   CREDENTIAL_CLAIM_TYPE,
   ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL,
   ClaimBundle,
-  CLAIM_TYPE_PREFFIX,
+  CLAIM_TYPE_PREFIX,
   ClaimExtenstion,
   ClaimPayload,
   ERROR_UNTRUSTED_ISSUER,
@@ -38,7 +38,8 @@ import {
   CREDENTIAL_RESPONSE_TYPE,
   CREDENTIAL_SATELLITE_TYPE,
   SatelliteCredential,
-  HolderVisitor
+  HolderVisitor,
+  ERROR_WRONG_CLAIM_SUBJECT_TYPE
 } from "./types"
 import {
   CREDENTIAL_OFFER_TYPE,
@@ -119,12 +120,9 @@ export const holderCredentialHelper = <
             subject: credentialSubject
           }) as CredentialUT
 
-          const claimTypes = [...types]
-          claimTypes.shift()
-          const mainType = claimTypes.shift()
           const claimSubject: ClaimSubject<CredentialUT> = {
             data: {
-              '@type': [`${CLAIM_TYPE_PREFFIX}:${mainType}`, ...claimTypes],
+              '@type': `${CLAIM_TYPE_PREFIX}:${types[types.length - 1]}`,
               credential: unsignedCredential
             },
             did: didUnsigned

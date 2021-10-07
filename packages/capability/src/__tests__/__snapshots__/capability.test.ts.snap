@@ -326,8 +326,8 @@ Object {
             "credentialSubject": Object {
               "data": Object {
                 "@type": Array [
-                  "TestCapabilityCredential",
                   "TestCapabilityBasedCredential1",
+                  "TestCapabilityCredential",
                 ],
                 "subjectProps": Object {
                   "extension": Object {
@@ -405,8 +405,8 @@ Object {
             "type": Array [
               "VerifiableCredential",
               "CredentialCapability",
-              "TestCapabilityCredential",
               "TestCapabilityBasedCredential1",
+              "TestCapabilityCredential",
             ],
           },
         },
@@ -737,8 +737,8 @@ Object {
           "credentialSubject": Object {
             "data": Object {
               "@type": Array [
-                "TestCapabilityCredential",
                 "TestCapabilityBasedCredential1",
+                "TestCapabilityCredential",
               ],
               "subjectProps": Object {
                 "extension": Object {
@@ -816,8 +816,8 @@ Object {
           "type": Array [
             "VerifiableCredential",
             "CredentialCapability",
-            "TestCapabilityCredential",
             "TestCapabilityBasedCredential1",
+            "TestCapabilityCredential",
           ],
         },
         "chain": Array [
@@ -903,7 +903,7 @@ Object {
           },
         ],
         "data": Object {
-          "@type": "Offer:undefined",
+          "@type": "Offer:TestCapabilityBasedCredential1",
           "credential": Object {
             "@context": Array [
               "https://www.w3.org/2018/credentials/v1",

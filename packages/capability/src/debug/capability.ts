@@ -9,11 +9,12 @@ util.inspect.defaultOptions.depth = 8;
  * @TODO It looks like we need to start developing test
  * cases and bundle helpers based on them.
  * Case 1: 
- * 1. Charly provides Bob a Capability. 
- * 2. Bob signs a capability based credentail to Alice. 
- * 3. Dan trusts charly. 
- * 4. Alice shows the credential to Dan. 
- * 5. Dan aknowledge credential as trusted.
+ * 1. Charly issue Fred a governance capability.
+ * 2. Fred provides Bob a capability. 
+ * 3. Bob signs a capability based credentail to Alice. 
+ * 4. Dan trusts Charly. 
+ * 5. Alice shows the credential to Dan. 
+ * 6. Dan aknowledge credential as trusted.
  * 
  * Case 2: The same. But Bob hires Emma and delegate capability to her.
  * Emma signs credential istead of Bob. But Dan still aknowledges it.
@@ -23,11 +24,13 @@ util.inspect.defaultOptions.depth = 8;
   const bob = await Util.Wallet.setup('bob')
   const charly = await Util.Wallet.setup('charly')
   const dan = await Util.Wallet.setup('dan')
+  const fred = await Util.Wallet.setup('fred')
 
   await alice.produceIdentity()
   await bob.produceIdentity()
   await charly.produceIdentity()
   await dan.produceIdentity()
+  await fred.produceIdentity()
 
   const charlyIdentity = await charly.provideIdentity()
 
@@ -36,8 +39,35 @@ util.inspect.defaultOptions.depth = 8;
   await bob.trustIdentity(charlyIdentity)
   await alice.trustIdentity(charlyIdentity)
   await dan.trustIdentity(charlyIdentity)
+  await fred.trustIdentity(charlyIdentity)
 
   console.log('Everybody trusts Charly')
+
+  const requestRootGov = await fred.requestGovernance()
+
+  console.log('Chalry provides his governance credentials to Fred')
+
+  const rootGov = await charly.responseGovernance(requestRootGov)
+
+  await fred.claimGovernance(rootGov)
+
+  /**
+   * @PROCEED
+   * @TODO Make Bob request governance from Fred.
+   * 1. Charly offer governance to Fred.
+   * 2. Governance has capability limits.
+   * 3. Bob requests gavernance from Fred to claim capability
+   * 4. Fred provides capability to Bob instead of Charly
+   * 
+   * 5. When Dan verifies Alice's credentials, he checks if 
+   * the capability is allowed by Fred's governance
+   * 5.1. Credentials should be included to the chain
+   * alongside credentials
+   * 5.2. Refactor chain building and verification in a direct
+   * sequenc (the chain itself can be ordered a random way???)
+   * 5.3. Make sure that the chain verification implies the 
+   * checks of previous credential in chain
+   */
 
   const requestGov = await bob.requestGovernance()
 
@@ -46,8 +76,6 @@ util.inspect.defaultOptions.depth = 8;
   const gov = await charly.responseGovernance(requestGov)
 
   console.log('Bob tries to request Capability from Charly')
-
-  
 
   const claimCap = await bob.claimCapability(
     gov, Util.CRED_TYPE, {

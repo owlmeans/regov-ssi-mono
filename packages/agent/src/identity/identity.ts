@@ -129,8 +129,8 @@ export const identityHelper = <
       if (!identity) {
         return undefined
       }
-      return _extractIdentitySubjectData(
-        identity.credentialSubject as SubjectT
+      return _extractIdentitySubjectData<SubjectT>(
+        identity.credentialSubject
       )
     },
 

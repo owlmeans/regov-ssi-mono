@@ -123,7 +123,7 @@ export const ERROR_CLAIM_OFFER_DONT_MATCH = 'ERROR_CLAIM_OFFER_DONT_MATCH'
 
 export const ERROR_WRONG_CLAIM_SUBJECT_TYPE = 'ERROR_WRONG_CLAIM_SUBJECT_TYPE'
 
-export const CLAIM_TYPE_PREFFIX = 'Claim'
+export const CLAIM_TYPE_PREFIX = 'Claim'
 
 export const CREDENTIAL_RESPONSE_TYPE = 'CredentialResponse'
 

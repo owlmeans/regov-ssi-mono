@@ -36,7 +36,7 @@ import { buildLocalLoader } from "./loader"
 export const verifierCredentialHelper = (wallet: WalletWrapper) => {
   const _identityHelper = identityHelper(wallet)
 
-  return {
+  const _helper = {
     request: (verifier?: DIDDocument) => {
       return {
         build: async (request: CredentialRequestDoc, key?: string | KeyPair) => {
@@ -119,11 +119,34 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
     },
 
     response: () => ({
-      verify: async <CredentialT extends Credential>(
-        presentation: Presentation<CredentialT>, type?: string
+      unbundle: <CredentialT extends Credential>(
+        presentation: Presentation<CredentialT>
       ) => {
         const offers = [...presentation.verifiableCredential]
         const entity = _identityHelper.extractEntity(offers)
+        const { credentials, dids } = presentation.verifiableCredential.reduce(
+          (result, credential) => {
+            if (isSatellite(credential)) {
+              result.dids.push(credential)
+            } else {
+              result.credentials.push(credential)
+            }
+
+            return result
+          }, { credentials: [], dids: [] } as {
+            credentials: CredentialT[],
+            dids: SatelliteCredential[]
+          }
+        )
+
+        return {entity, credentials, dids }
+      },
+
+      verify: async <CredentialT extends Credential>(
+        presentation: Presentation<CredentialT>, type?: string
+      ) => {
+        const {entity, credentials, dids } = _helper.response()
+          .unbundle<CredentialT>(presentation)
 
         const did = entity?.credentialSubject.did
         if (!did || !await wallet.did.helper().verifyDID(did)) {
@@ -141,21 +164,6 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
         }
 
         result = result && presentation.type.includes(type || CREDENTIAL_RESPONSE_TYPE)
-
-        const { credentials, dids } = presentation.verifiableCredential.reduce(
-          (result, credential) => {
-            if (isSatellite(credential)) {
-              result.dids.push(credential)
-            } else {
-              result.credentials.push(credential)
-            }
-
-            return result
-          }, { credentials: [], dids: [] } as {
-            credentials: CredentialT[],
-            dids: SatelliteCredential[]
-          }
-        )
 
         const request = wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
           .getCredential<RequestSubject, RequestBundle>(presentation.id)
@@ -193,4 +201,6 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
       }
     })
   }
+
+  return _helper
 }

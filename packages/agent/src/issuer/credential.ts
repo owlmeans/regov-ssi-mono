@@ -23,7 +23,7 @@ import {
   ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL,
   ClaimBundle,
   ERROR_WRONG_CLAIM_SUBJECT_TYPE,
-  CLAIM_TYPE_PREFFIX,
+  CLAIM_TYPE_PREFIX,
   ERROR_UNTRUSTED_ISSUER
 } from "../holder/types";
 import {
@@ -94,7 +94,7 @@ export const issuerCredentialHelper = <
           const mainType = subjectType[0]
           const [prefix, type] = mainType.split(':', 2)
 
-          if (!type && prefix !== CLAIM_TYPE_PREFFIX) {
+          if (!type && prefix !== CLAIM_TYPE_PREFIX) {
             throw new Error(ERROR_WRONG_CLAIM_SUBJECT_TYPE)
           }
 
