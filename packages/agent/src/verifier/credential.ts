@@ -108,9 +108,6 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
           }
         },
 
-        /**
-         * @TODO Allow to clean up registered request
-         */
         register: async (bundle: RequestBundle) => {
           return await wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
             .addCredential<RequestSubject, RequestBundle>(bundle)

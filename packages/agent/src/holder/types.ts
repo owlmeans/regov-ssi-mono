@@ -65,11 +65,6 @@ export type SatelliteCredential<Subject extends SatelliteSubject = SatelliteSubj
 export type UnsisgnedSatellite<Subject extends SatelliteSubject = SatelliteSubject>
   = UnsignedCredential<Subject>
 
-export type ResponseBundle<CredentialT extends Credential> = {
-  presentation: Presentation<CredentialT | SatelliteCredential>,
-  did: DIDDocument
-}
-
 export type HolderVisitorBuilder<
   CredentialT extends Credential = Credential,
   Extension extends {} = {},

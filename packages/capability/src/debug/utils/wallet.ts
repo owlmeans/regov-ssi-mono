@@ -181,7 +181,6 @@ export namespace TestUtil {
       }
       const root = rootPresentation.verifiableCredential.find(
         cap => cap.type.includes(CREDENTIAL_GOVERNANCE_TYPE)
-//          || cap.type.includes(CREDENTIAL_ENTITY_IDENTITY_TYPE)
       )
 
       const claim = await governanceCredentialHelper(this.wallet).claim(
