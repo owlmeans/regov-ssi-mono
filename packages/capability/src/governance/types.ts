@@ -52,7 +52,7 @@ export type OfferCapability
 export type CapabilityExtension = {
   root?: string
   source: DIDDocument
-  name: string
+  name: string,
   description?: string
 }
 

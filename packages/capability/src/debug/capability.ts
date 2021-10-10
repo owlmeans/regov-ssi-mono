@@ -43,13 +43,13 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Everybody trusts Charly')
 
-  const requestRootGov = await fred.requestGovernance()
+  // const requestRootGov = await fred.requestGovernance()
 
-  console.log('Chalry provides his governance credentials to Fred')
+  // console.log('Chalry provides his governance credentials to Fred')
 
-  const rootGov = await charly.responseGovernance(requestRootGov)
+  // const rootGov = await charly.responseGovernance(requestRootGov)
 
-  await fred.claimGovernance(rootGov)
+  // await fred.claimGovernance(rootGov)
 
   /**
    * @PROCEED
@@ -87,7 +87,7 @@ util.inspect.defaultOptions.depth = 8;
 
   const claimBundle = await charly.signCapability(claimCap)
 
-  console.log('Bob stores capability provided by charly')
+  console.log('Bob stores capability provided by Charly')
 
   await bob.storeCapability(claimBundle)
 

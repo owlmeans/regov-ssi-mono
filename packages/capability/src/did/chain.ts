@@ -21,6 +21,7 @@ import {
 export const didChainHelper = (wallet: WalletWrapper) => {
   const _helper = {
     /**
+     * @PROCEED
      * @TODO Refactor to just collect chain directly how it should be
      * without some special heuristics.
      */

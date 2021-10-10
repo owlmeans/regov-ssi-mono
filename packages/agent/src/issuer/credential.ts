@@ -1,6 +1,7 @@
 import {
   DIDDocument,
   DIDPURPOSE_ASSERTION,
+  DIDPURPOSE_VERIFICATION,
   VERIFICATION_KEY_CONTROLLER,
   VERIFICATION_KEY_HOLDER
 } from "@owlmeans/regov-ssi-did";
@@ -34,6 +35,7 @@ import {
   OfferSubject
 } from "./types";
 import { EntityIdentity, IdentityParams } from "../identity/types";
+import { buildLocalLoader } from "../verifier/loader";
 
 
 export const issuerCredentialHelper = <
@@ -72,9 +74,9 @@ export const issuerCredentialHelper = <
 
           const did = await wallet.did.helper().signDID(
             signingKey,
-            claim.credentialSubject.did,
+            JSON.parse(JSON.stringify(claim.credentialSubject.did)),
             VERIFICATION_KEY_CONTROLLER,
-            [DIDPURPOSE_ASSERTION]
+            [DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION]
           )
 
           const signingIssuer = visitor?.claim?.signClaim?.clarifyIssuer
@@ -131,6 +133,7 @@ export const issuerCredentialHelper = <
           visitor?.claim?.signClaim?.patchOffer
             && await visitor.claim.signClaim.patchOffer(offerUnsigned, signingIssuer)
 
+          debugger
           return await wallet.ssi.signCredential(
             offerUnsigned, issuer,
             //            { keyId: VERIFICATION_KEY_CONTROLLER }
@@ -158,20 +161,30 @@ export const issuerCredentialHelper = <
       unbudle: async (bundle: ClaimBundle<BundledClaim>) => {
         const claims = [...bundle.verifiableCredential]
         const entity = _identityHelper.extractEntity(claims)
-
         const did = entity?.credentialSubject.did
         if (!did || !await wallet.did.helper().verifyDID(did)) {
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        let [result] = await wallet.ssi.verifyPresentation(bundle, did)
+        const errors: string[] = []
+        let [result, info] = await wallet.ssi.verifyPresentation(
+          bundle, did, buildLocalLoader(wallet)
+        )
+
+        if (!result && info.kind === 'invalid') {
+          info.errors.map(err => {
+            console.log(err.message)
+            errors.push(err.message)
+          })
+        }
 
         result = result && bundle.type.includes(CREDENTIAL_CLAIM_TYPE)
 
-        return { result, claims, entity } as {
+        return { result, claims, entity, errors } as {
           result: boolean
           claims: BundledClaim[],
-          entity?: EntityIdentity
+          entity?: EntityIdentity,
+          errors: typeof errors
         }
       },
 

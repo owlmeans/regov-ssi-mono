@@ -406,7 +406,7 @@ export const buildDidHelper =
           )
 
           if (!res.verified) {
-            console.log(res.verified)
+            console.log(res)
           }
 
           return res.verified

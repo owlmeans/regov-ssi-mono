@@ -97,7 +97,7 @@ export const holderGovernanceVisitor: HolderVisitorBuilder<
           }
 
           return await verifierCapabilityHelper(wallet).verifyChain(chain, {
-            did: issuerDid,
+            did: offerWithCap?.credentialSubject?.did || issuerDid,
             /**
              * It isn't required here, because the credential is capability itself
              */

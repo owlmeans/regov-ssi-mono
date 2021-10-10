@@ -1516,7 +1516,7 @@ Object {
             "GovernanceCapability",
           ],
         },
-        "name": "Governance Claim",
+        "name": "Root Governance",
         "source": Object {
           "@context": Array [
             "https://w3id.org/did/v1",
@@ -1712,7 +1712,7 @@ Object {
         "GovernanceCapability",
       ],
     },
-    "name": "Governance Claim",
+    "name": "Root Governance",
     "source": Object {
       "@context": Array [
         "https://w3id.org/did/v1",

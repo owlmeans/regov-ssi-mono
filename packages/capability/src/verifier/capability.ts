@@ -84,11 +84,20 @@ export const verifierCapabilityHelper = <
         if (!await result) {
           return false
         }
+        /**
+         * @PROCEED
+         * @TODO
+         * Rebuild chain with direct (non recursive) case logic
+         * and verify it appropriatly
+         */
         if(options.capability && did.id === options.capability.id) {
           const didVerificationResult = await wallet.did.helper().verifyDID(did) 
+          debugger
           const [credentialVerificationResult, info] = await wallet.ssi.verifyCredential(
             options.capability, did,
-            VERIFICATION_KEY_CONTROLLER
+            did?.verificationMethod && did.verificationMethod?.length > 1 
+              ? VERIFICATION_KEY_CONTROLLER
+              : VERIFICATION_KEY_HOLDER
           )
           if (!credentialVerificationResult) {
             console.log(info)

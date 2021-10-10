@@ -155,6 +155,9 @@ export namespace TestUtil {
         identity, { name: 'Root Governance' }
       )
 
+      let x = 3
+      ++x
+      console.log(x)
       const offer = await governanceCredentialHelper(this.wallet).offer(claim)
 
       const offerBundle = await issuerCredentialHelper(this.wallet)
@@ -215,6 +218,9 @@ export namespace TestUtil {
     }
 
     async signCapability(claimPres: Presentation<ClaimCapability>) {
+      let x = 3
+      ++x
+      console.log(x)
       const { result, claims, entity }
         = await issuerCredentialHelper(this.wallet)
           .bundle<ClaimCapability, OfferCapability>().unbudle(claimPres)
@@ -229,22 +235,17 @@ export namespace TestUtil {
 
     async storeCapability(offerBundle: OfferBundle<OfferCapability>) {
       const { result } = await holderCredentialHelper<
-        CapabilityDocument,
-        CapabilityExtension,
-        CapabilityCredential,
-        OfferCapabilityExtension
-      >(
-        this.wallet, holderGovernanceVisitor(this.wallet)
-      ).bundle().unbudle(offerBundle)
+        CapabilityDocument, CapabilityExtension,
+        CapabilityCredential, OfferCapabilityExtension
+      >(this.wallet, holderGovernanceVisitor(this.wallet))
+        .bundle().unbudle(offerBundle)
       if (!result) {
         throw new Error('Invalid bundle with capability')
       }
 
       return await holderCredentialHelper<
-        CapabilityDocument,
-        CapabilityExtension,
-        CapabilityCredential,
-        OfferCapabilityExtension
+        CapabilityDocument, CapabilityExtension,
+        CapabilityCredential, OfferCapabilityExtension
       >(this.wallet, holderGovernanceVisitor(this.wallet))
         .bundle().store(offerBundle)
     }
