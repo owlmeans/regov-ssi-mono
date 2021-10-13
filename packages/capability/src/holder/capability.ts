@@ -11,7 +11,8 @@ import {
   Credential,
   WrappedDocument,
   REGISTRY_TYPE_CREDENTIALS,
-  ContextSchema
+  ContextSchema,
+  REGISTRY_SECTION_PEER
 } from "@owlmeans/regov-ssi-core"
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
 import { verifierCapabilityHelper } from "../verifier/capability"
@@ -22,7 +23,7 @@ import {
   REGISTRY_TYPE_CAPABILITY
 } from "../governance/types"
 import { ByCapabilityExtension } from "../issuer/types"
-import { isCapability } from ".."
+import { didChainHelper, isCapability } from ".."
 
 
 export const holderCapabilityVisitor = <
@@ -51,6 +52,10 @@ export const holderCapabilityVisitor = <
                 wallet.did.addPeerDID(did)
               }
             }
+          )
+
+          wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).addCredential(
+            offer.credentialSubject.capability, REGISTRY_SECTION_PEER
           )
         }
       },
@@ -88,14 +93,22 @@ export const holderCapabilityVisitor = <
           )
 
           const chain = offerWithCap?.credentialSubject.chain
-          if (!chain) {
-            return false
+          if (chain && wallet.did.registry.peer.dids.find(
+            did => did.did.id === chain[chain.length - 1].id
+          )) {
+            return true
           }
+          /**
+           * @PROCEED
+           * @TODO It looks like we get there, because there is
+           * no trusted identity at the end of the chain :)
+           * Because we fixed the condition when did' of capabilities
+           * were equal to dids of identities.
+           */
 
-          return await verifierCapabilityHelper(wallet).verifyChain(chain, {
-            did: offerWithCap?.credentialSubject.did || issuerDid,
-            capability: offerWithCap?.credentialSubject.capability
-          })
+          return false
+
+          // return await verifierCapabilityHelper(wallet).verifyChain(chain)
         }
       },
 
@@ -105,9 +118,7 @@ export const holderCapabilityVisitor = <
             const wraps = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials<
               CapabilitySubject,
               CapabilityCredential
-            >(
-              credential.credentialSubject.data["@type"]
-            )
+            >(credential.credentialSubject.data["@type"], REGISTRY_SECTION_PEER)
 
             if (wraps.length > 0) {
               const context = unsignedSatellite["@context"] as (string | ContextSchema)[]
@@ -124,7 +135,8 @@ export const holderCapabilityVisitor = <
               unsignedSatellite.credentialSubject.data = {
                 ...unsignedSatellite.credentialSubject.data,
                 capability: wraps[0].credential,
-                chain: await wallet.did.gatherChain(wraps[0].credential.id)
+                chain: await didChainHelper(wallet)
+                  .collectForIssuedCredential(wraps[0].credential)
               }
             }
           }

@@ -231,7 +231,6 @@ export const holderCredentialHelper = <
             bundle, substituteIssuer.credential.id
           )
         }
-        debugger
 
         if (!issuerDid) {
           throw new Error(ERROR_NO_RELATED_DID_FOUND)

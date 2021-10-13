@@ -11,8 +11,10 @@ import {
 } from "@owlmeans/regov-ssi-core"
 import {
   DIDDocument,
+  DIDPURPOSE_ASSERTION,
   DIDPURPOSE_CAPABILITY,
-  DIDPURPOSE_DELEGATION
+  DIDPURPOSE_DELEGATION,
+  DIDPURPOSE_VERIFICATION
 } from "@owlmeans/regov-ssi-did"
 import { issuerGovernanceVisitor } from "./issuer"
 import {
@@ -60,13 +62,13 @@ export const governanceCredentialHelper = (wallet: WalletWrapper) => {
 
       const key = await wallet.keys.getCryptoKey(descr?.key)
 
-      const sourceDid = await wallet.did.lookUpDid(source.id) as DIDDocument
-
       const didUnsigned = await wallet.did.helper().createDID(key, {
-        source: JSON.parse(JSON.stringify(sourceDid)),
+        data: JSON.stringify(capability),
+        hash: true,
         purpose: [
           DIDPURPOSE_CAPABILITY,
           DIDPURPOSE_DELEGATION,
+          DIDPURPOSE_VERIFICATION
         ]
       })
 

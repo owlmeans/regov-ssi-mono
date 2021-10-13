@@ -79,10 +79,10 @@ export const issuerCredentialHelper = <
             [DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION]
           )
 
-          const signingIssuer = visitor?.claim?.signClaim?.clarifyIssuer
-            ? await visitor?.claim?.signClaim?.clarifyIssuer(
-              claim.credentialSubject.data.credential as any
-            ) : did // issuer <- it's ok for self issueing
+          // const signingIssuer = visitor?.claim?.signClaim?.clarifyIssuer
+          //   ? await visitor?.claim?.signClaim?.clarifyIssuer(
+          //     claim.credentialSubject.data.credential as any
+          //   ) : did // issuer <- it's ok for self issueing
 
           const credential = await wallet.ssi.signCredential(
             claim.credentialSubject.data.credential,
@@ -131,9 +131,8 @@ export const issuerCredentialHelper = <
           )
 
           visitor?.claim?.signClaim?.patchOffer
-            && await visitor.claim.signClaim.patchOffer(offerUnsigned, signingIssuer)
+            && await visitor.claim.signClaim.patchOffer(offerUnsigned)
 
-          debugger
           return await wallet.ssi.signCredential(
             offerUnsigned, issuer,
             //            { keyId: VERIFICATION_KEY_CONTROLLER }

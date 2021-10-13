@@ -155,9 +155,6 @@ export namespace TestUtil {
         identity, { name: 'Root Governance' }
       )
 
-      let x = 3
-      ++x
-      console.log(x)
       const offer = await governanceCredentialHelper(this.wallet).offer(claim)
 
       const offerBundle = await issuerCredentialHelper(this.wallet)
@@ -218,9 +215,6 @@ export namespace TestUtil {
     }
 
     async signCapability(claimPres: Presentation<ClaimCapability>) {
-      let x = 3
-      ++x
-      console.log(x)
       const { result, claims, entity }
         = await issuerCredentialHelper(this.wallet)
           .bundle<ClaimCapability, OfferCapability>().unbudle(claimPres)

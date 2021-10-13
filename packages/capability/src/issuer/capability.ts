@@ -26,28 +26,26 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
   return {
     claim: {
       signClaim: {
-        clarifyIssuer: async (unsigned) => {
-          const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials<
-            CapabilitySubject, CapabilityCredential<CapabilitySubject>
-          >(
-            [CREDENTIAL_CAPABILITY_TYPE, ...unsigned.type]
-          )
+        // clarifyIssuer: async (unsigned) => {
+        //   const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+        //     .lookupCredentials<
+        //       CapabilitySubject, CapabilityCredential<CapabilitySubject>
+        //     >([CREDENTIAL_CAPABILITY_TYPE, ...unsigned.type])
 
-          const did = await wallet.did.lookUpDid<DIDDocument>(capabilities[0].credential.id)
-          if (!did) {
-            throw new Error(ERROR_NO_RELATED_DID_WITH_CAPABILITY)
-          }
+        //   const did = await wallet.did.lookUpDid<DIDDocument>(capabilities[0].credential.id)
+        //   if (!did) {
+        //     throw new Error(ERROR_NO_RELATED_DID_WITH_CAPABILITY)
+        //   }
 
-          return did
-        },
+        //   return did
+        // },
 
-        patchOffer: async (unsigned, did) => {
+        patchOffer: async (unsigned) => {
           unsigned.type.push(CAPABILITY_BYOFFER_TYPE)
-          const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials<
-            CapabilitySubject, CapabilityCredential<CapabilitySubject>
-          >(
-            [CREDENTIAL_CAPABILITY_TYPE, ...unsigned.credentialSubject.data.credential.type]
-          )
+          const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+            .lookupCredentials<
+              CapabilitySubject, CapabilityCredential<CapabilitySubject>
+            >([CREDENTIAL_CAPABILITY_TYPE, ...unsigned.credentialSubject.data.credential.type])
           if (capabilities.length > 0) {
             /**
              * @TODO Same capability can be provided by different
@@ -70,7 +68,7 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
             )
 
             const chain = await didChainHelper(wallet).collectForIssuedCredential(
-              capabilities[0].credential, did
+              capabilities[0].credential
             )
 
             unsigned.credentialSubject = {
