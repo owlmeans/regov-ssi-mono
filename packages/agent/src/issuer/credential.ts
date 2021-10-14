@@ -72,22 +72,30 @@ export const issuerCredentialHelper = <
 
           const signingKey = await wallet.keys.getCryptoKey(key)
 
-          const did = await wallet.did.helper().signDID(
-            signingKey,
-            JSON.parse(JSON.stringify(claim.credentialSubject.did)),
-            VERIFICATION_KEY_CONTROLLER,
-            [DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION]
-          )
-
-          // const signingIssuer = visitor?.claim?.signClaim?.clarifyIssuer
-          //   ? await visitor?.claim?.signClaim?.clarifyIssuer(
-          //     claim.credentialSubject.data.credential as any
-          //   ) : did // issuer <- it's ok for self issueing
+          let did: DIDDocument
+          let useController = true
+          if (
+            claim.credentialSubject.did.verificationMethod
+            && claim.credentialSubject.did.verificationMethod[0]?.controller
+            === issuer.id
+          ) {
+            did = await wallet.did.helper().signDID(
+              signingKey,
+              JSON.parse(JSON.stringify(claim.credentialSubject.did))
+            )
+            useController = false
+          } else {
+            did = await wallet.did.helper().signDID(
+              signingKey,
+              JSON.parse(JSON.stringify(claim.credentialSubject.did)),
+              VERIFICATION_KEY_CONTROLLER,
+              [DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION]
+            )
+          }
 
           const credential = await wallet.ssi.signCredential(
-            claim.credentialSubject.data.credential,
-            did, // signingIssuer, <- Actually this is totally wrong approach
-            { keyId: VERIFICATION_KEY_CONTROLLER }
+            claim.credentialSubject.data.credential, did,
+            { keyId: useController ? VERIFICATION_KEY_CONTROLLER : VERIFICATION_KEY_HOLDER }
           ) as CredentialT
 
           let subjectType: string | string[] = claim.credentialSubject.data["@type"]

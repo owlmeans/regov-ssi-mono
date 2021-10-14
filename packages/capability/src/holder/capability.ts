@@ -54,19 +54,21 @@ export const holderCapabilityVisitor = <
             }
           )
 
-          wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).addCredential(
-            offer.credentialSubject.capability, REGISTRY_SECTION_PEER
+          offer.credentialSubject.capabilities.forEach(
+            cap => wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+              .addCredential(cap, REGISTRY_SECTION_PEER)
           )
         }
       },
       unbundle: {
         updateIssuer: async (offer: OfferBundleT, holder: string) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.capability?.holder.id === holder
+            offer => offer.credentialSubject.capabilities
+              && offer.credentialSubject.capabilities[0]?.holder.id === holder
           )
           if (offerWithCap) {
             return {
-              credential: offerWithCap?.credentialSubject.capability,
+              credential: offerWithCap?.credentialSubject.capabilities[0],
               meta: { secure: false }
             }
           }
@@ -74,11 +76,14 @@ export const holderCapabilityVisitor = <
 
         updateDid: async (offer: OfferBundleT, holder: string) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.capability?.id === holder
+            offer => offer.credentialSubject.capabilities
+              && offer.credentialSubject.capabilities[0]?.id === holder
           )
 
           if (offerWithCap) {
-            const entity = identityHelper(wallet).extractEntity([...offer.verifiableCredential])
+            const entity = identityHelper(wallet)
+              .extractEntity([...offer.verifiableCredential])
+
             return entity?.credentialSubject.did
           }
         },
@@ -86,7 +91,8 @@ export const holderCapabilityVisitor = <
         verifyHolder: async (offer: OfferBundleT, issuerDid: DIDDocument) => {
           const offerWithCap = offer.verifiableCredential.find(
             offer =>
-              isCapability(offer.credentialSubject.capability)
+              offer.credentialSubject.capabilities
+              && isCapability(offer.credentialSubject.capabilities[0])
               && offer.credentialSubject.did?.verificationMethod?.some(
                 method => method.controller === issuerDid.id
               )
@@ -98,16 +104,8 @@ export const holderCapabilityVisitor = <
           )) {
             return true
           }
-          /**
-           * @PROCEED
-           * @TODO It looks like we get there, because there is
-           * no trusted identity at the end of the chain :)
-           * Because we fixed the condition when did' of capabilities
-           * were equal to dids of identities.
-           */
 
           return false
-
           // return await verifierCapabilityHelper(wallet).verifyChain(chain)
         }
       },
@@ -126,15 +124,20 @@ export const holderCapabilityVisitor = <
                 wallet.ssi.buildContext(
                   'capability/satellite',
                   {
-                    capability: { '@id': 'scm:capability', '@type': '@json' },
+                    capabilities: { '@id': 'scm:capabilities', '@type': '@json' },
                     chain: { '@id': 'scm:chain', '@type': '@json' },
                   }
                 )
               )
 
+              const gov = wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+                .getCredential<
+                  CapabilitySubject, CapabilityCredential
+                >(wraps[0].credential.credentialSubject.root)?.credential
+
               unsignedSatellite.credentialSubject.data = {
                 ...unsignedSatellite.credentialSubject.data,
-                capability: wraps[0].credential,
+                capabilities: [wraps[0].credential, ...(gov ? [gov] : [])],
                 chain: await didChainHelper(wallet)
                   .collectForIssuedCredential(wraps[0].credential)
               }

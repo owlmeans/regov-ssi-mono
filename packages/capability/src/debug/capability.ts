@@ -3,6 +3,7 @@ require('dotenv').config()
 import { TestUtil as Util } from './utils/wallet'
 
 import util from 'util'
+import { REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core';
 util.inspect.defaultOptions.depth = 8;
 
 /**
@@ -83,6 +84,19 @@ util.inspect.defaultOptions.depth = 8;
     info: 'Info for capability 1'
   })
 
+  console.log({
+    'Charly ID': charly.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+      .getCredential()?.credential.id,
+    'Bob ID': bob.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+      .getCredential()?.credential.id,
+    'Gov Capability': gov.verifiableCredential[1].id,
+    'Claim': {
+      Id: claimCap.verifiableCredential[1].credentialSubject.data.credential.id,
+      Source: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.source.id,
+      Root: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.root
+    }
+  })
+
   console.log('Charly signs capability for Bob')
 
   const claimBundle = await charly.signCapability(claimCap)
@@ -119,7 +133,4 @@ util.inspect.defaultOptions.depth = 8;
   const result = await dan.validateResponse<Util.TestCredential>(aliceCreds)
 
   console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')
-  if (!result) {
-    console.log(aliceCreds)
-  }
 })()

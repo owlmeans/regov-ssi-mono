@@ -11,7 +11,7 @@ export type OfferCredentialByCapability<
   = OfferCredential<OfferSubject<CredentialT, Extension>>
 
 export type ByCapabilityExtension = {
-  capability: CapabilityCredential
+  capabilities: CapabilityCredential[]
   chain: DIDDocument[]
 }
 

@@ -44,20 +44,27 @@ export const verifierCapabilityHelper = <
                   return false
                 }
 
-                if (satellite.credentialSubject.data.capability) {
-                  const [result, info] = await wallet.ssi.verifyCredential(
-                    satellite.credentialSubject.data.capability,
-                    // satellite.credentialSubject.data.did
-                    satellite.credentialSubject.data.chain[0]
-                  )
-                  if (result) {
-                    const chain = [...satellite.credentialSubject.data.chain]
-                    chain.shift()
-                    return await _helper.verifyChain(chain)
-                  } else {
-                    console.log(info)
-                    return false
+                if (satellite.credentialSubject.data.capabilities) {
+                  const chain = [...satellite.credentialSubject.data.chain]
+                  for (let cap of satellite.credentialSubject.data.capabilities) {
+                    const didIdx = chain.findIndex(did => did.id === cap.id)
+                    const [did] = chain.splice(didIdx, 1)
+                    const [result, info] = await wallet.ssi.verifyCredential(cap, did)
+                    if (!result) {
+                      console.log(info)
+                      return false
+                    }
                   }
+                  /**
+                   * @TODO Actually we verify here only last credential 
+                   * in the chain. It's not OK. The whole chain should
+                   * be checked.
+                   * 
+                   * Proper way is to restructurize the whole structure and 
+                   * do not try to chain only dids. The whole credential
+                   * sequence should be presented via some satellite mechanism.
+                   */
+                  return await _helper.verifyChain([chain[chain.length - 1]])
                 }
 
                 return true

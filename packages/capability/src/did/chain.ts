@@ -70,16 +70,20 @@ export const didChainHelper = (wallet: WalletWrapper) => {
         || [source.credentialSubject.source]
         : []
 
-      const trustedIdentityDid =
+      const trustedGovernance =
         source.credentialSubject.root
-          ? await wallet.did.lookUpDid<DIDDocument>(source.credentialSubject.root)
+          ? await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+            .getCredential<
+              CapabilitySubject, CapabilityCredential
+            >(source.credentialSubject.root, REGISTRY_SECTION_PEER)
           : undefined
+      const trustedIdentityDid = trustedGovernance?.credential.credentialSubject.source
       const trustedSubchain = trustedIdentityDid
         ? await wallet.did.gatherChain(trustedIdentityDid.id) || [trustedIdentityDid]
         : []
 
       const chain: DIDDocument[] = [
-       ...capabilitySubchain,
+        ...capabilitySubchain,
         ...sourceSubchain,
         ...trustedSubchain
       ]
