@@ -1,9 +1,13 @@
 require('dotenv').config()
 
 import { TestUtil as Util } from '../debug/utils/wallet'
-import { capabilityDid, capabilityShape, entityShape, govrnanceShape } from '../debug/utils/shapes'
-import { Presentation } from '@owlmeans/regov-ssi-core'
-import { CapabilityCredential, ClaimCapability, OfferCapability } from '../governance/types'
+import {
+  capabilityDid,
+  capabilitySatelliteShape,
+  capabilityShape,
+  entityShape,
+  govrnanceShape
+} from '../debug/utils/shapes'
 import {
   credentialShape,
   didShape,
@@ -12,10 +16,6 @@ import {
   presentationShape,
   satelliteShape
 } from '@owlmeans/regov-ssi-agent/src/debug/utils/shapes'
-import {
-  EntityIdentity,
-  OfferBundle
-} from '@owlmeans/regov-ssi-agent'
 
 import util from 'util'
 util.inspect.defaultOptions.depth = 8
@@ -63,7 +63,7 @@ describe('Capability helpers', () => {
       verifiableCredential: [
         entityShape,
         govrnanceShape,
-        satelliteShape
+        capabilitySatelliteShape
       ]
     })
   })
@@ -119,9 +119,13 @@ describe('Capability helpers', () => {
         {
           ...credentialShape,
           credentialSubject: {
-            capability: capabilityShape,
+            capabilities: [
+              capabilityShape,
+              govrnanceShape,
+            ],
             chain: [
-              capabilityDid, //keyLessDoubleDidShape,
+              capabilityDid,
+              didShape,
               didShape
             ],
             did: doubleDidShape,
@@ -148,7 +152,15 @@ describe('Capability helpers', () => {
           ...satelliteShape,
           credentialSubject: {
             data: {
-              did: keyLessDoubleDidShape
+              did: keyLessDoubleDidShape,
+              capabilities: [
+                capabilityShape
+              ],
+              chain: [
+                capabilityDid,
+                didShape,
+                didShape
+              ],
             }
           }
         }

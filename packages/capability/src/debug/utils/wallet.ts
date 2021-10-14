@@ -8,7 +8,8 @@ import {
   WrappedDocument,
   UnsignedCredential,
   REGISTRY_TYPE_IDENTITIES,
-  Identity
+  Identity,
+  REGISTRY_SECTION_PEER
 } from "@owlmeans/regov-ssi-core"
 import {
   EntityIdentity,
@@ -24,13 +25,17 @@ import {
   OfferBundle,
   ClaimBundle,
   HolderVisitor,
-  CREDENTIAL_ENTITY_IDENTITY_TYPE
+  CREDENTIAL_ENTITY_IDENTITY_TYPE,
+  CREDENTIAL_SATELLITE_TYPE,
+  SatelliteCredential,
+  SatelliteSubject
 } from "@owlmeans/regov-ssi-agent"
 import { governanceCredentialHelper } from "../../governance/credential"
 import {
   CapabilityCredential,
   CapabilityDocument,
   CapabilityExtension,
+  CapabilitySubject,
   ClaimCapability,
   CREDENTIAL_GOVERNANCE_TYPE,
   OfferCapability,
@@ -171,7 +176,7 @@ export namespace TestUtil {
     }
 
     async claimCapability(
-      rootPresentation: Presentation<EntityIdentity | CapabilityCredential>,
+      gov: Presentation<EntityIdentity | CapabilityCredential | SatelliteCredential>,
       type: string,
       doc: CapabilityCredentialTestParams
     ) {
@@ -179,9 +184,21 @@ export namespace TestUtil {
       if (!source) {
         throw new Error('No identity to claim for')
       }
-      const root = rootPresentation.verifiableCredential.find(
+
+      const root = gov.verifiableCredential.find(
         cap => cap.type.includes(CREDENTIAL_GOVERNANCE_TYPE)
-      )
+      ) as CapabilityCredential
+      if (!this.wallet.did.registry.peer.dids.find(wrap => wrap.did.id === root.id)) {
+        const rootSat = gov.verifiableCredential.find(
+          sat => sat.type.includes(CREDENTIAL_SATELLITE_TYPE)
+        ) as SatelliteCredential
+
+        this.wallet.did.addPeerDID(rootSat.credentialSubject.data.did)
+
+        this.wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).addCredential<
+          CapabilitySubject, CapabilityCredential
+        >(root, REGISTRY_SECTION_PEER)
+      }
 
       const claim = await governanceCredentialHelper(this.wallet).claim(
         source,
@@ -229,22 +246,17 @@ export namespace TestUtil {
 
     async storeCapability(offerBundle: OfferBundle<OfferCapability>) {
       const { result } = await holderCredentialHelper<
-        CapabilityDocument,
-        CapabilityExtension,
-        CapabilityCredential,
-        OfferCapabilityExtension
-      >(
-        this.wallet, holderGovernanceVisitor(this.wallet)
-      ).bundle().unbudle(offerBundle)
+        CapabilityDocument, CapabilityExtension,
+        CapabilityCredential, OfferCapabilityExtension
+      >(this.wallet, holderGovernanceVisitor(this.wallet))
+        .bundle().unbudle(offerBundle)
       if (!result) {
         throw new Error('Invalid bundle with capability')
       }
 
       return await holderCredentialHelper<
-        CapabilityDocument,
-        CapabilityExtension,
-        CapabilityCredential,
-        OfferCapabilityExtension
+        CapabilityDocument, CapabilityExtension,
+        CapabilityCredential, OfferCapabilityExtension
       >(this.wallet, holderGovernanceVisitor(this.wallet))
         .bundle().store(offerBundle)
     }

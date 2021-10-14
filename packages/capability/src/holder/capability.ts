@@ -11,7 +11,8 @@ import {
   Credential,
   WrappedDocument,
   REGISTRY_TYPE_CREDENTIALS,
-  ContextSchema
+  ContextSchema,
+  REGISTRY_SECTION_PEER
 } from "@owlmeans/regov-ssi-core"
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
 import { verifierCapabilityHelper } from "../verifier/capability"
@@ -22,7 +23,7 @@ import {
   REGISTRY_TYPE_CAPABILITY
 } from "../governance/types"
 import { ByCapabilityExtension } from "../issuer/types"
-import { isCapability } from ".."
+import { didChainHelper, isCapability } from ".."
 
 
 export const holderCapabilityVisitor = <
@@ -52,16 +53,22 @@ export const holderCapabilityVisitor = <
               }
             }
           )
+
+          offer.credentialSubject.capabilities.forEach(
+            cap => wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+              .addCredential(cap, REGISTRY_SECTION_PEER)
+          )
         }
       },
       unbundle: {
         updateIssuer: async (offer: OfferBundleT, holder: string) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.capability?.holder.id === holder
+            offer => offer.credentialSubject.capabilities
+              && offer.credentialSubject.capabilities[0]?.holder.id === holder
           )
           if (offerWithCap) {
             return {
-              credential: offerWithCap?.credentialSubject.capability,
+              credential: offerWithCap?.credentialSubject.capabilities[0],
               meta: { secure: false }
             }
           }
@@ -69,11 +76,14 @@ export const holderCapabilityVisitor = <
 
         updateDid: async (offer: OfferBundleT, holder: string) => {
           const offerWithCap = offer.verifiableCredential.find(
-            offer => offer.credentialSubject.capability?.id === holder
+            offer => offer.credentialSubject.capabilities
+              && offer.credentialSubject.capabilities[0]?.id === holder
           )
 
           if (offerWithCap) {
-            const entity = identityHelper(wallet).extractEntity([...offer.verifiableCredential])
+            const entity = identityHelper(wallet)
+              .extractEntity([...offer.verifiableCredential])
+
             return entity?.credentialSubject.did
           }
         },
@@ -81,21 +91,22 @@ export const holderCapabilityVisitor = <
         verifyHolder: async (offer: OfferBundleT, issuerDid: DIDDocument) => {
           const offerWithCap = offer.verifiableCredential.find(
             offer =>
-              isCapability(offer.credentialSubject.capability)
+              offer.credentialSubject.capabilities
+              && isCapability(offer.credentialSubject.capabilities[0])
               && offer.credentialSubject.did?.verificationMethod?.some(
                 method => method.controller === issuerDid.id
               )
           )
 
           const chain = offerWithCap?.credentialSubject.chain
-          if (!chain) {
-            return false
+          if (chain && wallet.did.registry.peer.dids.find(
+            did => did.did.id === chain[chain.length - 1].id
+          )) {
+            return true
           }
 
-          return await verifierCapabilityHelper(wallet).verifyChain(chain, {
-            did: offerWithCap?.credentialSubject.did || issuerDid,
-            capability: offerWithCap?.credentialSubject.capability
-          })
+          return false
+          // return await verifierCapabilityHelper(wallet).verifyChain(chain)
         }
       },
 
@@ -105,9 +116,7 @@ export const holderCapabilityVisitor = <
             const wraps = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials<
               CapabilitySubject,
               CapabilityCredential
-            >(
-              credential.credentialSubject.data["@type"]
-            )
+            >(credential.credentialSubject.data["@type"], REGISTRY_SECTION_PEER)
 
             if (wraps.length > 0) {
               const context = unsignedSatellite["@context"] as (string | ContextSchema)[]
@@ -115,16 +124,22 @@ export const holderCapabilityVisitor = <
                 wallet.ssi.buildContext(
                   'capability/satellite',
                   {
-                    capability: { '@id': 'scm:capability', '@type': '@json' },
+                    capabilities: { '@id': 'scm:capabilities', '@type': '@json' },
                     chain: { '@id': 'scm:chain', '@type': '@json' },
                   }
                 )
               )
 
+              const gov = wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+                .getCredential<
+                  CapabilitySubject, CapabilityCredential
+                >(wraps[0].credential.credentialSubject.root)?.credential
+
               unsignedSatellite.credentialSubject.data = {
                 ...unsignedSatellite.credentialSubject.data,
-                capability: wraps[0].credential,
-                chain: await wallet.did.gatherChain(wraps[0].credential.id)
+                capabilities: [wraps[0].credential, ...(gov ? [gov] : [])],
+                chain: await didChainHelper(wallet)
+                  .collectForIssuedCredential(wraps[0].credential)
               }
             }
           }

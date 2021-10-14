@@ -30,13 +30,34 @@ export const capabilityShape = {
 }
 
 export const capabilityDid = {
-  ...doubleDidShape,
+  ...(did => {
+    const _did = {...did}
+    delete (<any>_did).authentication
+    
+    return _did
+  })(doubleDidShape),
   capabilityInvocation: [
     expect.any(String)
   ],
   capabilityDelegation: [
     expect.any(String)
   ]
+}
+
+export const capabilitySatelliteShape = {
+  ...credentialShape,
+  credentialSubject: {
+    data: {
+      did: (did => {
+        const _did = {...did}
+        delete (<any>_did).keyAgreement
+        delete (<any>_did).assertionMethod
+        delete (<any>_did).authentication
+        
+        return _did
+      })(didShape)
+    }
+  }
 }
 
 export const entityShape = {

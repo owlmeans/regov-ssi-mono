@@ -3,6 +3,7 @@ require('dotenv').config()
 import { TestUtil as Util } from './utils/wallet'
 
 import util from 'util'
+import { REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core';
 util.inspect.defaultOptions.depth = 8;
 
 /**
@@ -43,13 +44,13 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Everybody trusts Charly')
 
-  const requestRootGov = await fred.requestGovernance()
+  // const requestRootGov = await fred.requestGovernance()
 
-  console.log('Chalry provides his governance credentials to Fred')
+  // console.log('Chalry provides his governance credentials to Fred')
 
-  const rootGov = await charly.responseGovernance(requestRootGov)
+  // const rootGov = await charly.responseGovernance(requestRootGov)
 
-  await fred.claimGovernance(rootGov)
+  // await fred.claimGovernance(rootGov)
 
   /**
    * @PROCEED
@@ -83,11 +84,24 @@ util.inspect.defaultOptions.depth = 8;
     info: 'Info for capability 1'
   })
 
+  console.log({
+    'Charly ID': charly.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+      .getCredential()?.credential.id,
+    'Bob ID': bob.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+      .getCredential()?.credential.id,
+    'Gov Capability': gov.verifiableCredential[1].id,
+    'Claim': {
+      Id: claimCap.verifiableCredential[1].credentialSubject.data.credential.id,
+      Source: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.source.id,
+      Root: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.root
+    }
+  })
+
   console.log('Charly signs capability for Bob')
 
   const claimBundle = await charly.signCapability(claimCap)
 
-  console.log('Bob stores capability provided by charly')
+  console.log('Bob stores capability provided by Charly')
 
   await bob.storeCapability(claimBundle)
 
@@ -119,7 +133,4 @@ util.inspect.defaultOptions.depth = 8;
   const result = await dan.validateResponse<Util.TestCredential>(aliceCreds)
 
   console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')
-  if (!result) {
-    console.log(aliceCreds)
-  }
 })()

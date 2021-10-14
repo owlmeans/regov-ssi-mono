@@ -1,5 +1,6 @@
 import {
   DIDDocument,
+  DIDDocumentUnsinged,
   DIDPURPOSE_ASSERTION,
   DIDPURPOSE_AUTHENTICATION,
   DIDPURPOSE_VERIFICATION
@@ -79,7 +80,8 @@ export const holderCredentialHelper = <
       return {
         build: async (payload: Payload, options?: {
           key?: KeyPair | string,
-          extension?: Extension
+          extension?: Extension,
+          didUnsigned?: DIDDocumentUnsinged
         }) => {
           const credentialSubject = {
             data: {
@@ -90,7 +92,7 @@ export const holderCredentialHelper = <
           }
 
           const key = await wallet.keys.getCryptoKey(options?.key)
-          const didUnsigned = await wallet.did.helper().createDID(
+          const didUnsigned = options?.didUnsigned || await wallet.did.helper().createDID(
             key,
             {
               data: JSON.stringify(credentialSubject),

@@ -3,6 +3,7 @@ import {
 } from "@owlmeans/regov-ssi-agent"
 import {
   ContextSchema,
+  REGISTRY_SECTION_PEER,
   REGISTRY_TYPE_CREDENTIALS,
   WalletWrapper
 } from "@owlmeans/regov-ssi-core"
@@ -26,35 +27,33 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
   return {
     claim: {
       signClaim: {
-        clarifyIssuer: async (unsigned) => {
-          const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials<
-            CapabilitySubject, CapabilityCredential<CapabilitySubject>
-          >(
-            [CREDENTIAL_CAPABILITY_TYPE, ...unsigned.type]
-          )
+        // clarifyIssuer: async (unsigned) => {
+        //   const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+        //     .lookupCredentials<
+        //       CapabilitySubject, CapabilityCredential<CapabilitySubject>
+        //     >([CREDENTIAL_CAPABILITY_TYPE, ...unsigned.type])
 
-          const did = await wallet.did.lookUpDid<DIDDocument>(capabilities[0].credential.id)
-          if (!did) {
-            throw new Error(ERROR_NO_RELATED_DID_WITH_CAPABILITY)
-          }
+        //   const did = await wallet.did.lookUpDid<DIDDocument>(capabilities[0].credential.id)
+        //   if (!did) {
+        //     throw new Error(ERROR_NO_RELATED_DID_WITH_CAPABILITY)
+        //   }
 
-          return did
-        },
+        //   return did
+        // },
 
-        patchOffer: async (unsigned, did) => {
+        patchOffer: async (unsigned) => {
           unsigned.type.push(CAPABILITY_BYOFFER_TYPE)
-          const capabilities = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials<
-            CapabilitySubject, CapabilityCredential<CapabilitySubject>
-          >(
-            [CREDENTIAL_CAPABILITY_TYPE, ...unsigned.credentialSubject.data.credential.type]
-          )
-          if (capabilities.length > 0) {
+          const wraps = await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+            .lookupCredentials<
+              CapabilitySubject, CapabilityCredential<CapabilitySubject>
+            >([CREDENTIAL_CAPABILITY_TYPE, ...unsigned.credentialSubject.data.credential.type])
+          if (wraps.length > 0) {
             /**
              * @TODO Same capability can be provided by different
              * governance. We need to match provided capability
              * and issued credential
              */
-            if (capabilities.length > 1) {
+            if (wraps.length > 1) {
               throw new Error(ERROR_AMBIGOUS_CAPABILITY_TO_PATCH)
             }
 
@@ -63,20 +62,30 @@ export const issuerVisitor: IssuerVisitorBuilder<ByCapabilityExtension> = (walle
               wallet.ssi.buildContext(
                 'offer/with-capability',
                 {
-                  capability: { '@id': 'scm:capability', '@type': '@json' },
+                  capabilities: { '@id': 'scm:capabilities', '@type': '@json' },
                   chain: { '@id': 'scm:chain', '@type': '@json' },
                 }
               )
             )
 
             const chain = await didChainHelper(wallet).collectForIssuedCredential(
-              capabilities[0].credential, did
+              wraps[0].credential
             )
+
+            const gov = wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+              .getCredential<
+                CapabilitySubject, CapabilityCredential
+              >(
+                wraps[0].credential.credentialSubject.root, REGISTRY_SECTION_PEER
+              )?.credential
 
             unsigned.credentialSubject = {
               ...unsigned.credentialSubject,
               chain,
-              capability: capabilities[0].credential
+              capabilities: [
+                wraps[0].credential,
+                ...(gov ? [gov] : [])
+              ]
             }
           }
         }

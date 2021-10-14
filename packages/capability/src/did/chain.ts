@@ -20,10 +20,6 @@ import {
 
 export const didChainHelper = (wallet: WalletWrapper) => {
   const _helper = {
-    /**
-     * @TODO Refactor to just collect chain directly how it should be
-     * without some special heuristics.
-     */
     collectForGovernance: async (did: DIDDocument | string, root?: string): Promise<DIDDocument[]> => {
       const id = typeof did === 'string' ? did : did.id
       if (typeof did === 'string') {
@@ -39,9 +35,9 @@ export const didChainHelper = (wallet: WalletWrapper) => {
         return [
           did,
           ...await _helper.collectForGovernance(
-              capability.credentialSubject.source, 
-              capability.credentialSubject.root
-            )
+            capability.credentialSubject.source,
+            capability.credentialSubject.root
+          )
         ]
       }
 
@@ -56,25 +52,32 @@ export const didChainHelper = (wallet: WalletWrapper) => {
       return [did, ...(root ? await wallet.did.gatherChain(root) : [])]
     },
 
-    collectForIssuedCredential: async (
-      source: CapabilityCredential, did?: DIDDocument
-    ): Promise<DIDDocument[]> => {
+    collectForIssuedCredential: async (source: CapabilityCredential): Promise<DIDDocument[]> => {
       /**
        * Structure:
        * 1. Provided capability by issuer
        * 2. Self-issued governance capability of issuer
        * 3. Self-issued identity of issuer 
        */
-      const trustedIdentityDid =
-        source.credentialSubject.root
-          ? await wallet.did.lookUpDid<DIDDocument>(source.credentialSubject.root)
-          : undefined
 
-      const capabilitySubchain = did ? await wallet.did.gatherChain(did.id) || [did] : []
+      // const capabilitySubchain = did ? await wallet.did.gatherChain(did.id) || [did] : []
+
+      const capabilityDid = await wallet.did.lookUpDid<DIDDocument>(source.id)
+      const capabilitySubchain = capabilityDid ? [capabilityDid] : []
+
       const sourceSubchain = source.credentialSubject.source
         ? await wallet.did.gatherChain(source.credentialSubject.source.id)
         || [source.credentialSubject.source]
         : []
+
+      const trustedGovernance =
+        source.credentialSubject.root
+          ? await wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+            .getCredential<
+              CapabilitySubject, CapabilityCredential
+            >(source.credentialSubject.root, REGISTRY_SECTION_PEER)
+          : undefined
+      const trustedIdentityDid = trustedGovernance?.credential.credentialSubject.source
       const trustedSubchain = trustedIdentityDid
         ? await wallet.did.gatherChain(trustedIdentityDid.id) || [trustedIdentityDid]
         : []

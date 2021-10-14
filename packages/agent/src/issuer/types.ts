@@ -48,13 +48,10 @@ export type IssuerVisitor<
   > = {
     claim?: {
       signClaim?: {
-        clarifyIssuer?: (
-          unsigned: InferUnsignedCredential<CredentialT>
-        ) => Promise<DIDDocument>
+        // clarifyIssuer?: (unsigned: InferUnsignedCredential<CredentialT>) => Promise<DIDDocument>
 
         patchOffer?: (
-          unsigned: UnsignedCredential<OfferSubject<CredentialT, Extension>>,
-          did?: DIDDocument
+          unsigned: UnsignedCredential<OfferSubject<CredentialT, Extension>>
         ) => Promise<void>
       }
     }

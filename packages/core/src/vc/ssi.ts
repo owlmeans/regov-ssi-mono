@@ -179,16 +179,14 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           }
 
           return crypto.buildSignSuite({
-            publicKey: key.pubKey,
+            publicKey: key.pubKey, 
             privateKey: '',
-            controller: didDoc.id,
+            controller: didDoc.id, 
             id: options.verificationMethod
           })
         },
         getProofPurposeOptions: async () => {
-          return {
-            controller: didDoc
-          }
+          return { controller: didDoc }
         },
         documentLoader
       })(credential)

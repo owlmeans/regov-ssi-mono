@@ -418,9 +418,6 @@ Object {
           "assertionMethod": Array [
             Any<String>,
           ],
-          "authentication": Array [
-            Any<String>,
-          ],
           "capabilityDelegation": Array [
             Any<String>,
           ],
@@ -658,8 +655,8 @@ Object {
         },
         Object {
           "@version": 1.1,
-          "capability": Object {
-            "@id": "scm:capability",
+          "capabilities": Object {
+            "@id": "scm:capabilities",
             "@type": "@json",
           },
           "chain": Object {
@@ -678,77 +675,28 @@ Object {
         },
       ],
       "credentialSubject": Object {
-        "capability": Object {
-          "@context": Array [
-            "https://www.w3.org/2018/credentials/v1",
-            Object {
-              "@version": 1.1,
-              "credentialProps": Object {
-                "@id": "scm:credentialProps",
-                "@type": "@json",
-              },
-              "credentialSchema": Object {
-                "@id": "scm:credentialSchema",
-                "@type": "@json",
-              },
-              "data": Object {
-                "@context": Object {
-                  "@version": 1.1,
-                  "scmdata": "https://example.org/governance/capability/data#",
+        "capabilities": Array [
+          Object {
+            "@context": Array [
+              "https://www.w3.org/2018/credentials/v1",
+              Object {
+                "@version": 1.1,
+                "credentialProps": Object {
+                  "@id": "scm:credentialProps",
+                  "@type": "@json",
                 },
-                "@id": "scmdata:id",
-                "@type": "scmdata:type",
-              },
-              "description": Object {
-                "@id": "scm:description",
-                "@type": "xsd:string",
-              },
-              "info": Object {
-                "@id": "scm:info",
-                "@type": "xsd:string",
-              },
-              "name": Object {
-                "@id": "scm:name",
-                "@type": "xsd:string",
-              },
-              "root": Object {
-                "@id": "scm:root",
-                "@type": "xsd:root",
-              },
-              "scm": "https://example.org/governance/capability#",
-              "selfIssuing": Object {
-                "@id": "scm:selfIssuing",
-                "@type": "xsd:boolean",
-              },
-              "source": Object {
-                "@id": "scm:source",
-                "@type": "@json",
-              },
-              "subjectProps": Object {
-                "@id": "scm:subjectProps",
-                "@type": "@json",
-              },
-              "subjectSchema": Object {
-                "@id": "scm:subjectSchema",
-                "@type": "@json",
-              },
-            },
-          ],
-          "credentialSubject": Object {
-            "data": Object {
-              "@type": Array [
-                "TestCapabilityBasedCredential1",
-                "TestCapabilityCredential",
-              ],
-              "subjectProps": Object {
-                "extension": Object {
-                  "info": "Info for capability 1",
+                "credentialSchema": Object {
+                  "@id": "scm:credentialSchema",
+                  "@type": "@json",
                 },
-                "payload": Object {
-                  "description": "Test capability 1",
+                "data": Object {
+                  "@context": Object {
+                    "@version": 1.1,
+                    "scmdata": "https://example.org/governance/capability/data#",
+                  },
+                  "@id": "scmdata:id",
+                  "@type": "scmdata:type",
                 },
-              },
-              "subjectSchema": Object {
                 "description": Object {
                   "@id": "scm:description",
                   "@type": "xsd:string",
@@ -757,69 +705,233 @@ Object {
                   "@id": "scm:info",
                   "@type": "xsd:string",
                 },
-              },
-            },
-            "name": "Test Capability",
-            "root": Any<String>,
-            "source": Object {
-              "@context": Array [
-                "https://w3id.org/did/v1",
-                "https://w3id.org/security/v2",
-              ],
-              "assertionMethod": Array [
-                Any<String>,
-              ],
-              "authentication": Array [
-                Any<String>,
-              ],
-              "capabilityDelegation": Array [
-                Any<String>,
-              ],
-              "capabilityInvocation": Array [
-                Any<String>,
-              ],
-              "id": Any<String>,
-              "keyAgreement": Array [
-                Any<String>,
-              ],
-              "proof": Object {
-                "created": Any<String>,
-                "jws": Any<String>,
-                "proofPurpose": "verificationMethod",
-                "type": "EcdsaSecp256k1Signature2019",
-                "verificationMethod": Any<String>,
-              },
-              "verificationMethod": Array [
-                Object {
-                  "controller": Any<String>,
-                  "id": Any<String>,
-                  "nonce": Any<String>,
-                  "publicKeyBase58": Any<String>,
-                  "type": "EcdsaSecp256k1VerificationKey2019",
+                "name": Object {
+                  "@id": "scm:name",
+                  "@type": "xsd:string",
                 },
-              ],
+                "root": Object {
+                  "@id": "scm:root",
+                  "@type": "xsd:root",
+                },
+                "scm": "https://example.org/governance/capability#",
+                "selfIssuing": Object {
+                  "@id": "scm:selfIssuing",
+                  "@type": "xsd:boolean",
+                },
+                "source": Object {
+                  "@id": "scm:source",
+                  "@type": "@json",
+                },
+                "subjectProps": Object {
+                  "@id": "scm:subjectProps",
+                  "@type": "@json",
+                },
+                "subjectSchema": Object {
+                  "@id": "scm:subjectSchema",
+                  "@type": "@json",
+                },
+              },
+            ],
+            "credentialSubject": Object {
+              "data": Object {
+                "@type": Array [
+                  "TestCapabilityBasedCredential1",
+                  "TestCapabilityCredential",
+                ],
+                "subjectProps": Object {
+                  "extension": Object {
+                    "info": "Info for capability 1",
+                  },
+                  "payload": Object {
+                    "description": "Test capability 1",
+                  },
+                },
+                "subjectSchema": Object {
+                  "description": Object {
+                    "@id": "scm:description",
+                    "@type": "xsd:string",
+                  },
+                  "info": Object {
+                    "@id": "scm:info",
+                    "@type": "xsd:string",
+                  },
+                },
+              },
+              "name": "Test Capability",
+              "root": Any<String>,
+              "source": Object {
+                "@context": Array [
+                  "https://w3id.org/did/v1",
+                  "https://w3id.org/security/v2",
+                ],
+                "assertionMethod": Array [
+                  Any<String>,
+                ],
+                "authentication": Array [
+                  Any<String>,
+                ],
+                "capabilityDelegation": Array [
+                  Any<String>,
+                ],
+                "capabilityInvocation": Array [
+                  Any<String>,
+                ],
+                "id": Any<String>,
+                "keyAgreement": Array [
+                  Any<String>,
+                ],
+                "proof": Object {
+                  "created": Any<String>,
+                  "jws": Any<String>,
+                  "proofPurpose": "verificationMethod",
+                  "type": "EcdsaSecp256k1Signature2019",
+                  "verificationMethod": Any<String>,
+                },
+                "verificationMethod": Array [
+                  Object {
+                    "controller": Any<String>,
+                    "id": Any<String>,
+                    "nonce": Any<String>,
+                    "publicKeyBase58": Any<String>,
+                    "type": "EcdsaSecp256k1VerificationKey2019",
+                  },
+                ],
+              },
             },
-          },
-          "holder": Object {
+            "holder": Object {
+              "id": Any<String>,
+            },
             "id": Any<String>,
+            "issuanceDate": Any<String>,
+            "issuer": Any<String>,
+            "proof": Object {
+              "created": Any<String>,
+              "jws": Any<String>,
+              "proofPurpose": "assertionMethod",
+              "type": "EcdsaSecp256k1Signature2019",
+              "verificationMethod": Any<String>,
+            },
+            "type": Array [
+              "VerifiableCredential",
+              "CredentialCapability",
+              "TestCapabilityBasedCredential1",
+              "TestCapabilityCredential",
+            ],
           },
-          "id": Any<String>,
-          "issuanceDate": Any<String>,
-          "issuer": Any<String>,
-          "proof": Object {
-            "created": Any<String>,
-            "jws": Any<String>,
-            "proofPurpose": "assertionMethod",
-            "type": "EcdsaSecp256k1Signature2019",
-            "verificationMethod": Any<String>,
+          Object {
+            "@context": Array [
+              "https://www.w3.org/2018/credentials/v1",
+              Object {
+                "@version": 1.1,
+                "credentialProps": Object {
+                  "@id": "scm:credentialProps",
+                  "@type": "@json",
+                },
+                "credentialSchema": Object {
+                  "@id": "scm:credentialSchema",
+                  "@type": "@json",
+                },
+                "data": Object {
+                  "@context": Object {
+                    "@version": 1.1,
+                    "scmdata": "https://example.org/governance/capability/data#",
+                  },
+                  "@id": "scmdata:id",
+                  "@type": "scmdata:type",
+                },
+                "name": Object {
+                  "@id": "scm:name",
+                  "@type": "xsd:string",
+                },
+                "root": Object {
+                  "@id": "scm:root",
+                  "@type": "xsd:root",
+                },
+                "scm": "https://example.org/governance/capability#",
+                "selfIssuing": Object {
+                  "@id": "scm:selfIssuing",
+                  "@type": "xsd:boolean",
+                },
+                "source": Object {
+                  "@id": "scm:source",
+                  "@type": "@json",
+                },
+                "subjectProps": Object {
+                  "@id": "scm:subjectProps",
+                  "@type": "@json",
+                },
+                "subjectSchema": Object {
+                  "@id": "scm:subjectSchema",
+                  "@type": "@json",
+                },
+              },
+            ],
+            "credentialSubject": Object {
+              "data": Object {
+                "@type": Array [
+                  "GovernanceCapability",
+                ],
+              },
+              "name": "Root Governance",
+              "source": Object {
+                "@context": Array [
+                  "https://w3id.org/did/v1",
+                  "https://w3id.org/security/v2",
+                ],
+                "assertionMethod": Array [
+                  Any<String>,
+                ],
+                "authentication": Array [
+                  Any<String>,
+                ],
+                "capabilityDelegation": Array [
+                  Any<String>,
+                ],
+                "capabilityInvocation": Array [
+                  Any<String>,
+                ],
+                "id": Any<String>,
+                "keyAgreement": Array [
+                  Any<String>,
+                ],
+                "proof": Object {
+                  "created": Any<String>,
+                  "jws": Any<String>,
+                  "proofPurpose": "verificationMethod",
+                  "type": "EcdsaSecp256k1Signature2019",
+                  "verificationMethod": Any<String>,
+                },
+                "verificationMethod": Array [
+                  Object {
+                    "controller": Any<String>,
+                    "id": Any<String>,
+                    "nonce": Any<String>,
+                    "publicKeyBase58": Any<String>,
+                    "type": "EcdsaSecp256k1VerificationKey2019",
+                  },
+                ],
+              },
+            },
+            "holder": Object {
+              "id": Any<String>,
+            },
+            "id": Any<String>,
+            "issuanceDate": Any<String>,
+            "issuer": Any<String>,
+            "proof": Object {
+              "created": Any<String>,
+              "jws": Any<String>,
+              "proofPurpose": "assertionMethod",
+              "type": "EcdsaSecp256k1Signature2019",
+              "verificationMethod": Any<String>,
+            },
+            "type": Array [
+              "VerifiableCredential",
+              "CredentialCapability",
+              "GovernanceCapability",
+            ],
           },
-          "type": Array [
-            "VerifiableCredential",
-            "CredentialCapability",
-            "TestCapabilityBasedCredential1",
-            "TestCapabilityCredential",
-          ],
-        },
+        ],
         "chain": Array [
           Object {
             "@context": Array [
@@ -827,9 +939,6 @@ Object {
               "https://w3id.org/security/v2",
             ],
             "assertionMethod": Array [
-              Any<String>,
-            ],
-            "authentication": Array [
               Any<String>,
             ],
             "capabilityDelegation": Array [
@@ -854,6 +963,44 @@ Object {
                 "publicKeyBase58": Any<String>,
                 "type": "EcdsaSecp256k1VerificationKey2019",
               },
+              Object {
+                "controller": Any<String>,
+                "id": Any<String>,
+                "nonce": Any<String>,
+                "publicKeyBase58": Any<String>,
+                "type": "EcdsaSecp256k1VerificationKey2019",
+              },
+            ],
+          },
+          Object {
+            "@context": Array [
+              "https://w3id.org/did/v1",
+              "https://w3id.org/security/v2",
+            ],
+            "assertionMethod": Array [
+              Any<String>,
+            ],
+            "authentication": Array [
+              Any<String>,
+            ],
+            "capabilityDelegation": Array [
+              Any<String>,
+            ],
+            "capabilityInvocation": Array [
+              Any<String>,
+            ],
+            "id": Any<String>,
+            "keyAgreement": Array [
+              Any<String>,
+            ],
+            "proof": Object {
+              "created": Any<String>,
+              "jws": Any<String>,
+              "proofPurpose": "verificationMethod",
+              "type": "EcdsaSecp256k1Signature2019",
+              "verificationMethod": Any<String>,
+            },
+            "verificationMethod": Array [
               Object {
                 "controller": Any<String>,
                 "id": Any<String>,
@@ -1240,10 +1387,291 @@ Object {
           },
           "scm": "https://example.org/credential/satellite#",
         },
+        Object {
+          "@version": 1.1,
+          "capabilities": Object {
+            "@id": "scm:capabilities",
+            "@type": "@json",
+          },
+          "chain": Object {
+            "@id": "scm:chain",
+            "@type": "@json",
+          },
+          "data": Object {
+            "@context": Object {
+              "@version": 1.1,
+              "scmdata": "https://example.org/capability/satellite/data#",
+            },
+            "@id": "scmdata:id",
+            "@type": "scmdata:type",
+          },
+          "scm": "https://example.org/capability/satellite#",
+        },
       ],
       "credentialSubject": Object {
         "data": Object {
           "@type": "CredentialSatellit",
+          "capabilities": Array [
+            Object {
+              "@context": Array [
+                "https://www.w3.org/2018/credentials/v1",
+                Object {
+                  "@version": 1.1,
+                  "credentialProps": Object {
+                    "@id": "scm:credentialProps",
+                    "@type": "@json",
+                  },
+                  "credentialSchema": Object {
+                    "@id": "scm:credentialSchema",
+                    "@type": "@json",
+                  },
+                  "data": Object {
+                    "@context": Object {
+                      "@version": 1.1,
+                      "scmdata": "https://example.org/governance/capability/data#",
+                    },
+                    "@id": "scmdata:id",
+                    "@type": "scmdata:type",
+                  },
+                  "description": Object {
+                    "@id": "scm:description",
+                    "@type": "xsd:string",
+                  },
+                  "info": Object {
+                    "@id": "scm:info",
+                    "@type": "xsd:string",
+                  },
+                  "name": Object {
+                    "@id": "scm:name",
+                    "@type": "xsd:string",
+                  },
+                  "root": Object {
+                    "@id": "scm:root",
+                    "@type": "xsd:root",
+                  },
+                  "scm": "https://example.org/governance/capability#",
+                  "selfIssuing": Object {
+                    "@id": "scm:selfIssuing",
+                    "@type": "xsd:boolean",
+                  },
+                  "source": Object {
+                    "@id": "scm:source",
+                    "@type": "@json",
+                  },
+                  "subjectProps": Object {
+                    "@id": "scm:subjectProps",
+                    "@type": "@json",
+                  },
+                  "subjectSchema": Object {
+                    "@id": "scm:subjectSchema",
+                    "@type": "@json",
+                  },
+                },
+              ],
+              "credentialSubject": Object {
+                "data": Object {
+                  "@type": Array [
+                    "TestCapabilityBasedCredential1",
+                    "TestCapabilityCredential",
+                  ],
+                  "subjectProps": Object {
+                    "extension": Object {
+                      "info": "Info for capability 1",
+                    },
+                    "payload": Object {
+                      "description": "Test capability 1",
+                    },
+                  },
+                  "subjectSchema": Object {
+                    "description": Object {
+                      "@id": "scm:description",
+                      "@type": "xsd:string",
+                    },
+                    "info": Object {
+                      "@id": "scm:info",
+                      "@type": "xsd:string",
+                    },
+                  },
+                },
+                "name": "Test Capability",
+                "root": Any<String>,
+                "source": Object {
+                  "@context": Array [
+                    "https://w3id.org/did/v1",
+                    "https://w3id.org/security/v2",
+                  ],
+                  "assertionMethod": Array [
+                    Any<String>,
+                  ],
+                  "authentication": Array [
+                    Any<String>,
+                  ],
+                  "capabilityDelegation": Array [
+                    Any<String>,
+                  ],
+                  "capabilityInvocation": Array [
+                    Any<String>,
+                  ],
+                  "id": Any<String>,
+                  "keyAgreement": Array [
+                    Any<String>,
+                  ],
+                  "proof": Object {
+                    "created": Any<String>,
+                    "jws": Any<String>,
+                    "proofPurpose": "verificationMethod",
+                    "type": "EcdsaSecp256k1Signature2019",
+                    "verificationMethod": Any<String>,
+                  },
+                  "verificationMethod": Array [
+                    Object {
+                      "controller": Any<String>,
+                      "id": Any<String>,
+                      "nonce": Any<String>,
+                      "publicKeyBase58": Any<String>,
+                      "type": "EcdsaSecp256k1VerificationKey2019",
+                    },
+                  ],
+                },
+              },
+              "holder": Object {
+                "id": Any<String>,
+              },
+              "id": Any<String>,
+              "issuanceDate": Any<String>,
+              "issuer": Any<String>,
+              "proof": Object {
+                "created": Any<String>,
+                "jws": Any<String>,
+                "proofPurpose": "assertionMethod",
+                "type": "EcdsaSecp256k1Signature2019",
+                "verificationMethod": Any<String>,
+              },
+              "type": Array [
+                "VerifiableCredential",
+                "CredentialCapability",
+                "TestCapabilityBasedCredential1",
+                "TestCapabilityCredential",
+              ],
+            },
+          ],
+          "chain": Array [
+            Object {
+              "@context": Array [
+                "https://w3id.org/did/v1",
+                "https://w3id.org/security/v2",
+              ],
+              "assertionMethod": Array [
+                Any<String>,
+              ],
+              "capabilityDelegation": Array [
+                Any<String>,
+              ],
+              "capabilityInvocation": Array [
+                Any<String>,
+              ],
+              "id": Any<String>,
+              "proof": Object {
+                "created": Any<String>,
+                "jws": Any<String>,
+                "proofPurpose": "verificationMethod",
+                "type": "EcdsaSecp256k1Signature2019",
+                "verificationMethod": Any<String>,
+              },
+              "verificationMethod": Array [
+                Object {
+                  "controller": Any<String>,
+                  "id": Any<String>,
+                  "nonce": Any<String>,
+                  "publicKeyBase58": Any<String>,
+                  "type": "EcdsaSecp256k1VerificationKey2019",
+                },
+                Object {
+                  "controller": Any<String>,
+                  "id": Any<String>,
+                  "nonce": Any<String>,
+                  "publicKeyBase58": Any<String>,
+                  "type": "EcdsaSecp256k1VerificationKey2019",
+                },
+              ],
+            },
+            Object {
+              "@context": Array [
+                "https://w3id.org/did/v1",
+                "https://w3id.org/security/v2",
+              ],
+              "assertionMethod": Array [
+                Any<String>,
+              ],
+              "authentication": Array [
+                Any<String>,
+              ],
+              "capabilityDelegation": Array [
+                Any<String>,
+              ],
+              "capabilityInvocation": Array [
+                Any<String>,
+              ],
+              "id": Any<String>,
+              "keyAgreement": Array [
+                Any<String>,
+              ],
+              "proof": Object {
+                "created": Any<String>,
+                "jws": Any<String>,
+                "proofPurpose": "verificationMethod",
+                "type": "EcdsaSecp256k1Signature2019",
+                "verificationMethod": Any<String>,
+              },
+              "verificationMethod": Array [
+                Object {
+                  "controller": Any<String>,
+                  "id": Any<String>,
+                  "nonce": Any<String>,
+                  "publicKeyBase58": Any<String>,
+                  "type": "EcdsaSecp256k1VerificationKey2019",
+                },
+              ],
+            },
+            Object {
+              "@context": Array [
+                "https://w3id.org/did/v1",
+                "https://w3id.org/security/v2",
+              ],
+              "assertionMethod": Array [
+                Any<String>,
+              ],
+              "authentication": Array [
+                Any<String>,
+              ],
+              "capabilityDelegation": Array [
+                Any<String>,
+              ],
+              "capabilityInvocation": Array [
+                Any<String>,
+              ],
+              "id": Any<String>,
+              "keyAgreement": Array [
+                Any<String>,
+              ],
+              "proof": Object {
+                "created": Any<String>,
+                "jws": Any<String>,
+                "proofPurpose": "verificationMethod",
+                "type": "EcdsaSecp256k1Signature2019",
+                "verificationMethod": Any<String>,
+              },
+              "verificationMethod": Array [
+                Object {
+                  "controller": Any<String>,
+                  "id": Any<String>,
+                  "nonce": Any<String>,
+                  "publicKeyBase58": Any<String>,
+                  "type": "EcdsaSecp256k1VerificationKey2019",
+                },
+              ],
+            },
+          ],
           "did": Object {
             "@context": Array [
               "https://w3id.org/did/v1",
@@ -1516,7 +1944,7 @@ Object {
             "GovernanceCapability",
           ],
         },
-        "name": "Governance Claim",
+        "name": "Root Governance",
         "source": Object {
           "@context": Array [
             "https://w3id.org/did/v1",
@@ -1602,12 +2030,6 @@ Object {
             "@context": Array [
               "https://w3id.org/did/v1",
               "https://w3id.org/security/v2",
-            ],
-            "assertionMethod": Array [
-              Any<String>,
-            ],
-            "authentication": Array [
-              Any<String>,
             ],
             "capabilityDelegation": Array [
               Any<String>,
@@ -1712,7 +2134,7 @@ Object {
         "GovernanceCapability",
       ],
     },
-    "name": "Governance Claim",
+    "name": "Root Governance",
     "source": Object {
       "@context": Array [
         "https://w3id.org/did/v1",
