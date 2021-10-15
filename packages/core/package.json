@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@affinidi/vc-common": "^1.4.1",
-    "@owlmeans/regov-ssi-common": "^0.2.0",
+    "@owlmeans/regov-ssi-common": "^0.2.2",
     "@owlmeans/regov-ssi-did": "^0.4.1"
   },
   "gitHead": "cc8f3baf1b0ef75156f7dbc9571d69446653aac8"
