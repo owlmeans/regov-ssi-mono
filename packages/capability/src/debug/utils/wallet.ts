@@ -262,6 +262,9 @@ export namespace TestUtil {
     }
 
     async claimCapabilityCreds(type: string, data: CapabilityCredentialTestParams[]) {
+      /**
+       * @TODO It should be built based on capability.
+       */
       const claims = await Promise.all(data.map(
         async data => await holderCredentialHelper<
           TestDocPayload,
