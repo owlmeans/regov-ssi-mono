@@ -54,6 +54,28 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Debug - Core: Compact SSI",
+      "skipFiles": [
+        "<node_internals>/**",
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "envFile": "${workspaceRoot}/packages/core/.env",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/core/node_modules/.bin/ts-node",
+        "--cwd",
+        "${workspaceRoot}/packages/core/",
+        "--project",
+        "${workspaceRoot}/packages/core/tsconfig.json",
+        "--ignore" ,
+        ".js",
+        "${workspaceRoot}/packages/core/src/debug/compactssi.ts"
+      ],
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Debug - Agent: identity",
       "skipFiles": [
         "<node_internals>/**",
