@@ -2,11 +2,32 @@
 require('dotenv').config()
 
 
-import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned, validateVCV1 } from '@affinidi/vc-common';
-import { COMMON_CRYPTO_ERROR_NOPUBKEY, nodeCryptoHelper } from '@owlmeans/regov-ssi-common';
-import { buildDidHelper, buildDidRegistryWarpper, buildDocumentLoader, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION, DID_REGISTRY_ERROR_NO_DID, VERIFICATION_KEY_HOLDER } from '@owlmeans/regov-ssi-did';
+import { 
+  buildVCV1, 
+  buildVCV1Skeleton, 
+  buildVCV1Unsigned, 
+  validateVCV1 
+} from '@affinidi/vc-common'
+import { 
+  COMMON_CRYPTO_ERROR_NOPUBKEY, 
+  nodeCryptoHelper 
+} from '@owlmeans/regov-ssi-common'
+import { 
+  buildDidHelper, 
+  buildDidRegistryWarpper, 
+  buildDocumentLoader, 
+  DIDPURPOSE_ASSERTION, 
+  DIDPURPOSE_AUTHENTICATION, 
+  DIDPURPOSE_VERIFICATION, 
+  DID_REGISTRY_ERROR_NO_DID, 
+  VERIFICATION_KEY_HOLDER 
+} from '@owlmeans/regov-ssi-did'
 import util from 'util'
-import { buildKeyChain, buildSSICore } from '..';
+import { 
+  buildKeyChain, 
+  buildSSICore 
+} from '..'
+
 const jsigs = require('jsonld-signatures')
 
 util.inspect.defaultOptions.depth = 8
