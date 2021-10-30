@@ -236,16 +236,28 @@ export const holderCredentialHelper = <
           throw new Error(ERROR_NO_RELATED_DID_FOUND)
         }
 
+        const errors: string[] = []
+
         let result = visitor?.bundle?.unbundle?.verifyHolder
           ? await visitor.bundle.unbundle.verifyHolder(bundle, issuerDid)
           : true
 
+        if (!result) {
+          errors.push('Holder verification by visitor is failed')
+        }
+
         if (result) {
           const [verificationResult] = await wallet.ssi.verifyPresentation(bundle, issuerDid)
           result = verificationResult
+          if (!verificationResult) {
+            errors.push('Presentation verification failed')
+          }
         }
 
-        result = result && bundle.type.includes(CREDENTIAL_OFFER_TYPE)
+        if (!bundle.type.includes(CREDENTIAL_OFFER_TYPE)) {
+          result = false
+          errors.push('Presentation should be an offer')
+        }
 
         type PayloadT = ClaimPayload<BundledClaim>
         type ExtensionT = ClaimExtenstion<BundledClaim>
@@ -265,16 +277,20 @@ export const holderCredentialHelper = <
             result = claims.credential.verifiableCredential.some(
               claim => !offers.includes(claim.credentialSubject.data.credential.id)
             )
+            if (!result) {
+              errors.push('There is no suitable claim that matches the offer')
+            }
           }
           if (!result) {
             console.log(ERROR_CLAIM_OFFER_DONT_MATCH)
           }
         }
 
-        return { result, offers, entity } as {
+        return { result, offers, entity, errors } as {
           result: boolean,
           offers: BundledOffer[],
-          entity: EntityIdentity | undefined
+          entity: EntityIdentity | undefined,
+          errors: string[]
         }
       },
 
