@@ -9,7 +9,7 @@ import {
   DIDDocument,
   DIDDocumentUnsinged
 } from "@owlmeans/regov-ssi-did"
-import { Capability, CapabilitySubject } from "."
+import { Capability, CapabilitySubject, CAPABILITY_CREDENTIAL_TYPE, CREDENTIAL_WITHSOURCE_TYPE } from "."
 import {
   CapabilityDoc,
   CapabilityExt
@@ -46,10 +46,16 @@ export const capabilityHolderHelper = <
             ...claimOptions.extension
           }
 
+          const type = [
+            ...Array.isArray(claimOptions.type) ? claimOptions.type : [claimOptions.type],
+            CAPABILITY_CREDENTIAL_TYPE,
+            CREDENTIAL_WITHSOURCE_TYPE
+          ]
+
           return await holderCredentialHelper<Doc, Ext,
             Capability<Def, Ext, CapabilitySubject<Def, Ext, Doc>>
           >(wallet).claim({
-            type: claimOptions.type,
+            type,
             schemaUri: claimOptions.schemaUri,
             crdContext: {
               // @TODO Propoer context is needed here

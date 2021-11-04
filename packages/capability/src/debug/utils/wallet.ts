@@ -29,7 +29,7 @@ import {
 
 
 import { TestUtil as AgentTestUtil } from '@owlmeans/regov-ssi-agent/src/debug/utils/wallet'
-import { capabilityHolderHelper, CAPABILITY_CREDENTIAL_TYPE, GOVERNANCE_CAPABILITY_TYPE } from "../.."
+import { capabilityHolderHelper, CAPABILITY_CREDENTIAL_TYPE, CREDENTIAL_WITHSOURCE_TYPE, GOVERNANCE_CAPABILITY_TYPE } from "../.."
 
 
 export namespace TestUtil {
@@ -136,7 +136,7 @@ export namespace TestUtil {
       // const identity = idPresentation.verifiableCredential[0].credentialSubject.data.identity
       const identity = identityHelper(this.wallet).getIdentity()
       const claim = await capabilityHolderHelper(this.wallet).claim({
-        type: [GOVERNANCE_CAPABILITY_TYPE, CAPABILITY_CREDENTIAL_TYPE],
+        type: [GOVERNANCE_CAPABILITY_TYPE],
         extension: {
           schema: []
         }
