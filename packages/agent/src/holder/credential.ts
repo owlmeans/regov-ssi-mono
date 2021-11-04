@@ -1,7 +1,6 @@
 import {
   DIDDocument,
   DIDDocumentUnsinged,
-  DIDPURPOSE_ASSERTION,
   DIDPURPOSE_AUTHENTICATION,
   DIDPURPOSE_VERIFICATION
 } from "@owlmeans/regov-ssi-did"
@@ -22,7 +21,6 @@ import {
   REGISTRY_TYPE_CLAIMS,
   REGISTRY_TYPE_CREDENTIALS,
   REGISTRY_TYPE_IDENTITIES,
-  REGISTRY_SECTION_OWN
 } from "@owlmeans/regov-ssi-core"
 import {
   ClaimSubject,
@@ -39,8 +37,6 @@ import {
   CREDENTIAL_RESPONSE_TYPE,
   CREDENTIAL_SATELLITE_TYPE,
   SatelliteCredential,
-  HolderVisitor,
-  ERROR_WRONG_CLAIM_SUBJECT_TYPE
 } from "./types"
 import {
   CREDENTIAL_OFFER_TYPE,
@@ -62,8 +58,7 @@ export const holderCredentialHelper = <
   Extension extends {} = {},
   CredentialT extends Credential<CredentialSubject<WrappedDocument<Payload>, Extension>>
   = Credential<CredentialSubject<WrappedDocument<Payload>, Extension>>,
-  VisitorExtension extends {} = {}
->(wallet: WalletWrapper, visitor?: HolderVisitor<CredentialT, VisitorExtension>) => {
+  >(wallet: WalletWrapper) => {
   type SubjectUT = CredentialT extends Credential<infer Subject> ? Subject : never
   type CredentialUT = UnsignedCredential<SubjectUT>
   const _identityHelper = identityHelper(wallet)
@@ -172,12 +167,10 @@ export const holderCredentialHelper = <
     },
 
     bundle: <
-      BundledClaim extends ClaimCredential<
-        ClaimSubject<CredentialUT, VisitorExtension>
-      > = ClaimCredential<ClaimSubject<CredentialUT, VisitorExtension>>,
-      BundledOffer extends OfferCredential<
-        OfferSubject<CredentialT, VisitorExtension>
-      > = OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
+      BundledClaim extends
+      ClaimCredential<ClaimSubject<CredentialUT>> = ClaimCredential<ClaimSubject<CredentialUT>>,
+      BundledOffer extends
+      OfferCredential<OfferSubject<CredentialT>> = OfferCredential<OfferSubject<CredentialT>>
     >(bundleOptions?: { holder?: DIDDocument }) => ({
       build: async (
         claims: BundledClaim[],
@@ -212,25 +205,15 @@ export const holderCredentialHelper = <
          * 
          * !!! In this case the initial claim should be addressed to a specific issuer.
          */
-        let issuer = await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
+        const issuer = await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
           bundle.holder.id, REGISTRY_SECTION_PEER
         )
-
-        const substituteIssuer = visitor?.bundle?.unbundle?.updateIssuer
-          && await visitor.bundle.unbundle.updateIssuer(bundle, bundle.holder.id)
-
-        issuer = substituteIssuer || issuer
 
         if (!issuer) {
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        let issuerDid = await wallet.did.lookUpDid<DIDDocument>(issuer.credential.holder.id)
-        if (substituteIssuer && visitor?.bundle?.unbundle?.updateDid) {
-          issuerDid = await visitor.bundle.unbundle.updateDid(
-            bundle, substituteIssuer.credential.id
-          )
-        }
+        const issuerDid = await wallet.did.lookUpDid<DIDDocument>(issuer.credential.holder.id)
 
         if (!issuerDid) {
           throw new Error(ERROR_NO_RELATED_DID_FOUND)
@@ -238,13 +221,7 @@ export const holderCredentialHelper = <
 
         const errors: string[] = []
 
-        let result = visitor?.bundle?.unbundle?.verifyHolder
-          ? await visitor.bundle.unbundle.verifyHolder(bundle, issuerDid)
-          : true
-
-        if (!result) {
-          errors.push('Holder verification by visitor is failed')
-        }
+        let result =true
 
         if (result) {
           const [verificationResult] = await wallet.ssi.verifyPresentation(bundle, issuerDid)
@@ -309,17 +286,13 @@ export const holderCredentialHelper = <
       store: async (bundle: OfferBundle<BundledOffer>) => {
         const offers = [...bundle.verifiableCredential]
         await _identityHelper.extractEntity(offers)
-        
+
         return Promise.all(offers.map(
           async (offer) => {
             wallet.did.addDID(offer.credentialSubject.did)
-            visitor?.bundle?.store?.storeOffer
-              && await visitor?.bundle?.store?.storeOffer(offer)
 
-              const registryCode = visitor?.bundle?.store?.castRegistry
-              ? visitor.bundle.store.castRegistry(offer)
-              : REGISTRY_TYPE_CREDENTIALS
-              const registry = wallet.getRegistry(registryCode)
+            const registryCode = REGISTRY_TYPE_CREDENTIALS
+            const registry = wallet.getRegistry(registryCode)
 
             return await registry.addCredential<
               CredentialSubject<WrappedDocument<Payload>, Extension>,
@@ -420,13 +393,7 @@ export const holderCredentialHelper = <
                 'credential/satellite',
                 { did: { '@id': 'scm:did', '@type': '@json' } }
               )
-            }) as UnsignedCredential<SatelliteSubject<VisitorExtension>>
-
-            visitor?.bundle?.response?.build?.createSatellite
-              && visitor.bundle.response.build.createSatellite(
-                unsignedSatellite,
-                wrap.credential as CredentialT
-              )
+            }) as UnsignedCredential<SatelliteSubject>
 
             const satellite = await wallet.ssi.signCredential(
               unsignedSatellite,

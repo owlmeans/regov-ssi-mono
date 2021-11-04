@@ -29,7 +29,6 @@ import {
 } from "../holder/types";
 import {
   CREDENTIAL_OFFER_TYPE,
-  IssuerVisitor,
   OfferBundle,
   OfferCredential,
   OfferSubject
@@ -41,13 +40,10 @@ import { buildLocalLoader } from "../verifier/loader";
 export const issuerCredentialHelper = <
   Payload extends {} = {},
   Extension extends {} = {},
-  CredentialT extends Credential<
-    MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
-  > = Credential<
-    MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
-  >,
-  VisitorExtension extends {} = {}
->(wallet: WalletWrapper, visitor?: IssuerVisitor<VisitorExtension, CredentialT>) => {
+  CredentialT extends
+  Credential<MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>>
+  = Credential<MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>>
+>(wallet: WalletWrapper) => {
   const _identityHelper = identityHelper(wallet)
 
   return {
@@ -118,7 +114,7 @@ export const issuerCredentialHelper = <
 
           const offerUnsigned = await wallet.ssi.buildCredential<
             WrappedDocument<{ credential: CredentialT }>,
-            OfferSubject<CredentialT, VisitorExtension>
+            OfferSubject<CredentialT>
           >(
             {
               id: did.id,
@@ -138,13 +134,10 @@ export const issuerCredentialHelper = <
             }
           )
 
-          visitor?.claim?.signClaim?.patchOffer
-            && await visitor.claim.signClaim.patchOffer(offerUnsigned)
-
           return await wallet.ssi.signCredential(
             offerUnsigned, issuer,
             //            { keyId: VERIFICATION_KEY_CONTROLLER }
-          ) as OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
+          ) as OfferCredential<OfferSubject<CredentialT>>
         },
 
         signClaims: async (claims: UnsignedClaim[], key?: KeyPair | string) => {
@@ -159,8 +152,8 @@ export const issuerCredentialHelper = <
 
     bundle: <
       BundledClaim extends ClaimCredential,
-      BundledOffer extends OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
-      = OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
+      BundledOffer extends OfferCredential<OfferSubject<CredentialT>>
+      = OfferCredential<OfferSubject<CredentialT>>
     >(
       issuer?: DIDDocument,
       identity?: IdentityParams | EntityIdentity | boolean

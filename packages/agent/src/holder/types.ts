@@ -65,51 +65,6 @@ export type SatelliteCredential<Subject extends SatelliteSubject = SatelliteSubj
 export type UnsisgnedSatellite<Subject extends SatelliteSubject = SatelliteSubject>
   = UnsignedCredential<Subject>
 
-export type HolderVisitorBuilder<
-  CredentialT extends Credential = Credential,
-  Extension extends {} = {},
-  Offer extends OfferCredential<OfferSubject<CredentialT, Extension>>
-  = OfferCredential<OfferSubject<CredentialT, Extension>>
-  > = (wallet: WalletWrapper) => HolderVisitor<CredentialT, Extension, Offer>
-
-export type HolderVisitor<
-  CredentialT extends Credential = Credential,
-  Extension extends {} = {},
-  Offer extends OfferCredential<OfferSubject<CredentialT, Extension>>
-  = OfferCredential<OfferSubject<CredentialT, Extension>>
-  > = {
-    bundle?: {
-      store?: {
-        storeOffer?: (offer: Offer) => Promise<void>
-
-        castRegistry?: (offer: Offer) => string | undefined
-      },
-
-      unbundle?: {
-        updateIssuer?: (
-          offer: OfferBundle<Offer>,
-          holder: string
-        ) => Promise<CredentialWrapper<CredentialSubject> | undefined>
-
-        updateDid?: (
-          offer: OfferBundle<Offer>,
-          holder: string
-        ) => Promise<DIDDocument | undefined>
-
-        verifyHolder?: (offer: OfferBundle<Offer>, issuerDid: DIDDocument) => Promise<boolean>
-      }
-
-      response?: {
-        build?: {
-          createSatellite?: (
-            unsignedSatellite: UnsignedCredential<SatelliteSubject<Extension>>,
-            credential: CredentialT
-          ) => Promise<void>
-        }
-      }
-    }
-  }
-
 export const ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL = 'ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL'
 
 export const ERROR_UNTRUSTED_ISSUER = 'ERROR_UNTRUSTED_ISSUER'

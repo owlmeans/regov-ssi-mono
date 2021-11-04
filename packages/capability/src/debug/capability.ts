@@ -70,67 +70,67 @@ util.inspect.defaultOptions.depth = 8;
    * checks of previous credential in chain
    */
 
-  const requestGov = await bob.requestGovernance()
+  // const requestGov = await bob.requestGovernance()
 
-  console.log('Charly provides his governance credentials to Bob')
+  // console.log('Charly provides his governance credentials to Bob')
 
-  const gov = await charly.responseGovernance(requestGov)
+  // const gov = await charly.responseGovernance(requestGov)
 
-  console.log('Bob tries to request Capability from Charly')
+  // console.log('Bob tries to request Capability from Charly')
 
-  const claimCap = await bob.claimCapability(
-    gov, Util.CRED_TYPE, {
-    description: 'Test capability 1',
-    info: 'Info for capability 1'
-  })
+  // const claimCap = await bob.claimCapability(
+  //   gov, Util.CRED_TYPE, {
+  //   description: 'Test capability 1',
+  //   info: 'Info for capability 1'
+  // })
 
-  console.log({
-    'Charly ID': charly.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-      .getCredential()?.credential.id,
-    'Bob ID': bob.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-      .getCredential()?.credential.id,
-    'Gov Capability': gov.verifiableCredential[1].id,
-    'Claim': {
-      Id: claimCap.verifiableCredential[1].credentialSubject.data.credential.id,
-      Source: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.source.id,
-      Root: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.root
-    }
-  })
+  // console.log({
+  //   'Charly ID': charly.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+  //     .getCredential()?.credential.id,
+  //   'Bob ID': bob.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+  //     .getCredential()?.credential.id,
+  //   'Gov Capability': gov.verifiableCredential[1].id,
+  //   'Claim': {
+  //     Id: claimCap.verifiableCredential[1].credentialSubject.data.credential.id,
+  //     Source: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.source.id,
+  //     Root: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.root
+  //   }
+  // })
 
-  console.log('Charly signs capability for Bob')
+  // console.log('Charly signs capability for Bob')
 
-  const claimBundle = await charly.signCapability(claimCap)
+  // const claimBundle = await charly.signCapability(claimCap)
 
-  console.log('Bob stores capability provided by Charly')
+  // console.log('Bob stores capability provided by Charly')
 
-  await bob.storeCapability(claimBundle)
+  // await bob.storeCapability(claimBundle)
 
-  console.log('Alice claims capability based credentials from Bob')
+  // console.log('Alice claims capability based credentials from Bob')
 
-  const aliceClaim = await alice.claimCapabilityCreds(
-    Util.CRED_TYPE,
-    [{
-      description: 'Alice cred',
-      info: 'Capability based cred for Alice'
-    }]
-  )
+  // const aliceClaim = await alice.claimCapabilityCreds(
+  //   Util.CRED_TYPE,
+  //   [{
+  //     description: 'Alice cred',
+  //     info: 'Capability based cred for Alice'
+  //   }]
+  // )
 
-  console.log('Bob offers capability based credential to Alice')
+  // console.log('Bob offers capability based credential to Alice')
 
-  const bobOffer = await bob.offerCapabilityCreds(aliceClaim)
+  // const bobOffer = await bob.offerCapabilityCreds(aliceClaim)
 
-  console.log('Alice stores capability based credential provided by Bob')
+  // console.log('Alice stores capability based credential provided by Bob')
 
-  await alice.storeCapabilityCreds(bobOffer)
+  // await alice.storeCapabilityCreds(bobOffer)
 
-  console.log('Dan requests credential from Alice')
-  const danCredRequest = await dan.requestCreds(Util.CRED_TYPE)
+  // console.log('Dan requests credential from Alice')
+  // const danCredRequest = await dan.requestCreds(Util.CRED_TYPE)
 
-  console.log('Alice provides capability based credentials to Dan')
-  const aliceCreds = await alice.provideCredsByCaps(danCredRequest)
+  // console.log('Alice provides capability based credentials to Dan')
+  // const aliceCreds = await alice.provideCredsByCaps(danCredRequest)
 
-  console.log('Dan verifies credentials provided by Alice')
-  const result = await dan.validateResponse<Util.TestCredential>(aliceCreds)
+  // console.log('Dan verifies credentials provided by Alice')
+  // const result = await dan.validateResponse<Util.TestCredential>(aliceCreds)
 
-  console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')
+  // console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')
 })()

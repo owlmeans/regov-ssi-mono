@@ -2,7 +2,6 @@ import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
 import {
   buildWalletWrapper,
   Presentation,
-  REGISTRY_TYPE_REQUESTS,
   Credential,
   CredentialSubject,
   WrappedDocument,
@@ -24,33 +23,13 @@ import {
   OfferSubject,
   OfferBundle,
   ClaimBundle,
-  HolderVisitor,
-  CREDENTIAL_ENTITY_IDENTITY_TYPE,
   CREDENTIAL_SATELLITE_TYPE,
   SatelliteCredential,
-  SatelliteSubject
 } from "@owlmeans/regov-ssi-agent"
-import { governanceCredentialHelper } from "../../governance/credential"
-import {
-  CapabilityCredential,
-  CapabilityDocument,
-  CapabilityExtension,
-  CapabilitySubject,
-  ClaimCapability,
-  CREDENTIAL_GOVERNANCE_TYPE,
-  OfferCapability,
-  OfferCapabilityExtension,
-  REGISTRY_TYPE_CAPABILITY,
-  UnsignedCapabilityCredential
-} from "../../governance/types"
-import { holderGovernanceVisitor } from '../../governance/holder'
+
 
 import { TestUtil as AgentTestUtil } from '@owlmeans/regov-ssi-agent/src/debug/utils/wallet'
-import { verifierCapabilityHelper } from "../../verifier/capability"
-import { issuerVisitor } from "../../issuer/capability"
-import { ByCapabilityExtension } from "../../issuer/types"
-import { holderCapabilityVisitor } from "../../holder/capability"
-import { issuerGovernanceVisitor } from "../../governance/issuer"
+import { capabilityHolderHelper, CAPABILITY_CREDENTIAL_TYPE, GOVERNANCE_CAPABILITY_TYPE } from "../.."
 
 
 export namespace TestUtil {
@@ -66,7 +45,7 @@ export namespace TestUtil {
     info: string
   }
 
-  export type GovCapabilityPresentation = Presentation<EntityIdentity | CapabilityCredential>
+  export type GovCapabilityPresentation = Presentation<EntityIdentity>
 
   export const CRED_TYPE = 'TestCapabilityBasedCredential1'
 
@@ -80,7 +59,7 @@ export namespace TestUtil {
     >>
   >>
 
-  export type TestOffer = OfferCredential<OfferSubject<TestCredential, ByCapabilityExtension>>
+  export type TestOffer = OfferCredential<OfferSubject<TestCredential>>
 
   export class Wallet extends AgentTestUtil.Wallet {
 
@@ -113,260 +92,266 @@ export namespace TestUtil {
       )
     }
 
-    async requestGovernance() {
-      const req = await verifierCredentialHelper(this.wallet).request()
-        .build({
-          '@type': CREDENTIAL_GOVERNANCE_TYPE,
-          source: REGISTRY_TYPE_CAPABILITY
-        })
+    // async requestGovernance() {
+    //   const req = await verifierCredentialHelper(this.wallet).request()
+    //     .build({
+    //       '@type': CREDENTIAL_GOVERNANCE_TYPE,
+    //       source: REGISTRY_TYPE_CAPABILITY
+    //     })
 
-      return await verifierCredentialHelper(this.wallet).request().bundle([req])
-    }
+    //   return await verifierCredentialHelper(this.wallet).request().bundle([req])
+    // }
 
-    async responseGovernance(request: RequestBundle) {
-      const { requests } = await holderCredentialHelper(this.wallet)
-        .request().unbundle(request)
+    // async responseGovernance(request: RequestBundle) {
+    //   const { requests } = await holderCredentialHelper(this.wallet)
+    //     .request().unbundle(request)
 
-      return await holderCredentialHelper<
-        {}, {}, CapabilityCredential
-      >(this.wallet).response().build(requests, request)
-    }
+    //   return await holderCredentialHelper<
+    //     {}, {}, CapabilityCredential
+    //   >(this.wallet).response().build(requests, request)
+    // }
 
-    async claimGovernance(
-      rootPresentation: Presentation<EntityIdentity | CapabilityCredential>
-    ) {
-      const {
-        entity: rootEntity,
-        credentials
-      } = await verifierCredentialHelper(this.wallet).response()
-        .verify<CapabilityCredential | EntityIdentity>(rootPresentation)
+    // async claimGovernance(
+    //   rootPresentation: Presentation<EntityIdentity | CapabilityCredential>
+    // ) {
+    //   const {
+    //     entity: rootEntity,
+    //     credentials
+    //   } = await verifierCredentialHelper(this.wallet).response()
+    //     .verify<CapabilityCredential | EntityIdentity>(rootPresentation)
 
-      const identity = this.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-        .getCredential()?.credential as Identity
+    //   const identity = this.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+    //     .getCredential()?.credential as Identity
 
-      return await governanceCredentialHelper(this.wallet).claimGovernance(
-        identity,
-        {
-          root: credentials[0],
-          name: 'Organization Governance'
-        }
-      )
-    }
+    //   return await governanceCredentialHelper(this.wallet).claimGovernance(
+    //     identity,
+    //     {
+    //       root: credentials[0],
+    //       name: 'Organization Governance'
+    //     }
+    //   )
+    // }
 
     async selfIssueGovernance(idPresentation: Presentation<EntityIdentity>) {
-      const identity = idPresentation.verifiableCredential[0].credentialSubject.data.identity
-
-      const claim = await governanceCredentialHelper(this.wallet).claimGovernance(
-        identity, { name: 'Root Governance' }
-      )
-
-      const offer = await governanceCredentialHelper(this.wallet).offer(claim)
-
-      const offerBundle = await issuerCredentialHelper(this.wallet)
-        .bundle<ClaimCapability, OfferCapability>().build([offer])
-
-      return await holderCredentialHelper<
-        CapabilityDocument,
-        CapabilityExtension,
-        CapabilityCredential,
-        OfferCapabilityExtension
-      >(
-        this.wallet, holderGovernanceVisitor(this.wallet)
-      ).bundle().store(offerBundle)
-    }
-
-    async claimCapability(
-      gov: Presentation<EntityIdentity | CapabilityCredential | SatelliteCredential>,
-      type: string,
-      doc: CapabilityCredentialTestParams
-    ) {
-      const source = this.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential()?.credential
-      if (!source) {
-        throw new Error('No identity to claim for')
-      }
-
-      const root = gov.verifiableCredential.find(
-        cap => cap.type.includes(CREDENTIAL_GOVERNANCE_TYPE)
-      ) as CapabilityCredential
-      if (!this.wallet.did.registry.peer.dids.find(wrap => wrap.did.id === root.id)) {
-        const rootSat = gov.verifiableCredential.find(
-          sat => sat.type.includes(CREDENTIAL_SATELLITE_TYPE)
-        ) as SatelliteCredential
-
-        this.wallet.did.addPeerDID(rootSat.credentialSubject.data.did)
-
-        this.wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).addCredential<
-          CapabilitySubject, CapabilityCredential
-        >(root, REGISTRY_SECTION_PEER)
-      }
-
-      const claim = await governanceCredentialHelper(this.wallet).claim(
-        source,
-        {
-          root,
-          name: 'Test Capability',
-          type: [type, CAPABILITY_TEST_CREDENTIAL_TYPE]
-        },
-        {
-          '@type': [type, CAPABILITY_TEST_CREDENTIAL_TYPE],
-          subjectSchema: {
-            // 'tcap': 'https://example.org/test/capability',
-            description: { '@id': 'scm:description', '@type': 'xsd:string' },
-            info: { '@id': 'scm:info', '@type': 'xsd:string' },
-          },
-          subjectProps: {
-            payload: {
-              description: doc.description
-            },
-            extension: {
-              info: doc.info
-            }
-          }
+      // const identity = idPresentation.verifiableCredential[0].credentialSubject.data.identity
+      const identity = identityHelper(this.wallet).getIdentity()
+      const claim = await capabilityHolderHelper(this.wallet).claim({
+        type: [GOVERNANCE_CAPABILITY_TYPE, CAPABILITY_CREDENTIAL_TYPE],
+        extension: {
+          schema: []
         }
-      )
+      }).build(identity.identity, { name: 'Root Governance' })
 
-      const claimPres = await holderCredentialHelper(this.wallet).bundle().build([claim])
-      await holderCredentialHelper(this.wallet).claim({ type }).register(claimPres)
+      // const claim = await governanceCredentialHelper(this.wallet).claimGovernance(
+      //   identity, { name: 'Root Governance' }
+      // )
 
-      return claimPres as Presentation<ClaimCapability>
+      // const offer = await governanceCredentialHelper(this.wallet).offer(claim)
+
+      // const offerBundle = await issuerCredentialHelper(this.wallet)
+      //   .bundle<ClaimCapability, OfferCapability>().build([offer])
+
+      // return await holderCredentialHelper<
+      //   CapabilityDocument,
+      //   CapabilityExtension,
+      //   CapabilityCredential,
+      // >(
+      //   this.wallet //, holderGovernanceVisitor(this.wallet)
+      // ).bundle().store(offerBundle)
     }
 
-    async signCapability(claimPres: Presentation<ClaimCapability>) {
-      const { result, claims, entity }
-        = await issuerCredentialHelper(this.wallet)
-          .bundle<ClaimCapability, OfferCapability>().unbudle(claimPres)
+    // async claimCapability(
+    //   gov: Presentation<EntityIdentity | CapabilityCredential | SatelliteCredential>,
+    //   type: string,
+    //   doc: CapabilityCredentialTestParams
+    // ) {
+    //   const source = this.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential()?.credential
+    //   if (!source) {
+    //     throw new Error('No identity to claim for')
+    //   }
 
-      const offers = await Promise.all(claims.map(
-        async claim => await governanceCredentialHelper(this.wallet).offer(claim)
-      ))
+    //   const root = gov.verifiableCredential.find(
+    //     cap => cap.type.includes(CREDENTIAL_GOVERNANCE_TYPE)
+    //   ) as CapabilityCredential
+    //   if (!this.wallet.did.registry.peer.dids.find(wrap => wrap.did.id === root.id)) {
+    //     const rootSat = gov.verifiableCredential.find(
+    //       sat => sat.type.includes(CREDENTIAL_SATELLITE_TYPE)
+    //     ) as SatelliteCredential
 
-      return await issuerCredentialHelper(this.wallet)
-        .bundle<ClaimCapability, OfferCapability>().build(offers)
-    }
+    //     this.wallet.did.addPeerDID(rootSat.credentialSubject.data.did)
 
-    async storeCapability(offerBundle: OfferBundle<OfferCapability>) {
-      const { result } = await holderCredentialHelper<
-        CapabilityDocument, CapabilityExtension,
-        CapabilityCredential, OfferCapabilityExtension
-      >(this.wallet, holderGovernanceVisitor(this.wallet))
-        .bundle().unbudle(offerBundle)
-      if (!result) {
-        throw new Error('Invalid bundle with capability')
-      }
+    //     this.wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).addCredential<
+    //       CapabilitySubject, CapabilityCredential
+    //     >(root, REGISTRY_SECTION_PEER)
+    //   }
 
-      return await holderCredentialHelper<
-        CapabilityDocument, CapabilityExtension,
-        CapabilityCredential, OfferCapabilityExtension
-      >(this.wallet, holderGovernanceVisitor(this.wallet))
-        .bundle().store(offerBundle)
-    }
+    //   const claim = await governanceCredentialHelper(this.wallet).claim(
+    //     source,
+    //     {
+    //       root,
+    //       name: 'Test Capability',
+    //       type: [type, CAPABILITY_TEST_CREDENTIAL_TYPE]
+    //     },
+    //     {
+    //       '@type': [type, CAPABILITY_TEST_CREDENTIAL_TYPE],
+    //       subjectSchema: {
+    //         // 'tcap': 'https://example.org/test/capability',
+    //         description: { '@id': 'scm:description', '@type': 'xsd:string' },
+    //         info: { '@id': 'scm:info', '@type': 'xsd:string' },
+    //       },
+    //       subjectProps: {
+    //         payload: {
+    //           description: doc.description
+    //         },
+    //         extension: {
+    //           info: doc.info
+    //         }
+    //       }
+    //     }
+    //   )
 
-    async claimCapabilityCreds(type: string, data: CapabilityCredentialTestParams[]) {
-      /**
-       * @TODO It should be built based on capability.
-       */
-      const claims = await Promise.all(data.map(
-        async data => await holderCredentialHelper<
-          TestDocPayload,
-          TestDocExtension,
-          TestCredential
-        >(this.wallet)
-          .claim({
-            type,
-            crdContext: {
-              description: { '@id': 'scm:description', '@type': 'xsd:string' },
-              info: { '@id': 'scm:info', '@type': 'xsd:string' },
-            }
-          }).build(
-            { description: data.description },
-            { extension: { info: data.info } }
-          )
-      ))
+    //   const claimPres = await holderCredentialHelper(this.wallet).bundle().build([claim])
+    //   await holderCredentialHelper(this.wallet).claim({ type }).register(claimPres)
 
-      const requestClaim = await holderCredentialHelper(this.wallet)
-        .bundle<TestClaim>().build(claims)
+    //   return claimPres as Presentation<ClaimCapability>
+    // }
 
-      await holderCredentialHelper<TestDocPayload, TestDocExtension, TestCredential>(this.wallet)
-        .claim({ type }).register(requestClaim)
+    // async signCapability(claimPres: Presentation<ClaimCapability>) {
+    //   const { result, claims, entity }
+    //     = await issuerCredentialHelper(this.wallet)
+    //       .bundle<ClaimCapability, OfferCapability>().unbudle(claimPres)
 
-      return requestClaim
-    }
+    //   const offers = await Promise.all(claims.map(
+    //     async claim => await governanceCredentialHelper(this.wallet).offer(claim)
+    //   ))
 
-    async offerCapabilityCreds(claimRequest: ClaimBundle<TestClaim>) {
-      const { result, claims } = await issuerCredentialHelper(this.wallet)
-        .bundle<TestClaim, TestOffer>().unbudle(claimRequest)
+    //   return await issuerCredentialHelper(this.wallet)
+    //     .bundle<ClaimCapability, OfferCapability>().build(offers)
+    // }
 
-      if (!result) {
-        console.log(claimRequest)
+    // async storeCapability(offerBundle: OfferBundle<OfferCapability>) {
+    //   const { result } = await holderCredentialHelper<
+    //     CapabilityDocument, CapabilityExtension,
+    //     CapabilityCredential, OfferCapabilityExtension
+    //   >(this.wallet, holderGovernanceVisitor(this.wallet))
+    //     .bundle().unbudle(offerBundle)
+    //   if (!result) {
+    //     throw new Error('Invalid bundle with capability')
+    //   }
 
-        throw new Error('Capability request is broken')
-      }
+    //   return await holderCredentialHelper<
+    //     CapabilityDocument, CapabilityExtension,
+    //     CapabilityCredential, OfferCapabilityExtension
+    //   >(this.wallet, holderGovernanceVisitor(this.wallet))
+    //     .bundle().store(offerBundle)
+    // }
 
-      const offers = await issuerCredentialHelper<
-        TestDocPayload,
-        TestDocExtension,
-        TestCredential,
-        ByCapabilityExtension
-      >(this.wallet, issuerVisitor(this.wallet)).claim().signClaims(claims)
+    // async claimCapabilityCreds(type: string, data: CapabilityCredentialTestParams[]) {
+    //   /**
+    //    * @TODO It should be built based on capability.
+    //    */
+    //   const claims = await Promise.all(data.map(
+    //     async data => await holderCredentialHelper<
+    //       TestDocPayload,
+    //       TestDocExtension,
+    //       TestCredential
+    //     >(this.wallet)
+    //       .claim({
+    //         type,
+    //         crdContext: {
+    //           description: { '@id': 'scm:description', '@type': 'xsd:string' },
+    //           info: { '@id': 'scm:info', '@type': 'xsd:string' },
+    //         }
+    //       }).build(
+    //         { description: data.description },
+    //         { extension: { info: data.info } }
+    //       )
+    //   ))
 
-      return await issuerCredentialHelper(this.wallet)
-        .bundle<TestClaim, TestOffer>().build(offers)
-    }
+    //   const requestClaim = await holderCredentialHelper(this.wallet)
+    //     .bundle<TestClaim>().build(claims)
 
-    async storeCapabilityCreds(offer: OfferBundle<TestOffer>) {
-      const { result } = await holderCredentialHelper<
-        TestDocPayload,
-        TestDocExtension,
-        TestCredential,
-        ByCapabilityExtension
-      >(
-        this.wallet,
-        holderCapabilityVisitor<TestDocPayload, TestDocExtension>()(this.wallet)
-      ).bundle().unbudle(offer)
+    //   await holderCredentialHelper<TestDocPayload, TestDocExtension, TestCredential>(this.wallet)
+    //     .claim({ type }).register(requestClaim)
 
-      if (!result) {
-        // console.log(offer)
-        throw new Error('Offer is broken and can\'t be stored')
-      }
+    //   return requestClaim
+    // }
 
-      await holderCredentialHelper<
-        TestDocPayload,
-        TestDocExtension,
-        TestCredential,
-        ByCapabilityExtension
-      >(
-        this.wallet,
-        holderCapabilityVisitor<TestDocPayload, TestDocExtension>()(this.wallet)
-      ).bundle().store(offer)
-    }
+    // async offerCapabilityCreds(claimRequest: ClaimBundle<TestClaim>) {
+    //   const { result, claims } = await issuerCredentialHelper(this.wallet)
+    //     .bundle<TestClaim, TestOffer>().unbudle(claimRequest)
 
-    async provideCredsByCaps(request: RequestBundle) {
-      const { requests } = await holderCredentialHelper(this.wallet)
-        .request().unbundle(request)
+    //   if (!result) {
+    //     console.log(claimRequest)
 
-      return await holderCredentialHelper<
-        TestDocPayload,
-        TestDocExtension,
-        TestCredential,
-        ByCapabilityExtension
-      >(this.wallet, holderCapabilityVisitor<
-        TestDocPayload,
-        TestDocExtension
-      >()(this.wallet))
-        .response().build(requests, request)
-    }
+    //     throw new Error('Capability request is broken')
+    //   }
 
-    async validateResponse<Type extends Credential = TestCredential>(
-      response: Presentation<EntityIdentity | Type>
-    ) {
-      const { result } = await verifierCapabilityHelper<Type>(this.wallet)
-        .response().verify(response)
+    //   const offers = await issuerCredentialHelper<
+    //     TestDocPayload,
+    //     TestDocExtension,
+    //     TestCredential,
+    //     ByCapabilityExtension
+    //   >(this.wallet, issuerVisitor(this.wallet)).claim().signClaims(claims)
 
-      if (!result) {
-        return false
-      }
+    //   return await issuerCredentialHelper(this.wallet)
+    //     .bundle<TestClaim, TestOffer>().build(offers)
+    // }
 
-      return true
-    }
+    // async storeCapabilityCreds(offer: OfferBundle<TestOffer>) {
+    //   const { result } = await holderCredentialHelper<
+    //     TestDocPayload,
+    //     TestDocExtension,
+    //     TestCredential,
+    //     ByCapabilityExtension
+    //   >(
+    //     this.wallet,
+    //     holderCapabilityVisitor<TestDocPayload, TestDocExtension>()(this.wallet)
+    //   ).bundle().unbudle(offer)
+
+    //   if (!result) {
+    //     // console.log(offer)
+    //     throw new Error('Offer is broken and can\'t be stored')
+    //   }
+
+    //   await holderCredentialHelper<
+    //     TestDocPayload,
+    //     TestDocExtension,
+    //     TestCredential,
+    //     ByCapabilityExtension
+    //   >(
+    //     this.wallet,
+    //     holderCapabilityVisitor<TestDocPayload, TestDocExtension>()(this.wallet)
+    //   ).bundle().store(offer)
+    // }
+
+    // async provideCredsByCaps(request: RequestBundle) {
+    //   const { requests } = await holderCredentialHelper(this.wallet)
+    //     .request().unbundle(request)
+
+    //   return await holderCredentialHelper<
+    //     TestDocPayload,
+    //     TestDocExtension,
+    //     TestCredential,
+    //     ByCapabilityExtension
+    //   >(this.wallet, holderCapabilityVisitor<
+    //     TestDocPayload,
+    //     TestDocExtension
+    //   >()(this.wallet))
+    //     .response().build(requests, request)
+    // }
+
+    // async validateResponse<Type extends Credential = TestCredential>(
+    //   response: Presentation<EntityIdentity | Type>
+    // ) {
+    //   const { result } = await verifierCapabilityHelper<Type>(this.wallet)
+    //     .response().verify(response)
+
+    //   if (!result) {
+    //     return false
+    //   }
+
+    //   return true
+    // }
   }
 }
