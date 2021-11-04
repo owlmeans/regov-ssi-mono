@@ -30,6 +30,9 @@ export const CREDENTIAL_CLAIM_TYPE = 'CredentialClaim'
 export type ClaimCredential<Subject extends ClaimSubject = ClaimSubject>
   = Credential<Subject>
 
+export type UnsignedClaimCredential<Subject extends ClaimSubject = ClaimSubject>
+  = UnsignedCredential<Subject>
+
 export type ClaimBundle<BundledClaim extends ClaimCredential>
   = Presentation<BundledClaim>
 

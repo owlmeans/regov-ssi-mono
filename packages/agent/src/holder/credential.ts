@@ -283,7 +283,7 @@ export const holderCredentialHelper = <
         }
       },
 
-      store: async (bundle: OfferBundle<BundledOffer>) => {
+      store: async (bundle: OfferBundle<BundledOffer>, registryCode = REGISTRY_TYPE_CREDENTIALS) => {
         const offers = [...bundle.verifiableCredential]
         await _identityHelper.extractEntity(offers)
 
@@ -291,7 +291,6 @@ export const holderCredentialHelper = <
           async (offer) => {
             wallet.did.addDID(offer.credentialSubject.did)
 
-            const registryCode = REGISTRY_TYPE_CREDENTIALS
             const registry = wallet.getRegistry(registryCode)
 
             return await registry.addCredential<

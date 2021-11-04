@@ -29,7 +29,17 @@ import {
 
 
 import { TestUtil as AgentTestUtil } from '@owlmeans/regov-ssi-agent/src/debug/utils/wallet'
-import { capabilityHolderHelper, CAPABILITY_CREDENTIAL_TYPE, CREDENTIAL_WITHSOURCE_TYPE, GOVERNANCE_CAPABILITY_TYPE } from "../.."
+import {
+  Capability,
+  CapabilityDoc,
+  CapabilityExt,
+  capabilityHolderHelper,
+  capabilityIssuerHelper,
+  CAPABILITY_CREDENTIAL_TYPE,
+  CREDENTIAL_WITHSOURCE_TYPE,
+  GOVERNANCE_CAPABILITY_TYPE,
+  REGISTRY_TYPE_CAPABILITY
+} from "../../index"
 
 
 export namespace TestUtil {
@@ -92,72 +102,59 @@ export namespace TestUtil {
       )
     }
 
-    // async requestGovernance() {
-    //   const req = await verifierCredentialHelper(this.wallet).request()
-    //     .build({
-    //       '@type': CREDENTIAL_GOVERNANCE_TYPE,
-    //       source: REGISTRY_TYPE_CAPABILITY
-    //     })
+    async requestGovernance() {
+      const req = await verifierCredentialHelper(this.wallet).request()
+        .build({
+          '@type': GOVERNANCE_CAPABILITY_TYPE,
+          source: REGISTRY_TYPE_CAPABILITY
+        })
 
-    //   return await verifierCredentialHelper(this.wallet).request().bundle([req])
-    // }
+      return await verifierCredentialHelper(this.wallet).request().bundle([req])
+    }
 
-    // async responseGovernance(request: RequestBundle) {
-    //   const { requests } = await holderCredentialHelper(this.wallet)
-    //     .request().unbundle(request)
+    async responseGovernance(request: RequestBundle) {
+      const { requests } = await holderCredentialHelper(this.wallet)
+        .request().unbundle(request)
 
-    //   return await holderCredentialHelper<
-    //     {}, {}, CapabilityCredential
-    //   >(this.wallet).response().build(requests, request)
-    // }
+      return await holderCredentialHelper<
+        CapabilityDoc, CapabilityExt, Capability
+      >(this.wallet).response().build(requests, request)
+    }
 
-    // async claimGovernance(
-    //   rootPresentation: Presentation<EntityIdentity | CapabilityCredential>
-    // ) {
-    //   const {
-    //     entity: rootEntity,
-    //     credentials
-    //   } = await verifierCredentialHelper(this.wallet).response()
-    //     .verify<CapabilityCredential | EntityIdentity>(rootPresentation)
+    async claimGovernance(
+      rootPresentation: Presentation<EntityIdentity | Capability>
+    ) {
+      // const {
+      //   entity: rootEntity,
+      //   credentials
+      // } = await verifierCredentialHelper(this.wallet).response()
+      //   .verify<Capability | EntityIdentity>(rootPresentation)
 
-    //   const identity = this.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-    //     .getCredential()?.credential as Identity
+      // const identity = this.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+      //   .getCredential()?.credential as Identity
 
-    //   return await governanceCredentialHelper(this.wallet).claimGovernance(
-    //     identity,
-    //     {
-    //       root: credentials[0],
-    //       name: 'Organization Governance'
-    //     }
-    //   )
-    // }
+      // return await governanceCredentialHelper(this.wallet).claimGovernance(
+      //   identity,
+      //   {
+      //     root: credentials[0],
+      //     name: 'Organization Governance'
+      //   }
+      // )
+    }
 
     async selfIssueGovernance(idPresentation: Presentation<EntityIdentity>) {
-      // const identity = idPresentation.verifiableCredential[0].credentialSubject.data.identity
       const identity = identityHelper(this.wallet).getIdentity()
       const claim = await capabilityHolderHelper(this.wallet).claim({
         type: [GOVERNANCE_CAPABILITY_TYPE],
-        extension: {
-          schema: []
-        }
-      }).build(identity.identity, { name: 'Root Governance' })
+        extension: {}
+      }).build({ name: 'Root Governance' })
 
-      // const claim = await governanceCredentialHelper(this.wallet).claimGovernance(
-      //   identity, { name: 'Root Governance' }
-      // )
+      const offer = await capabilityIssuerHelper(this.wallet).claim(identity.identity).signClaim(claim)
+      const offerBundle = await issuerCredentialHelper
+        <CapabilityDoc, CapabilityExt, Capability>(this.wallet).bundle().build([offer])
 
-      // const offer = await governanceCredentialHelper(this.wallet).offer(claim)
-
-      // const offerBundle = await issuerCredentialHelper(this.wallet)
-      //   .bundle<ClaimCapability, OfferCapability>().build([offer])
-
-      // return await holderCredentialHelper<
-      //   CapabilityDocument,
-      //   CapabilityExtension,
-      //   CapabilityCredential,
-      // >(
-      //   this.wallet //, holderGovernanceVisitor(this.wallet)
-      // ).bundle().store(offerBundle)
+      return await holderCredentialHelper<CapabilityDoc, CapabilityExt, Capability>(this.wallet)
+        .bundle().store(offerBundle, REGISTRY_TYPE_CAPABILITY)
     }
 
     // async claimCapability(

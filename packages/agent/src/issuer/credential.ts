@@ -25,7 +25,8 @@ import {
   ClaimBundle,
   ERROR_WRONG_CLAIM_SUBJECT_TYPE,
   CLAIM_TYPE_PREFIX,
-  ERROR_UNTRUSTED_ISSUER
+  ERROR_UNTRUSTED_ISSUER,
+  UnsignedClaimCredential
 } from "../holder/types";
 import {
   CREDENTIAL_OFFER_TYPE,
@@ -48,7 +49,7 @@ export const issuerCredentialHelper = <
 
   return {
     claim: (issuer?: DIDDocument) => {
-      type UnsignedClaim = ClaimCredential<
+      type UnsignedClaim = UnsignedClaimCredential<
         ClaimSubject<
           UnsignedCredential<
             CredentialSubject<WrappedDocument<Payload>, Extension>

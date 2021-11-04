@@ -31,21 +31,11 @@ export const capabilityHolderHelper = <
       }
     ) => {
       const _claimHelper = {
-        build: async (source: Credential, payload: Doc, options?: {
+        build: async (payload: Doc, options?: {
           key?: KeyPair | string,
           didUnsigned?: DIDDocumentUnsinged,
           sourceDid?: DIDDocument
         }) => {
-          const subject: CapabilitySubject<Def, Ext, Doc> = {
-            data: {
-              '@type': claimOptions.type,
-              ...payload,
-              source,
-              sourceDid: options?.sourceDid || await wallet.did.lookUpDid(source.id)
-            },
-            ...claimOptions.extension
-          }
-
           const type = [
             ...Array.isArray(claimOptions.type) ? claimOptions.type : [claimOptions.type],
             CAPABILITY_CREDENTIAL_TYPE,
@@ -58,11 +48,16 @@ export const capabilityHolderHelper = <
             type,
             schemaUri: claimOptions.schemaUri,
             crdContext: {
-              // @TODO Propoer context is needed here
+              schema: 'https://schema.org/',
+              name: { '@id': 'scm:name', '@type': 'schema:Text' },
+              source: { '@id': 'scm:source', '@type': 'VerifiableCredential' },
+              // @TODO here should be proper reference to DID structure as type
+              sourceDid: { '@id': 'scm:sourceDid', '@type': '@json' }
             },
             holder: claimOptions.holder
           }).build(
-            subject.data, { key: options?.key, extension: claimOptions.extension }
+            { '@type': claimOptions.type, ...payload },
+            { key: options?.key, extension: claimOptions.extension }
           )
         }
       }

@@ -1,4 +1,4 @@
 
-export * from './capability/index'
+export * from './credential/index'
 
 export * from './governance/index'

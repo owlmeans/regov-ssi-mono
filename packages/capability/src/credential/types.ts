@@ -1,7 +1,7 @@
 
 import {
   ContextSchema,
-  Credential, CredentialSubject, MaybeArray, UnsignedCredential, WrappedDocument
+  Credential, CredentialSubject, CredentialType, MaybeArray, UnsignedCredential, WrappedDocument
 } from '@owlmeans/regov-ssi-core'
 import { DIDDocument } from '@owlmeans/regov-ssi-did'
 
@@ -34,7 +34,12 @@ export type CapabilityDoc<DefaultValues extends {} = {}> = {
 }
 
 export type CapabilityExt = {
-  schema: ContextSchema[]
+  schema?: CapabilitySchema | CapabilitySchema[]
+}
+
+export type CapabilitySchema = {
+  ctxSchema: ContextSchema | ContextSchema[]
+  type: string | string[]
 }
 
 export type CapabilitySubject<
@@ -60,3 +65,5 @@ export const CAPABILITY_CREDENTIAL_TYPE = 'Capability'
 export const isCapability = (credential: Credential): credential is Capability => {
   return credential.type.includes(CAPABILITY_CREDENTIAL_TYPE)
 }
+
+export const REGISTRY_TYPE_CAPABILITY = 'capabilities'
