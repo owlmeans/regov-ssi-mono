@@ -2,9 +2,15 @@ import { ExtractKeyMethod } from ".."
 import { DIDDocument, DIDHelper } from "../types"
 
 export type DIDDocumentWrapper = {
-  did: DIDDocument,
-  key?: string,
+  did: DIDDocument
+  source?: string
+  key?: string
 }
+
+export const WRAPPER_SOURCE_PEER_CONTROLLER = 'peer_controller'
+export const WRAPPER_SOURCE_OWN_CONTROLLER = 'own_controller'
+export const WRAPPER_SOURCE_PEER_ID = 'peer_id'
+export const WRAPPER_SOURCE_OWN_ID = 'own_id'
 
 export type DIDRegistry = {
   dids: DIDDocumentWrapper[],

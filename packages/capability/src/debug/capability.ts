@@ -4,6 +4,7 @@ import { TestUtil as Util } from './utils/wallet'
 
 import util from 'util'
 import { REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core';
+import { capabilityVerifierHelper } from '..';
 util.inspect.defaultOptions.depth = 8;
 
 /**
@@ -50,24 +51,36 @@ util.inspect.defaultOptions.depth = 8;
 
   const rootGov = await charly.responseGovernance(requestRootGov)
 
-  // await fred.claimGovernance(rootGov)
+  const rootGovVer = await capabilityVerifierHelper(fred.wallet).response().verify(rootGov)
+  
+  console.log('Root governcnace of Charly is verified by Fred', rootGovVer)
+  if (!rootGovVer) {
+    console.log(rootGov)
+  }
+
+  const frediesClaim = await fred.claimOrganization('Fredies')
+
+  console.log('Fred claimed organization capabilities')
+
+  const frediesOffer = await charly.signCapability(frediesClaim)
+
+  console.log('Charly signed and offer orgnaization capabilties')
 
   /**
    * @PROCEED
-   * @TODO Make Bob request governance from Fred.
-   * 1. Charly offer governance to Fred.
-   * 2. Governance has capability limits.
-   * 3. Bob requests gavernance from Fred to claim capability
-   * 4. Fred provides capability to Bob instead of Charly
-   * 
+   * @TODO Make Bob request governance from Fred. 
+   * 1. Charly offer governance to Fred. ✅
+   * 2. Governance has capability limits. ✅
+   * 3. Bob requests capabiloty from Fred to offer credentials
+   * 4. Fred, instead of Charly, provides capability to Bob 
    * 5. When Dan verifies Alice's credentials, he checks if 
-   * the capability is allowed by Fred's governance
-   * 5.1. Credentials should be included to the chain
-   * alongside credentials
+   * the capability is allowed by Fred's governance ✅
+   * 5.1. Capabilties should be included to the chain
+   * alongside credentials ✅
    * 5.2. Refactor chain building and verification in a direct
-   * sequenc (the chain itself can be ordered a random way???)
+   * sequence (the chain itself can be ordered a random way???) ✅
    * 5.3. Make sure that the chain verification implies the 
-   * checks of previous credential in chain
+   * checks of previous credential in chain ✅
    */
 
   // const requestGov = await bob.requestGovernance()

@@ -1,4 +1,5 @@
 
+import { ClaimCredential, ClaimSubject, OfferCredential, OfferSubject } from '@owlmeans/regov-ssi-agent'
 import {
   ContextSchema,
   Credential, CredentialSubject, CredentialType, MaybeArray, UnsignedCredential, WrappedDocument
@@ -38,7 +39,7 @@ export type CapabilityExt = {
 }
 
 export type CapabilitySchema = {
-  ctxSchema: ContextSchema | ContextSchema[]
+  ctxSchema?: ContextSchema | ContextSchema[]
   type: string | string[]
 }
 
@@ -67,3 +68,15 @@ export const isCapability = (credential: Credential): credential is Capability =
 }
 
 export const REGISTRY_TYPE_CAPABILITY = 'capabilities'
+
+export type ClaimCapability<
+  Def extends {} = {},
+  Ext extends CapabilityExt = CapabilityExt,
+  Subject extends CapabilitySubject = CapabilitySubject<Def, Ext>
+  > = ClaimCredential<ClaimSubject<UnsignedCapability<Def, Ext, Subject>>>
+
+export type OfferCapability<
+  Def extends {} = {},
+  Ext extends CapabilityExt = CapabilityExt,
+  Subject extends CapabilitySubject = CapabilitySubject<Def, Ext>
+  > = OfferCredential<OfferSubject<Capability<Def, Ext, Subject>>>

@@ -3,13 +3,24 @@ import {
   SatelliteCredential,
   verifierCredentialHelper
 } from "@owlmeans/regov-ssi-agent"
+import { isIdentity } from "@owlmeans/regov-ssi-agent/src"
 import {
   Presentation,
   Credential,
-  WalletWrapper
+  WalletWrapper,
+  REGISTRY_TYPE_IDENTITIES,
+  REGISTRY_SECTION_PEER
 } from "@owlmeans/regov-ssi-core"
-import { CredentialWithSource, hasCredentialSource, isCapability } from "."
-import { isGovernance } from ".."
+import {
+  DIDDocumentWrapper,
+  VERIFICATION_KEY_HOLDER,
+  WRAPPER_SOURCE_PEER_ID
+} from "@owlmeans/regov-ssi-did"
+import {
+  CredentialWithSource,
+  hasCredentialSource,
+  isCapability
+} from "./types"
 
 
 export const capabilityVerifierHelper =
@@ -34,32 +45,34 @@ export const capabilityVerifierHelper =
               console.log(info)
               return false
             }
-            /**
-             * @PROCEED
-             * @TODO We should verfiy credential based on source:
-             * 1. If the source is capability we need to check
-             * 1.1. If the capability allows to issue this credential
-             * 2. If the source is governance we need to check if:
-             * 2.1. If the credential is governance we need to check if source is allowed to delegate
-             * 2.2. If the credential is capability we need to check if source is allowrd to provide
-             *      this capability.
-             * 2.3. If the credential is a random credential we need to check if source is allowed
-             *      to provide random crednetials.
-             */
-            if (isGovernance(credential)) {
-              if (isGovernance(source)) {
-                return _responseHelper.verifyWithSource(source)
+            if (isCapability(source)) {
+              const schema = source.credentialSubject.schema ?
+                Array.isArray(source.credentialSubject.schema)
+                  ? source.credentialSubject.schema
+                  : [source.credentialSubject.schema]
+                : []
+              if (schema.find(
+                schema => {
+                  const type = Array.isArray(schema.type) ? schema.type : [schema.type]
+                  return type.includes('*') || type.every(type => credential.type.includes(type))
+                }
+              )) {
+                const purpose = wallet.did.helper()
+                  .expandVerificationMethod(did, 'capabilityInvocation', VERIFICATION_KEY_HOLDER)
+                if (purpose && credential.issuer === did.id) {
+                  return _responseHelper.verifyWithSource(source)
+                }
+                console.log('Source capability doesn\t have rights to invoke credentials')
               }
-              const [result, info] = await wallet.ssi.verifyCredential(source)
-              if (!result) {
-                console.log(info)
+              console.log('Source capability can\'t genereate this credential')
+            } else if (isIdentity(source)) {
+              const peerDid = await wallet.did.lookUpDid<DIDDocumentWrapper>(did.id, true)
+              const trustedIdentity = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+                .getCredential(source.id, REGISTRY_SECTION_PEER)
+              if (trustedIdentity?.credential && peerDid?.source === WRAPPER_SOURCE_PEER_ID) {
+                return true
               }
-
-              return result
-            } else if (isCapability(credential)) {
-
-            } else {
-
+              console.log('Untrusted identity at the end of trust chain')
             }
 
             return false
