@@ -16,8 +16,13 @@ import {
   VERIFICATION_KEY_HOLDER,
   WRAPPER_SOURCE_PEER_ID
 } from "@owlmeans/regov-ssi-did"
+import { ERROR_CREDENTIAL_SOURCE_UNVERIFIABLE } from "."
 import {
   CredentialWithSource,
+  ERROR_CREDENTIAL_DOESNTHAVE_SOURCE,
+  ERROR_ROOT_SOURCE_UNTRUSTED,
+  ERROR_SOURCE_CANTGENERATE_CREDENTIAL,
+  ERROR_SOURCE_CANTINVOKE_CREDENTIAL,
   hasCredentialSource,
   isCapability
 } from "./types"
@@ -30,20 +35,24 @@ export const capabilityVerifierHelper =
     const _helper = {
       response: () => {
         const _responseHelper = {
-          verifyWithSource: async (credential: CredentialWithSource): Promise<boolean> => {
+          verifyWithSource: async (
+            credential: CredentialWithSource
+          ): Promise<[boolean, string[]]> => {
+            const errors: string[] = []
             const subject = Array.isArray(credential.credentialSubject)
               ? credential.credentialSubject[0]
               : credential.credentialSubject
             if (!subject.source || !subject.sourceDid) {
-              return false
+              errors.push(ERROR_CREDENTIAL_DOESNTHAVE_SOURCE)
+              return [false, errors]
             }
             const source = subject.source
             const did = subject.sourceDid
             const [result, info] = await wallet.ssi.verifyCredential(source, did)
             if (!result) {
-              console.log('Source is supplied without verification meta-data')
+              errors.push(ERROR_CREDENTIAL_SOURCE_UNVERIFIABLE)
               console.log(info)
-              return false
+              return [false, errors]
             }
             if (isCapability(source)) {
               const schema = source.credentialSubject.schema ?
@@ -62,43 +71,45 @@ export const capabilityVerifierHelper =
                 if (purpose && credential.issuer === did.id) {
                   return _responseHelper.verifyWithSource(source)
                 }
-                console.log('Source capability doesn\t have rights to invoke credentials')
+                errors.push(ERROR_SOURCE_CANTINVOKE_CREDENTIAL)
               }
-              console.log('Source capability can\'t genereate this credential')
+              errors.push(ERROR_SOURCE_CANTGENERATE_CREDENTIAL)
             } else if (isIdentity(source)) {
               const peerDid = await wallet.did.lookUpDid<DIDDocumentWrapper>(did.id, true)
               const trustedIdentity = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
                 .getCredential(source.id, REGISTRY_SECTION_PEER)
               if (trustedIdentity?.credential && peerDid?.source === WRAPPER_SOURCE_PEER_ID) {
-                return true
+                return [true, []]
               }
-              console.log('Untrusted identity at the end of trust chain')
+              errors.push(ERROR_ROOT_SOURCE_UNTRUSTED)
             }
 
-            return false
+            return [false, errors]
           },
 
           verify: async (presentation: Presentation<PresentedCredential>) => {
-            const { result, credentials, dids, entity } = await verifierCredentialHelper(wallet)
+            const { result, credentials, dids, entity, errors } = await verifierCredentialHelper(wallet)
               .response().verify(presentation)
 
             if (result && credentials) {
-              return await (credentials as Credential[]).reduce(
-                async (result: Promise<boolean>, credential: Credential) => {
-                  if (!await result) {
-                    return false
-                  }
-                  if (hasCredentialSource(credential)) {
-                    return _responseHelper.verifyWithSource(credential)
-                  }
+              return await (credentials as Credential[])
+                .reduce<Promise<[boolean, string[]]>>(
+                  async (tmp, credential: Credential) => {
+                    const [result, errors] = await tmp
+                    if (!await result) {
+                      return [false, errors]
+                    }
+                    if (hasCredentialSource(credential)) {
+                      return _responseHelper.verifyWithSource(credential)
+                    }
 
-                  return true
-                },
-                Promise.resolve(true)
-              )
+                    return [true, []]
+                  },
+                  Promise.resolve([true, []])
+                )
             }
 
-            return result
+            return [result, errors]
           }
         }
 

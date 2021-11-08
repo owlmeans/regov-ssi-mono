@@ -5,6 +5,7 @@ import { TestUtil as Util } from './utils/wallet'
 import util from 'util'
 import { REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core';
 import { capabilityVerifierHelper } from '..';
+import { identityHelper } from '@owlmeans/regov-ssi-agent';
 util.inspect.defaultOptions.depth = 8;
 
 /**
@@ -66,12 +67,16 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Charly signed and offer orgnaization capabilties')
 
+  await fred.storeCapability(frediesOffer)
+
+  console.log('Fred stored capabilities offered by Charly')
+
   /**
    * @PROCEED
    * @TODO Make Bob request governance from Fred. 
    * 1. Charly offer governance to Fred. ✅
    * 2. Governance has capability limits. ✅
-   * 3. Bob requests capabiloty from Fred to offer credentials
+   * 3. Bob requests capabiloty from Fred to offer credentials 
    * 4. Fred, instead of Charly, provides capability to Bob 
    * 5. When Dan verifies Alice's credentials, he checks if 
    * the capability is allowed by Fred's governance ✅
@@ -83,41 +88,36 @@ util.inspect.defaultOptions.depth = 8;
    * checks of previous credential in chain ✅
    */
 
-  // const requestGov = await bob.requestGovernance()
 
-  // console.log('Charly provides his governance credentials to Bob')
+  console.log('Bob tries to request Capability from Fred')
 
-  // const gov = await charly.responseGovernance(requestGov)
+  const claimCap = await bob.claimCapability(
+    Util.CRED_TYPE, {
+    name: 'Organization 1 - Membership offer capability',
+    description: 'Allows to provide Ortanization 1 membership'
+  })
 
-  // console.log('Bob tries to request Capability from Charly')
+  console.log({
+    'Charly ID': identityHelper(charly.wallet).getIdentity().identity.id,
+    'Fred ID': identityHelper(fred.wallet).getIdentity().identity.id,
+    'Bob ID': identityHelper(bob.wallet).getIdentity().identity.id,
+    'Gov Capability': rootGov.verifiableCredential[1].id,
+    'Claim': {
+      Id: claimCap.verifiableCredential[1].credentialSubject.data.credential.id,
+    }
+  })
 
-  // const claimCap = await bob.claimCapability(
-  //   gov, Util.CRED_TYPE, {
-  //   description: 'Test capability 1',
-  //   info: 'Info for capability 1'
-  // })
+  console.log('Fred signs capability for Bob')
 
-  // console.log({
-  //   'Charly ID': charly.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-  //     .getCredential()?.credential.id,
-  //   'Bob ID': bob.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-  //     .getCredential()?.credential.id,
-  //   'Gov Capability': gov.verifiableCredential[1].id,
-  //   'Claim': {
-  //     Id: claimCap.verifiableCredential[1].credentialSubject.data.credential.id,
-  //     Source: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.source.id,
-  //     Root: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.root
-  //   }
-  // })
+  const claimBundle = await fred.signCapability(claimCap, Util.ORGANIZATION_CAPABILITY_TYPE)
 
-  // console.log('Charly signs capability for Bob')
+  console.log('Bob stores capability provided by Charly')
 
-  // const claimBundle = await charly.signCapability(claimCap)
+  await bob.storeCapability(claimBundle)
 
-  // console.log('Bob stores capability provided by Charly')
-
-  // await bob.storeCapability(claimBundle)
-
+  /**
+   * @PROCEED
+   */
   // console.log('Alice claims capability based credentials from Bob')
 
   // const aliceClaim = await alice.claimCapabilityCreds(

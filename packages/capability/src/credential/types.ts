@@ -80,3 +80,10 @@ export type OfferCapability<
   Ext extends CapabilityExt = CapabilityExt,
   Subject extends CapabilitySubject = CapabilitySubject<Def, Ext>
   > = OfferCredential<OfferSubject<Capability<Def, Ext, Subject>>>
+
+
+export const ERROR_CREDENTIAL_DOESNTHAVE_SOURCE = 'ERROR_CREDENTIAL_DOESNTHAVE_SOURCE'
+export const ERROR_CREDENTIAL_SOURCE_UNVERIFIABLE = 'ERROR_CREDENTIAL_SOURCE_UNVERIFIABLE'
+export const ERROR_SOURCE_CANTINVOKE_CREDENTIAL = 'ERROR_SOURCE_CANTINVOKE_CREDENTIAL'
+export const ERROR_SOURCE_CANTGENERATE_CREDENTIAL = 'ERROR_SOURCE_CANTGENERATE_CREDENTIAL'
+export const ERROR_ROOT_SOURCE_UNTRUSTED = 'ERROR_ROOT_SOURCE_UNTRUSTED'

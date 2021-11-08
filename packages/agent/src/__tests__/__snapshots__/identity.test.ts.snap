@@ -87,6 +87,7 @@ Object {
     },
     "type": Array [
       "VerifiableCredential",
+      "EntityIdentity",
       "TestUtilIdentity",
     ],
   },
@@ -180,6 +181,7 @@ Object {
     },
     "type": Array [
       "VerifiableCredential",
+      "EntityIdentity",
       "TestUtilIdentity",
     ],
   },
@@ -283,6 +285,7 @@ Object {
             },
             "type": Array [
               "VerifiableCredential",
+              "EntityIdentity",
               "TestUtilIdentity",
             ],
           },
@@ -445,6 +448,7 @@ Object {
             },
             "type": Array [
               "VerifiableCredential",
+              "EntityIdentity",
               "TestUtilIdentity",
             ],
           },
@@ -585,6 +589,7 @@ Object {
         },
         "type": Array [
           "VerifiableCredential",
+          "EntityIdentity",
           "TestUtilIdentity",
         ],
       },

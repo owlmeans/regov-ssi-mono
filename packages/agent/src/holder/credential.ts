@@ -1,6 +1,8 @@
 import {
   DIDDocument,
+  DIDDocumentPurpose,
   DIDDocumentUnsinged,
+  DIDPURPOSE_ASSERTION,
   DIDPURPOSE_AUTHENTICATION,
   DIDPURPOSE_VERIFICATION
 } from "@owlmeans/regov-ssi-did"
@@ -37,6 +39,9 @@ import {
   CREDENTIAL_RESPONSE_TYPE,
   CREDENTIAL_SATELLITE_TYPE,
   SatelliteCredential,
+  ERROR_PRESENTATION_VERIFICTION,
+  ERROR_PRESENTATION_SHOULBE_OFFER,
+  ERROR_UNBUNDLE_NOCLAIM_TOMATCH,
 } from "./types"
 import {
   CREDENTIAL_OFFER_TYPE,
@@ -76,7 +81,8 @@ export const holderCredentialHelper = <
         build: async (payload: Payload, options?: {
           key?: KeyPair | string,
           extension?: Extension,
-          didUnsigned?: DIDDocumentUnsinged
+          didUnsigned?: DIDDocumentUnsinged,
+          didPurposes?: DIDDocumentPurpose[]
         }) => {
           const credentialSubject = {
             data: {
@@ -92,7 +98,7 @@ export const holderCredentialHelper = <
             {
               data: JSON.stringify(credentialSubject),
               hash: true,
-              purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_AUTHENTICATION]
+              purpose: options?.didPurposes || [DIDPURPOSE_VERIFICATION, DIDPURPOSE_AUTHENTICATION]
             }
           )
 
@@ -191,7 +197,7 @@ export const holderCredentialHelper = <
         return await wallet.ssi.signPresentation(unsigned, holder) as ClaimBundle<BundledClaim>
       },
 
-      unbudle: async (bundle: OfferBundle<BundledOffer>) => {
+      unbudle: async (bundle: OfferBundle<BundledOffer>, trustIssuer: boolean = false) => {
         const offers = [...bundle.verifiableCredential]
         const entity = _identityHelper.extractEntity(offers)
 
@@ -200,20 +206,17 @@ export const holderCredentialHelper = <
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        /**
-         * @TODO we should be able to deal with untrusted issuer.
-         * 
-         * !!! In this case the initial claim should be addressed to a specific issuer.
-         */
-        const issuer = await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
-          bundle.holder.id, REGISTRY_SECTION_PEER
-        )
+        const issuer = trustIssuer ? entity?.credentialSubject.data.identity
+          : await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
+            bundle.holder.id, REGISTRY_SECTION_PEER
+          )?.credential
 
         if (!issuer) {
           throw new Error(ERROR_UNTRUSTED_ISSUER)
         }
 
-        const issuerDid = await wallet.did.lookUpDid<DIDDocument>(issuer.credential.holder.id)
+        const issuerDid = trustIssuer ? entity?.credentialSubject.did
+          : await wallet.did.lookUpDid<DIDDocument>(issuer.holder.id)
 
         if (!issuerDid) {
           throw new Error(ERROR_NO_RELATED_DID_FOUND)
@@ -221,19 +224,19 @@ export const holderCredentialHelper = <
 
         const errors: string[] = []
 
-        let result =true
+        let result = true
 
         if (result) {
           const [verificationResult] = await wallet.ssi.verifyPresentation(bundle, issuerDid)
           result = verificationResult
           if (!verificationResult) {
-            errors.push('Presentation verification failed')
+            errors.push(ERROR_PRESENTATION_VERIFICTION)
           }
         }
 
         if (!bundle.type.includes(CREDENTIAL_OFFER_TYPE)) {
           result = false
-          errors.push('Presentation should be an offer')
+          errors.push(ERROR_PRESENTATION_SHOULBE_OFFER)
         }
 
         type PayloadT = ClaimPayload<BundledClaim>
@@ -255,11 +258,11 @@ export const holderCredentialHelper = <
               claim => !offers.includes(claim.credentialSubject.data.credential.id)
             )
             if (!result) {
-              errors.push('There is no suitable claim that matches the offer')
+              errors.push(ERROR_UNBUNDLE_NOCLAIM_TOMATCH)
             }
           }
           if (!result) {
-            console.log(ERROR_CLAIM_OFFER_DONT_MATCH)
+            errors.push(ERROR_CLAIM_OFFER_DONT_MATCH)
           }
         }
 

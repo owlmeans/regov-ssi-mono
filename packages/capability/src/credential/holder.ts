@@ -7,6 +7,7 @@ import {
 } from "@owlmeans/regov-ssi-core"
 import {
   DIDDocument,
+  DIDDocumentPurpose,
   DIDDocumentUnsinged
 } from "@owlmeans/regov-ssi-did"
 import { Capability, CapabilitySubject, CAPABILITY_CREDENTIAL_TYPE, CREDENTIAL_WITHSOURCE_TYPE } from "."
@@ -34,7 +35,8 @@ export const capabilityHolderHelper = <
         build: async (payload: Doc, options?: {
           key?: KeyPair | string,
           didUnsigned?: DIDDocumentUnsinged,
-          sourceDid?: DIDDocument
+          sourceDid?: DIDDocument,
+          didPurposes?: DIDDocumentPurpose[]
         }) => {
           const type = [
             ...Array.isArray(claimOptions.type) ? claimOptions.type : [claimOptions.type],
@@ -50,14 +52,21 @@ export const capabilityHolderHelper = <
             crdContext: {
               schema: 'https://schema.org/',
               name: { '@id': 'scm:name', '@type': 'schema:Text' },
+              description: { '@id': 'scm:description', '@type': 'schema:Text' },
               source: { '@id': 'scm:source', '@type': 'VerifiableCredential' },
               // @TODO here should be proper reference to DID structure as type
-              sourceDid: { '@id': 'scm:sourceDid', '@type': '@json' }
+              sourceDid: { '@id': 'scm:sourceDid', '@type': '@json' },
+              ctxSchema: { '@id': 'scm:ctxSchema', '@type': '@json' }
             },
             holder: claimOptions.holder
           }).build(
             { '@type': claimOptions.type, ...payload },
-            { key: options?.key, extension: claimOptions.extension }
+            { 
+              key: options?.key, 
+              extension: claimOptions.extension,
+              didUnsigned: options?.didUnsigned,
+              didPurposes: options?.didPurposes
+            }
           )
         }
       }
