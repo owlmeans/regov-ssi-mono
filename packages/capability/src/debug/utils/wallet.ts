@@ -40,7 +40,7 @@ import {
   CREDENTIAL_WITHSOURCE_TYPE,
   REGISTRY_TYPE_CAPABILITY
 } from "../../index"
-import { capabilityVerifierHelper, ClaimCapability, OfferCapability } from "../../credential"
+import { capabilityVerifierHelper, ClaimCapability, CredentialWithSource, OfferCapability, SourceExtension, UnsignedCredentialWithSource } from "../../credential"
 import { DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION } from "@owlmeans/regov-ssi-did"
 
 
@@ -62,15 +62,36 @@ export namespace TestUtil {
 
   export type GovCapabilityPresentation = Presentation<EntityIdentity>
 
-  export const CRED_TYPE = 'TestCapabilityBasedCredential1'
+  /**
+      role: { '@id': 'scm:role', '@type': 'schema:Text' },
+      organziationDid: { '@id': 'scm:organziationDid', '@type': '@id' },
+      organziation: { '@id': 'scm:organziation', '@type': 'schema:Text' },
+      source: { '@id': 'scm:source', '@type': 'VerifiableCredential' },
+      // @TODO here should be proper reference to DID structure as type
+      sourceDid: { '@id': 'scm:sourceDid', '@type': '@json' }
+   */
 
-  export type TestCredential = Credential<CredentialSubject>
+  export type MembershipDoc = {
+    role?: string
+    organization?: string
+    organziationDid?: string
+  }
 
-  export type TestClaim = ClaimCredential<ClaimSubject<
-    UnsignedCredential<CredentialSubject>
+  export type MembershipCredential = CredentialWithSource<CredentialSubject<
+    WrappedDocument<MembershipDoc>
   >>
 
-  export type TestOffer = OfferCredential<OfferSubject<TestCredential>>
+  export type UnsignedMembershipCredential = UnsignedCredentialWithSource<
+    CredentialSubject<
+      WrappedDocument<MembershipDoc>
+    >
+  >
+
+  export type MembershipClaim = ClaimCredential<ClaimSubject<
+    UnsignedMembershipCredential
+  >>
+
+  export type MembershipOffer = OfferCredential<OfferSubject<MembershipCredential>>
 
   export class Wallet extends AgentTestUtil.Wallet {
 
@@ -177,10 +198,7 @@ export namespace TestUtil {
         .bundle().store(offerBundle, REGISTRY_TYPE_CAPABILITY)
     }
 
-    async claimCapability(
-      type: string,
-      doc: CapabilityTestParams
-    ) {
+    async claimCapability( doc: CapabilityTestParams ) {
       const claim = await capabilityHolderHelper(this.wallet).claim({
         type: [MEMBERSHIP_CAPABILITY_TYPE],
         extension: {
@@ -249,36 +267,20 @@ export namespace TestUtil {
       >(this.wallet).bundle().store(offerBundle, REGISTRY_TYPE_CAPABILITY)
     }
 
-    // async claimCapabilityCreds(type: string, data: CapabilityCredentialTestParams[]) {
-    //   /**
-    //    * @TODO It should be built based on capability.
-    //    */
-    //   const claims = await Promise.all(data.map(
-    //     async data => await holderCredentialHelper<
-    //       TestDocPayload,
-    //       TestDocExtension,
-    //       TestCredential
-    //     >(this.wallet)
-    //       .claim({
-    //         type,
-    //         crdContext: {
-    //           description: { '@id': 'scm:description', '@type': 'xsd:string' },
-    //           info: { '@id': 'scm:info', '@type': 'xsd:string' },
-    //         }
-    //       }).build(
-    //         { description: data.description },
-    //         { extension: { info: data.info } }
-    //       )
-    //   ))
+    async claimCapabilityCreds(type: string) {
+      const claim = await holderCredentialHelper
+        <MembershipDoc, SourceExtension, MembershipCredential>(this.wallet)
+        .claim({ type }).build({})
 
-    //   const requestClaim = await holderCredentialHelper(this.wallet)
-    //     .bundle<TestClaim>().build(claims)
+      const requestClaim = await holderCredentialHelper(this.wallet)
+        .bundle<MembershipClaim>().build([claim])
 
-    //   await holderCredentialHelper<TestDocPayload, TestDocExtension, TestCredential>(this.wallet)
-    //     .claim({ type }).register(requestClaim)
+      await holderCredentialHelper
+        <MembershipDoc, SourceExtension, MembershipCredential>(this.wallet)
+        .claim({ type }).register(requestClaim)
 
-    //   return requestClaim
-    // }
+      return requestClaim
+    }
 
     // async offerCapabilityCreds(claimRequest: ClaimBundle<TestClaim>) {
     //   const { result, claims } = await issuerCredentialHelper(this.wallet)

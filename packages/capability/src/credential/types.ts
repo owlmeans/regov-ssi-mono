@@ -13,7 +13,7 @@ export type CredentialWithSource<
   Subject extends MaybeArray<SubjectWithSource> = MaybeArray<SubjectWithSource>
   > = Credential<Subject>
 
-export type UnsignedCredentailWithSource<
+export type UnsignedCredentialWithSource<
   Subject extends MaybeArray<SubjectWithSource> = MaybeArray<SubjectWithSource>
   > = UnsignedCredential<Subject>
 

@@ -53,7 +53,7 @@ util.inspect.defaultOptions.depth = 8;
   const rootGov = await charly.responseGovernance(requestRootGov)
 
   const rootGovVer = await capabilityVerifierHelper(fred.wallet).response().verify(rootGov)
-  
+
   console.log('Root governcnace of Charly is verified by Fred', rootGovVer)
   if (!rootGovVer) {
     console.log(rootGov)
@@ -91,8 +91,7 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Bob tries to request Capability from Fred')
 
-  const claimCap = await bob.claimCapability(
-    Util.CRED_TYPE, {
+  const claimCap = await bob.claimCapability({
     name: 'Organization 1 - Membership offer capability',
     description: 'Allows to provide Ortanization 1 membership'
   })
@@ -115,19 +114,16 @@ util.inspect.defaultOptions.depth = 8;
 
   await bob.storeCapability(claimBundle)
 
+  console.log('Alice claims capability based credentials from Bob')
+
+  const aliceClaim = await alice.claimCapabilityCreds(
+    Util.MEMBERSHIP_CREDENTIAL_TYPE
+  )
+
   /**
    * @PROCEED
    */
-  // console.log('Alice claims capability based credentials from Bob')
-
-  // const aliceClaim = await alice.claimCapabilityCreds(
-  //   Util.CRED_TYPE,
-  //   [{
-  //     description: 'Alice cred',
-  //     info: 'Capability based cred for Alice'
-  //   }]
-  // )
-
+    
   // console.log('Bob offers capability based credential to Alice')
 
   // const bobOffer = await bob.offerCapabilityCreds(aliceClaim)
