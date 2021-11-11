@@ -54,6 +54,11 @@ export const capabilityVerifierHelper =
               console.log(info)
               return [false, errors]
             }
+            /**
+             * @TODO Verify credential with the source properly
+             * 1. Verify chain
+             * 2. Verify if the credential fits to some capability description
+             */
             if (isCapability(source)) {
               const schema = source.credentialSubject.schema ?
                 Array.isArray(source.credentialSubject.schema)

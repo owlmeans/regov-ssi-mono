@@ -1,6 +1,7 @@
 
 import { ClaimCredential, ClaimSubject, OfferCredential, OfferSubject } from '@owlmeans/regov-ssi-agent'
 import {
+  BasicCredentialType,
   ContextSchema,
   Credential, CredentialSubject, CredentialType, MaybeArray, UnsignedCredential, WrappedDocument
 } from '@owlmeans/regov-ssi-core'
@@ -40,7 +41,8 @@ export type CapabilityExt = {
 
 export type CapabilitySchema = {
   ctxSchema?: ContextSchema | ContextSchema[]
-  type: string | string[]
+  link?: BasicCredentialType,
+  type: BasicCredentialType
 }
 
 export type CapabilitySubject<

@@ -12,15 +12,12 @@ util.inspect.defaultOptions.depth = 8;
  * @TODO It looks like we need to start developing test
  * cases and bundle helpers based on them.
  * Case 1: 
- * 1. Charly issue Fred a governance capability.
- * 2. Fred provides Bob a capability. 
- * 3. Bob signs a capability based credentail to Alice. 
+ * 1. Charly issue Fred an orgnaization capability.
+ * 2. Fred provides Bob a memberhip capability. 
+ * 3. Bob signs a membership credentail to Alice. 
  * 4. Dan trusts Charly. 
  * 5. Alice shows the credential to Dan. 
  * 6. Dan aknowledge credential as trusted.
- * 
- * Case 2: The same. But Bob hires Emma and delegate capability to her.
- * Emma signs credential istead of Bob. But Dan still aknowledges it.
  */
 (async () => {
   const alice = await Util.Wallet.setup('alice')
@@ -71,24 +68,6 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Fred stored capabilities offered by Charly')
 
-  /**
-   * @PROCEED
-   * @TODO Make Bob request governance from Fred. 
-   * 1. Charly offer governance to Fred. ✅
-   * 2. Governance has capability limits. ✅
-   * 3. Bob requests capabiloty from Fred to offer credentials 
-   * 4. Fred, instead of Charly, provides capability to Bob 
-   * 5. When Dan verifies Alice's credentials, he checks if 
-   * the capability is allowed by Fred's governance ✅
-   * 5.1. Capabilties should be included to the chain
-   * alongside credentials ✅
-   * 5.2. Refactor chain building and verification in a direct
-   * sequence (the chain itself can be ordered a random way???) ✅
-   * 5.3. Make sure that the chain verification implies the 
-   * checks of previous credential in chain ✅
-   */
-
-
   console.log('Bob tries to request Capability from Fred')
 
   const claimCap = await bob.claimCapability({
@@ -108,7 +87,11 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Fred signs capability for Bob')
 
-  const claimBundle = await fred.signCapability(claimCap, Util.ORGANIZATION_CAPABILITY_TYPE)
+  const claimBundle = await fred.signCapability<Util.MembershipDoc>(claimCap, Util.ORGANIZATION_CAPABILITY_TYPE, {
+    organization: frediesOffer.verifiableCredential[1].credentialSubject
+      .data.credential.credentialSubject.data.name,
+    organziationDid: frediesOffer.verifiableCredential[1].credentialSubject.did.id
+  })
 
   console.log('Bob stores capability provided by Charly')
 
@@ -117,19 +100,18 @@ util.inspect.defaultOptions.depth = 8;
   console.log('Alice claims capability based credentials from Bob')
 
   const aliceClaim = await alice.claimCapabilityCreds(
-    Util.MEMBERSHIP_CREDENTIAL_TYPE
+    Util.MEMBERSHIP_CREDENTIAL_TYPE, 'Volunteer'
   )
+
+  console.log('Bob offers capability based credential to Alice')
+
+  const bobOffer = await bob.offerCapabilityCreds(aliceClaim)
+
+  console.log('Alice stores capability based credential provided by Bob')
 
   /**
    * @PROCEED
    */
-    
-  // console.log('Bob offers capability based credential to Alice')
-
-  // const bobOffer = await bob.offerCapabilityCreds(aliceClaim)
-
-  // console.log('Alice stores capability based credential provided by Bob')
-
   // await alice.storeCapabilityCreds(bobOffer)
 
   // console.log('Dan requests credential from Alice')
