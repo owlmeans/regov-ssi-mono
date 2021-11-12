@@ -46,5 +46,6 @@ export type AddDIDMethod = (did: DIDDocument, key?: string) => void
 
 export const DID_REGISTRY_ERROR_NO_KEY_BY_DID = 'DID_REGISTRY_ERROR_NO_KEY_BY_DID'
 export const DID_REGISTRY_ERROR_NO_DID = 'DID_REGISTRY_ERROR_NO_DID'
+export const DID_ERROR_INVALID = 'DID_ERROR_INVALID'
 
 export const DID_CHAIN_DEAD_END = 'DID_CHAIN_DEAD_END'

@@ -18,6 +18,9 @@ import {
   KeyPair,
 } from "@owlmeans/regov-ssi-core";
 import {
+  CryptoKey
+} from '@owlmeans/regov-ssi-common'
+import {
   ClaimSubject,
   ClaimCredential,
   CREDENTIAL_CLAIM_TYPE,
@@ -60,14 +63,21 @@ export const issuerCredentialHelper = <
       const _claimHelper = {
         signClaim: async (
           claim: UnsignedClaim,
-          key?: KeyPair | string
+          key?: KeyPair | string,
+          signer?: DIDDocument
         ) => {
           issuer = issuer || _identityHelper.getIdentity().did
           if (!issuer) {
             throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
           }
 
-          const signingKey = await wallet.keys.getCryptoKey(key)
+          const signingKey = signer
+            ? (await wallet.did.extractKey(signer)) || await wallet.keys.getCryptoKey(key)
+            : await wallet.keys.getCryptoKey(key)
+
+          if (signer) {
+            await wallet.keys.expandKey(signingKey)
+          }
 
           let did: DIDDocument
           let useController = true
@@ -91,7 +101,7 @@ export const issuerCredentialHelper = <
           }
 
           const credential = await wallet.ssi.signCredential(
-            claim.credentialSubject.data.credential, did,
+            claim.credentialSubject.data.credential, signer || did,
             { keyId: useController ? VERIFICATION_KEY_CONTROLLER : VERIFICATION_KEY_HOLDER }
           ) as CredentialT
 
@@ -141,9 +151,9 @@ export const issuerCredentialHelper = <
           ) as OfferCredential<OfferSubject<CredentialT>>
         },
 
-        signClaims: async (claims: UnsignedClaim[], key?: KeyPair | string) => {
+        signClaims: async (claims: UnsignedClaim[], key?: KeyPair | string, signer?: DIDDocument) => {
           return await Promise.all(
-            claims.map(claim => _claimHelper.signClaim(claim, key))
+            claims.map(claim => _claimHelper.signClaim(claim, key, signer))
           )
         }
       }

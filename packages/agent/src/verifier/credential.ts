@@ -123,7 +123,7 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
       ) => {
         const offers = [...presentation.verifiableCredential]
         const entity = _identityHelper.extractEntity(offers)
-        const { credentials, dids } = presentation.verifiableCredential.reduce(
+        const { credentials, dids } = offers.reduce(
           (result, credential) => {
             if (isSatellite(credential)) {
               result.dids.push(credential)

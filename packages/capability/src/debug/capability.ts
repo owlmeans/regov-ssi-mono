@@ -87,11 +87,14 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Fred signs capability for Bob')
 
-  const claimBundle = await fred.signCapability<Util.MembershipDoc>(claimCap, Util.ORGANIZATION_CAPABILITY_TYPE, {
-    organization: frediesOffer.verifiableCredential[1].credentialSubject
-      .data.credential.credentialSubject.data.name,
-    organziationDid: frediesOffer.verifiableCredential[1].credentialSubject.did.id
-  })
+  const claimBundle = await fred.signCapability<Util.MembershipDoc>(
+    claimCap, Util.ORGANIZATION_CAPABILITY_TYPE,
+    {
+      organization: frediesOffer.verifiableCredential[1].credentialSubject
+        .data.credential.credentialSubject.data.name,
+      organziationDid: frediesOffer.verifiableCredential[1].credentialSubject.did.id
+    }
+  )
 
   console.log('Bob stores capability provided by Charly')
 
@@ -109,19 +112,16 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Alice stores capability based credential provided by Bob')
 
-  /**
-   * @PROCEED
-   */
-  // await alice.storeCapabilityCreds(bobOffer)
+  await alice.storeCapabilityCreds(bobOffer)
 
-  // console.log('Dan requests credential from Alice')
-  // const danCredRequest = await dan.requestCreds(Util.CRED_TYPE)
+  console.log('Dan requests credential from Alice')
+  const danCredRequest = await dan.requestCreds(Util.MEMBERSHIP_CREDENTIAL_TYPE)
 
-  // console.log('Alice provides capability based credentials to Dan')
-  // const aliceCreds = await alice.provideCredsByCaps(danCredRequest)
+  console.log('Alice provides capability based credentials to Dan')
+  const aliceCreds = await alice.provideCredsByCaps(danCredRequest)
 
-  // console.log('Dan verifies credentials provided by Alice')
-  // const result = await dan.validateResponse<Util.TestCredential>(aliceCreds)
+  console.log('Dan verifies credentials provided by Alice')
+  const result = await dan.validateResponse<Util.MembershipCredential>(aliceCreds)
 
-  // console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')
+  console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')
 })()
