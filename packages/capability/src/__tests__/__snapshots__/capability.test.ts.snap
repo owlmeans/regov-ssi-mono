@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Capability helpers allows to request organization-like capability from an authorithy 1`] = `
+exports[`Capability helpers allow to request organization-like capability from an authorithy 1`] = `
 Object {
   "@context": Array [
     "https://www.w3.org/2018/credentials/v1",
@@ -300,6 +300,457 @@ Object {
   "type": Array [
     "VerifiableCredential",
     "OrganizationCapability",
+    "Capability",
+    "CredentialWithSource",
+  ],
+}
+`;
+
+exports[`Capability helpers allow to request some capability from an organization 1`] = `
+Object {
+  "@context": Array [
+    "https://www.w3.org/2018/credentials/v1",
+    Object {
+      "@version": 1.1,
+      "ctxSchema": Object {
+        "@id": "scm:ctxSchema",
+        "@type": "@json",
+      },
+      "data": Object {
+        "@context": Object {
+          "@version": 1.1,
+          "scmdata": "https://example.org/membershipcapability/capability/credentialwithsource/data#",
+        },
+        "@id": "scmdata:id",
+        "@type": "scmdata:type",
+      },
+      "defaults": Object {
+        "@id": "scm:defaults",
+        "@type": "@json",
+      },
+      "description": Object {
+        "@id": "scm:description",
+        "@type": "schema:Text",
+      },
+      "link": "@type",
+      "name": Object {
+        "@id": "scm:name",
+        "@type": "schema:Text",
+      },
+      "schema": "https://schema.org/",
+      "scm": "https://example.org/membershipcapability/capability/credentialwithsource#",
+      "source": Object {
+        "@id": "scm:source",
+        "@type": "VerifiableCredential",
+      },
+      "sourceDid": Object {
+        "@id": "scm:sourceDid",
+        "@type": "@json",
+      },
+    },
+  ],
+  "credentialSubject": Object {
+    "data": Object {
+      "@type": Array [
+        "MembershipCapability",
+      ],
+      "defaults": Object {
+        "organization": "Fredies Organization",
+        "organziationDid": Any<String>,
+      },
+      "description": "Allows to provide Fredies' membership",
+      "name": "Fredies' - Membership offer capability",
+    },
+    "schema": Array [
+      Object {
+        "ctxSchema": Object {
+          "organziation": Object {
+            "@id": "scm:organziation",
+            "@type": "schema:Text",
+          },
+          "organziationDid": Object {
+            "@id": "scm:organziationDid",
+            "@type": "@id",
+          },
+          "role": Object {
+            "@id": "scm:role",
+            "@type": "schema:Text",
+          },
+          "schema": "https://schema.org/",
+          "source": Object {
+            "@id": "scm:source",
+            "@type": "VerifiableCredential",
+          },
+          "sourceDid": Object {
+            "@id": "scm:sourceDid",
+            "@type": "@json",
+          },
+        },
+        "type": Array [
+          "MembershipCredential",
+        ],
+      },
+    ],
+    "source": Object {
+      "@context": Array [
+        "https://www.w3.org/2018/credentials/v1",
+        Object {
+          "@version": 1.1,
+          "ctxSchema": Object {
+            "@id": "scm:ctxSchema",
+            "@type": "@json",
+          },
+          "data": Object {
+            "@context": Object {
+              "@version": 1.1,
+              "scmdata": "https://example.org/organizationcapability/capability/credentialwithsource/data#",
+            },
+            "@id": "scmdata:id",
+            "@type": "scmdata:type",
+          },
+          "defaults": Object {
+            "@id": "scm:defaults",
+            "@type": "@json",
+          },
+          "description": Object {
+            "@id": "scm:description",
+            "@type": "schema:Text",
+          },
+          "link": "@type",
+          "name": Object {
+            "@id": "scm:name",
+            "@type": "schema:Text",
+          },
+          "schema": "https://schema.org/",
+          "scm": "https://example.org/organizationcapability/capability/credentialwithsource#",
+          "source": Object {
+            "@id": "scm:source",
+            "@type": "VerifiableCredential",
+          },
+          "sourceDid": Object {
+            "@id": "scm:sourceDid",
+            "@type": "@json",
+          },
+        },
+      ],
+      "credentialSubject": Object {
+        "data": Object {
+          "@type": Array [
+            "OrganizationCapability",
+          ],
+          "name": "Fredies Organization",
+        },
+        "schema": Array [
+          Object {
+            "link": Array [
+              "MembershipCredential",
+            ],
+            "type": Array [
+              "Capability",
+              "MembershipCapability",
+            ],
+          },
+          Object {
+            "ctxSchema": Object {
+              "organziation": Object {
+                "@id": "scm:organziation",
+                "@type": "schema:Text",
+              },
+              "organziationDid": Object {
+                "@id": "scm:organziationDid",
+                "@type": "@id",
+              },
+              "role": Object {
+                "@id": "scm:role",
+                "@type": "schema:Text",
+              },
+              "schema": "https://schema.org/",
+              "source": Object {
+                "@id": "scm:source",
+                "@type": "VerifiableCredential",
+              },
+              "sourceDid": Object {
+                "@id": "scm:sourceDid",
+                "@type": "@json",
+              },
+            },
+            "type": Array [
+              "MembershipCredential",
+            ],
+          },
+        ],
+        "source": Object {
+          "@context": Array [
+            "https://www.w3.org/2018/credentials/v1",
+            Object {
+              "@version": 1.1,
+              "ctxSchema": Object {
+                "@id": "scm:ctxSchema",
+                "@type": "@json",
+              },
+              "data": Object {
+                "@context": Object {
+                  "@version": 1.1,
+                  "scmdata": "https://example.org/governancecapability/capability/credentialwithsource/data#",
+                },
+                "@id": "scmdata:id",
+                "@type": "scmdata:type",
+              },
+              "defaults": Object {
+                "@id": "scm:defaults",
+                "@type": "@json",
+              },
+              "description": Object {
+                "@id": "scm:description",
+                "@type": "schema:Text",
+              },
+              "link": "@type",
+              "name": Object {
+                "@id": "scm:name",
+                "@type": "schema:Text",
+              },
+              "schema": "https://schema.org/",
+              "scm": "https://example.org/governancecapability/capability/credentialwithsource#",
+              "source": Object {
+                "@id": "scm:source",
+                "@type": "VerifiableCredential",
+              },
+              "sourceDid": Object {
+                "@id": "scm:sourceDid",
+                "@type": "@json",
+              },
+            },
+          ],
+          "credentialSubject": Object {
+            "data": Object {
+              "@type": Array [
+                "GovernanceCapability",
+              ],
+              "name": "Root Governance",
+            },
+            "schema": Object {
+              "type": "*",
+            },
+            "source": Object {
+              "@context": Array [
+                "https://www.w3.org/2018/credentials/v1",
+                Object {
+                  "@version": 1.1,
+                  "data": Object {
+                    "@context": Object {
+                      "@version": 1.1,
+                      "scmdata": "https://example.org/identity/data#",
+                    },
+                    "@id": "scmdata:id",
+                    "@type": "scmdata:type",
+                  },
+                  "firstname": Object {
+                    "@id": "scm:firstname",
+                    "@type": "xsd:string",
+                  },
+                  "lastname": Object {
+                    "@id": "scm:lastname",
+                    "@type": "xsd:string",
+                  },
+                  "scm": "https://example.org/identity#",
+                  "xsd": "http://www.w3.org/2001/XMLSchema#",
+                },
+              ],
+              "credentialSubject": Object {
+                "data": Object {
+                  "@type": "TestUtilIdentity",
+                  "firstname": "charly",
+                  "lastname": "Lastname",
+                },
+              },
+              "holder": Object {
+                "id": Any<String>,
+              },
+              "id": Any<String>,
+              "issuanceDate": Any<String>,
+              "issuer": Any<String>,
+              "proof": Object {
+                "created": Any<String>,
+                "jws": Any<String>,
+                "proofPurpose": "assertionMethod",
+                "type": "EcdsaSecp256k1Signature2019",
+                "verificationMethod": Any<String>,
+              },
+              "type": Array [
+                "VerifiableCredential",
+                "EntityIdentity",
+                "TestUtilIdentity",
+              ],
+            },
+            "sourceDid": Object {
+              "@context": Array [
+                "https://w3id.org/did/v1",
+                "https://w3id.org/security/v2",
+              ],
+              "assertionMethod": Array [
+                Any<String>,
+              ],
+              "authentication": Array [
+                Any<String>,
+              ],
+              "capabilityDelegation": Array [
+                Any<String>,
+              ],
+              "capabilityInvocation": Array [
+                Any<String>,
+              ],
+              "id": Any<String>,
+              "keyAgreement": Array [
+                Any<String>,
+              ],
+              "proof": Object {
+                "created": Any<String>,
+                "jws": Any<String>,
+                "proofPurpose": "verificationMethod",
+                "type": "EcdsaSecp256k1Signature2019",
+                "verificationMethod": Any<String>,
+              },
+              "verificationMethod": Array [
+                Object {
+                  "controller": Any<String>,
+                  "id": Any<String>,
+                  "nonce": Any<String>,
+                  "publicKeyBase58": Any<String>,
+                  "type": "EcdsaSecp256k1VerificationKey2019",
+                },
+              ],
+            },
+          },
+          "holder": Object {
+            "id": Any<String>,
+          },
+          "id": Any<String>,
+          "issuanceDate": Any<String>,
+          "issuer": Any<String>,
+          "proof": Object {
+            "created": Any<String>,
+            "jws": Any<String>,
+            "proofPurpose": "assertionMethod",
+            "type": "EcdsaSecp256k1Signature2019",
+            "verificationMethod": Any<String>,
+          },
+          "type": Array [
+            "VerifiableCredential",
+            "GovernanceCapability",
+            "Capability",
+            "CredentialWithSource",
+          ],
+        },
+        "sourceDid": Object {
+          "@context": Array [
+            "https://w3id.org/did/v1",
+            "https://w3id.org/security/v2",
+          ],
+          "assertionMethod": Array [
+            Any<String>,
+          ],
+          "authentication": Array [
+            Any<String>,
+          ],
+          "capabilityInvocation": Array [
+            Any<String>,
+          ],
+          "id": Any<String>,
+          "proof": Object {
+            "created": Any<String>,
+            "jws": Any<String>,
+            "proofPurpose": "verificationMethod",
+            "type": "EcdsaSecp256k1Signature2019",
+            "verificationMethod": Any<String>,
+          },
+          "verificationMethod": Array [
+            Object {
+              "controller": Any<String>,
+              "id": Any<String>,
+              "nonce": Any<String>,
+              "publicKeyBase58": Any<String>,
+              "type": "EcdsaSecp256k1VerificationKey2019",
+            },
+          ],
+        },
+      },
+      "holder": Object {
+        "id": Any<String>,
+      },
+      "id": Any<String>,
+      "issuanceDate": Any<String>,
+      "issuer": Any<String>,
+      "proof": Object {
+        "created": Any<String>,
+        "jws": Any<String>,
+        "proofPurpose": "assertionMethod",
+        "type": "EcdsaSecp256k1Signature2019",
+        "verificationMethod": Any<String>,
+      },
+      "type": Array [
+        "VerifiableCredential",
+        "OrganizationCapability",
+        "Capability",
+        "CredentialWithSource",
+      ],
+    },
+    "sourceDid": Object {
+      "@context": Array [
+        "https://w3id.org/did/v1",
+        "https://w3id.org/security/v2",
+      ],
+      "assertionMethod": Array [
+        Any<String>,
+        Any<String>,
+      ],
+      "authentication": Array [
+        Any<String>,
+      ],
+      "capabilityInvocation": Array [
+        Any<String>,
+      ],
+      "id": Any<String>,
+      "proof": Object {
+        "created": Any<String>,
+        "jws": Any<String>,
+        "proofPurpose": "verificationMethod",
+        "type": "EcdsaSecp256k1Signature2019",
+        "verificationMethod": Any<String>,
+      },
+      "verificationMethod": Array [
+        Object {
+          "controller": Any<String>,
+          "id": Any<String>,
+          "nonce": Any<String>,
+          "publicKeyBase58": Any<String>,
+          "type": "EcdsaSecp256k1VerificationKey2019",
+        },
+        Object {
+          "controller": Any<String>,
+          "id": Any<String>,
+          "nonce": Any<String>,
+          "publicKeyBase58": Any<String>,
+          "type": "EcdsaSecp256k1VerificationKey2019",
+        },
+      ],
+    },
+  },
+  "holder": Object {
+    "id": Any<String>,
+  },
+  "id": Any<String>,
+  "issuanceDate": Any<String>,
+  "issuer": Any<String>,
+  "proof": Object {
+    "created": Any<String>,
+    "jws": Any<String>,
+    "proofPurpose": "assertionMethod",
+    "type": "EcdsaSecp256k1Signature2019",
+    "verificationMethod": Any<String>,
+  },
+  "type": Array [
+    "VerifiableCredential",
+    "MembershipCapability",
     "Capability",
     "CredentialWithSource",
   ],

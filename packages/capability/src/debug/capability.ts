@@ -86,7 +86,7 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Fred signs capability for Bob')
 
-  const claimBundle = await fred.signCapability<Util.MembershipDoc>(
+  const capOffer = await fred.signCapability<Util.MembershipDoc>(
     claimCap, Util.ORGANIZATION_CAPABILITY_TYPE,
     {
       organization: frediesOffer.verifiableCredential[1].credentialSubject
@@ -97,7 +97,7 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Bob stores capability provided by Charly')
 
-  await bob.storeCapability(claimBundle)
+  await bob.storeCapability(capOffer)
 
   console.log('Alice claims capability based credentials from Bob')
 

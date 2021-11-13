@@ -3,8 +3,11 @@ require('dotenv').config()
 import { TestUtil as Util } from '../debug/utils/wallet'
 import {
   capabilityDid,
+  capaiblityDoubleDid,
   entityShape,
+  membershipCapabilityShape,
   organizationDid,
+  orgCapaiblityShape,
 } from '../debug/utils/shapes'
 import {
   credentialShape,
@@ -17,7 +20,7 @@ import {
 
 import util from 'util'
 import { REGISTRY_TYPE_CLAIMS } from '@owlmeans/regov-ssi-core'
-import { REGISTRY_TYPE_CAPABILITY } from '..'
+import { Capability, CapabilitySubject, REGISTRY_TYPE_CAPABILITY } from '..'
 util.inspect.defaultOptions.depth = 8
 
 
@@ -55,7 +58,7 @@ beforeAll(async () => {
 })
 
 describe('Capability helpers', () => {
-  it('allows to request organization-like capability from an authorithy', async () => {
+  it('allow to request organization-like capability from an authorithy', async () => {
     const claim = await ctx.fred.claimOrganization('Fredies')
     const offer = await ctx.charly.signCapability(claim)
     await ctx.fred.storeCapability(offer)
@@ -64,19 +67,35 @@ describe('Capability helpers', () => {
       Util.ORGANIZATION_CAPABILITY_TYPE
     )
 
-    expect(wraps[0].credential).toMatchSnapshot({
-      ...credentialShape,
-      credentialSubject: {
-        source: {
-          ...credentialShape,
-          credentialSubject: {
-            source: credentialShape,
-            sourceDid: didShape
-          }
-        },
-        sourceDid: organizationDid
-      }
+    expect(wraps[0].credential).toMatchSnapshot(orgCapaiblityShape)
+  })
+
+  it('allow to request some capability from an organization', async () => {
+    const claim = await ctx.bob.claimCapability({
+      name: 'Fredies\' - Membership offer capability',
+      description: 'Allows to provide Fredies\' membership'
     })
+
+    const wraps = await ctx.fred.wallet.getRegistry(REGISTRY_TYPE_CAPABILITY)
+      .lookupCredentials(Util.ORGANIZATION_CAPABILITY_TYPE)
+
+    if (!wraps[0]) {
+      throw new Error('Fred doesn\'t have organizations')
+    }
+
+    const cap = wraps[0].credential as Capability
+
+    const offer = await ctx.fred.signCapability<Util.MembershipDoc>(
+      claim, Util.ORGANIZATION_CAPABILITY_TYPE,
+      {
+        organization: cap.credentialSubject.data.name,
+        organziationDid: cap.id
+      }
+    )
+
+    const creds = await ctx.bob.storeCapability(offer)
+
+    expect(creds[0].credential).toMatchSnapshot(membershipCapabilityShape)
   })
   // it('allow to self issue gavernance', async () => {
   //   const [governance] = await ctx.charly.selfIssueGovernance(await ctx.charly.provideIdentity())
