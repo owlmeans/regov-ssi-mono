@@ -3,22 +3,20 @@ require('dotenv').config()
 import { TestUtil as Util } from './utils/wallet'
 
 import util from 'util'
-import { REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core';
+import { capabilityVerifierHelper } from '..';
+import { identityHelper } from '@owlmeans/regov-ssi-agent';
 util.inspect.defaultOptions.depth = 8;
 
 /**
  * @TODO It looks like we need to start developing test
  * cases and bundle helpers based on them.
  * Case 1: 
- * 1. Charly issue Fred a governance capability.
- * 2. Fred provides Bob a capability. 
- * 3. Bob signs a capability based credentail to Alice. 
+ * 1. Charly issue Fred an orgnaization capability.
+ * 2. Fred provides Bob a memberhip capability. 
+ * 3. Bob signs a membership credentail to Alice. 
  * 4. Dan trusts Charly. 
  * 5. Alice shows the credential to Dan. 
  * 6. Dan aknowledge credential as trusted.
- * 
- * Case 2: The same. But Bob hires Emma and delegate capability to her.
- * Emma signs credential istead of Bob. But Dan still aknowledges it.
  */
 (async () => {
   const alice = await Util.Wallet.setup('alice')
@@ -35,7 +33,7 @@ util.inspect.defaultOptions.depth = 8;
 
   const charlyIdentity = await charly.provideIdentity()
 
-  await charly.selfIssueGovernance(charlyIdentity)
+  await charly.selfIssueGovernance()
 
   await bob.trustIdentity(charlyIdentity)
   await alice.trustIdentity(charlyIdentity)
@@ -44,75 +42,67 @@ util.inspect.defaultOptions.depth = 8;
 
   console.log('Everybody trusts Charly')
 
-  // const requestRootGov = await fred.requestGovernance()
+  const requestRootGov = await fred.requestGovernance()
 
-  // console.log('Chalry provides his governance credentials to Fred')
+  console.log('Chalry provides his governance credentials to Fred')
 
-  // const rootGov = await charly.responseGovernance(requestRootGov)
+  const rootGov = await charly.responseGovernance(requestRootGov)
 
-  // await fred.claimGovernance(rootGov)
+  const rootGovVer = await capabilityVerifierHelper(fred.wallet).response().verify(rootGov)
 
-  /**
-   * @PROCEED
-   * @TODO Make Bob request governance from Fred.
-   * 1. Charly offer governance to Fred.
-   * 2. Governance has capability limits.
-   * 3. Bob requests gavernance from Fred to claim capability
-   * 4. Fred provides capability to Bob instead of Charly
-   * 
-   * 5. When Dan verifies Alice's credentials, he checks if 
-   * the capability is allowed by Fred's governance
-   * 5.1. Credentials should be included to the chain
-   * alongside credentials
-   * 5.2. Refactor chain building and verification in a direct
-   * sequenc (the chain itself can be ordered a random way???)
-   * 5.3. Make sure that the chain verification implies the 
-   * checks of previous credential in chain
-   */
+  console.log('Root governcnace of Charly is verified by Fred', rootGovVer)
+  if (!rootGovVer) {
+    console.log(rootGov)
+  }
 
-  const requestGov = await bob.requestGovernance()
+  const frediesClaim = await fred.claimOrganization('Fredies')
 
-  console.log('Charly provides his governance credentials to Bob')
+  console.log('Fred claimed organization capabilities')
 
-  const gov = await charly.responseGovernance(requestGov)
+  const frediesOffer = await charly.signCapability(frediesClaim)
 
-  console.log('Bob tries to request Capability from Charly')
+  console.log('Charly signed and offer orgnaization capabilties')
 
-  const claimCap = await bob.claimCapability(
-    gov, Util.CRED_TYPE, {
-    description: 'Test capability 1',
-    info: 'Info for capability 1'
+  await fred.storeCapability(frediesOffer)
+
+  console.log('Fred stored capabilities offered by Charly')
+
+  console.log('Bob tries to request Capability from Fred')
+
+  const claimCap = await bob.claimCapability({
+    name: 'Organization 1 - Membership offer capability',
+    description: 'Allows to provide Ortanization 1 membership'
   })
 
   console.log({
-    'Charly ID': charly.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-      .getCredential()?.credential.id,
-    'Bob ID': bob.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-      .getCredential()?.credential.id,
-    'Gov Capability': gov.verifiableCredential[1].id,
+    'Charly ID': identityHelper(charly.wallet).getIdentity().identity.id,
+    'Fred ID': identityHelper(fred.wallet).getIdentity().identity.id,
+    'Bob ID': identityHelper(bob.wallet).getIdentity().identity.id,
+    'Gov Capability': rootGov.verifiableCredential[1].id,
     'Claim': {
       Id: claimCap.verifiableCredential[1].credentialSubject.data.credential.id,
-      Source: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.source.id,
-      Root: claimCap.verifiableCredential[1].credentialSubject.data.credential.credentialSubject.root
     }
   })
 
-  console.log('Charly signs capability for Bob')
+  console.log('Fred signs capability for Bob')
 
-  const claimBundle = await charly.signCapability(claimCap)
+  const capOffer = await fred.signCapability<Util.MembershipDoc>(
+    claimCap, Util.ORGANIZATION_CAPABILITY_TYPE,
+    {
+      organization: frediesOffer.verifiableCredential[1].credentialSubject
+        .data.credential.credentialSubject.data.name,
+      organziationDid: frediesOffer.verifiableCredential[1].credentialSubject.did.id
+    }
+  )
 
   console.log('Bob stores capability provided by Charly')
 
-  await bob.storeCapability(claimBundle)
+  await bob.storeCapability(capOffer)
 
   console.log('Alice claims capability based credentials from Bob')
 
   const aliceClaim = await alice.claimCapabilityCreds(
-    Util.CRED_TYPE,
-    [{
-      description: 'Alice cred',
-      info: 'Capability based cred for Alice'
-    }]
+    Util.MEMBERSHIP_CREDENTIAL_TYPE, 'Volunteer'
   )
 
   console.log('Bob offers capability based credential to Alice')
@@ -124,13 +114,13 @@ util.inspect.defaultOptions.depth = 8;
   await alice.storeCapabilityCreds(bobOffer)
 
   console.log('Dan requests credential from Alice')
-  const danCredRequest = await dan.requestCreds(Util.CRED_TYPE)
+  const danCredRequest = await dan.requestCreds(Util.MEMBERSHIP_CREDENTIAL_TYPE)
 
   console.log('Alice provides capability based credentials to Dan')
   const aliceCreds = await alice.provideCredsByCaps(danCredRequest)
 
   console.log('Dan verifies credentials provided by Alice')
-  const result = await dan.validateResponse<Util.TestCredential>(aliceCreds)
+  const result = await dan.validateResponse<Util.MembershipCredential>(aliceCreds)
 
   console.log(result ? 'Alice credentials are OK' : 'Alice credentials a broken')
 })()

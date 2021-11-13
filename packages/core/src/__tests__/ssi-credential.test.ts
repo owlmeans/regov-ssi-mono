@@ -78,6 +78,7 @@ describe('SSI Verifiable Credential', () => {
       holder: test.ssi.did.helper().extractProofController(did),
       context: {
         '@version': 1.1,
+        xsd: 'http://www.w3.org/2001/XMLSchema#',
         exam: 'https://example.org/vc-schema#',
         data: {
           '@id': 'exam:data',

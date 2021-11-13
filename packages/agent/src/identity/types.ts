@@ -1,6 +1,6 @@
 
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
-import { Credential, CredentialSubject, WrappedDocument, UnsignedCredential } from "@owlmeans/regov-ssi-core"
+import { Credential, CredentialSubject, WrappedDocument, UnsignedCredential, Identity } from "@owlmeans/regov-ssi-core"
 
 
 export type EntityIdentity = Credential<EntityIdentitySubject>
@@ -27,3 +27,7 @@ export const CREDENTIAL_ENTITY_IDENTITY_TYPE = 'EntityIdentity'
 export const IDENTITY_REQUEST_TYPE = 'IdentityRequest'
 
 export const IDENTITY_RESPONSE_TYPE = 'IdentityResponse'
+
+export const isIdentity = (identity: Credential): identity is Identity => {
+  return identity.type.includes(CREDENTIAL_ENTITY_IDENTITY_TYPE)
+}

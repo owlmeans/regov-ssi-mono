@@ -14,6 +14,8 @@ import {
 import { EntityIdentity, IdentityParams } from "../identity/types"
 import {
   CredentialRequestDoc,
+  ERROR_CANTVERIFY_PRESENTATION_SIGNATURE,
+  ERROR_PRESENTATION_ISNT_RESPONSE,
   RequestBundle
 } from "./types"
 import {
@@ -121,7 +123,7 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
       ) => {
         const offers = [...presentation.verifiableCredential]
         const entity = _identityHelper.extractEntity(offers)
-        const { credentials, dids } = presentation.verifiableCredential.reduce(
+        const { credentials, dids } = offers.reduce(
           (result, credential) => {
             if (isSatellite(credential)) {
               result.dids.push(credential)
@@ -154,13 +156,20 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
           presentation, did, buildLocalLoader(wallet)
         )
 
+        const errors: string[] = []
+
         if (!result) {
           console.log(info)
+          errors.push(ERROR_CANTVERIFY_PRESENTATION_SIGNATURE)
 
-          return { result, credentials: [], dids: [], entity, info }
+          return { result, credentials: [], dids: [], entity, info, errors }
         }
 
         result = result && presentation.type.includes(type || CREDENTIAL_RESPONSE_TYPE)
+
+        if (!result) {
+          errors.push(ERROR_PRESENTATION_ISNT_RESPONSE)
+        }
 
         const request = wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
           .getCredential<RequestSubject, RequestBundle>(presentation.id)
@@ -182,19 +191,16 @@ export const verifierCredentialHelper = (wallet: WalletWrapper) => {
                   credential => types.every(type => credential.type.includes(type))
                     && (!request.issuer || request.issuer === credential.issuer)
                     && (!request.holder || request.holder === credential.holder.id)
-                  /**
-                   * @TODO Verify issuer capabilities
-                   */
                 )
               }, true
             )
           }
           if (!result) {
-            console.log(ERROR_REQUEST_RESPONSE_DONT_MATCH)
+            errors.push(ERROR_REQUEST_RESPONSE_DONT_MATCH)
           }
         }
 
-        return { result, credentials, dids, entity }
+        return { result, credentials, dids, entity, errors }
       }
     })
   }
