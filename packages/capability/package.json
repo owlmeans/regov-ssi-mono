@@ -36,7 +36,10 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@owlmeans/regov-ssi-agent": "^0.1.3"
+    "@owlmeans/regov-ssi-agent": "^0.1.4",
+    "@owlmeans/regov-ssi-core": "^0.4.2",
+    "@owlmeans/regov-ssi-common": "^0.2.2",
+    "@owlmeans/regov-ssi-did": "^0.4.1"
   },
   "gitHead": "cc8f3baf1b0ef75156f7dbc9571d69446653aac8"
 }
