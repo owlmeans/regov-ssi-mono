@@ -3,7 +3,6 @@ require('dotenv').config()
 import { TestUtil as Util } from './utils/wallet'
 
 import util from 'util'
-import { REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core';
 import { capabilityVerifierHelper } from '..';
 import { identityHelper } from '@owlmeans/regov-ssi-agent';
 util.inspect.defaultOptions.depth = 8;
@@ -34,7 +33,7 @@ util.inspect.defaultOptions.depth = 8;
 
   const charlyIdentity = await charly.provideIdentity()
 
-  await charly.selfIssueGovernance(charlyIdentity)
+  await charly.selfIssueGovernance()
 
   await bob.trustIdentity(charlyIdentity)
   await alice.trustIdentity(charlyIdentity)

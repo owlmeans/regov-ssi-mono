@@ -3,10 +3,8 @@ require('dotenv').config()
 import { TestUtil as Util } from '../debug/utils/wallet'
 import {
   capabilityDid,
-  capabilitySatelliteShape,
-  capabilityShape,
   entityShape,
-  govrnanceShape
+  organizationDid,
 } from '../debug/utils/shapes'
 import {
   credentialShape,
@@ -18,6 +16,8 @@ import {
 } from '@owlmeans/regov-ssi-agent/src/debug/utils/shapes'
 
 import util from 'util'
+import { REGISTRY_TYPE_CLAIMS } from '@owlmeans/regov-ssi-core'
+import { REGISTRY_TYPE_CAPABILITY } from '..'
 util.inspect.defaultOptions.depth = 8
 
 
@@ -26,7 +26,7 @@ let ctx: {
   bob: Util.Wallet
   charly: Util.Wallet
   dan: Util.Wallet
-  gov?: Util.GovCapabilityPresentation
+  fred: Util.Wallet
 }
 
 beforeAll(async () => {
@@ -35,21 +35,49 @@ beforeAll(async () => {
     bob: await Util.Wallet.setup('bob'),
     charly: await Util.Wallet.setup('charly'),
     dan: await Util.Wallet.setup('dan'),
+    fred: await Util.Wallet.setup('fred'),
   }
 
   await ctx.alice.produceIdentity()
   await ctx.bob.produceIdentity()
   await ctx.charly.produceIdentity()
   await ctx.dan.produceIdentity()
+  await ctx.fred.produceIdentity()
 
   const identity = await ctx.charly.provideIdentity()
 
   await ctx.alice.trustIdentity(identity)
+  await ctx.fred.trustIdentity(identity)
   await ctx.bob.trustIdentity(identity)
   await ctx.dan.trustIdentity(identity)
+
+  await ctx.charly.selfIssueGovernance()
 })
 
 describe('Capability helpers', () => {
+  it('allows to request organization-like capability from an authorithy', async () => {
+    const claim = await ctx.fred.claimOrganization('Fredies')
+    const offer = await ctx.charly.signCapability(claim)
+    await ctx.fred.storeCapability(offer)
+
+    const wraps = await ctx.fred.wallet.getRegistry(REGISTRY_TYPE_CAPABILITY).lookupCredentials(
+      Util.ORGANIZATION_CAPABILITY_TYPE
+    )
+
+    expect(wraps[0].credential).toMatchSnapshot({
+      ...credentialShape,
+      credentialSubject: {
+        source: {
+          ...credentialShape,
+          credentialSubject: {
+            source: credentialShape,
+            sourceDid: didShape
+          }
+        },
+        sourceDid: organizationDid
+      }
+    })
+  })
   // it('allow to self issue gavernance', async () => {
   //   const [governance] = await ctx.charly.selfIssueGovernance(await ctx.charly.provideIdentity())
   //   expect(governance.credential).toMatchSnapshot(govrnanceShape)

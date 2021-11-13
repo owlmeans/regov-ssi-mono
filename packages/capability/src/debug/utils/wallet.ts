@@ -179,7 +179,7 @@ export namespace TestUtil {
       return bundle
     }
 
-    async selfIssueGovernance(idPresentation: Presentation<EntityIdentity>) {
+    async selfIssueGovernance() {
       const identity = identityHelper(this.wallet).getIdentity()
       const claim = await capabilityHolderHelper(this.wallet).claim({
         type: [GOVERNANCE_CAPABILITY_TYPE],

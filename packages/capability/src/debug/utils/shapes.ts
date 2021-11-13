@@ -6,27 +6,18 @@ import {
 } from '@owlmeans/regov-ssi-agent/src/debug/utils/shapes'
 
 
-export const governanceSubject = {
-  source: didShape
-}
+export const organizationDid = {
+  ...(did => {
+    const _did = {...did};
+    // delete (<any>_did).authentication;
 
-export const capabilitySubject = {
-  ...governanceSubject,
-  root: expect.any(String)
-}
-
-export const govrnanceShape = {
-  ...credentialShape,
-  credentialSubject: {
-    ...governanceSubject
-  }
-}
-
-export const capabilityShape = {
-  ...credentialShape,
-  credentialSubject: {
-    ...capabilitySubject
-  }
+    ((<any>_did).verificationMethod as Array<unknown>).splice(0, 1)
+    
+    return _did
+  })(doubleDidShape),
+  capabilityInvocation: [
+    expect.any(String)
+  ]
 }
 
 export const capabilityDid = {
@@ -38,26 +29,7 @@ export const capabilityDid = {
   })(doubleDidShape),
   capabilityInvocation: [
     expect.any(String)
-  ],
-  capabilityDelegation: [
-    expect.any(String)
   ]
-}
-
-export const capabilitySatelliteShape = {
-  ...credentialShape,
-  credentialSubject: {
-    data: {
-      did: (did => {
-        const _did = {...did}
-        delete (<any>_did).keyAgreement
-        delete (<any>_did).assertionMethod
-        delete (<any>_did).authentication
-        
-        return _did
-      })(didShape)
-    }
-  }
 }
 
 export const entityShape = {
