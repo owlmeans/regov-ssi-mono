@@ -385,9 +385,11 @@ export namespace TestUtil {
         throw new Error('Offer is broken and can\'t be stored')
       }
 
-      await holderHelper.bundle().store(offer)
+      const wrap = await holderHelper.bundle().store(offer)
 
       await holderHelper.bundle().cleanup(offer)
+
+      return wrap
     }
 
     async provideCredsByCaps(request: RequestBundle) {
