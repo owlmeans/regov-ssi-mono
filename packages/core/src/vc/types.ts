@@ -14,6 +14,7 @@ import {
 } from "@affinidi/vc-common";
 
 import { Validatied as AffinidiValidatied } from "@affinidi/vc-common/dist/verifier/util"
+import { DIDDocument } from "@owlmeans/regov-ssi-did";
 
 export type Validated<T> = AffinidiValidatied<T>
 
@@ -22,7 +23,9 @@ export type MaybeArray<T> = AffinidiMaybeArray<T>
 export type ContextSchema = ContextObj
 
 export type Credential<Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>>
-  = VCV1<Subject>
+  = VCV1<Subject> & {
+    holder: DIDDocument
+  }
 
 export type Identity<Subject extends MaybeArray<IdentitySubject> = MaybeArray<IdentitySubject>>
   = Credential<Subject>
@@ -46,7 +49,9 @@ export type CredentialContextType = TContext
 
 export type UnsignedCredential<
   Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>
-  > = VCV1Unsigned<Subject>
+  > = VCV1Unsigned<Subject> & {
+    holder: DIDDocument
+  }
 
 export type CredentialType = VCV1Type
 

@@ -48,7 +48,7 @@ export type BuildCredentailOptions<
   > = {
     id: string,
     type: CredentialType
-    holder: string,
+    holder: DIDDocument,
     subject: Subject,
     issueanceDate?: string
     context: CredentialContextType
@@ -60,7 +60,7 @@ export type SignCredentialMethod = <
   CredentialU extends UnsignedCredential<Subject> = UnsignedCredential<Subject>
   >(
   unsingedCredential: CredentialU,
-  issuer: DIDDocument,
+  issuer?: DIDDocument,
   options?: SignCredentialOptions
 ) =>
   Promise<CredentialT>

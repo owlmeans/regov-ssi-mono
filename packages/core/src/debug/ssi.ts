@@ -53,10 +53,11 @@ const _test = async () => {
   const unsingnedC = await ssi.buildCredential({
     id: did.id,
     type: ['VerifiableCredential', 'TestCredential'],
-    holder: ssi.did.helper().extractProofController(did),
+    holder: did,
     context: {
       '@version': 1.1,
       exam: 'https://example.org/vc-schema#',
+      xsd: 'http://www.w3.org/2001/XMLSchema#',
       data: {
         '@id': 'exam:data',
         '@type': '@id',
@@ -68,9 +69,15 @@ const _test = async () => {
     subject
   })
 
-  const credential = await ssi.signCredential(unsingnedC, did)
+  console.log('---- CREDENTIAL ---')
+  console.log(unsingnedC)
 
-  const [result, _] = await ssi.verifyCredential(credential)
+  const credential = await ssi.signCredential(unsingnedC)
+
+  console.log('---- SIGNED CREDENTIAL ---')
+  console.log(credential)
+
+  const [result, _] = await ssi.verifyCredential(credential, did, VERIFICATION_KEY_HOLDER)
 
   console.log('---- CREDENTIAL VERIFICATION ---')
   console.log(result, _)
