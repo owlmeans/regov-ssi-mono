@@ -10,7 +10,6 @@
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "src",
     "dist"
   ],
   "repository": {
@@ -39,6 +38,8 @@
   "dependencies": {
     "@affinidi/common": "^2.0.0-beta.4",
     "@affinidi/tiny-lds-ecdsa-secp256k1-2019": "^1.1.0",
+    "@owlmeans/regov-ssi-capability": "^0.2.0",
+    "@owlmeans/regov-ssi-core": "^0.4.2",
     "bip32": "^2.0.6",
     "secp256k1": "^4.0.2",
     "tiny-secp256k1": "^2.0.0",

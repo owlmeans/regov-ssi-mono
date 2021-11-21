@@ -10,7 +10,6 @@
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "src",
     "dist"
   ],
   "repository": {
@@ -39,6 +38,7 @@
   },
   "dependencies": {
     "@affinidi/vc-common": "^1.4.1",
+    "@owlmeans/regov-ssi-capability": "^0.2.0",
     "@owlmeans/regov-ssi-common": "^0.2.2",
     "@owlmeans/regov-ssi-did": "^0.4.1"
   },
