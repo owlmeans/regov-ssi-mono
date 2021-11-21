@@ -5,7 +5,11 @@ import {
   DIDRegistryBundle,
   DID_REGISTRY_ERROR_NO_KEY_BY_DID,
   LookUpDidMethod,
-  DID_CHAIN_DEAD_END
+  DID_CHAIN_DEAD_END,
+  WRAPPER_SOURCE_PEER_CONTROLLER,
+  WRAPPER_SOURCE_OWN_CONTROLLER,
+  WRAPPER_SOURCE_PEER_ID,
+  WRAPPER_SOURCE_OWN_ID
 } from "./types/registry"
 import {
   DIDDocument,
@@ -28,20 +32,32 @@ export const buildDidRegistryWarpper: (didHelper: DIDHelper, registry?: DIDRegis
       let didDocW = _registry.dids.find(
         did => did.did.id === parsed.did
       )
+      if (didDocW) {
+        didDocW.source = WRAPPER_SOURCE_OWN_ID
+      }
       if (!didDocW) {
         didDocW = _peerRegistry.dids.find(
           did => did.did.id === parsed.did
         )
+        if (didDocW) {
+          didDocW.source = WRAPPER_SOURCE_PEER_ID
+        }
       }
       if (!didDocW) {
         didDocW = _registry.dids.find(
           did => didHelper.extractProofController(did.did) === parsed.did
         )
+        if (didDocW) {
+          didDocW.source = WRAPPER_SOURCE_OWN_CONTROLLER
+        }
       }
       if (!didDocW) {
         didDocW = _peerRegistry.dids.find(
           did => didHelper.extractProofController(did.did) === parsed.did
         )
+        if (didDocW) {
+          didDocW.source = WRAPPER_SOURCE_PEER_CONTROLLER
+        }
       }
 
       return (wrapped ? didDocW : didDocW?.did) as any

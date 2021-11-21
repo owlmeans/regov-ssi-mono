@@ -1,6 +1,6 @@
 import { CryptoHelper } from "@owlmeans/regov-ssi-common";
 import { DEFAULT_WALLET_ALIAS } from "../wallet/types";
-import { BasicStore, EncryptedStore, SecureStore } from "./types";
+import { BasicStore, EncryptedStore, ERROR_STORE_CANT_DECRYPT, SecureStore } from "./types";
 
 export const buildStore = async (crypto: CryptoHelper, password: string, store?: BasicStore | string): Promise<SecureStore> => {
   let _store: SecureStore
@@ -18,26 +18,32 @@ export const buildStore = async (crypto: CryptoHelper, password: string, store?:
     case 'object':
       if ((<EncryptedStore>store).dataChunks) {
         const chunks: string[] = (<EncryptedStore>store).dataChunks || []
-        _store = {
-          alias: store.alias,
-          name: store.name,
-          comment: store.comment,
-          data: JSON.parse(
-            (
-              await Promise.all(
-                chunks.map((chunk) => crypto.decrypt(chunk, password))
-              )
-            ).join('')
-          )
+        try {
+          _store = {
+            alias: store.alias,
+            name: store.name,
+            comment: store.comment,
+            data: JSON.parse(
+              (
+                await Promise.all(
+                  chunks.map((chunk) => crypto.decrypt(chunk, password))
+                )
+              ).join('')
+            )
+          }
+        } catch (e) {
+          console.log(e)
+          
+          throw new Error(ERROR_STORE_CANT_DECRYPT)
         }
       } else if ((<SecureStore>store).data) {
         _store = <SecureStore>store
       } else {
-        _store = { 
+        _store = {
           alias: store.alias,
           name: store.name,
-          comment: store.comment, 
-          data: {} 
+          comment: store.comment,
+          data: {}
         }
       }
       break

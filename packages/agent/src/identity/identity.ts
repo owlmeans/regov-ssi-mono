@@ -199,7 +199,7 @@ export const identityHelper = <
         UnsignedCredential<SubjectT>
       >({
         id: did.id,
-        type: [BASE_CREDENTIAL_TYPE, type],
+        type: [BASE_CREDENTIAL_TYPE, CREDENTIAL_ENTITY_IDENTITY_TYPE, type],
         holder: wallet.ssi.did.helper().extractProofController(did),
         context: idtContext,
         subject: identitySubject

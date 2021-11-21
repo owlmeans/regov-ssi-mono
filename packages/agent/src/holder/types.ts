@@ -30,6 +30,9 @@ export const CREDENTIAL_CLAIM_TYPE = 'CredentialClaim'
 export type ClaimCredential<Subject extends ClaimSubject = ClaimSubject>
   = Credential<Subject>
 
+export type UnsignedClaimCredential<Subject extends ClaimSubject = ClaimSubject>
+  = UnsignedCredential<Subject>
+
 export type ClaimBundle<BundledClaim extends ClaimCredential>
   = Presentation<BundledClaim>
 
@@ -65,56 +68,15 @@ export type SatelliteCredential<Subject extends SatelliteSubject = SatelliteSubj
 export type UnsisgnedSatellite<Subject extends SatelliteSubject = SatelliteSubject>
   = UnsignedCredential<Subject>
 
-export type HolderVisitorBuilder<
-  CredentialT extends Credential = Credential,
-  Extension extends {} = {},
-  Offer extends OfferCredential<OfferSubject<CredentialT, Extension>>
-  = OfferCredential<OfferSubject<CredentialT, Extension>>
-  > = (wallet: WalletWrapper) => HolderVisitor<CredentialT, Extension, Offer>
-
-export type HolderVisitor<
-  CredentialT extends Credential = Credential,
-  Extension extends {} = {},
-  Offer extends OfferCredential<OfferSubject<CredentialT, Extension>>
-  = OfferCredential<OfferSubject<CredentialT, Extension>>
-  > = {
-    bundle?: {
-      store?: {
-        storeOffer?: (offer: Offer) => Promise<void>
-
-        castRegistry?: (offer: Offer) => string | undefined
-      },
-
-      unbundle?: {
-        updateIssuer?: (
-          offer: OfferBundle<Offer>,
-          holder: string
-        ) => Promise<CredentialWrapper<CredentialSubject> | undefined>
-
-        updateDid?: (
-          offer: OfferBundle<Offer>,
-          holder: string
-        ) => Promise<DIDDocument | undefined>
-
-        verifyHolder?: (offer: OfferBundle<Offer>, issuerDid: DIDDocument) => Promise<boolean>
-      }
-
-      response?: {
-        build?: {
-          createSatellite?: (
-            unsignedSatellite: UnsignedCredential<SatelliteSubject<Extension>>,
-            credential: CredentialT
-          ) => Promise<void>
-        }
-      }
-    }
-  }
-
 export const ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL = 'ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL'
 
 export const ERROR_UNTRUSTED_ISSUER = 'ERROR_UNTRUSTED_ISSUER'
 export const ERROR_NO_RELATED_DID_FOUND = 'ERROR_NO_RELATED_DID_FOUND'
 export const ERROR_CLAIM_OFFER_DONT_MATCH = 'ERROR_CLAIM_OFFER_DONT_MATCH'
+
+export const ERROR_PRESENTATION_VERIFICTION = 'ERROR_PRESENTATION_VERIFICTION'
+export const ERROR_PRESENTATION_SHOULBE_OFFER = 'ERROR_PRESENTATION_SHOULBE_OFFER'
+export const ERROR_UNBUNDLE_NOCLAIM_TOMATCH = 'ERROR_UNBUNDLE_NOCLAIM_TOMATCH'
 
 export const ERROR_WRONG_CLAIM_SUBJECT_TYPE = 'ERROR_WRONG_CLAIM_SUBJECT_TYPE'
 

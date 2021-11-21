@@ -22,6 +22,8 @@ export type MaybeArray<T> = AffinidiMaybeArray<T>
 
 export type ContextSchema = ContextObj
 
+export type MultiSchema = ContextSchema | ContextSchema[]
+
 export type Credential<Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>>
   = VCV1<Subject> & {
     holder: DIDDocument
@@ -54,6 +56,8 @@ export type UnsignedCredential<
   }
 
 export type CredentialType = VCV1Type
+
+export type BasicCredentialType = string | string[]
 
 export type UnsignedPresentation<
   CredentialT extends Credential = Credential,

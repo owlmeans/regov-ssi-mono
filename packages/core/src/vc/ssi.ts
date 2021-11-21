@@ -13,6 +13,7 @@ import {
   SignPresentationOptions,
   ERROR_NO_PRESENTATION_SIGNING_KEY,
   ERROR_NO_CREDENTIAL_SIGNING_KEY,
+  VerifyPresentationResult,
 } from "./ssi/types"
 import {
   Credential,
@@ -40,6 +41,7 @@ import {
 } from "@owlmeans/regov-ssi-did"
 
 const jsigs = require('jsonld-signatures')
+
 
 /**
  * @TODO Sign and verify VC with nonce from did.
@@ -109,12 +111,13 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       options?: SignCredentialOptions
     ) => {
       issuer = issuer || unsingedCredential.holder
-      const keyId = options?.keyId 
-      || (
-        did.helper().extractProofController(issuer) === unsingedCredential.holder.id
-        ? VERIFICATION_KEY_HOLDER
-        : VERIFICATION_KEY_CONTROLLER
-      )
+
+      const keyId = options?.keyId
+        || (
+          did.helper().extractProofController(issuer) === unsingedCredential.holder.id
+            ? VERIFICATION_KEY_HOLDER
+            : VERIFICATION_KEY_CONTROLLER
+        )
 
       const key = await did.extractKey(issuer, keyId)
       if (!key) {
@@ -257,65 +260,150 @@ export const buildSSICore: BuildSSICoreMethod = async ({
         }
       }
 
-      const result = await validateVPV1({
-        documentLoader:
-          localLoader
-            ? localLoader(did.helper(), buildDocumentLoader(did), presentation, didDoc)
-            : didDoc
-              ? buildDocumentLoader(did)(() => didDoc) : documentLoader,
-        getVerifySuite: async (options) => {
-          const didId = did.helper().parseDIDId(options.verificationMethod)
-          let _didDoc = await did.lookUpDid<DIDDocument>(didId.did)
-          if (_didDoc) {
-            didDoc = _didDoc
-          } else {
-            didDoc = await _updateDidDoc(didId.did) || didDoc
-          }
-          if (!didDoc) {
-            throw new Error(DID_REGISTRY_ERROR_NO_DID)
-          }
-
-          const key = await did.extractKey(
-            didDoc,
-            did.helper().extractKeyId(options.verificationMethod)
-          )
-          if (!key) {
-            throw new Error(DID_REGISTRY_ERROR_NO_KEY_BY_DID)
-          }
-
-          if (!key.pubKey) {
-            throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
-          }
-
-          return crypto.buildSignSuite({
-            publicKey: key.pubKey,
-            privateKey: '',
-            controller: didId.did,
-            id: options.verificationMethod
-          })
-        },
-        getProofPurposeOptions: async (options) => {
-          let controller = <DIDDocument>await did.lookUpDid(options.controller)
-
-          /**
-           * @TODO There is, PROBABLY, some problem here.
-           * agent/verifier/crednetial/response/verify doesnt' work in test
-           * No other methods in credential test of agent can find the controller.
-           * So there is a question if the signature really prooved on previous steps.
-           */
-          if (!controller) {
-            controller = await _updateDidDoc(options.controller) as DIDDocument
-          }
-
-          return { controller }
+      /**
+       * @TODO Fix any type of options
+       */
+      const _gerVerifySuite = async (options: any) => {
+        const didId = did.helper().parseDIDId(options.verificationMethod)
+        let _didDoc = await did.lookUpDid<DIDDocument>(didId.did)
+        if (_didDoc) {
+          didDoc = _didDoc
+        } else {
+          didDoc = await _updateDidDoc(didId.did) || didDoc
         }
-      })(presentation)
+        if (!didDoc) {
+          throw new Error(DID_REGISTRY_ERROR_NO_DID)
+        }
 
-      if (result.kind !== 'valid') {
-        return [false, result]
+        const key = await did.extractKey(
+          didDoc,
+          did.helper().extractKeyId(options.verificationMethod)
+        )
+        if (!key) {
+          throw new Error(DID_REGISTRY_ERROR_NO_KEY_BY_DID)
+        }
+
+        if (!key.pubKey) {
+          throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
+        }
+
+        return crypto.buildSignSuite({
+          publicKey: key.pubKey,
+          privateKey: '',
+          controller: didId.did,
+          id: options.verificationMethod
+        })
       }
 
-      return [true, result]
+      /**
+       * @TODO Fix any type of options
+       */
+      const _getProofPurposeOptions = async (options: any) => {
+        options.controller = options.controller.id || options.controller
+        let controller = <DIDDocument>await did.lookUpDid(options.controller)
+
+        /**
+         * @TODO There is, PROBABLY, some problem here.
+         * agent/verifier/crednetial/response/verify doesnt' work in test
+         * No other methods in credential test of agent can find the controller.
+         * So there is a question if the signature really prooved on previous steps.
+         */
+        if (!controller) {
+          controller = await _updateDidDoc(options.controller) as DIDDocument
+        }
+
+        return { controller }
+      }
+
+      const _documentLoader = localLoader
+        ? localLoader(did.helper(), buildDocumentLoader(did), presentation, didDoc)
+        : didDoc
+          ? buildDocumentLoader(did)(() => didDoc) : documentLoader
+
+
+      let result: VerifyPresentationResult<Presentation> = {
+        kind: 'invalid',
+        errors: []
+      }
+
+      const credsResult = await presentation.verifiableCredential.reduce(
+        async (_result, credential) => {
+          if (!await _result) {
+            return false
+          }
+          const credResult = await jsigs.verify(
+            credential,
+            {
+              suite: await _gerVerifySuite({
+                verificationMethod: credential.proof.verificationMethod
+              }),
+              documentLoader: _documentLoader,
+              purpose: new jsigs.purposes.AssertionProofPurpose(
+                await _getProofPurposeOptions({
+                  controller: credential.issuer || credential.holder
+                })
+              )
+            }
+          )
+
+          if (credResult.verified) {
+            return true
+          }
+
+          result = {
+            kind: 'invalid',
+            errors: [
+              ...result.kind === 'invalid' ? result.errors : [],
+              ...credResult.error.errors
+            ]
+          }
+
+          return false
+        },
+        Promise.resolve(true)
+      )
+
+      if (credsResult) {
+        const presResult = await jsigs.verify(
+          presentation,
+          {
+            suite: await _gerVerifySuite({
+              verificationMethod: presentation.proof.verificationMethod
+            }),
+            documentLoader: _documentLoader,
+            purpose: new jsigs.purposes.AuthenticationProofPurpose({
+              challenge: presentation.proof.challenge,
+              domain: presentation.proof.domain,
+              ...await _getProofPurposeOptions({
+                controller: presentation.holder
+              })
+            })
+          }
+        )
+
+        if (presResult.verified) {
+          result = {
+            kind: 'valid',
+            data: presentation
+          }
+        } else {
+          result = {
+            kind: 'invalid',
+            errors: [
+              ...result.kind === 'invalid' ? result.errors : [],
+              ...presResult.error.errors
+            ]
+          }
+        }
+      }
+
+      // const result = await validateVPV1({
+      //   documentLoader: _documentLoader,
+      //   getVerifySuite: _gerVerifySuite,
+      //   getProofPurposeOptions: _getProofPurposeOptions
+      // })(presentation)
+
+      return [result.kind === 'valid', result]
     }
   }
 }

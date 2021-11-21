@@ -102,6 +102,7 @@ describe('SSI Presentation', () => {
       holder: ssiAlice.did.helper().extractProofController(aliceDid),
       context: {
         '@version': 1.1,
+        xsd: 'http://www.w3.org/2001/XMLSchema#',
         exam: 'https://example.org/vc-schema#',
         data: {
           '@id': 'exam:data',

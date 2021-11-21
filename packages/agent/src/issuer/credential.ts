@@ -18,6 +18,9 @@ import {
   KeyPair,
 } from "@owlmeans/regov-ssi-core";
 import {
+  CryptoKey
+} from '@owlmeans/regov-ssi-common'
+import {
   ClaimSubject,
   ClaimCredential,
   CREDENTIAL_CLAIM_TYPE,
@@ -25,11 +28,11 @@ import {
   ClaimBundle,
   ERROR_WRONG_CLAIM_SUBJECT_TYPE,
   CLAIM_TYPE_PREFIX,
-  ERROR_UNTRUSTED_ISSUER
+  ERROR_UNTRUSTED_ISSUER,
+  UnsignedClaimCredential
 } from "../holder/types";
 import {
   CREDENTIAL_OFFER_TYPE,
-  IssuerVisitor,
   OfferBundle,
   OfferCredential,
   OfferSubject
@@ -41,18 +44,15 @@ import { buildLocalLoader } from "../verifier/loader";
 export const issuerCredentialHelper = <
   Payload extends {} = {},
   Extension extends {} = {},
-  CredentialT extends Credential<
-    MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
-  > = Credential<
-    MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>
-  >,
-  VisitorExtension extends {} = {}
->(wallet: WalletWrapper, visitor?: IssuerVisitor<VisitorExtension, CredentialT>) => {
+  CredentialT extends
+  Credential<MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>>
+  = Credential<MaybeArray<CredentialSubject<WrappedDocument<Payload>, Extension>>>
+>(wallet: WalletWrapper) => {
   const _identityHelper = identityHelper(wallet)
 
   return {
     claim: (issuer?: DIDDocument) => {
-      type UnsignedClaim = ClaimCredential<
+      type UnsignedClaim = UnsignedClaimCredential<
         ClaimSubject<
           UnsignedCredential<
             CredentialSubject<WrappedDocument<Payload>, Extension>
@@ -63,14 +63,21 @@ export const issuerCredentialHelper = <
       const _claimHelper = {
         signClaim: async (
           claim: UnsignedClaim,
-          key?: KeyPair | string
+          key?: KeyPair | string,
+          signer?: DIDDocument
         ) => {
           issuer = issuer || _identityHelper.getIdentity().did
           if (!issuer) {
             throw Error(ERROR_NO_IDENTITY_TO_SIGN_CREDENTIAL)
           }
 
-          const signingKey = await wallet.keys.getCryptoKey(key)
+          const signingKey = signer
+            ? (await wallet.did.extractKey(signer)) || await wallet.keys.getCryptoKey(key)
+            : await wallet.keys.getCryptoKey(key)
+
+          if (signer) {
+            await wallet.keys.expandKey(signingKey)
+          }
 
           let did: DIDDocument
           let useController = true
@@ -94,7 +101,7 @@ export const issuerCredentialHelper = <
           }
 
           const credential = await wallet.ssi.signCredential(
-            claim.credentialSubject.data.credential, did,
+            claim.credentialSubject.data.credential, signer || did,
             { keyId: useController ? VERIFICATION_KEY_CONTROLLER : VERIFICATION_KEY_HOLDER }
           ) as CredentialT
 
@@ -118,7 +125,7 @@ export const issuerCredentialHelper = <
 
           const offerUnsigned = await wallet.ssi.buildCredential<
             WrappedDocument<{ credential: CredentialT }>,
-            OfferSubject<CredentialT, VisitorExtension>
+            OfferSubject<CredentialT>
           >(
             {
               id: did.id,
@@ -138,18 +145,15 @@ export const issuerCredentialHelper = <
             }
           )
 
-          visitor?.claim?.signClaim?.patchOffer
-            && await visitor.claim.signClaim.patchOffer(offerUnsigned)
-
           return await wallet.ssi.signCredential(
             offerUnsigned, issuer,
             //            { keyId: VERIFICATION_KEY_CONTROLLER }
-          ) as OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
+          ) as OfferCredential<OfferSubject<CredentialT>>
         },
 
-        signClaims: async (claims: UnsignedClaim[], key?: KeyPair | string) => {
+        signClaims: async (claims: UnsignedClaim[], key?: KeyPair | string, signer?: DIDDocument) => {
           return await Promise.all(
-            claims.map(claim => _claimHelper.signClaim(claim, key))
+            claims.map(claim => _claimHelper.signClaim(claim, key, signer))
           )
         }
       }
@@ -159,8 +163,8 @@ export const issuerCredentialHelper = <
 
     bundle: <
       BundledClaim extends ClaimCredential,
-      BundledOffer extends OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
-      = OfferCredential<OfferSubject<CredentialT, VisitorExtension>>
+      BundledOffer extends OfferCredential<OfferSubject<CredentialT>>
+      = OfferCredential<OfferSubject<CredentialT>>
     >(
       issuer?: DIDDocument,
       identity?: IdentityParams | EntityIdentity | boolean

@@ -15,3 +15,5 @@ export type EncryptedStore = BasicStore & {
 export type SecureStore = BasicStore & {
   data?: Wallet
 }
+
+export const ERROR_STORE_CANT_DECRYPT = 'ERROR_STORE_CANT_DECRYPT'
