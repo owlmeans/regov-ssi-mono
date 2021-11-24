@@ -60,3 +60,23 @@ export type ExtensionFlowStep = {
   changeStateMethod?: string
   type: string
 }
+
+
+export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_CLAIM
+ | typeof EXTENSION_ITEM_PURPOSE_OFFER
+ | typeof EXTENSION_ITEM_PURPOSE_ISSUE
+ | typeof EXTENSION_ITEM_PURPOSE_REQUEST
+ | typeof EXTENSION_ITEM_PURPOSE_RESPONSE
+ | typeof EXTENSION_ITEM_PURPOSE_VERIFY
+ | typeof EXTENSION_ITEM_PURPOSE_STORE
+ | typeof EXTENSION_ITEM_PURPOSE_CUSTOM
+ | string
+
+export const EXTENSION_ITEM_PURPOSE_CLAIM = 'claim'
+export const EXTENSION_ITEM_PURPOSE_OFFER = 'offer'
+export const EXTENSION_ITEM_PURPOSE_ISSUE = 'issue'
+export const EXTENSION_ITEM_PURPOSE_REQUEST = 'request'
+export const EXTENSION_ITEM_PURPOSE_RESPONSE = 'response'
+export const EXTENSION_ITEM_PURPOSE_VERIFY = 'verify'
+export const EXTENSION_ITEM_PURPOSE_STORE = 'store'
+export const EXTENSION_ITEM_PURPOSE_CUSTOM = 'custom'

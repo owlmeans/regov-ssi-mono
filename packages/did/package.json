@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ssi-did",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "OwlMeans Regov SSI DID Library",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -36,9 +36,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@owlmeans/regov-ssi-capability": "^0.2.0",
     "@owlmeans/regov-ssi-common": "^0.2.0",
-    "@owlmeans/regov-ssi-core": "^0.4.2",
     "jsonld-signatures": "^7.0.0"
   },
   "gitHead": "cc8f3baf1b0ef75156f7dbc9571d69446653aac8"

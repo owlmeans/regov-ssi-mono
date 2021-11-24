@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ssi-extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Library that allows to process extensions",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -37,7 +37,6 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
-    "@owlmeans/regov-ssi-capability": "^0.2.0",
     "@owlmeans/regov-ssi-core": "^0.4.1"
   }
 }
