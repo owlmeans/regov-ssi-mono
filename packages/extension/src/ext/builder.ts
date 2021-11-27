@@ -1,5 +1,11 @@
-import { ExtensionSchema } from "../schema";
-import { Extension, ExtensionFactories } from "./types";
+import {
+  ExtensionSchema
+} from "../schema";
+import { defaultBuildingFactory } from "./factory"
+import {
+  Extension,
+  ExtensionFactories
+} from "./types";
 
 
 export const buildExtension = <
@@ -11,6 +17,9 @@ export const buildExtension = <
 ): Extension<CredType, FlowType> => {
   const _extension: Extension<CredType, FlowType> = {
     schema,
+    ...{
+      buildingFactory: defaultBuildingFactory
+    },
     ...factories
   }
 

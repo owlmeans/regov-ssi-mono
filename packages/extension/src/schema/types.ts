@@ -20,20 +20,20 @@ export type ExtensionDetails = {
   code: string
   organization?: string
   home?: string
+  schemaBaseUrl?: string
 }
 
 export type CredentialSchema<
   Evidance extends {} = any,
   Schema extends {} = any
   > = {
-    credentialContext: MultiSchema,
-    contextUrl?: string
     mainType: string
+    credentialContext: MultiSchema
+    contextUrl?: string
     mandatoryTypes?: BasicCredentialType
     evidence?: Evidance | Evidance[]
     credentialSchema?: Schema | Schema[]
     registryType?: string
-
     withSource?: boolean
     claimable?: boolean
     listed?: boolean
@@ -70,6 +70,8 @@ export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_CLAIM
  | typeof EXTENSION_ITEM_PURPOSE_VERIFY
  | typeof EXTENSION_ITEM_PURPOSE_STORE
  | typeof EXTENSION_ITEM_PURPOSE_CUSTOM
+ | typeof EXTENSION_ITEM_PURPOSE_MENU
+ | typeof EXTENSION_ITEM_PURPOSE_ROUTE
  | string
 
 export const EXTENSION_ITEM_PURPOSE_CLAIM = 'claim'
@@ -80,3 +82,5 @@ export const EXTENSION_ITEM_PURPOSE_RESPONSE = 'response'
 export const EXTENSION_ITEM_PURPOSE_VERIFY = 'verify'
 export const EXTENSION_ITEM_PURPOSE_STORE = 'store'
 export const EXTENSION_ITEM_PURPOSE_CUSTOM = 'custom'
+export const EXTENSION_ITEM_PURPOSE_MENU = 'menu'
+export const EXTENSION_ITEM_PURPOSE_ROUTE = 'route'
