@@ -70,7 +70,6 @@ export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_CLAIM
  | typeof EXTENSION_ITEM_PURPOSE_VERIFY
  | typeof EXTENSION_ITEM_PURPOSE_STORE
  | typeof EXTENSION_ITEM_PURPOSE_CUSTOM
- | typeof EXTENSION_ITEM_PURPOSE_MENU
  | typeof EXTENSION_ITEM_PURPOSE_ROUTE
  | string
 
@@ -82,5 +81,4 @@ export const EXTENSION_ITEM_PURPOSE_RESPONSE = 'response'
 export const EXTENSION_ITEM_PURPOSE_VERIFY = 'verify'
 export const EXTENSION_ITEM_PURPOSE_STORE = 'store'
 export const EXTENSION_ITEM_PURPOSE_CUSTOM = 'custom'
-export const EXTENSION_ITEM_PURPOSE_MENU = 'menu'
 export const EXTENSION_ITEM_PURPOSE_ROUTE = 'route'
