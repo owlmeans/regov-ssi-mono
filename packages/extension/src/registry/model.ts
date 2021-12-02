@@ -14,6 +14,10 @@ export const buildExtensionRegistry = <
     extensions: [],
 
     register: async (ext) => {
+      _registry.registerSync(ext)
+    },
+    
+    registerSync: ext => {
       _registry.extensions.push(ext)
       Object.entries(ext.schema.credentials).forEach(([_, cred]) => {
         _typeToExtension[cred.mainType] = [

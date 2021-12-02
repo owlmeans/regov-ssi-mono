@@ -9,6 +9,7 @@ export type ExtensionRegistry<
     getExtensions: (type: string) => Ext[]
     getExtension: (type: string, code?: string) => Ext
     register: (ext: Ext) => Promise<void>
+    registerSync: (ext: Ext) => void
   }
 
 
