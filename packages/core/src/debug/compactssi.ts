@@ -70,7 +70,6 @@ util.inspect.defaultOptions.depth = 8
 
     console.log(did)
 
-
     const skeleton = buildVCV1Skeleton({
       context: {
         '@version': 1.1,
@@ -87,6 +86,8 @@ util.inspect.defaultOptions.depth = 8
       skeleton,
       issuanceDate: (new Date).toISOString()
     })
+
+    console.log(unsignedC)
 
     const documentLoader = buildDocumentLoader(ssi.did)(() => did);
 

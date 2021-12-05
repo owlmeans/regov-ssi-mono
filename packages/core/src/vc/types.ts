@@ -64,11 +64,12 @@ export type UnsignedPresentation<
   Holder extends PresentationHolder = PresentationHolder,
   > = VPV1Unsigned<CredentialT, PresentationType, Holder>
 
-
 export type Presentation<
   CredentialT extends Credential = Credential,
   Holder extends PresentationHolder = PresentationHolder
-  > = VPV1<CredentialT, PresentationType, Holder>
+  > = VPV1<CredentialT, PresentationType, Holder> & {
+    holder: DIDDocument
+  }
 
 export type PresentationHolder = VPV1Holder
 

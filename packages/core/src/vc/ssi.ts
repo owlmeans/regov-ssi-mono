@@ -1,11 +1,5 @@
 
 import {
-  buildVPV1,
-  buildVPV1Unsigned,
-  validateVPV1
-} from "@affinidi/vc-common"
-
-import {
   BuildSSICoreMethod,
   BuildCredentailOptions,
   SignCredentialOptions,
@@ -88,9 +82,10 @@ export const buildSSICore: BuildSSICoreMethod = async ({
     >(options: BuildCredentailOptions<T>) => {
       const credential = {
         '@context': [
-          'https://www.w3.org/2018/credentials/v1'
+          'https://www.w3.org/2018/credentials/v1',
+          ...(options.context ? [options.context] : []) ,
         ],
-        id: options.id,
+        ...(options.id ? { id: options.id } : {}),
         type: options.type,
         holder: options.holder,
         credentialSubject: options.subject,
@@ -110,7 +105,9 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       issuer?: DIDDocument,
       options?: SignCredentialOptions
     ) => {
-      issuer = issuer || unsingedCredential.holder
+      if (!issuer) {
+        issuer = unsingedCredential.holder
+      }
 
       const keyId = options?.keyId
         || (
@@ -118,7 +115,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             ? VERIFICATION_KEY_HOLDER
             : VERIFICATION_KEY_CONTROLLER
         )
-
+        
       const key = await did.extractKey(issuer, keyId)
       if (!key) {
         throw new Error(ERROR_NO_CREDENTIAL_SIGNING_KEY)
@@ -140,7 +137,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
               controller: issuer.id
             }),
             documentLoader,
-            purpose: new jsigs.purposes.AssertionProofPurpose({}),
+            purpose: new jsigs.purposes.AssertionProofPurpose({ controller: issuer }),
             compactProof: false,
           }
         ) as C
@@ -184,19 +181,24 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       return [true, result]
     },
 
+    
     buildPresentation: async <
       C extends Credential = Credential,
       H extends PresentationHolder = PresentationHolder
     >(credentails: C[], options: BuildPresentationOptions) => {
-      return buildVPV1Unsigned({
-        id: options.id || `urn:uuid:${basicHelper.makeRandomUuid()}`,
-        vcs: [...credentails],
-        holder: {
-          id: options.holder
-        },
-        context: options.context,
-        type: options.type
-      }) as UnsignedPresentation<C, H>
+      return {
+        '@context': [
+          'https://www.w3.org/2018/credentials/v1',
+          ...(options.context ? [options.context] : []) ,
+        ],
+        ...(options.id ? { id: options.id } : {}),
+        type: [
+          'VerifiablePresentation',
+          options.type
+        ],
+        holder: options.holder,
+        verifiableCredential: credentails,
+      } as unknown as UnsignedPresentation<C, H>
     },
 
     signPresentation: async<
@@ -221,28 +223,29 @@ export const buildSSICore: BuildSSICoreMethod = async ({
         throw new Error(COMMON_CRYPTO_ERROR_NOID)
       }
 
-      return await buildVPV1({
-        unsigned: unsignedPresentation,
-        holder: {
-          did: holder.id,
-          keyId: keyId,
-          privateKey: key.pk,
-          publicKey: key.pubKey
-        },
-        documentLoader,
-        getSignSuite: (options) => {
-          return crypto.buildSignSuite({
-            publicKey: <string>options.publicKey,
-            privateKey: options.privateKey,
-            id: `${options.controller}#${options.keyId}`,
-            controller: options.controller
-          })
-        },
-        getProofPurposeOptions: async () => ({
-          challenge: options?.challange || unsignedPresentation.id || basicHelper.makeRandomUuid(),
-          domain: options?.domain || holder.id
-        }),
-      }) as Presentation<C, H>
+      try {
+        return await jsigs.sign(
+          { ...unsignedPresentation },
+          {
+            suite: await crypto.buildSignSuite({
+              publicKey: key.pubKey as string,
+              privateKey: key.pk as string,
+              id: `${holder.id}#${keyId}`,
+              controller: holder.id
+            }),
+            documentLoader,
+            purpose: new jsigs.purposes.AuthenticationProofPurpose({
+              challenge: options?.challange || unsignedPresentation.id || basicHelper.makeRandomUuid(),
+              domain: options?.domain || holder.id
+            }),
+            compactProof: false,
+          }
+        ) as Presentation<C, H>
+      } catch (e: any) {
+        console.log(e.details)
+
+        throw e
+      }
     },
 
     verifyPresentation: async (presentation, didDoc?, localLoader?) => {
@@ -342,7 +345,8 @@ export const buildSSICore: BuildSSICoreMethod = async ({
                 await _getProofPurposeOptions({
                   controller: credential.issuer || credential.holder
                 })
-              )
+              ),
+              compactProof: false,
             }
           )
 
@@ -377,7 +381,8 @@ export const buildSSICore: BuildSSICoreMethod = async ({
               ...await _getProofPurposeOptions({
                 controller: presentation.holder
               })
-            })
+            }),
+            compactProof: false,
           }
         )
 

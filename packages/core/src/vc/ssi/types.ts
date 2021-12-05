@@ -91,7 +91,7 @@ export type BuildPresentationOptions = {
   id?: string
   type?: string | string[]
   context?: CredentialContextType
-  holder: string
+  holder: DIDDocument
 }
 
 export type SignPresentationMethod = <
