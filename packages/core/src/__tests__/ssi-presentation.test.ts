@@ -99,7 +99,7 @@ describe('SSI Presentation', () => {
     const uCred = await ssiAlice.buildCredential({
       id: uDepDid.id,
       type: ['VerifiableCredential', 'TestCredential'],
-      holder: ssiAlice.did.helper().extractProofController(aliceDid),
+      holder: aliceDid,
       context: {
         '@version': 1.1,
         xsd: 'http://www.w3.org/2001/XMLSchema#',
@@ -154,7 +154,7 @@ describe('SSI Presentation', () => {
     const uPres = await test.ssiAlice.buildPresentation<typeof test.cred>(
       [test.cred],
       {
-        holder: test.cred.holder.id,
+        holder: test.cred.holder,
         type: 'TestPresentation'
       }
     )
