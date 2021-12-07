@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ssi-common",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "OwlMeans Regov SSI Common Library with types and contexts",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -10,7 +10,6 @@
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "src",
     "dist"
   ],
   "repository": {
@@ -37,9 +36,10 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@affinidi/common": "^2.0.0-beta.4",
     "@affinidi/tiny-lds-ecdsa-secp256k1-2019": "^1.1.0",
     "bip32": "^2.0.6",
+    "browserify-aes": "^1.2.0",
+    "hash.js": "^1.1.7",
     "secp256k1": "^4.0.2",
     "tiny-secp256k1": "^2.0.0",
     "uuid": "^8.3.2"

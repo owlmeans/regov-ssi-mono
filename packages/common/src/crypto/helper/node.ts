@@ -1,6 +1,6 @@
 import { Secp256k1Key, Secp256k1Signature } from "@affinidi/tiny-lds-ecdsa-secp256k1-2019"
 
-import { KeysService } from '@affinidi/common'
+import {sha256} from 'hash.js'
 import { fromSeed, BIP32Interface } from 'bip32'
 import { Base58Lib, CryptoHelper, CryptoKey } from "../types"
 import { encode as encode58, decode as decode58 } from './base58'
@@ -11,7 +11,7 @@ const ENCRYPTION_ALGORITHM = 'aes-256-cbc'
 
 const _keysCache: { [key: string]: BIP32Interface } = {}
 
-const _hashBytes = (bytes: Buffer | string) => KeysService.sha256(bytes)
+const _hashBytes = (bytes: Buffer | string) => Buffer.from(sha256().update(bytes).digest())
 
 const _hash = (data: string) => _base58().encode(_hashBytes(data))
 
@@ -73,7 +73,7 @@ const _getRandomBytes = async (size: number): Promise<Buffer> => {
 }
 
 const _normalizePassword = (password: string) => {
-  return KeysService.sha256(password)
+  return _hashBytes(password)
 }
 
 

@@ -10,7 +10,6 @@
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "src",
     "dist"
   ],
   "repository": {

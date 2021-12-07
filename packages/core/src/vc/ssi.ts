@@ -23,7 +23,6 @@ import {
   COMMON_CRYPTO_ERROR_NOPK,
   COMMON_CRYPTO_ERROR_NOPUBKEY,
   basicHelper,
-  COMMON_CRYPTO_ERROR_NOKEY
 } from "@owlmeans/regov-ssi-common"
 import {
   DIDDocument,
