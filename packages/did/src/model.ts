@@ -264,7 +264,13 @@ export const buildDidHelper =
           : {
             '@context': [
               'https://w3id.org/did/v1',
-              'https://w3id.org/security/v2'
+              {
+                '@version': 1.1,
+                didx: 'https://example.org/did-schema#',
+                xsd: 'http://www.w3.org/2001/XMLSchema#',
+                nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
+                publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
+              }
             ],
             id
           }

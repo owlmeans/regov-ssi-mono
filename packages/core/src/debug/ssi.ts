@@ -53,7 +53,7 @@ const _test = async () => {
   const unsingnedC = await ssi.buildCredential({
     id: did.id,
     type: ['VerifiableCredential', 'TestCredential'],
-    holder: ssi.did.helper().extractProofController(did),
+    holder: did,
     context: {
       '@version': 1.1,
       xsd: 'http://www.w3.org/2001/XMLSchema#',
@@ -69,9 +69,12 @@ const _test = async () => {
     subject
   })
 
-  const credential = await ssi.signCredential(unsingnedC, did)
+  console.log('---- CREDENTIAL ---')
+  console.log(unsingnedC)
 
-  const [result, _] = await ssi.verifyCredential(credential)
+  const credential = await ssi.signCredential(unsingnedC, did, { keyId: VERIFICATION_KEY_HOLDER })
+
+  const [result, _] = await ssi.verifyCredential(credential, did, VERIFICATION_KEY_HOLDER)
 
   console.log('---- CREDENTIAL VERIFICATION ---')
   console.log(result, _)
@@ -79,12 +82,18 @@ const _test = async () => {
   const unsignedP = await ssi.buildPresentation(
     [credential],
     {
-      holder: ssi.did.helper().extractProofController(did), // <string>(<DIDVerificationItem[]>did.verificationMethod)[0].controller,
+      holder: did,
       type: 'TestPresentation'
     }
   )
 
+  console.log('---- PRESENTATION ---')
+  console.log(unsignedP)
+
   const vp = await ssi.signPresentation(unsignedP, did)
+
+  console.log('---- SIGNED PRESENTATION ---')
+  console.log(vp)
 
   const [result0, _0] = await ssi.verifyPresentation(vp)
 
@@ -165,7 +174,7 @@ const _test = async () => {
     const uCred = await ctxAlice.buildCredential({
       id: did.id,
       type: ['VerifiableCredential', 'TestCredential'],
-      holder: ctxAlice.did.helper().extractProofController(aliceDid),
+      holder: aliceDid,
       context: {
         '@version': 1.1,
         xsd: 'http://www.w3.org/2001/XMLSchema#',
@@ -198,7 +207,7 @@ const _test = async () => {
     const uPres = await ctxAlice.buildPresentation<typeof cred>(
       [cred],
       {
-        holder: cred.holder.id,
+        holder: cred.holder,
         type: 'TestPresentation'
       }
     )

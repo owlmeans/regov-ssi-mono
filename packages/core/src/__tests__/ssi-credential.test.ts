@@ -75,7 +75,7 @@ describe('SSI Verifiable Credential', () => {
     const unsingnedCredentail = await test.ssi.buildCredential({
       id: did.id,
       type: ['VerifiableCredential', 'TestCredential'],
-      holder: test.ssi.did.helper().extractProofController(did),
+      holder: did,
       context: {
         '@version': 1.1,
         xsd: 'http://www.w3.org/2001/XMLSchema#',
@@ -181,7 +181,7 @@ describe('SSI Verifiable Credential', () => {
     const vp = await test.ssi?.buildPresentation(
       [test.credential],
       {
-        holder: test.ssi.did.helper().extractProofController(did),
+        holder: did,
         type: 'TestPresentation'
       }
     )
