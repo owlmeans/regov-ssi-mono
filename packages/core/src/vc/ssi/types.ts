@@ -1,7 +1,7 @@
 import { CryptoHelper } from "@owlmeans/regov-ssi-common"
 import { KeyChainWrapper } from "../../keys/types"
 
-import { LoadedDocument, BuildDocumentLoader, DIDDocument, DIDHelper, DIDRegistryWrapper } from '@owlmeans/regov-ssi-did'
+import { LoadedDocument, BuildDocumentLoader, DIDDocument, DIDHelper, DIDRegistryWrapper, DIDDocumentUnsinged } from '@owlmeans/regov-ssi-did'
 import {
   Credential,
   CredentialContextType,
@@ -34,6 +34,7 @@ export type SSICore = {
   buildPresentation: BuildPresentationMethod
   signPresentation: SignPresentationMethod
   verifyPresentation: VerifyPresentationMethod
+  verifyEvidence: VerifyEvidenceMethod
 }
 
 export type BuildCredentialMethod = <
@@ -48,7 +49,7 @@ export type BuildCredentailOptions<
   > = {
     id: string,
     type: CredentialType
-    holder: DIDDocument,
+    holder: DIDDocument | DIDDocumentUnsinged,
     subject: Subject,
     issueanceDate?: string
     context: CredentialContextType
@@ -116,12 +117,18 @@ export type VerifyPresentationMethod = (
   localLoader?: LocalDocumentLoader
 ) => Promise<[boolean, VerifyPresentationResult]>
 
+export type VerifyEvidenceMethod = (
+  credential: Credential,
+  presentation?: Presentation,
+  localLoader?: LocalDocumentLoader
+) => Promise<boolean>
+
 export type LocalDocumentLoader = (
   didHelper: DIDHelper,
-  loaderBuilder: BuildDocumentLoader,
+  loaderBuilder: BuildDocumentLoader<Credential>,
   presentation: Presentation,
   didDoc?: DIDDocument
-) => (url: string) => Promise<LoadedDocument>
+) => (url: string) => Promise<LoadedDocument<Credential>>
 
 export type VerifyPresentationResult<PresentationT extends Presentation = Presentation>
   = Validated<PresentationT>

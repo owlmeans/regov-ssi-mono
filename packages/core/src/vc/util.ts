@@ -1,11 +1,16 @@
 import { UnsignedCredential } from "."
 import {
   Presentation,
-  Credential
+  Credential,
+  Evidence
 } from "./types"
 
 export const isPresentation = (obj: any): obj is Presentation => {
   return typeof obj === 'object' && !!obj.verifiableCredential
+}
+
+export const isCredential = (obj: any): obj is Credential => {
+  return typeof obj === 'object' && !!obj.credentialSubject
 }
 
 export const extractSubject = <
@@ -21,4 +26,8 @@ export const extractSubject = <
     : cred.credentialSubject
 
   return subject as SubjectT
+}
+
+export const isFullEvidence = (obj: Evidence): obj is Credential => {
+  return !!(obj as any).credentialSubject
 }

@@ -8,6 +8,7 @@ import {
   ERROR_NO_PRESENTATION_SIGNING_KEY,
   ERROR_NO_CREDENTIAL_SIGNING_KEY,
   VerifyPresentationResult,
+  SSICore,
 } from "./ssi/types"
 import {
   Credential,
@@ -17,6 +18,7 @@ import {
   Presentation,
   PresentationHolder,
   UnsignedPresentation,
+  BASE_CREDENTIAL_TYPE
 } from './types'
 import {
   COMMON_CRYPTO_ERROR_NOID,
@@ -30,8 +32,11 @@ import {
   DID_REGISTRY_ERROR_NO_DID,
   DID_REGISTRY_ERROR_NO_KEY_BY_DID,
   VERIFICATION_KEY_HOLDER,
-  VERIFICATION_KEY_CONTROLLER
+  VERIFICATION_KEY_CONTROLLER,
+  BuildDocumentLoader
 } from "@owlmeans/regov-ssi-did"
+import { mapValue, normalizeValue } from "../util"
+import { isCredential, isFullEvidence } from "./util"
 
 const jsigs = require('jsonld-signatures')
 
@@ -48,7 +53,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
 }) => {
   const documentLoader = buildDocumentLoader(did)(() => undefined)
 
-  return {
+  const _core: SSICore = {
     keys,
 
     crypto,
@@ -82,7 +87,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       const credential = {
         '@context': [
           'https://www.w3.org/2018/credentials/v1',
-          ...(options.context ? [options.context] : []) ,
+          ...(options.context ? [options.context] : []),
         ],
         ...(options.id ? { id: options.id } : {}),
         type: options.type,
@@ -105,7 +110,11 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       options?: SignCredentialOptions
     ) => {
       if (!issuer) {
-        issuer = unsingedCredential.holder
+        /**
+         * @TODO The holder can be an unsigned document and this is the issue
+         * it should be actually signed first
+         */
+        issuer = unsingedCredential.holder as DIDDocument
       }
 
       const keyId = options?.keyId
@@ -114,7 +123,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             ? VERIFICATION_KEY_HOLDER
             : VERIFICATION_KEY_CONTROLLER
         )
-        
+
       const key = await did.extractKey(issuer, keyId)
       if (!key) {
         throw new Error(ERROR_NO_CREDENTIAL_SIGNING_KEY)
@@ -180,7 +189,6 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       return [true, result]
     },
 
-    
     buildPresentation: async <
       C extends Credential = Credential,
       H extends PresentationHolder = PresentationHolder
@@ -188,7 +196,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       return {
         '@context': [
           'https://www.w3.org/2018/credentials/v1',
-          ...(options.context ? [options.context] : []) ,
+          ...(options.context ? [options.context] : []),
         ],
         ...(options.id ? { id: options.id } : {}),
         type: [
@@ -252,7 +260,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
         if (localLoader) {
           const doc = await localLoader(
             did.helper(),
-            buildDocumentLoader(did),
+            buildDocumentLoader(did) as BuildDocumentLoader<Credential>,
             presentation,
             didDoc
           )(didId)
@@ -318,8 +326,11 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       }
 
       const _documentLoader = localLoader
-        ? localLoader(did.helper(), buildDocumentLoader(did), presentation, didDoc)
-        : didDoc
+        ? localLoader(
+          did.helper(),
+          buildDocumentLoader(did) as BuildDocumentLoader<Credential>,
+          presentation, didDoc
+        ) : didDoc
           ? buildDocumentLoader(did)(() => didDoc) : documentLoader
 
 
@@ -408,6 +419,43 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       // })(presentation)
 
       return [result.kind === 'valid', result]
+    },
+
+    verifyEvidence: async (credential, presentation, localLoader) => {
+      if (credential.evidence) {
+        const _documentLoader = localLoader && presentation
+          ? localLoader(
+            did.helper(),
+            buildDocumentLoader(did) as BuildDocumentLoader<Credential>,
+            presentation
+          ) : documentLoader
+
+        return !(await mapValue(credential.evidence, async evidence => {
+          if (evidence.type.includes(BASE_CREDENTIAL_TYPE)) {
+            const fullEvidence = isFullEvidence(evidence)
+              ? evidence : (await _documentLoader(evidence.id)).document
+
+            if (isCredential(fullEvidence)) {
+              const [result] = await _core.verifyCredential(fullEvidence)
+              if (result) {
+                if (fullEvidence.evidence) {
+                  return _core.verifyEvidence(fullEvidence, presentation)
+                }
+
+                return !!await did.lookUpDid(evidence.id)
+              }
+            }
+
+            return false
+          }
+
+          return true
+        })).some(res => !res)
+      }
+
+      return true
     }
   }
+
+  return _core
 }

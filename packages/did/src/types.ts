@@ -163,13 +163,13 @@ export type DIDDocumentProof = {
   verificationMethod: string
 }
 
-export type BuildDocumentLoader =
+export type BuildDocumentLoader<Type extends {} = {}> =
   (fallback?: () => DIDDocument | DIDDocumentUnsinged | undefined) =>
-    (url: string) => Promise<LoadedDocument>
+    (url: string) => Promise<LoadedDocument<Type>>
 
-export type LoadedDocument = {
+export type LoadedDocument<Type extends {} = {}> = {
   contextUrl: string | null
-  document: DIDDocument | Object,
+  document: DIDDocument | Type,
   documentUrl: string,
 }
 
