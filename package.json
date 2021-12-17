@@ -9,6 +9,7 @@
     "build": "lerna run build"
   },
   "devDependencies": {
+    "react-router-dom": "^6.0.2",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
     "jest": "^27.0.6",

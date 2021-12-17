@@ -1,0 +1,62 @@
+{
+  "extension": {
+    "details": {
+      "name": "Universal Credential"
+    }
+  },
+  "menu": {
+    "main": "Universal VCs"
+  },
+  "tab": {
+    "build": {
+      "label": "Build"
+    },
+    "sign": {
+      "label": "Sign"
+    },
+    "claim": {
+      "label": "Claim"
+    },
+    "offer": {
+      "label": "Offer"
+    },
+    "request": {
+      "label": "Request"
+    },
+    "response": {
+      "label": "Response"
+    }
+  },
+  "builder": {
+    "title": "Universal Verifiable Credential Creation",
+    "type": {
+      "label": "Types",
+      "hint": "Specify types for the credential",
+      "error": {
+        "json": "Credential type should be valid JSON string"
+      }
+    },
+    "context": {
+      "label": "Context",
+      "hint": "JSON with @context property extension",
+      "error": {
+        "json": "Context should be a valid JSON array containing strings and objects"
+      }
+    },
+    "subject": {
+      "label": "Credential Subject",
+      "hint": "JSON with corresponding crednetial subject",
+      "error": {
+        "json": "It doesn't make sense to create a credential without any data inside"
+      }
+    },
+    "evidence": {
+      "label": "Evidence",
+      "hint": "JSON with corresponding evidence documents (short form)",
+      "error": {
+        "json": "Evidence should be ommited or be a valid JSON object or array of JSON objects"
+      }
+    },
+    "build": "Build VC"
+  }
+}

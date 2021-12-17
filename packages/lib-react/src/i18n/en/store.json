@@ -1,0 +1,67 @@
+{
+  "creation": {
+    "title": "Create new wallet",
+    "load": "Load file",
+    "name": {
+      "label": "Wallet name",
+      "default": "Main Wallet",
+      "hint": "You can use any name, that is informative to you.",
+      "error": {
+        "required": "Wallet name is required",
+        "maxLength": "Name is too long",
+        "pattern": "Please try to use only letters"
+      }
+    },
+    "login": {
+      "label": "Login",
+      "hint": "Invent any login you'd like to use.",
+      "error": {
+        "required": "Login is required",
+        "minLength": "Login should be longer than 3 symbols",
+        "maxLength": "Login is too long",
+        "pattern": "Please try to use only letters and numbers, no spaces allowed"
+      }
+    },
+    "password": {
+      "input": {
+        "label": "Password",
+        "hint": "Come up with a password",
+        "error": {
+          "required": "Password is required",
+          "minLength": "Password should be longer than 7 symbols",
+          "maxLength": "Password is too long"
+        }
+      },
+      "confirm": {
+        "label": "Password confirmation",
+        "hint": "Remember your password",
+        "error": {
+          "equal": "Confirmation should match the password"
+        }
+      }
+    },
+    "create": "Create"
+  },
+  "login": {
+    "title": "Login to `{{name}}`",
+    "password": {
+      "label": "Password",
+      "hint": "Please, sepcify password you remembered. It's impossible to restore it",
+      "error": {
+        "required": "Password is required",
+        "minLength": "Password should be longer than 7 symbols",
+        "maxLength": "Password is too long"
+      }
+    },
+    "alert": {
+      "error": {
+        "wrong": "Can't login: {{message}}",
+        "test": "Password is too simple :)",
+        "severity": {
+          "error": "error"
+        }
+      }
+    },
+    "main": "Login"
+  }
+}

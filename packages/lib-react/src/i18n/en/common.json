@@ -1,0 +1,13 @@
+{
+  "ERROR_STORE_CANT_DECRYPT": "Wallet store can't be decrypted with provided password",
+  "alert": {
+    "error": {
+      "label": "Error",
+      "severity": "error"
+    }
+  },
+  "error": {
+    "default": "Some error happened!",
+    "required": "This field is required!"
+  }
+}
