@@ -16,7 +16,7 @@ import {
   PasswordInput,
   PrimaryForm,
   AlertOutput
-} from '../common'
+} from '../../common'
 
 
 export const StoreLoginWeb = (props: StoreLoginImplProps) => {

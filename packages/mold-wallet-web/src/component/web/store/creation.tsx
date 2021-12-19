@@ -16,7 +16,7 @@ import {
   MainTextInput,
   NewPasswordInput,
   FormMainAction
-} from '../common'
+} from '../../common'
 
 
 export const StoreCreationWeb = (props: StoreCreationImplProps) => {

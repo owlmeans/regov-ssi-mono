@@ -14,7 +14,7 @@ import {
   MainLoading,
   UIExtensionRegistry,
 } from '@owlmeans/regov-lib-react'
-import { webComponentMap } from '@owlmeans/regov-lib-react-web'
+import { webComponentMap } from './component'
 
 import {
   NavigationRoot,

@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@owlmeans/regov-lib-react": "link:../../lib-react",
-    "@owlmeans/regov-lib-react-web": "link:../../lib-react-web",
     "@owlmeans/regov-mold-wallet-web": "link:..",
     "@owlmeans/regov-ssi-common": "link:../../common",
     "@owlmeans/regov-ssi-core": "link:../../core",

@@ -1,3 +1,7 @@
+
+export * from './store'
+export * from './main'
+
 import {
   ImplementationMap
 } from '@owlmeans/regov-lib-react'

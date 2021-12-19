@@ -2,11 +2,11 @@ import {
   buildUIExtensionRegistry,
   
 } from '@owlmeans/regov-lib-react'
-import {
+import { 
+  WalletApp ,
   buildUIUniversalExtension,
   UniversalCredentailExtension
-} from '@owlmeans/regov-lib-react-web'
-import { WalletApp } from '@owlmeans/regov-mold-wallet-web'
+} from '@owlmeans/regov-mold-wallet-web'
 
 import { config } from './config'
 

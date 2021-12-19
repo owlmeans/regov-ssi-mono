@@ -12,7 +12,7 @@
     "@emotion/styled": "^11.6.0",
     "@mui/material": "^5.1.0",
     "@owlmeans/regov-lib-react": "link:..",
-    "@owlmeans/regov-lib-react-web": "link:../../lib-react-web",
+    "@owlmeans/regov-mold-wallet-web": "link:../../mold-wallet-web",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
