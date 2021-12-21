@@ -19,7 +19,7 @@ import {
   FormMainAction,
   LongOutput,
   AlertOutput
-} from '../../../../../component'
+} from '../../../../component'
 
 
 export const MainBuilder = ({ ns }: EmptyProps) => <CredentialBuilder ns={ns} com={
@@ -32,6 +32,9 @@ export const MainBuilder = ({ ns }: EmptyProps) => <CredentialBuilder ns={ns} co
 
     return <FormProvider {...methods}>
       <PrimaryForm {...props} title="builder.title">
+        {/**
+         * @TODO Propose types in drop down
+         */}
         <MainTextInput {...props} field="builder.type" />
         {/**
          * @TODO Use https://www.npmjs.com/package/jsoneditor instead:

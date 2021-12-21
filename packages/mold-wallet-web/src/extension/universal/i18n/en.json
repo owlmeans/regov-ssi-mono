@@ -25,6 +25,9 @@
     },
     "response": {
       "label": "Response"
+    },
+    "read": {
+      "label": "Read"
     }
   },
   "builder": {
@@ -58,5 +61,38 @@
       }
     },
     "build": "Build VC"
+  },
+  "signer": {
+    "title": "Universal Verifiable Credential Signer",
+    "unsigned": {
+      "label": "Unsigned Verifiable Credential",
+      "hint": "Specify JSON of Unsigned Verifiable Credential",
+      "error": {
+        "json": "Unsigned Credential should be a valid JSON text"
+      }
+    },
+    "evidence": {
+      "label": "Signing Idenity",
+      "hint": "Verifiable Credential to use as signature evidence (keep empty to self-sign)",
+      "error": {
+        "json": "Signing Idenity should be a valid JSON text or empty string"
+      }
+    },
+    "sign": "Sign VC"
+  },
+  "claimer": {
+    "title": "Universal Verifiable Credential Claimer"
+  },
+  "proposer": {
+    "title": "Universal Verifiable Credential Proposer"
+  },
+  "requester": {
+    "title": "Universal Verifiable Credential Requester"
+  },
+  "responder": {
+    "title": "Universal Verifiable Credential Responder"
+  },
+  "reader": {
+    "title": "Universal Verifiable Credential Reader"
   }
 }

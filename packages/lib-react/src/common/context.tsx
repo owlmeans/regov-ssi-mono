@@ -77,7 +77,6 @@ export const withRegov = <
   type S = Type extends RegovCompoentProps<any, any, infer State> ? State : never
 
   return ((props: PropsWithChildren<T>): FunctionComponentElement<Type> => {
-    const transformer = options?.transformer
     if (typeof name !== 'string') {
       options = name
       if (options.name) {
@@ -86,11 +85,14 @@ export const withRegov = <
         name = UNKNOWN_COMPONENT
       }
     }
-    const { handler, map, config } = useContext(RegovContext)
+    const transformer = options?.transformer
+
+    const { handler, map, config } = useRegov()
     const navigator = useContext(NavigatorContext)
     const { t, i18n } = useTranslation(props.ns || options?.namespace)
     const state: S = (transformer ? transformer(handler.wallet, props) : {}) as S
-    const [, setState] = useState<S>({} as S)
+
+    const [, setState] = useState<S>(state)
     useEffect(() => {
       if (transformer) {
         console.log('Register transformer')

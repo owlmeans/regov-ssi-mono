@@ -26,13 +26,15 @@ export type DIDHelper = {
 
   isDIDDocument: (obj: Object) => obj is DIDDocument
 
+  isDIDUnsigned: (obj: DIDDocumentUnsinged | DIDDocument) => obj is DIDDocumentUnsinged
+
   didToLongForm: (did: DIDDocument) => Promise<string>
   extractKey: ExtractKeyMethod
   extractKeyId: (key: string) => string
   setupDocumentLoader: (loader: BuildDocumentLoader) => void
 }
 
-export type ExtractKeyMethod = (did: DIDDocument | string, keyId?: string) => Promise<CryptoKey | undefined>
+export type ExtractKeyMethod = (did: DIDDocument | DIDDocumentUnsinged | string , keyId?: string) => Promise<CryptoKey | undefined>
 
 export type ExpandVerificationMethod = (didDoc: DIDDocument, purpose: DIDDocumentPurpose, keyId?: string) =>
   DIDVerificationItem | never

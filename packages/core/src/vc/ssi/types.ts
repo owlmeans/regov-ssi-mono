@@ -13,7 +13,8 @@ import {
   UnsignedCredential,
   UnsignedPresentation,
   ContextSchema,
-  Validated
+  Validated,
+  MaybeArray
 } from "../types"
 
 export type BuildSSICoreMethod = (options: {
@@ -58,7 +59,7 @@ export type BuildCredentailOptions<
 export type SignCredentialMethod = <
   Subject extends CredentialSubject = CredentialSubject,
   CredentialT extends Credential<Subject> = Credential<Subject>,
-  CredentialU extends UnsignedCredential<Subject> = UnsignedCredential<Subject>
+  CredentialU extends UnsignedCredential<MaybeArray<Subject>> = UnsignedCredential<MaybeArray<Subject>>
   >(
   unsingedCredential: CredentialU,
   issuer?: DIDDocument,

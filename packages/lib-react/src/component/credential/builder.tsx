@@ -18,13 +18,14 @@ import {
   withRegov,
   WrappedComponentProps
 } from '../../common'
+import { validateJson } from '../../util'
 
 
 export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
   withRegov<CredentialBuilderProps, BasicNavigator>({
     namespace: 'regov-wallet-credential',
     transformer: (wallet, _) => {
-      return { ssi: wallet?.ssi, did: wallet?.did }
+      return { ssi: wallet?.ssi }
     }
   }, ({
     t, i18n, ssi, navigator,
@@ -43,7 +44,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
         criteriaMode: 'all',
         defaultValues: {
           builder: {
-            context: '[]',
+            context: '{}',
             type: `["${BASE_CREDENTIAL_TYPE}"]`,
             subject: '{}',
             evidence: '',
@@ -67,6 +68,9 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
             {
               data: data.builder.subject,
               hash: true,
+              /**
+               * @TODO Should be options
+               */
               purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
             }
           )
@@ -95,41 +99,30 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
     return <Renderer {..._props} />
   })
 
-const _validateJson = (v: string) => {
-  try {
-    const tmp = JSON.parse(v)
-    if (typeof tmp === 'object') {
-      return true
-    }
-  } catch (e) {
-    return false
-  }
 
-  return true
-}
 
 export const credentialBuilderValidatorRules: RegovValidationRules = {
   'builder.context': {
     required: true,
     validate: {
-      json: _validateJson
+      json: validateJson
     }
   },
   'builder.type': {
     required: true,
     validate: {
-      json: _validateJson
+      json: validateJson
     }
   },
   'builder.subject': {
     required: true,
     validate: {
-      json: _validateJson
+      json: validateJson
     }
   },
   'builder.evidence': {
     validate: {
-      json: (v: string) => v === '' || _validateJson(v)
+      json: (v: string) => v === '' || validateJson(v)
     }
   }
 }

@@ -10,3 +10,11 @@ export const mapValue = async <Type, Res>(
 ): Promise<Res[]> => {
   return Promise.all(normalizeValue(value).map(callback))
 }
+
+export const addToValue = <Type>(value: MaybeArray<Type> | undefined, add: MaybeArray<Type>): MaybeArray<Type> => {
+  if (value) {
+    return [...normalizeValue(value), ...normalizeValue(add)]
+  }
+
+  return add
+}

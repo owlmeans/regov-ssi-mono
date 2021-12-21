@@ -6,11 +6,10 @@ import {
   COMMON_CRYPTO_ERROR_NOID
 } from '@owlmeans/regov-ssi-common'
 import { URLSearchParams } from 'url'
-import { VERIFICATION_KEY_CONTROLLER } from '.'
 import {
   QueryDict,
   DEFAULT_VERIFICATION_KEY,
-  VERIFICATION_KEY_HOLDER
+  VERIFICATION_KEY_HOLDER,
 } from './types'
 
 import {
@@ -22,12 +21,9 @@ import {
   DIDDocumentPayload,
   DID_ERROR_NOVERIFICATION_METHOD,
   DIDDocumentUnsinged,
-  DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS,
   DIDDocumentPurpose,
   DIDVerificationItem,
-  didPurposeList,
   ParseDIDIdMethod,
-  DID_ERROR_VERIFICATION_METHOD_LOOKUP,
   DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD,
   BuildDocumentLoader,
   ExpandVerificationMethod,
@@ -38,7 +34,7 @@ import {
 const jldsign = require('jsonld-signatures')
 
 const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
-const SIGNATURE_METHOD = 'EcdsaSecp256k1Signature2019'
+// const SIGNATURE_METHOD = 'EcdsaSecp256k1Signature2019'
 
 /**
  * @TODO Verify DID fully:
@@ -187,12 +183,20 @@ export const buildDidHelper =
       }, {})
     }
 
+    const _isDIDUnsigned = (obj: DIDDocument | DIDDocumentUnsinged): obj is DIDDocumentUnsinged => {
+      return !obj.hasOwnProperty('proof')
+    }
+
+    const _isDIDSigned = (obj: DIDDocument | DIDDocumentUnsinged): obj is DIDDocument => {
+      return !obj.hasOwnProperty('proof')
+    }
+
     const _extractKey: ExtractKeyMethod = async (did, keyId) => {
       if (typeof did === 'string') {
         throw new Error(DID_EXTRACTKEY_WRONG_DID)
       }
       if (!keyId) {
-        keyId = _extractKeyId(did.proof.verificationMethod)
+        keyId = _isDIDSigned(did) ? _extractKeyId(did.proof.verificationMethod) : VERIFICATION_KEY_HOLDER
       }
 
       const method = did.verificationMethod?.find(
@@ -459,6 +463,8 @@ export const buildDidHelper =
       extractKeyId: _extractKeyId,
 
       isDIDDocument: _isDIDDocument,
+
+      isDIDUnsigned: _isDIDUnsigned,
 
       setupDocumentLoader: (loader) => {
         __buildDocumentLoader = loader

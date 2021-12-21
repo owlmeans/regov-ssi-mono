@@ -53,8 +53,6 @@ export const createRootNavigator = (navigate: NavigateFunction, handler: WalletH
   extendNavigator(basicNavigator, {
     assertAuth: async () => {
       if (handler.wallet) {
-        navigate('/')
-
         return true
       }
       navigate('/store/create')

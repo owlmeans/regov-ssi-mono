@@ -8,6 +8,7 @@
   },
   "error": {
     "default": "Some error happened!",
-    "required": "This field is required!"
+    "required": "This field is required!",
+    "authenticated": "You need to authenticate to proceed!"
   }
 }

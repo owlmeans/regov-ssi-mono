@@ -18,7 +18,8 @@ import {
   Presentation,
   PresentationHolder,
   UnsignedPresentation,
-  BASE_CREDENTIAL_TYPE
+  BASE_CREDENTIAL_TYPE,
+  MaybeArray
 } from './types'
 import {
   COMMON_CRYPTO_ERROR_NOID,
@@ -105,7 +106,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       S extends CredentialSubject = CredentialSubject,
       C extends Credential<S> = Credential<S>
     >(
-      unsingedCredential: UnsignedCredential<S>,
+      unsingedCredential: UnsignedCredential<MaybeArray<S>>,
       issuer?: DIDDocument,
       options?: SignCredentialOptions
     ) => {
