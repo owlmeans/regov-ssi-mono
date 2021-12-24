@@ -1,8 +1,8 @@
 import React, {
   ReactElement
 } from 'react'
-import { 
-  WrappedComponentProps 
+import {
+  WrappedComponentProps
 } from '@owlmeans/regov-lib-react'
 import {
   Card,

@@ -10,7 +10,8 @@ import {
   VPV1Holder,
   VPV1Type,
   VPV1Unsigned,
-  ContextObj
+  ContextObj,
+  VCV1Holder
 } from "@affinidi/vc-common";
 
 import { Validatied as AffinidiValidatied } from "@affinidi/vc-common/dist/verifier/util"
@@ -26,7 +27,7 @@ export type MultiSchema = ContextSchema | ContextSchema[]
 
 export type Credential<Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>>
   = VCV1<Subject> & {
-    holder: DIDDocument
+    holder: CredentialHolder
     evidence?: MaybeArray<Evidence>
   }
 
@@ -53,9 +54,11 @@ export type CredentialContextType = TContext
 export type UnsignedCredential<
   Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>
   > = VCV1Unsigned<Subject> & {
-    holder: DIDDocument | DIDDocumentUnsinged
+    holder: CredentialHolder
     evidence?: MaybeArray<Evidence>
   }
+
+
 
 export type Evidence = FullCrednetialEvidnce | PartialCredentialEvidence
 
@@ -74,16 +77,23 @@ export type BasicCredentialType = string | string[]
 export type UnsignedPresentation<
   CredentialT extends Credential = Credential,
   Holder extends PresentationHolder = PresentationHolder,
-  > = VPV1Unsigned<CredentialT, PresentationType, Holder>
+  > = VPV1Unsigned<CredentialT, PresentationType> & {
+    hodler: Holder
+  }
 
 export type Presentation<
   CredentialT extends Credential = Credential,
   Holder extends PresentationHolder = PresentationHolder
-  > = VPV1<CredentialT, PresentationType, Holder> & {
-    holder: DIDDocument
+  > = VPV1<CredentialT, PresentationType> & {
+    holder: Holder
   }
 
-export type PresentationHolder = VPV1Holder
+/**
+ * @TODO it can't be used properly because Affinidy takes only objects as this property
+ */
+export type CredentialHolder = VCV1Holder | DIDDocument | DIDDocumentUnsinged | string
+
+export type PresentationHolder = VPV1Holder | DIDDocument | DIDDocumentUnsinged | string
 
 export type PresentationType = VPV1Type
 

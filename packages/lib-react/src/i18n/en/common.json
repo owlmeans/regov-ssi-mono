@@ -1,5 +1,6 @@
 {
   "ERROR_STORE_CANT_DECRYPT": "Wallet store can't be decrypted with provided password",
+  "Invalid signature.": "Invalid signature.",
   "alert": {
     "error": {
       "label": "Error",
@@ -9,6 +10,22 @@
   "error": {
     "default": "Some error happened!",
     "required": "This field is required!",
-    "authenticated": "You need to authenticate to proceed!"
+    "authenticated": "You need to authenticate to proceed!",
+    "evidence": {
+      "holder": {
+        "key": "No signing key for holder",
+        "pk": "Can't deduct private key for signing from holder information"
+      },
+      "signer": {
+        "type": "Signer should be an object"
+      }
+    }
+  },
+  "clipboard": {
+    "copyhint": "Copy to clipboard: #{key}, Enter"
+  },
+  "file": {
+    "aborted": "File loading aborted",
+    "error": "Some error happened during file loading"
   }
 }

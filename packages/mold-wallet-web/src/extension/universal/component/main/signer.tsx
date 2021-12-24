@@ -31,8 +31,8 @@ export const MainSigner = ({ ns }: EmptyProps) => <CredentialSigner ns={ns} com=
 
     return <FormProvider {...methods}>
       <PrimaryForm {...props} title="signer.title">
-        <LongTextInput {...props} field="signer.unsigned" />
-        <LongTextInput {...props} field="signer.evidence" />
+        <LongTextInput {...props} field="signer.unsigned" showImport maxRows alert="signer.alert"/>
+        <LongTextInput {...props} field="signer.evidence" showImport maxRows alert="signer.alert"/>
 
         <AlertOutput {...props} field="signer.alert" />
 
@@ -40,7 +40,7 @@ export const MainSigner = ({ ns }: EmptyProps) => <CredentialSigner ns={ns} com=
           methods.handleSubmit(props.sign(methods))
         } />
 
-        {output ? <LongOutput {...props} field="output" /> : undefined}
+        {output ? <LongOutput {...props} field="output" file="universal-vc.json" /> : undefined}
       </PrimaryForm>
     </FormProvider>
   }

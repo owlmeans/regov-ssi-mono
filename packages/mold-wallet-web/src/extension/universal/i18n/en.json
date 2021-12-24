@@ -30,6 +30,10 @@
       "label": "Read"
     }
   },
+  "output": {
+    "copy": "Copy",
+    "save": "Save"
+  },
   "builder": {
     "title": "Universal Verifiable Credential Creation",
     "type": {
@@ -55,6 +59,7 @@
     },
     "evidence": {
       "label": "Evidence",
+      "import": "Import",
       "hint": "JSON with corresponding evidence documents (short form)",
       "error": {
         "json": "Evidence should be ommited or be a valid JSON object or array of JSON objects"
@@ -65,6 +70,7 @@
   "signer": {
     "title": "Universal Verifiable Credential Signer",
     "unsigned": {
+      "import": "Import",
       "label": "Unsigned Verifiable Credential",
       "hint": "Specify JSON of Unsigned Verifiable Credential",
       "error": {
@@ -72,6 +78,7 @@
       }
     },
     "evidence": {
+      "import": "Import",
       "label": "Signing Idenity",
       "hint": "Verifiable Credential to use as signature evidence (keep empty to self-sign)",
       "error": {
@@ -93,6 +100,15 @@
     "title": "Universal Verifiable Credential Responder"
   },
   "reader": {
-    "title": "Universal Verifiable Credential Reader"
+    "title": "Universal Verifiable Credential Reader",
+    "vc": {
+      "import": "Load from file",
+      "label": "Verifiable Credential",
+      "hint": "Specify JSON of Verifiable Credential",
+      "error": {
+        "json": "Credential should be a valid JSON text"
+      }
+    },
+    "validate": "Validate"
   }
 }

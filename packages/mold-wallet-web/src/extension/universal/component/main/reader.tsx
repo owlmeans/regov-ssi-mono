@@ -31,12 +31,12 @@ export const MainReader = ({ ns }: EmptyProps) => <CredentialReader ns={ns} com=
 
     return <FormProvider {...methods}>
       <PrimaryForm {...props} title="reader.title">
-        <LongTextInput {...props} field="reader.unsigned" />
+        <LongTextInput {...props} field="reader.vc" maxRows showImport alert="reader.alert" />
 
         <AlertOutput {...props} field="reader.alert" />
 
-        <FormMainAction {...props} title="reader.sign" action={
-          methods.handleSubmit(props.sign(methods))
+        <FormMainAction {...props} title="reader.validate" action={
+          methods.handleSubmit(props.validate(methods))
         } />
 
         {output ? <LongOutput {...props} field="output" /> : undefined}

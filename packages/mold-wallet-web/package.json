@@ -35,17 +35,21 @@
     "@owlmeans/regov-ssi-core": "^0.4.2",
     "@owlmeans/regov-ssi-did": "^0.4.2",
     "@owlmeans/regov-ssi-extension": "^0.1.1",
-    "react-router-dom": "^6.0.2",
     "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "react-dom": "^17.0.0",
+    "react-router-dom": "^6.0.2",
+    "react-dropzone": "^11.4.2"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.4",
     "microbundle-crl": "^0.13.11",
     "typescript": "^4.5.2"
   },
   "dependencies": {
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
-    "@mui/material": "^5.2.4"
+    "@mui/material": "^5.2.4",
+    "copy-to-clipboard": "^3.3.1",
+    "file-saver": "^2.0.5"
   }
 }

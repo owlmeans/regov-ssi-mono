@@ -64,7 +64,9 @@ export const CredentialSigner: FunctionComponent<CredentialSignerParams> =
 
           if (data.signer.evidence !== '') {
             const evidence = JSON.parse(data.signer.evidence) as Credential
-            const signer = evidence.holder
+            const signer = evidence.holder['@context']
+              ? evidence.holder as DIDDocument
+              : evidence.issuer
             const signerKey = await ssi.did.helper().extractKey(signer, VERIFICATION_KEY_HOLDER)
             if (!signerKey) {
               methods.setError('signer.alert', { type: 'evidence.holder.key' })
@@ -73,6 +75,10 @@ export const CredentialSigner: FunctionComponent<CredentialSignerParams> =
             await ssi.keys.expandKey(signerKey)
             if (!signerKey.pk) {
               methods.setError('signer.alert', { type: 'evidence.holder.pk' })
+              return
+            }
+            if (!signer || typeof signer === 'string') {
+              methods.setError('signer.alert', { type: 'evidence.signer.type' })
               return
             }
             issuer = signer
@@ -90,7 +96,7 @@ export const CredentialSigner: FunctionComponent<CredentialSignerParams> =
               return
             }
             issuer = await ssi.did.helper().signDID(signerKey, unsignedDid, VERIFICATION_KEY_HOLDER)
-            unsigned.holder = issuer
+            unsigned.holder = { id: issuer.id }
           }
 
           const cred = await ssi.signCredential(unsigned, issuer, { keyId: VERIFICATION_KEY_HOLDER })

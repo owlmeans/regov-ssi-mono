@@ -58,7 +58,7 @@ export const buildUIUniversalExtension = (
     {
       ns,
       title: 'menu.main',
-      action: `${UNIVERSAL_EXTENSION_SCREEN_PATH}/build`
+      action: `${UNIVERSAL_EXTENSION_SCREEN_PATH}/read`
     }
   ]
 

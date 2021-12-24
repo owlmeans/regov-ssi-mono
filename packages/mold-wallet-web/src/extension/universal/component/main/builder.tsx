@@ -39,9 +39,9 @@ export const MainBuilder = ({ ns }: EmptyProps) => <CredentialBuilder ns={ns} co
         {/**
          * @TODO Use https://www.npmjs.com/package/jsoneditor instead:
          */}
-        <LongTextInput {...props} field="builder.context" />
-        <LongTextInput {...props} field="builder.subject" />
-        <LongTextInput {...props} field="builder.evidence" />
+        <LongTextInput {...props} field="builder.context" maxRows alert="builder.alert"/>
+        <LongTextInput {...props} field="builder.subject" maxRows alert="builder.alert"/>
+        <LongTextInput {...props} field="builder.evidence" showImport maxRows alert="builder.alert"/>
 
         <AlertOutput {...props} field="builder.alert" />
 
@@ -49,7 +49,7 @@ export const MainBuilder = ({ ns }: EmptyProps) => <CredentialBuilder ns={ns} co
           methods.handleSubmit(props.build(methods))
         } />
 
-        {output ? <LongOutput {...props} field="output" /> : undefined}
+        {output ? <LongOutput {...props} field="output" file="universal-uvc.json" /> : undefined}
       </PrimaryForm>
     </FormProvider>
   }

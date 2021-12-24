@@ -1,6 +1,6 @@
 {
-  "short_name": "@owlmeans/regov-lib-react",
-  "name": "@owlmeans/regov-lib-react",
+  "short_name": "@owlmeans/mold-wallet-web",
+  "name": "@owlmeans/mold-wallet-web",
   "icons": [
     {
       "src": "favicon.ico",

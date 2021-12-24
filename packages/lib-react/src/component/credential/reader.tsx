@@ -38,23 +38,39 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
         criteriaMode: 'all',
         defaultValues: {
           reader: {
-            unsigned: '{}',
+            vc: '{}',
             alert: undefined,
           },
           outout: undefined
         }
       },
 
-      sign: methods => async data => {
+      validate: methods => async data => {
         const loading = await navigator?.invokeLoading()
         try {
           if (!ssi) {
             methods.setError('reader.alert', { type: 'authenticated' })
             return
           }
-          
 
-          methods.setValue('output', JSON.stringify(data, undefined, 2))
+          const vc = JSON.parse(data.reader.vc)
+          /**
+           * @TODO Switch between VC and VP presentation validation, based 
+           * on the type in JSON
+           */
+          const [, info] = await ssi.verifyCredential(vc)
+
+          if (info.kind === 'invalid') {
+            methods.setValue('output', undefined)
+            loading?.error({ name: 'vc.verification', message: info.errors[0].message })
+            return
+          }
+          /**
+           * @TODO Add additional validation to check that one trusts the issuer.
+           * Use output as special set of data that describes validated credential
+           */
+
+          methods.setValue('output', JSON.stringify(info, undefined, 2))
         } catch (e) {
           loading?.error()
           console.log(e)
@@ -68,7 +84,7 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
   })
 
 export const credentialReaderValidatorRules: RegovValidationRules = {
-  'reader.unsigned': {
+  'reader.vc': {
     required: true,
     validate: {
       json: validateJson
@@ -83,7 +99,7 @@ export type CredentialReaderParams = {
 
 export type CredentialReaderFields = {
   reader: {
-    unsigned: string
+    vc: string
     alert: string | undefined
   },
   output: string | undefined
@@ -98,7 +114,7 @@ export type CredentialReaderState = {
 }
 
 export type CredentialReaderImplParams = {
-  sign: (
+  validate: (
     methods: UseFormReturn<CredentialReaderFields>
   ) => (data: CredentialReaderFields) => Promise<void>
 }

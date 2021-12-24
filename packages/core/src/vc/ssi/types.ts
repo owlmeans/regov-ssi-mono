@@ -93,7 +93,7 @@ export type BuildPresentationOptions = {
   id?: string
   type?: string | string[]
   context?: CredentialContextType
-  holder: DIDDocument
+  holder: PresentationHolder
 }
 
 export type SignPresentationMethod = <

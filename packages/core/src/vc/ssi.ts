@@ -187,7 +187,12 @@ export const buildSSICore: BuildSSICoreMethod = async ({
         compactProof: false,
       })
 
-      return [true, result]
+      return [
+        result.verified,
+        result.verified
+          ? { kind: 'valid', data: credential }
+          : { kind: 'invalid', errors: result.error.errors }
+      ]
     },
 
     buildPresentation: async <
