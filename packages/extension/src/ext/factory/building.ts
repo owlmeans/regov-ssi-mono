@@ -34,10 +34,10 @@ export const defaultBuildingFactory = <
         schema.mainType,
         ...(Array.isArray(schema.mandatoryTypes) ? schema.mandatoryTypes : [])
       ],
-      holder: didUnsigned.id,
+      holder: didUnsigned,
       context: schema.credentialContext,
       subject
     })
 
-    return { unsigned: unsingnedCredentail, did: didUnsigned }
+    return unsingnedCredentail
   }

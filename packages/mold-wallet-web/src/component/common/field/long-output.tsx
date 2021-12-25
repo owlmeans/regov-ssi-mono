@@ -23,7 +23,7 @@ export const LongOutput = ({ field, rules, t, i18n, file }: LongOutputProps) => 
       columnSpacing={1}>
       {file
         ? <Grid item>
-          <FormMainButton t={t} i18n={i18n} title={`${field}.save`} action={
+          <FormMainButton t={t} i18n={i18n} title={`${field}.export`} action={
             () => saveAs(new Blob(
               [valueHolder.value],
               { type: "text/plain;charset=utf-8" }

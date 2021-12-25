@@ -1,7 +1,17 @@
-import { CryptoHelper } from "@owlmeans/regov-ssi-common"
+import {
+  CryptoHelper,
+  MaybeArray
+} from "@owlmeans/regov-ssi-common"
 import { KeyChainWrapper } from "../../keys/types"
 
-import { LoadedDocument, BuildDocumentLoader, DIDDocument, DIDHelper, DIDRegistryWrapper, DIDDocumentUnsinged } from '@owlmeans/regov-ssi-did'
+import {
+  LoadedDocument,
+  BuildDocumentLoader,
+  DIDDocument,
+  DIDHelper,
+  DIDRegistryWrapper,
+  DIDDocumentUnsinged
+} from '@owlmeans/regov-ssi-did'
 import {
   Credential,
   CredentialContextType,
@@ -14,7 +24,6 @@ import {
   UnsignedPresentation,
   ContextSchema,
   Validated,
-  MaybeArray
 } from "../types"
 
 export type BuildSSICoreMethod = (options: {
@@ -115,14 +124,25 @@ export type SignPresentationOptions = {
 export type VerifyPresentationMethod = (
   presentation: Presentation,
   didDoc?: DIDDocument,
-  localLoader?: LocalDocumentLoader
+  options?: LocalDocumentLoader | VerifyPresentationOptions
 ) => Promise<[boolean, VerifyPresentationResult]>
+
+export type VerifyPresentationOptions = {
+  localLoader?: LocalDocumentLoader,
+  testEvidence?: boolean,
+  nonStrictEvidence?: boolean 
+}
 
 export type VerifyEvidenceMethod = (
   credential: Credential,
   presentation?: Presentation,
+  options?: LocalDocumentLoader | VerifyEvidenceOptions
+) => Promise<[boolean, Error[]]>
+
+export type VerifyEvidenceOptions = {
   localLoader?: LocalDocumentLoader
-) => Promise<boolean>
+  nonStrictEvidence?: boolean
+}
 
 export type LocalDocumentLoader = (
   didHelper: DIDHelper,

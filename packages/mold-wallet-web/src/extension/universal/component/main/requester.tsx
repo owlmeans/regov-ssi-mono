@@ -9,7 +9,6 @@ import {
   CredentialRequester,
   CredentialRequesterFields,
   CredentialRequesterImplProps,
-  EmptyProps,
 } from '@owlmeans/regov-lib-react'
 
 import {
@@ -19,28 +18,30 @@ import {
   LongOutput,
   AlertOutput
 } from '../../../../component'
+import { UniversalCredentialViewParams } from './types'
 
 
-export const MainRequester = ({ ns }: EmptyProps) => <CredentialRequester ns={ns} com={
-  (props: CredentialRequesterImplProps) => {
-    const methods = useForm<CredentialRequesterFields>(
-      props.form as UseFormProps<CredentialRequesterFields>
-    )
+export const MainRequester = ({ ext }: UniversalCredentialViewParams) => <CredentialRequester
+  ns={ext.localization?.ns} com={
+    (props: CredentialRequesterImplProps) => {
+      const methods = useForm<CredentialRequesterFields>(
+        props.form as UseFormProps<CredentialRequesterFields>
+      )
 
-    const output = methods.watch("output")
+      const output = methods.watch("output")
 
-    return <FormProvider {...methods}>
-      <PrimaryForm {...props} title="requester.title">
-        <LongTextInput {...props} field="requester.unsigned" />
+      return <FormProvider {...methods}>
+        <PrimaryForm {...props} title="requester.title">
+          <LongTextInput {...props} field="requester.unsigned" />
 
-        <AlertOutput {...props} field="requester.alert" />
+          <AlertOutput {...props} field="requester.alert" />
 
-        <FormMainAction {...props} title="requester.sign" action={
-          methods.handleSubmit(props.sign(methods))
-        } />
+          <FormMainAction {...props} title="requester.sign" action={
+            methods.handleSubmit(props.sign(methods))
+          } />
 
-        {output ? <LongOutput {...props} field="output" /> : undefined}
-      </PrimaryForm>
-    </FormProvider>
-  }
-} />
+          {output ? <LongOutput {...props} field="output" /> : undefined}
+        </PrimaryForm>
+      </FormProvider>
+    }
+  } />

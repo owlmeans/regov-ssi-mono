@@ -19,13 +19,19 @@ import {
   PresentationHolder,
   UnsignedPresentation,
   BASE_CREDENTIAL_TYPE,
-  MaybeArray
+  ERROR_INVALID_EVIDENCE,
+  ERROR_EVIDENCE_ISNT_TRUSTED,
+  ERROR_EVIDENCE_ISNT_CREDENTIAL
 } from './types'
 import {
   COMMON_CRYPTO_ERROR_NOID,
   COMMON_CRYPTO_ERROR_NOPK,
   COMMON_CRYPTO_ERROR_NOPUBKEY,
   basicHelper,
+  mapValue,
+  MaybeArray,
+  addToValue,
+  normalizeValue
 } from "@owlmeans/regov-ssi-common"
 import {
   DIDDocument,
@@ -34,9 +40,9 @@ import {
   DID_REGISTRY_ERROR_NO_KEY_BY_DID,
   VERIFICATION_KEY_HOLDER,
   VERIFICATION_KEY_CONTROLLER,
-  BuildDocumentLoader
+  BuildDocumentLoader,
+  LoadedDocument
 } from "@owlmeans/regov-ssi-did"
-import { mapValue, normalizeValue } from "../util"
 import { isCredential, isFullEvidence } from "./util"
 
 const jsigs = require('jsonld-signatures')
@@ -88,7 +94,10 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       const credential = {
         '@context': [
           'https://www.w3.org/2018/credentials/v1',
-          ...(options.context ? [options.context] : []),
+          ...(options.context
+            ? Array.isArray(options.context) ? options.context : [options.context]
+            : []
+          ),
         ],
         ...(options.id ? { id: options.id } : {}),
         type: options.type,
@@ -200,15 +209,9 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       H extends PresentationHolder = PresentationHolder
     >(credentails: C[], options: BuildPresentationOptions) => {
       return {
-        '@context': [
-          'https://www.w3.org/2018/credentials/v1',
-          ...(options.context ? [options.context] : []),
-        ],
+        '@context': addToValue('https://www.w3.org/2018/credentials/v1', options.context),
         ...(options.id ? { id: options.id } : {}),
-        type: [
-          'VerifiablePresentation',
-          options.type
-        ],
+        type: addToValue('VerifiablePresentation', options.type),
         holder: options.holder,
         verifiableCredential: credentails,
       } as unknown as UnsignedPresentation<C, H>
@@ -261,7 +264,12 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       }
     },
 
-    verifyPresentation: async (presentation, didDoc?, localLoader?) => {
+    verifyPresentation: async (presentation, didDoc?, options?) => {
+      const localLoader = typeof options === 'function' ? options : options?.localLoader
+      const testEvidence = typeof options === 'object' ? options.testEvidence : false
+      didDoc = didDoc || (
+        did.helper().isDIDDocument(presentation.holder) ? presentation.holder : undefined
+      )
       const _updateDidDoc = async (didId: string): Promise<DIDDocument | undefined> => {
         if (localLoader) {
           const doc = await localLoader(
@@ -270,8 +278,12 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             presentation,
             didDoc
           )(didId)
-          if (doc && did.helper().isDIDDocument(doc.document)) {
-            return doc.document
+          if (doc) {
+            if (did.helper().isDIDDocument(doc.document)) {
+              return doc.document
+            } else if (isCredential(doc.document) && typeof doc.document.issuer === 'object') {
+              return doc.document.issuer
+            }
           }
         }
       }
@@ -282,17 +294,15 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       const _gerVerifySuite = async (options: any) => {
         const didId = did.helper().parseDIDId(options.verificationMethod)
         let _didDoc = await did.lookUpDid<DIDDocument>(didId.did)
-        if (_didDoc) {
-          didDoc = _didDoc
-        } else {
-          didDoc = await _updateDidDoc(didId.did) || didDoc
+        if (!_didDoc) {
+          _didDoc = await _updateDidDoc(didId.did)
         }
-        if (!didDoc) {
+        if (!_didDoc) {
           throw new Error(DID_REGISTRY_ERROR_NO_DID)
         }
 
         const key = await did.extractKey(
-          didDoc,
+          _didDoc,
           did.helper().extractKeyId(options.verificationMethod)
         )
         if (!key) {
@@ -335,9 +345,10 @@ export const buildSSICore: BuildSSICoreMethod = async ({
         ? localLoader(
           did.helper(),
           buildDocumentLoader(did) as BuildDocumentLoader<Credential>,
-          presentation, didDoc
-        ) : didDoc
-          ? buildDocumentLoader(did)(() => didDoc) : documentLoader
+          presentation,
+          didDoc
+        )
+        : didDoc ? buildDocumentLoader(did)(() => didDoc) : documentLoader
 
 
       let result: VerifyPresentationResult<Presentation> = {
@@ -365,6 +376,23 @@ export const buildSSICore: BuildSSICoreMethod = async ({
               compactProof: false,
             }
           )
+
+          if (testEvidence && credResult.verified && credential.evidence) {
+            const [evidenceResult, evidenceErrors] = await _core.verifyEvidence(
+              credential, presentation,
+              {
+                localLoader,
+                nonStrictEvidence: typeof options !== 'function'
+                  ? options?.nonStrictEvidence : false
+              }
+            )
+            credResult.verified = evidenceResult
+            if (!evidenceResult) {
+              credResult.error = {
+                errors: evidenceErrors
+              }
+            }
+          }
 
           if (credResult.verified) {
             return true
@@ -418,16 +446,12 @@ export const buildSSICore: BuildSSICoreMethod = async ({
         }
       }
 
-      // const result = await validateVPV1({
-      //   documentLoader: _documentLoader,
-      //   getVerifySuite: _gerVerifySuite,
-      //   getProofPurposeOptions: _getProofPurposeOptions
-      // })(presentation)
-
       return [result.kind === 'valid', result]
     },
 
-    verifyEvidence: async (credential, presentation, localLoader) => {
+    verifyEvidence: async (credential, presentation, options) => {
+      const localLoader = typeof options === 'function' ? options : options?.localLoader
+      const nonStrictEvidence = typeof options === 'object' ? options.nonStrictEvidence : false
       if (credential.evidence) {
         const _documentLoader = localLoader && presentation
           ? localLoader(
@@ -436,30 +460,45 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             presentation
           ) : documentLoader
 
-        return !(await mapValue(credential.evidence, async evidence => {
+        const result = await mapValue(credential.evidence, async evidence => {
           if (evidence.type.includes(BASE_CREDENTIAL_TYPE)) {
             const fullEvidence = isFullEvidence(evidence)
               ? evidence : (await _documentLoader(evidence.id)).document
 
             if (isCredential(fullEvidence)) {
-              const [result] = await _core.verifyCredential(fullEvidence)
+              const [result, info] = await _core.verifyCredential(fullEvidence)
               if (result) {
                 if (fullEvidence.evidence) {
-                  return _core.verifyEvidence(fullEvidence, presentation)
+                  return _core.verifyEvidence(fullEvidence, presentation, options)
+                }
+                if (nonStrictEvidence) {
+                  return [true, []]
                 }
 
-                return !!await did.lookUpDid(evidence.id)
+                const finalResult = !!await did.lookUpDid(evidence.id)
+                return [finalResult, [new Error(ERROR_EVIDENCE_ISNT_TRUSTED)]]
               }
+
+              return [
+                false,
+                info.kind === 'invalid' && info.errors.map(error => new Error(error.message))
+              ]
             }
 
-            return false
+            return [false, [new Error(ERROR_EVIDENCE_ISNT_CREDENTIAL)]]
           }
 
-          return true
-        })).some(res => !res)
+          return [true, []]
+        })
+
+        if (result.some(([res]) => !res)) {
+          return [false, result.filter(([, errors]) => errors).flatMap(
+            ([, errors]) => Array.isArray(errors) ? errors : []
+          )]
+        }
       }
 
-      return true
+      return [true, []]
     }
   }
 

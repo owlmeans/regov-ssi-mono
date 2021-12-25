@@ -32,7 +32,7 @@
   },
   "output": {
     "copy": "Copy",
-    "save": "Save"
+    "export": "Export"
   },
   "builder": {
     "title": "Universal Verifiable Credential Creation",
@@ -88,10 +88,44 @@
     "sign": "Sign VC"
   },
   "claimer": {
-    "title": "Universal Verifiable Credential Claimer"
+    "title": "Universal Verifiable Credential Claimer",
+    "unsigned": {
+      "import": "Import",
+      "label": "Unsigned Verifiable Credential",
+      "hint": "Specify JSON of Unsigned Verifiable Credential",
+      "error": {
+        "json": "Unsigned Credential should be a valid JSON text"
+      }
+    },
+    "holder": {
+      "import": "Import",
+      "label": "DID Document or Verifiable Credential",
+      "hint": "Specify JSON of DID Document or Verifiable Credential (optional)",
+      "error": {
+        "json": "DID Document Credential should be a valid JSON text"
+      }
+    },
+    "claim": "Produce"
   },
   "proposer": {
-    "title": "Universal Verifiable Credential Proposer"
+    "title": "Universal Verifiable Credential Issuer",
+    "claim": {
+      "import": "Import",
+      "label": "Verifiable Presentation with claims",
+      "hint": "Specify JSON of Verifiable Presentation with claims",
+      "error": {
+        "json": "Verifiable Presentation should be a valid JSON text"
+      }
+    },
+    "issuer": {
+      "import": "Import",
+      "label": "Issuer Evidence",
+      "hint": "JSON of Verifiable Credential that will be used as evidence of issuer (optional)",
+      "error": {
+        "json": "Verifiable Credential should be a valid JSON text"
+      }
+    },
+    "offer": "Issue"
   },
   "requester": {
     "title": "Universal Verifiable Credential Requester"
@@ -101,7 +135,7 @@
   },
   "reader": {
     "title": "Universal Verifiable Credential Reader",
-    "vc": {
+    "vo": {
       "import": "Load from file",
       "label": "Verifiable Credential",
       "hint": "Specify JSON of Verifiable Credential",

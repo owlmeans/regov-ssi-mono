@@ -11,7 +11,14 @@ import { REGISTRY_TYPE_CREDENTIALS } from "@owlmeans/regov-ssi-core"
 
 export const buildUniversalExtension = (details: ExtensionDetails) =>
   buildExtension<UniversalCredentialT>(buildExtensionSchema(
-    details,
+    { 
+      ...details,
+      types: {
+        claim: UNIVERSAL_EXTENSION_CLAIM_TYPE,
+        offer: UNIVERSAL_EXTENSION_OFFER_TYPE,
+        ...(details.types || {})
+      }
+    },
     {
       [UNIVERSAL_EXTENSION_CRED_TYPE]: {
         mainType: UNIVERSAL_EXTENSION_CRED_TYPE,
@@ -29,6 +36,10 @@ export const buildUniversalExtension = (details: ExtensionDetails) =>
   )) as UniversalCredentailExtension
 
 export const UNIVERSAL_EXTENSION_CRED_TYPE = 'UniversalCredential'
+
+export const UNIVERSAL_EXTENSION_CLAIM_TYPE = 'UniversalClaim'
+
+export const UNIVERSAL_EXTENSION_OFFER_TYPE = 'UniversalOffer'
 
 export type UniversalCredentialT = typeof UNIVERSAL_EXTENSION_CRED_TYPE
 

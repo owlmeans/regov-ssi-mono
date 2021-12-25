@@ -9,7 +9,6 @@ import {
   CredentialReader,
   CredentialReaderFields,
   CredentialReaderImplProps,
-  EmptyProps,
 } from '@owlmeans/regov-lib-react'
 
 import {
@@ -19,28 +18,30 @@ import {
   LongOutput,
   AlertOutput
 } from '../../../../component'
+import { UniversalCredentialViewParams } from './types'
 
 
-export const MainReader = ({ ns }: EmptyProps) => <CredentialReader ns={ns} com={
-  (props: CredentialReaderImplProps) => {
-    const methods = useForm<CredentialReaderFields>(
-      props.form as UseFormProps<CredentialReaderFields>
-    )
+export const MainReader = ({ ext }: UniversalCredentialViewParams) => <CredentialReader
+  ns={ext.localization?.ns} com={
+    (props: CredentialReaderImplProps) => {
+      const methods = useForm<CredentialReaderFields>(
+        props.form as UseFormProps<CredentialReaderFields>
+      )
 
-    const output = methods.watch("output")
+      const output = methods.watch("output")
 
-    return <FormProvider {...methods}>
-      <PrimaryForm {...props} title="reader.title">
-        <LongTextInput {...props} field="reader.vc" maxRows showImport alert="reader.alert" />
+      return <FormProvider {...methods}>
+        <PrimaryForm {...props} title="reader.title">
+          <LongTextInput {...props} field="reader.vo" maxRows showImport alert="reader.alert" />
 
-        <AlertOutput {...props} field="reader.alert" />
+          <AlertOutput {...props} field="reader.alert" />
 
-        <FormMainAction {...props} title="reader.validate" action={
-          methods.handleSubmit(props.validate(methods))
-        } />
+          <FormMainAction {...props} title="reader.validate" action={
+            methods.handleSubmit(props.validate(methods))
+          } />
 
-        {output ? <LongOutput {...props} field="output" /> : undefined}
-      </PrimaryForm>
-    </FormProvider>
-  }
-} />
+          {output ? <LongOutput {...props} field="output" /> : undefined}
+        </PrimaryForm>
+      </FormProvider>
+    }
+  } />

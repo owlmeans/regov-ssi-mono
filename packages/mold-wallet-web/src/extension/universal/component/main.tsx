@@ -15,6 +15,10 @@ import {
 } from '@owlmeans/regov-lib-react'
 
 import { UNIVERSAL_EXTENSION_SCREEN_PATH } from '../types'
+import { 
+  Extension, 
+  UniversalCredentialT 
+} from '@owlmeans/regov-ssi-extension'
 import {
   MainBuilder,
   MainSigner,
@@ -26,9 +30,9 @@ import {
 } from './main/'
 
 
-export const Main = (ns: string) => {
+export const Main = (ext: Extension<UniversalCredentialT>) => {
 
-  return withRegov({ namespace: ns }, ({ t }) => {
+  return withRegov({ namespace: ext.localization?.ns }, ({ t }) => {
     const { tab } = useParams()
     const navigate = useNavigate()
 
@@ -45,13 +49,13 @@ export const Main = (ns: string) => {
           <Tab label={t('tab.response.label')} value="response" />
         </Tabs>
       </Box>
-      {tab === 'read' && <Box><MainReader ns={ns} /></Box>}
-      {tab === 'build' && <Box><MainBuilder ns={ns} /></Box>}
-      {tab === 'sign' && <Box><MainSigner ns={ns} /></Box>}
-      {tab === 'claim' && <Box><MainClaimer ns={ns} /></Box>}
-      {tab === 'offer' && <Box><MainProposer ns={ns} /></Box>}
-      {tab === 'request' && <Box><MainRequester ns={ns} /></Box>}
-      {tab === 'response' && <Box><MainResponder ns={ns} /></Box>}
+      {tab === 'read' && <Box><MainReader ext={ext} /></Box>}
+      {tab === 'build' && <Box><MainBuilder ext={ext} /></Box>}
+      {tab === 'sign' && <Box><MainSigner ext={ext} /></Box>}
+      {tab === 'claim' && <Box><MainClaimer ext={ext} /></Box>}
+      {tab === 'offer' && <Box><MainProposer ext={ext} /></Box>}
+      {tab === 'request' && <Box><MainRequester ext={ext} /></Box>}
+      {tab === 'response' && <Box><MainResponder ext={ext} /></Box>}
     </Box>
   })
 }

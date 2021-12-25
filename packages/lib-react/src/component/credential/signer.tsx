@@ -1,10 +1,15 @@
+import { addToValue } from '@owlmeans/regov-ssi-common'
 import {
   SSICore,
   UnsignedCredential,
   Credential,
-  addToValue
 } from '@owlmeans/regov-ssi-core'
-import { DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER } from '@owlmeans/regov-ssi-did'
+import { 
+  DIDDocument, 
+  DIDDocumentUnsinged, 
+  VERIFICATION_KEY_CONTROLLER, 
+  VERIFICATION_KEY_HOLDER 
+} from '@owlmeans/regov-ssi-did'
 import React, {
   FunctionComponent
 } from 'react'
@@ -95,16 +100,16 @@ export const CredentialSigner: FunctionComponent<CredentialSignerParams> =
               methods.setError('signer.alert', { type: 'evidence.holder.pk' })
               return
             }
-            issuer = await ssi.did.helper().signDID(signerKey, unsignedDid, VERIFICATION_KEY_HOLDER)
+            issuer = await ssi.did.helper().signDID(signerKey, unsignedDid)
             unsigned.holder = { id: issuer.id }
           }
 
           const cred = await ssi.signCredential(unsigned, issuer, { keyId: VERIFICATION_KEY_HOLDER })
 
           methods.setValue('output', JSON.stringify(cred, undefined, 2))
-        } catch (e) {
-          loading?.error(`${e}`)
-          console.log(e)
+        } catch (error) {
+          loading?.error(error)
+          console.log(error)
         } finally {
           loading?.finish()
         }

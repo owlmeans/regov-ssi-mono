@@ -1,5 +1,5 @@
 
-import { CryptoKey } from '@owlmeans/regov-ssi-common'
+import { CryptoKey, MaybeArray, Idish } from '@owlmeans/regov-ssi-common'
 
 export type DIDHelper = {
   makeDIDId: (key: CryptoKey, options?: MakeDIDIdOptions) => string
@@ -26,7 +26,7 @@ export type DIDHelper = {
 
   isDIDDocument: (obj: Object) => obj is DIDDocument
 
-  isDIDUnsigned: (obj: DIDDocumentUnsinged | DIDDocument) => obj is DIDDocumentUnsinged
+  isDIDUnsigned: (obj: Object) => obj is DIDDocumentUnsinged
 
   didToLongForm: (did: DIDDocument) => Promise<string>
   extractKey: ExtractKeyMethod
@@ -51,7 +51,7 @@ export type SignDID_KeyId = typeof VERIFICATION_KEY_HOLDER
   | typeof VERIFICATION_KEY_DELEGATEE
 
 
-export type ParseDIDIdMethod = (id: string) => DIDIDExplained
+export type ParseDIDIdMethod = (id: Idish) => DIDIDExplained
 
 export type DIDIDExplained = {
   method: string
@@ -71,20 +71,20 @@ export type DIDDocument = DIDDocumentUnsinged & {
 }
 
 export type DIDDocumentUnsinged = DIDDocumentPayload & {
-  '@context': string | string[] | DIDDocumentContext | DIDDocumentContext[]
+  '@context': MaybeArray<string | DIDDocumentContext>
   id: string
-  alsoKnownAs?: string[]
+  service?: MaybeArray<DIDService>
+  alsoKnownAs?: MaybeArray<string>
   controller?: string
 }
 
 export type DIDDocumentPayload = {
-  verificationMethod?: (DIDVerificationMethod)[]
-  authentication?: (string | DIDAuthentication)[]
-  assertionMethod?: (string | DIDAssertion)[]
-  keyAgreement?: (string | DIDKeyAgreement)[]
-  capabilityInvocation?: (string | DIDCapability)[]
-  capabilityDelegation?: (string | DIDDelegation)[]
-  service?: DIDService[]
+  verificationMethod?: MaybeArray<DIDVerificationMethod>
+  authentication?: MaybeArray<string | DIDAuthentication>
+  assertionMethod?: MaybeArray<string | DIDAssertion>
+  keyAgreement?: MaybeArray<string | DIDKeyAgreement>
+  capabilityInvocation?: MaybeArray<string | DIDCapability>
+  capabilityDelegation?: MaybeArray<string | DIDDelegation>
 }
 
 export type MakeDIDIdOptions = {
@@ -96,8 +96,8 @@ export type MakeDIDIdOptions = {
 
 export type CreateDIDMethodOptions = MakeDIDIdOptions & {
   id?: string
-  purpose?: DIDDocumentPurpose | DIDDocumentPurpose[]
-  alsoKnownAs?: string[],
+  purpose?: MaybeArray<DIDDocumentPurpose>
+  alsoKnownAs?: MaybeArray<string>,
   source?: DIDDocument | DIDDocumentUnsinged,
   keyId?: SignDID_KeyId
 }
@@ -109,6 +109,14 @@ export type DIDDocumentPurpose =
   | typeof DIDPURPOSE_AGREEMENT
   | typeof DIDPURPOSE_CAPABILITY
   | typeof DIDPURPOSE_DELEGATION
+
+export type DIDDocumentSimplePurpose =
+  typeof DIDPURPOSE_AUTHENTICATION
+  | typeof DIDPURPOSE_ASSERTION
+  | typeof DIDPURPOSE_AGREEMENT
+  | typeof DIDPURPOSE_CAPABILITY
+  | typeof DIDPURPOSE_DELEGATION
+
 
 export const DIDPURPOSE_VERIFICATION = 'verificationMethod'
 export const DIDPURPOSE_AUTHENTICATION = 'authentication'

@@ -69,7 +69,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
               data: data.builder.subject,
               hash: true,
               /**
-               * @TODO Should be options
+               * @TODO Should be options to select
                */
               purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
             }

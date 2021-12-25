@@ -1,11 +1,14 @@
 require('dotenv').config()
 
-import { 
+import {
   buildDidHelper,
   DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION,
   buildDidRegistryWarpper, VERIFICATION_KEY_CONTROLLER
 } from "../index"
-import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
+import {
+  nodeCryptoHelper,
+  normalizeValue
+} from "@owlmeans/regov-ssi-common"
 
 import util from 'util'
 util.inspect.defaultOptions.depth = 8
@@ -83,8 +86,8 @@ describe('DID Helper', () => {
     })
 
     const didDoc = await didHelper.signDID(
-      bobKey, 
-      didDocUnsinged, 
+      bobKey,
+      didDocUnsinged,
       VERIFICATION_KEY_CONTROLLER,
       [DIDPURPOSE_ASSERTION]
     )
@@ -107,7 +110,7 @@ describe('DID Helper', () => {
     }
 
     const brokenDoc = <DIDDocument>JSON.parse(JSON.stringify(ctx.holderDoc))
-    if (brokenDoc.verificationMethod && brokenDoc.verificationMethod[0]
+    if (brokenDoc.verificationMethod && normalizeValue(brokenDoc.verificationMethod).length > 0
       && typeof brokenDoc.proof === 'object') {
       brokenDoc.proof.created = new Date().toUTCString()
     }

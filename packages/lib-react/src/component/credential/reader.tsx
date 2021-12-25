@@ -1,5 +1,9 @@
 import {
-  SSICore
+  buildWalletLoader,
+  isCredential,
+  isPresentation,
+  SSICore,
+  WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import React, {
   FunctionComponent
@@ -19,10 +23,10 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
   withRegov<CredentialReaderProps, BasicNavigator>({
     namespace: 'regov-wallet-credential',
     transformer: (wallet, _) => {
-      return { ssi: wallet?.ssi }
+      return { ssi: wallet?.ssi, wallet }
     }
   }, ({
-    t, i18n, ssi, navigator,
+    t, i18n, ssi, wallet, navigator,
     com: ComRenderer,
     renderer: FallbackRenderer
   }) => {
@@ -38,7 +42,7 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
         criteriaMode: 'all',
         defaultValues: {
           reader: {
-            vc: '{}',
+            vo: '{}',
             alert: undefined,
           },
           outout: undefined
@@ -53,27 +57,70 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
             return
           }
 
-          const vc = JSON.parse(data.reader.vc)
-          /**
-           * @TODO Switch between VC and VP presentation validation, based 
-           * on the type in JSON
-           */
-          const [, info] = await ssi.verifyCredential(vc)
+          const result: { info?: any } = {}
+          const vo = JSON.parse(data.reader.vo)
+          if (isPresentation(vo)) {
+            const [isPresValid, presValidation] = await ssi.verifyPresentation(vo, undefined, {
+              testEvidence: true,
+              /** 
+               * @TODO Allow to regulate evidence trust
+               */
+              nonStrictEvidence: true,
+              localLoader: wallet ? buildWalletLoader(wallet) : undefined
+            })
 
-          if (info.kind === 'invalid') {
-            methods.setValue('output', undefined)
-            loading?.error({ name: 'vc.verification', message: info.errors[0].message })
+            if (!isPresValid) {
+              if (presValidation.kind === 'invalid') {
+                methods.setError('reader.alert', {
+                  type: 'reader.vo.presentation',
+                  message: presValidation.errors[0].message
+                })
+                return
+              }
+            }
+
+            result.info = presValidation
+          } else if (isCredential(vo)) {
+            const [isCredValid, credValidation] = await ssi.verifyCredential(vo)
+
+            if (!isCredValid) {
+              if (credValidation.kind === 'invalid') {
+                methods.setError('reader.alert', { message: credValidation.errors[0].message })
+                return
+              }
+            }
+
+            if (isCredValid) {
+              const [evidenceResult, evidenceErrors] = await ssi.verifyEvidence(vo, undefined, {
+                /** 
+                * @TODO Allow to regulate evidence trust
+                */
+                nonStrictEvidence: true,
+                localLoader: wallet ? buildWalletLoader(wallet) : undefined
+              })
+              if (!evidenceResult) {
+                methods.setError('reader.alert', {
+                  type: 'reader.vo.credential',
+                  message: evidenceErrors[0].message
+                })
+              }
+            }
+
+            result.info = credValidation
+          } else {
+            methods.setError('reader.alert', { type: 'reader.vo.format' })
             return
           }
+
           /**
            * @TODO Add additional validation to check that one trusts the issuer.
            * Use output as special set of data that describes validated credential
            */
 
-          methods.setValue('output', JSON.stringify(info, undefined, 2))
-        } catch (e) {
-          loading?.error()
-          console.log(e)
+          methods.setValue('output', JSON.stringify(result, undefined, 2))
+        } catch (error) {
+          loading?.error(error)
+          console.log(error)
         } finally {
           loading?.finish()
         }
@@ -84,7 +131,7 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
   })
 
 export const credentialReaderValidatorRules: RegovValidationRules = {
-  'reader.vc': {
+  'reader.vo': {
     required: true,
     validate: {
       json: validateJson
@@ -99,7 +146,7 @@ export type CredentialReaderParams = {
 
 export type CredentialReaderFields = {
   reader: {
-    vc: string
+    vo: string
     alert: string | undefined
   },
   output: string | undefined
@@ -110,7 +157,8 @@ export type CredentialReaderProps = RegovCompoentProps<
 >
 
 export type CredentialReaderState = {
-  ssi?: SSICore
+  ssi?: SSICore,
+  wallet?: WalletWrapper
 }
 
 export type CredentialReaderImplParams = {

@@ -1,15 +1,21 @@
 import {
   CryptoKey,
   CryptoHelper,
+  simplifyValue,
+  extractId,
+  Idish,
   COMMON_CRYPTO_ERROR_NOPK,
   COMMON_CRYPTO_ERROR_NOPUBKEY,
-  COMMON_CRYPTO_ERROR_NOID
+  COMMON_CRYPTO_ERROR_NOID,
+  normalizeValue,
+  addToValue
 } from '@owlmeans/regov-ssi-common'
 import { URLSearchParams } from 'url'
 import {
   QueryDict,
   DEFAULT_VERIFICATION_KEY,
   VERIFICATION_KEY_HOLDER,
+  DIDDocumentSimplePurpose,
 } from './types'
 
 import {
@@ -73,9 +79,10 @@ export const buildDidHelper =
         }`
     }
 
-    const _isDIDId = (id: string) => id.split(':').length > 2
+    const _isDIDId = (id: Idish) => extractId(id).split(':').length > 2
 
     const _parseDIDId: ParseDIDIdMethod = (id) => {
+      id = extractId(id)
       const [noQueryId, query] = id.split('?')
       const queryParams = query ? Array.from(new URLSearchParams(query).entries()).reduce<QueryDict>(
         (query: QueryDict, [key, value]: [string, string | string[] | undefined]) => {
@@ -106,8 +113,10 @@ export const buildDidHelper =
       return { publicKeyBase58: key }
     }
 
-    const _extractKeyId = (key: string): string => {
-      return _isDIDId(key) ? _parseDIDId(key).fragment || DEFAULT_VERIFICATION_KEY : key
+    const _extractKeyId = (key: Idish): string => {
+      return _isDIDId(key)
+        ? _parseDIDId(key).fragment || DEFAULT_VERIFICATION_KEY
+        : typeof key === 'string' ? key : DEFAULT_VERIFICATION_KEY
     }
 
     const _extractProofController = (did: DIDDocument, keyId?: string) => {
@@ -125,8 +134,11 @@ export const buildDidHelper =
           keyId = _extractKeyId(keyId)
         }
 
-        const methodToExpand = didDoc[purpose]?.find(
+        const methodToExpand = normalizeValue(didDoc[purpose]).find(
           (_method) => {
+            if (!_method) {
+              return false
+            }
             const parsedMethod = typeof _method === 'string'
               ? _parseDIDId(_method)
               : _parseDIDId(_method.id)
@@ -140,10 +152,14 @@ export const buildDidHelper =
         }
 
         const expandedMethod = typeof methodToExpand === 'string'
-          ? didDoc.verificationMethod?.find(publicKey => _parseDIDId(publicKey.id).fragment === keyId)
+          ? normalizeValue(didDoc.verificationMethod).find(
+            _method => _method && _parseDIDId(_method).fragment === keyId
+          )
           : methodToExpand?.publicKeyBase58
             ? methodToExpand
-            : didDoc.verificationMethod?.find(publicKey => _parseDIDId(publicKey.id).fragment === keyId)
+            : normalizeValue(didDoc.verificationMethod).find(
+              _method => _method && _parseDIDId(_method).fragment === keyId
+            )
 
         return expandedMethod === methodToExpand ? methodToExpand
           : {
@@ -169,22 +185,20 @@ export const buildDidHelper =
       return purposes.reduce((payload: DIDDocumentPayload, purpose) => {
 
         return {
-          ...payload, [purpose]: [...(purpose !== DIDPURPOSE_VERIFICATION
-            ? [
-              `${params.id}#${params.keyId}`,
-            ]
-            : [{
+          ...payload, [purpose]: purpose !== DIDPURPOSE_VERIFICATION
+            ? `${params.id}#${params.keyId}`
+            : {
               id: `${params.id}#${params.keyId}`,
               controller: params.controller,
               type: VERIFICATION_METHOD,
               ...(params.publicKeyBase58 ? { publicKeyBase58: params.publicKeyBase58 } : {})
-            }])]
+            }
         }
       }, {})
     }
 
-    const _isDIDUnsigned = (obj: DIDDocument | DIDDocumentUnsinged): obj is DIDDocumentUnsinged => {
-      return !obj.hasOwnProperty('proof')
+    const _isDIDUnsigned = (obj: Object): obj is DIDDocumentUnsinged => {
+      return !obj.hasOwnProperty('proof') && obj.hasOwnProperty('id')
     }
 
     const _isDIDSigned = (obj: DIDDocument | DIDDocumentUnsinged): obj is DIDDocument => {
@@ -199,16 +213,16 @@ export const buildDidHelper =
         keyId = _isDIDSigned(did) ? _extractKeyId(did.proof.verificationMethod) : VERIFICATION_KEY_HOLDER
       }
 
-      const method = did.verificationMethod?.find(
-        publicKey => _extractKeyId(publicKey.id) === keyId
+      const method = normalizeValue(did.verificationMethod).find(
+        _method => _method && _extractKeyId(_method) === keyId
       )
 
       if (!method) {
         return undefined
       }
 
-      const verificationMethod = did.verificationMethod?.find(
-        _method => _extractKeyId(_method.id) === keyId
+      const verificationMethod = normalizeValue(did.verificationMethod).find(
+        _method => _method && _extractKeyId(_method) === keyId
       )
 
       return {
@@ -291,8 +305,8 @@ export const buildDidHelper =
 
         const nonce = await _makeNonce(key)
 
-        didDocUnsigned.verificationMethod?.forEach(
-          method => method.nonce = nonce
+        normalizeValue(didDocUnsigned.verificationMethod).forEach(
+          method => typeof method === 'object' && (method.nonce = nonce)
         )
 
         if (options.alsoKnownAs) {
@@ -318,11 +332,9 @@ export const buildDidHelper =
             id: didDocUnsigned.id,
             keyId
           })).map(([key, methods]) => {
-            didDocUnsigned[key as DIDDocumentPurpose] =
-              [
-                ...(didDocUnsigned[key as DIDDocumentPurpose] || []),
-                ...methods
-              ] as DIDVerificationItem[]
+            didDocUnsigned[key as DIDDocumentPurpose] = addToValue(
+              didDocUnsigned[key as DIDDocumentPurpose], methods
+            ) as any /** @TODO Fix this any - ti's really hard */
           })
         }
 
@@ -337,16 +349,20 @@ export const buildDidHelper =
             type: VERIFICATION_METHOD,
             ..._buildKeyPayload(key.pubKey)
           }
-
-          didDocUnsigned.verificationMethod = didDocUnsigned.verificationMethod || []
-          const verifications = <DIDVerificationItem[]>didDocUnsigned.verificationMethod
-          const sameVerificationIdx = verifications.findIndex(
-            _verification => _verification.controller === verification.controller
+          
+          const existedVerificationIdx = normalizeValue(didDocUnsigned.verificationMethod).findIndex(
+            _method => _method && _method.id === verification.id
           )
-          if (-1 === sameVerificationIdx) {
-            verifications.push(verification)
+          if (existedVerificationIdx > -1) {
+            if (Array.isArray(didDocUnsigned.verificationMethod)) {
+              didDocUnsigned.verificationMethod[existedVerificationIdx] = verification
+            } else {
+              didDocUnsigned.verificationMethod = verification
+            }
           } else {
-            verifications[sameVerificationIdx] = verification
+            didDocUnsigned.verificationMethod = addToValue(
+              didDocUnsigned.verificationMethod, verification
+            )
           }
         }
 
@@ -437,7 +453,7 @@ export const buildDidHelper =
                 delegatee: delegatee
               })
             }),
-            alsoKnownAs: [...(source.alsoKnownAs || []), source.id],
+            alsoKnownAs: addToValue(source.alsoKnownAs, source.id),
             purpose: purposes
           }
         )

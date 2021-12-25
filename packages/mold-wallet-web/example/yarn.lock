@@ -1727,31 +1727,21 @@
   version "0.0.0"
   uid ""
 
-"@owlmeans/regov-ssi-common@^0.2.0", "@owlmeans/regov-ssi-common@^0.2.2":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@owlmeans/regov-ssi-common/-/regov-ssi-common-0.2.3.tgz#ffe1d96c12a646230e44e8777fc859ed5d42857d"
-  integrity sha512-/H2EP9IlQPyYNEKZOiFHL+BNEhAkpjpj6EBsjGBnZhRhwcbRLm+Np455D3qqjNV8A6xv1HhJvOlDOzw+96wBzg==
-  dependencies:
-    "@affinidi/tiny-lds-ecdsa-secp256k1-2019" "^1.1.0"
-    bip32 "^2.0.6"
-    browserify-aes "^1.2.0"
-    hash.js "^1.1.7"
-    secp256k1 "^4.0.2"
-    tiny-secp256k1 "^2.0.0"
-    uuid "^8.3.2"
+"@owlmeans/regov-ssi-common@^0.2.0":
+  version "0.0.0"
+  uid ""
+
+"@owlmeans/regov-ssi-common@^0.2.2":
+  version "0.0.0"
+  uid ""
 
 "@owlmeans/regov-ssi-common@link:../../common":
   version "0.0.0"
   uid ""
 
-"@owlmeans/regov-ssi-core@^0.4.1", "@owlmeans/regov-ssi-core@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@owlmeans/regov-ssi-core/-/regov-ssi-core-0.4.2.tgz#d5547a027af21a32e1b35b5925b0ea69ec97b69c"
-  integrity sha512-5SrnZ3N9u+5AuT5IyRwlsEmSYe6ZWQFUvNOTtPDE0dwCNIvhpJu8ETa7rOcCu5qAFeIiJ8jtlXIrnu+WPwablg==
-  dependencies:
-    "@affinidi/vc-common" "^1.4.1"
-    "@owlmeans/regov-ssi-common" "^0.2.2"
-    "@owlmeans/regov-ssi-did" "^0.4.1"
+"@owlmeans/regov-ssi-core@^0.4.1":
+  version "0.0.0"
+  uid ""
 
 "@owlmeans/regov-ssi-core@link:../../core":
   version "0.0.0"
@@ -1768,13 +1758,6 @@
 "@owlmeans/regov-ssi-did@link:../../did":
   version "0.0.0"
   uid ""
-
-"@owlmeans/regov-ssi-extension@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@owlmeans/regov-ssi-extension/-/regov-ssi-extension-0.1.1.tgz#ad8e18b638d3e4d01cc1854a718edc98eedbe0a1"
-  integrity sha512-adzSlRfg0hMzJb6qGt0XY+aV5xFrO1AKdiz8rhfutrajI+uWLSPwrmk4LbYYsUuI6AnqSyGXxDknpbQ3TQTwzQ==
-  dependencies:
-    "@owlmeans/regov-ssi-core" "^0.4.1"
 
 "@owlmeans/regov-ssi-extension@link:../../extension":
   version "0.0.0"

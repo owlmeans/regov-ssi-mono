@@ -59,7 +59,7 @@ export type BuildingFactoryMethod = <
   Evidance extends {} = any, Schema extends {} = any,
   >(schema: CredentialSchema<Evidance, Schema>) =>
   <Params extends BuildingFactoryParams>(wallet: WalletWrapper, params: Params) =>
-    Promise<{ unsigned: UnsignedCredential, did: DIDDocumentUnsinged }>
+    Promise<UnsignedCredential>
 
 export type BuildingFactoryParams = {
   didUnsigned?: DIDDocumentUnsinged

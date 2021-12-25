@@ -1,5 +1,4 @@
 import {
-  MaybeArray as AffinidiMaybeArray,
   SimpleThing,
   TContext,
   VCV1,
@@ -15,11 +14,10 @@ import {
 } from "@affinidi/vc-common";
 
 import { Validatied as AffinidiValidatied } from "@affinidi/vc-common/dist/verifier/util"
+import { MaybeArray } from "@owlmeans/regov-ssi-common";
 import { DIDDocument, DIDDocumentUnsinged } from "@owlmeans/regov-ssi-did";
 
 export type Validated<T> = AffinidiValidatied<T>
-
-export type MaybeArray<T> = AffinidiMaybeArray<T>
 
 export type ContextSchema = ContextObj
 
@@ -101,3 +99,6 @@ export const BASE_CREDENTIAL_TYPE = 'VerifiableCredential'
 export const BASE_PRESENTATION_TYPE = 'VerifiablePresentation'
 
 export const ERROR_INVALID_PRESENTATION = 'ERROR_INVALID_PRESENTATION'
+export const ERROR_INVALID_EVIDENCE = 'ERROR_INVALID_EVIDENCE'
+export const ERROR_EVIDENCE_ISNT_TRUSTED = 'ERROR_EVIDENCE_ISNT_TRUSTED'
+export const ERROR_EVIDENCE_ISNT_CREDENTIAL = 'ERROR_EVIDENCE_ISNT_CREDENTIAL'

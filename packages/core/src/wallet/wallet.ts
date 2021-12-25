@@ -149,8 +149,8 @@ export const buildWalletWrapper: WalletWrapperBuilder =
         let data = JSON.stringify(_store.data)
         const chunks: string[] = []
         while (data.length > 1024) {
-          chunks.push(data.substr(0, 1024))
-          data = data.substr(1024)
+          chunks.push(data.substring(0, 1025))
+          data = data.substring(1024)
         }
         chunks.push(data)
         const dataChunks = await Promise.all(chunks.map(chunk => crypto.encrypt(chunk, password)))

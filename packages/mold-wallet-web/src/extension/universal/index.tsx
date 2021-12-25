@@ -37,14 +37,14 @@ export const buildUIUniversalExtension = (
     ns, translations: { en }
   }
 
-  const uiExt = buildUIExtension<UniversalCredentialT>(
+  const uiExt = buildUIExtension<CredType>(
     extension,
     (purpose: ExtensionItemPurpose, _?: CredType) => {
       switch (purpose) {
         case EXTENSION_ITEM_PURPOSE_ROUTE:
           return [
             {
-              com: Main(ns),
+              com: Main(extension),
               extensionCode: details.code,
               params: { path: `${UNIVERSAL_EXTENSION_SCREEN_PATH}/:tab` }
             }

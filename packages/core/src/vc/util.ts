@@ -5,12 +5,12 @@ import {
   Evidence
 } from "./types"
 
-export const isPresentation = (obj: any): obj is Presentation => {
-  return typeof obj === 'object' && !!obj.verifiableCredential
+export const isPresentation = (obj: Object): obj is Presentation => {
+  return obj.hasOwnProperty('verifiableCredential')
 }
 
-export const isCredential = (obj: any): obj is Credential => {
-  return typeof obj === 'object' && !!obj.credentialSubject
+export const isCredential = (obj: Object): obj is Credential => {
+  return obj.hasOwnProperty('credentialSubject')
 }
 
 export const extractSubject = <

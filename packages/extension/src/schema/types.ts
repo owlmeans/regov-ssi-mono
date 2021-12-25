@@ -18,9 +18,15 @@ type BasicExtensionFields<CredType extends string> = {
 export type ExtensionDetails = {
   name: string
   code: string
+  types?: ExtensionTypes
   organization?: string
   home?: string
   schemaBaseUrl?: string
+}
+
+export type ExtensionTypes = {
+  claim?: string
+  offer?: string
 }
 
 export type CredentialSchema<
