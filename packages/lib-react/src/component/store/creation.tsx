@@ -18,6 +18,10 @@ import {
   withRegov,
   WrappedComponentProps
 } from '../../common'
+import { 
+  loginAliasValidation, 
+  passwordValidation 
+} from '../../util'
 
 
 export const StoreCreation: FunctionComponent<StoreCreationParams> =
@@ -98,17 +102,8 @@ export const storeCreationValidationRules: RegovValidationRules = {
       pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
     }
   },
-  'creation.login': {
-    required: true,
-    minLength: 3,
-    maxLength: 24,
-    pattern: /^[\w\d_-]+$/
-  },
-  'creation.password.input': {
-    required: true,
-    minLength: 8,
-    maxLength: 64
-  }
+  'creation.login': loginAliasValidation,
+  'creation.password.input': passwordValidation
 }
 
 export type StoreCreationProps = RegovCompoentProps<StoreCreationParams, StoreCreationImplParams>

@@ -1,26 +1,37 @@
 import React from 'react'
 
 import {
-  useNavigate,
-  useParams
-} from 'react-router-dom'
+  FormProvider,
+  useForm,
+  UseFormProps
+} from 'react-hook-form'
+import {
+  StoreLoginFields,
+  StoreLoginImplProps
+} from '@owlmeans/regov-lib-react'
+import { webCryptoHelper } from '@owlmeans/regov-ssi-common'
 
 import {
-  NavigatorContextProvider,
-  StoreLogin,
-  StoreLoginNavigator,
-  useNavigator
-} from '@owlmeans/regov-lib-react'
+  FormMainAction,
+  PasswordInput,
+  PrimaryForm,
+  AlertOutput,
+  FormHeaderButton
+} from '../../component/common'
 
 
-export const WalletStoreLogin = () => {
-  const { alias } = useParams()
-  const navigate = useNavigate()
-  const nav = useNavigator<StoreLoginNavigator>({
-    success: async () => navigate('/')
-  })
+export const StoreLoginWeb = (props: StoreLoginImplProps) => {
+  const methods = useForm<StoreLoginFields>(props.form as UseFormProps<StoreLoginFields>)
 
-  return <NavigatorContextProvider navigator={nav}>
-    <StoreLogin alias={alias || 'citizen'} />
-  </NavigatorContextProvider>
+  return <FormProvider {...methods}>
+    <PrimaryForm {...props} title="login.title" action={
+      <FormHeaderButton {...props} action={props.list} title="login.list" />
+    }>
+      <PasswordInput {...props} field="login.password" />
+      <AlertOutput {...props} field="login.alert" />
+      <FormMainAction {...props} title="login.main" action={
+        methods.handleSubmit(props.login(methods, webCryptoHelper))
+      } />
+    </PrimaryForm>
+  </FormProvider>
 }

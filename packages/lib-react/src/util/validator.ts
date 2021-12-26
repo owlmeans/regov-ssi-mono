@@ -11,3 +11,16 @@ export const validateJson = (v: string) => {
 
   return true
 }
+
+export const loginAliasValidation = {
+  required: true,
+  minLength: 3,
+  maxLength: 24,
+  pattern: /^[\w\d_-]+$/
+}
+
+export const passwordValidation = {
+  required: true,
+  minLength: 8,
+  maxLength: 64
+}

@@ -1,32 +1,17 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 
+import { MainMenuImplProps } from '@owlmeans/regov-lib-react'
 import {
-  MainMenu,
-  MainMenuNavigation,
-  NavigatorContextProvider,
-  useNavigator,
-  useRegov
-} from '@owlmeans/regov-lib-react'
+  Drawer,
+  List
+} from '@mui/material'
+import { MainMenuItemWeb } from './menu/item'
 
 
-export const WalletMainMenu = () => {
-  const { handler } = useRegov()
-  const navigate = useNavigate()
-  const nav = useNavigator<MainMenuNavigation>({
-    menu: (item: string, params: Object) => navigate(item, params)
-  })
-
-  return <NavigatorContextProvider navigator={nav}>
-    <MainMenu defaultItems={[
-      {
-        title: 'menu.logout',
-        action: async () => {
-          const loading = await nav.invokeLoading() 
-          await handler.loadStore(async () => undefined) 
-          await loading.finish()
-        }
-      }
-    ]} />
-  </NavigatorContextProvider>
+export const MainMenuWeb = ({ items, t, i18n }: MainMenuImplProps) => {
+  return <Drawer variant="persistent" open={true}>
+    <List>
+      {items.map(item => <MainMenuItemWeb key={item.title} {...item} t={t} i18n={i18n} />)}
+    </List>
+  </Drawer>
 }

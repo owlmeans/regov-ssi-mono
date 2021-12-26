@@ -33,7 +33,7 @@ export const extendNavigator = <
 
 export const useNavigator = <
   Naviagtor extends WalletNavigator = WalletNavigator
->(navigator?: Omit<Naviagtor, keyof BasicNavigator>): Naviagtor => {
+>(navigator?: Partial<Naviagtor>): Naviagtor => {
   const nav = useContext(NavigatorContext)
 
   return (navigator ? extendNavigator(nav, navigator) : nav) as Naviagtor

@@ -61,6 +61,10 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
             methods.setError('builder.alert', { type: 'authenticated' })
             return
           }
+          /**
+           * @PROCEED
+           * @TODO Use extension builder to build skeleton if presented
+           */
           const key = await ssi.keys.getCryptoKey()
 
           const did = await ssi.did.helper().createDID(

@@ -72,6 +72,6 @@ export type HandlerObserver = () => void
 export type ObserverTransformerOption<
   T extends {} = {},
   Props extends {} = {}
-  > = (wallet: WalletWrapper | undefined, props?: Props) => T
+  > = (wallet: WalletWrapper | undefined, props?: Props, handler?: WalletHandler) => T
 
-export type HandlerObserverTransformer<T> = (wallet: WalletWrapper | undefined) => T
+export type HandlerObserverTransformer<T> = (wallet?: WalletWrapper) => T

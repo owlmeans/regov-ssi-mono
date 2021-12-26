@@ -14,8 +14,10 @@ import {
   WrappedComponentProps,
   RegovCompoentProps,
   useRegov,
-  EmptyProps
+  EmptyProps,
+  EmptyState
 } from '../../common'
+import { passwordValidation } from '../../util'
 
 
 export const StoreLogin: FunctionComponent<StoreLoginParams> =
@@ -50,7 +52,7 @@ export const StoreLogin: FunctionComponent<StoreLoginParams> =
                 crypto,
                 data.login.password,
                 handler.stores[alias],
-                { 
+                {
                   prefix: config.DID_PREFIX,
                   defaultSchema: config.baseSchemaUrl
                 }
@@ -65,7 +67,9 @@ export const StoreLogin: FunctionComponent<StoreLoginParams> =
           } finally {
             loading?.finish()
           }
-        }
+        },
+
+        list: () => navigator?.list()
       }
 
       return <Renderer {..._props} />
@@ -74,25 +78,24 @@ export const StoreLogin: FunctionComponent<StoreLoginParams> =
   )
 
 export const storeLoginValidationRules: RegovValidationRules = {
-  'login.password': {
-    required: true,
-    minLength: 8,
-    maxLength: 64
-  }
+  'login.password': passwordValidation
 }
 
 export type StoreLoginParams = {
   alias: string
 } & EmptyProps
 
-export type StoreLoginProps = RegovCompoentProps<StoreLoginParams, StoreLoginImplParams>
+export type StoreLoginProps = RegovCompoentProps<
+  StoreLoginParams, StoreLoginImplParams, EmptyState, StoreLoginNavigator
+>
 
 export type StoreLoginImplParams = {
-  name: string,
+  name: string
   login: (
     methods: UseFormReturn<StoreLoginFields>,
     crypto: CryptoHelper
   ) => (data: StoreLoginFields) => Promise<void>
+  list: () => void
 }
 
 export type StoreLoginImplProps = WrappedComponentProps<StoreLoginImplParams>
@@ -105,5 +108,6 @@ export type StoreLoginFields = {
 }
 
 export type StoreLoginNavigator = BasicNavigator & {
-  success: WalletNavigatorMethod<undefined>
+  success: WalletNavigatorMethod<{}>
+  list: WalletNavigatorMethod<undefined>
 }

@@ -1,26 +1,37 @@
 import React from 'react'
 
 import {
-  useNavigator,
-  NavigatorContextProvider,
-  StoreCreation,
-  StoreCreationNavigator,
-  StoreCreationNavSuccess,
+  StoreCreationFields,
+  StoreCreationImplProps
 } from '@owlmeans/regov-lib-react'
+import {
+  useForm,
+  FormProvider,
+  UseFormProps,
+} from 'react-hook-form'
+import { webCryptoHelper } from '@owlmeans/regov-ssi-common'
+import {
+  PrimaryForm,
+  FormHeaderButton,
+  MainTextInput,
+  NewPasswordInput,
+  FormMainAction
+} from '../../component/common'
 
-import { useNavigate } from 'react-router-dom'
 
+export const StoreCreationWeb = (props: StoreCreationImplProps) => {
+  const methods = useForm<StoreCreationFields>(props.form as UseFormProps<StoreCreationFields>)
 
-export const WalletStoreCreation = () => {
-  const navigate = useNavigate()
-  const nav = useNavigator<StoreCreationNavigator>({
-    success: async (params: StoreCreationNavSuccess) => {
-      navigate(`/store/login/${params.alias}`)
-    },
-    menu: async (location: string) => alert(`go to ${location}`)
-  })
-
-  return <NavigatorContextProvider navigator={nav}>
-    <StoreCreation defaultAlias="citizen" />
-  </NavigatorContextProvider>
+  return <FormProvider {...methods}>
+    <PrimaryForm {...props} title="creation.title" action={
+      <FormHeaderButton {...props} action={props.load} title="creation.load" />
+    }>
+      <MainTextInput {...props} field="creation.name" />
+      <MainTextInput {...props} field="creation.login" />
+      <NewPasswordInput {...props} field="creation.password" />
+      <FormMainAction {...props} title="creation.create" action={
+        methods.handleSubmit(props.create(methods, webCryptoHelper))
+      } />
+    </PrimaryForm>
+  </FormProvider>
 }

@@ -16,8 +16,9 @@ import {
 import {
   WalletStoreCreation,
   WalletStoreLogin,
-  WalletMainAuthArea
-} from '../component'
+  WalletMainAuthArea,
+  WalletStoreList
+} from '../screen'
 
 import {
   EXTENSION_ITEM_PURPOSE_ROUTE
@@ -42,6 +43,7 @@ export const NavigationRoot = () => {
     </Route>
 
     <Route path="/store">
+      <Route path="list" element={<WalletStoreList />} />
       <Route path="create" element={<WalletStoreCreation />} />
       <Route path="login/:alias" element={<WalletStoreLogin />} />
     </Route>
@@ -55,7 +57,7 @@ export const createRootNavigator = (navigate: NavigateFunction, handler: WalletH
       if (handler.wallet) {
         return true
       }
-      navigate('/store/create')
+      navigate('/store/list')
 
       return false
     },

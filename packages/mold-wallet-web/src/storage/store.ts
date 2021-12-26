@@ -30,12 +30,13 @@ export const buildStorageHelper = (
         store => store && JSON.parse(store) as EncryptedStore
       ).reduce(
         (stores, store) => {
-          return store && store.hasOwnProperty('alias') ? { ...stores, [store.alias]: store } : stores
+          return store && store.hasOwnProperty('alias') && !store.toRemove
+            ? { ...stores, [store.alias]: store } : stores
         }, {}
       )
 
-      handler.observers.push(() => { 
-        _helper.commitAsync() 
+      handler.observers.push(() => {
+        _helper.commitAsync()
       })
       _obvserIdx = handler.observers.length - 1
     },
@@ -53,7 +54,21 @@ export const buildStorageHelper = (
 
     commit: async () => {
       console.log('STORE COMMITS')
-      const promises = Object.entries(handler.stores).map(
+
+      let promises: Promise<string | null[] | null>[] = []
+
+      Object.entries(handler.stores).map(
+        ([alias, store]) => {
+          if (store.toRemove) {
+            console.log(`::: remove ${alias}`)
+            promises.push(storage.removeItem(alias).then(_ => null))
+            delete handler.stores[alias]
+            _helper.touch(alias)
+          }
+        }
+      )
+
+      promises = [...promises, ...Object.entries(handler.stores).map(
         async ([alias, store]) => {
           if (handler.wallet && handler.wallet.store.alias === alias) {
             return null
@@ -61,25 +76,42 @@ export const buildStorageHelper = (
           if (_commited.includes(alias)) {
             return null
           }
-          
+
           console.log(`::: commit ${alias}`)
+
+          store.toRemove = false
 
           _commited.push(alias)
           return storage.setItem(alias, JSON.stringify(store))
         }
-      )
+      )]
+
       if (handler.wallet) {
         _commited.push(handler.wallet.store.alias)
         promises.push(handler.wallet.export().then(
           value => {
             console.log(`::: wallet commit ${value.alias}`)
             handler.stores[value.alias] = value
+            value.toRemove = false
             return storage.setItem(
               value.alias, JSON.stringify(value)
             )
           }
         ))
       }
+
+      promises.push(storage.keys().then(
+        keys => Promise.all(keys.map(
+          async alias => {
+            if (!handler.stores[alias]) {
+              console.log(`::: cleanup ${alias}`)
+              await storage.removeItem(alias)
+              _helper.touch(alias)
+            }
+            return null
+          }
+        ))
+      ))
 
       return Promise.all(promises)
     },

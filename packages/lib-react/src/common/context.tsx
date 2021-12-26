@@ -91,14 +91,14 @@ export const withRegov = <
     const { handler, map, config } = useRegov()
     const navigator = useContext(NavigatorContext)
     const { t, i18n } = useTranslation(props.ns || options?.namespace)
-    const state: S = (transformer ? transformer(handler.wallet, props) : {}) as S
+    const state: S = (transformer ? transformer(handler.wallet, props, handler) : {}) as S
 
     const [, setState] = useState<S>(state)
     useEffect(() => {
       if (transformer) {
         // console.log('Register transformer')
         return handler.observe(setState, (wallet: WalletWrapper) => {
-          return transformer(wallet, props)
+          return transformer(wallet, props, handler)
         })
       }
 

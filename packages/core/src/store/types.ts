@@ -9,6 +9,7 @@ export type BasicStore = {
 
 export type EncryptedStore = BasicStore & {
   dataChunks?: string[]
+  toRemove?: boolean
 }
 
 export type SecureStore = BasicStore & {

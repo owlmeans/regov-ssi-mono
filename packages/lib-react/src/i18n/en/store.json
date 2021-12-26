@@ -1,7 +1,7 @@
 {
   "creation": {
     "title": "Create new wallet",
-    "load": "Load file",
+    "load": "Wallet list",
     "name": {
       "label": "Wallet name",
       "default": "Main Wallet",
@@ -62,6 +62,17 @@
         }
       }
     },
+    "list": "Wallet list",
     "main": "Login"
+  },
+  "list": {
+    "title": "Wallet list",
+    "empty": "No wallets",
+    "create": "Create",
+    "import": "Upload",
+    "item": {
+      "export": "Export",
+      "delete": "Delete"
+    }
   }
 }
