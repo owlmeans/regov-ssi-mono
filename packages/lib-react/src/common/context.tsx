@@ -41,7 +41,8 @@ export const RegovContext = createContext<ContextParams>({
   map: {},
   handler: createWalletHandler(),
   config: {
-    DID_PREFIX: 'ssitest'
+    DID_PREFIX: 'ssitest',
+    code: 'regov.wallet.app'
   }
 })
 
@@ -168,6 +169,9 @@ export type ContextParams = {
 export type Config = {
   DID_PREFIX: string
   development?: boolean
+  baseSchemaUrl?: string
+  code: string
+  name?: string
 }
 
 export type ContextProviderParams = ContextParams & {

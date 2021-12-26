@@ -67,6 +67,7 @@ export const StoreCreation: FunctionComponent<StoreCreationParams> =
               { prefix: config.DID_PREFIX }
             )
             handler.stores[wallet.store.alias] = await wallet.export()
+            handler.notify()
 
             if (navigator?.success) {
               navigator.success({

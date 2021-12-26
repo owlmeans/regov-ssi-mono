@@ -50,6 +50,7 @@
     "@mui/material": "^5.2.4",
     "copy-to-clipboard": "^3.3.1",
     "file-saver": "^2.0.5",
+    "localforage": "^1.10.0",
     "react-dropzone": "^11.4.2"
   }
 }

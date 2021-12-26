@@ -1,4 +1,3 @@
-import { KeyChain } from "../keys"
 import { Wallet } from "../wallet/types"
 
 

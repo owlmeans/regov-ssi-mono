@@ -50,7 +50,10 @@ export const StoreLogin: FunctionComponent<StoreLoginParams> =
                 crypto,
                 data.login.password,
                 handler.stores[alias],
-                { prefix: config.DID_PREFIX }
+                { 
+                  prefix: config.DID_PREFIX,
+                  defaultSchema: config.baseSchemaUrl
+                }
               )
             })
 

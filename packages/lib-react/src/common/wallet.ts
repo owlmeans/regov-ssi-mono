@@ -25,13 +25,13 @@ export const createWalletHandler = (): WalletHandler => {
 
       return () => {
         // console.log('Unregister transformer')
-        _handler.observers.splice(idx, 1)
+        delete _handler.observers[idx]
       }
     },
 
     notify: () => {
       // console.log('Notify observers', _handler.observers.length)
-      _handler.observers.forEach(observer => observer())
+      _handler.observers.forEach(observer => observer && observer())
     },
 
     loadStore: async (loader) => {

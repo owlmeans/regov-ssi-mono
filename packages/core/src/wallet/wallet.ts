@@ -149,7 +149,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
         let data = JSON.stringify(_store.data)
         const chunks: string[] = []
         while (data.length > 1024) {
-          chunks.push(data.substring(0, 1025))
+          chunks.push(data.substring(0, 1024))
           data = data.substring(1024)
         }
         chunks.push(data)

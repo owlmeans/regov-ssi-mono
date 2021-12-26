@@ -1,8 +1,14 @@
 import React, {
+  useEffect,
+  useMemo,
   useState
 } from 'react'
 
-import { Container } from '@mui/material'
+import {
+  Backdrop,
+  CircularProgress,
+  Container
+} from '@mui/material'
 
 import {
   i18nDefaultOptions,
@@ -26,27 +32,53 @@ import {
 } from 'react-router-dom'
 
 import { buildDevWallet } from './debug/util/builder'
+import { buildStorageHelper } from './storage'
 
 
 const i18n = i18nSetup(i18nDefaultOptions)
 
 export const WalletApp = ({ config, extensions }: WalletAppParams) => {
-  const handler = createWalletHandler()
+  const handler = useMemo(createWalletHandler, [])
+  const storage = useMemo(() => buildStorageHelper(handler, config), [config])
 
-  extensions?.uiExtensions.forEach(ext => {
-    if (ext.extension.localization) {
-      Object.entries(ext.extension.localization.translations).forEach(([lng, resource]) => {
-        if (ext.extension.localization?.ns) {
-          i18n.addResourceBundle(lng, ext.extension.localization?.ns, resource, true, true)
-        }
-      })
+  useEffect(() => {
+    extensions?.uiExtensions.forEach(ext => {
+      if (ext.extension.localization) {
+        Object.entries(ext.extension.localization.translations).forEach(([lng, resource]) => {
+          if (ext.extension.localization?.ns) {
+            i18n.addResourceBundle(lng, ext.extension.localization?.ns, resource, true, true)
+          }
+        })
+      }
+    })
+  }, extensions?.uiExtensions || [])
+
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    storage.init().then(
+      async _ => {
+        console.log('STORE INITIALIZED')
+        setLoaded(true)
+      }
+    )
+
+    return () => {
+      console.log('STORE DETACHED')
+      storage.detach()
     }
-  })
+  }, [storage])
 
   return <Container maxWidth="xl">
-    <BrowserRouter>
-      <Provider handler={handler} config={config} extensions={extensions} />
-    </BrowserRouter>
+    {
+      loaded
+        ? <BrowserRouter>
+          <Provider handler={handler} config={config} extensions={extensions} />
+        </BrowserRouter>
+        : <Backdrop sx={{ color: '#fff' }} open={!loaded}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+    }
   </Container>
 }
 
@@ -63,7 +95,7 @@ const Provider = ({ handler, config, extensions }: { handler: WalletHandler } & 
     const storedAssertAuth = navigator.assertAuth
     navigator.assertAuth = async () => {
       if (firstLoad && !handler.wallet) {
-        const wallet = await buildDevWallet(config.DID_PREFIX)
+        const wallet = await buildDevWallet(config)
         handler.stores[wallet.store.alias] = await wallet.export()
         await handler.loadStore(async _ => wallet)
         setFirstLoad(false)
