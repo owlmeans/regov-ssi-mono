@@ -19,7 +19,7 @@ export const LongOutput = ({ field, rules, t, i18n, file }: LongOutputProps) => 
 
   return <Grid item container direction="column" justifyContent="flex-start" alignItems="stretch">
     <Grid item>&nbsp;</Grid>
-    <Grid item container direction="row" justifyContent="flex-end" alignItems="flex-start" 
+    <Grid item container direction="row" justifyContent="flex-end" alignItems="flex-start"
       columnSpacing={1}>
       {file
         ? <Grid item>
@@ -43,10 +43,12 @@ export const LongOutput = ({ field, rules, t, i18n, file }: LongOutputProps) => 
     <Grid item>
       <Controller name={field} control={control} rules={rules && rules[field]}
         render={({ field: _field }) => {
-          valueHolder.value = _field.value
+          valueHolder.value = typeof _field.value === 'string'
+            ? _field.value
+            : JSON.stringify(_field.value, undefined, 2)
 
           return <Typography variant="caption">
-            <pre>{_field.value}</pre>
+            <pre>{valueHolder.value}</pre>
           </Typography>
         }} />
     </Grid>

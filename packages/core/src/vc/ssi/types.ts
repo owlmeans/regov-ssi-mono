@@ -45,6 +45,18 @@ export type SSICore = {
   signPresentation: SignPresentationMethod
   verifyPresentation: VerifyPresentationMethod
   verifyEvidence: VerifyEvidenceMethod
+  verifySchema: VerifySchemaMethod
+}
+
+export type VerifySchemaMethod = (
+  credential: Credential,
+  presentation?: Presentation,
+  options?: LocalDocumentLoader | VerifySchemaOptions
+) => Promise<[boolean, Error[]]>
+
+export type VerifySchemaOptions = {
+  localLoader?: LocalDocumentLoader
+  nonStrictEvidence?: boolean
 }
 
 export type BuildCredentialMethod = <

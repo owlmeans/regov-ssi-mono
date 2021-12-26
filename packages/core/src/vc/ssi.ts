@@ -19,9 +19,11 @@ import {
   PresentationHolder,
   UnsignedPresentation,
   BASE_CREDENTIAL_TYPE,
-  ERROR_INVALID_EVIDENCE,
   ERROR_EVIDENCE_ISNT_TRUSTED,
-  ERROR_EVIDENCE_ISNT_CREDENTIAL
+  ERROR_EVIDENCE_ISNT_CREDENTIAL,
+  ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED,
+  SUBJECT_ONLY_CREDENTIAL_SCHEMA_TYPE,
+  ERROR_CREDENTAILSCHEMA_UNKNOWN_ERROR
 } from './types'
 import {
   COMMON_CRYPTO_ERROR_NOID,
@@ -31,7 +33,9 @@ import {
   mapValue,
   MaybeArray,
   addToValue,
-  normalizeValue
+  convertToSchema,
+  CREDENTIAL_SCHEMA_TYPE_2020,
+  validateSchema
 } from "@owlmeans/regov-ssi-common"
 import {
   DIDDocument,
@@ -41,9 +45,12 @@ import {
   VERIFICATION_KEY_HOLDER,
   VERIFICATION_KEY_CONTROLLER,
   BuildDocumentLoader,
-  LoadedDocument
 } from "@owlmeans/regov-ssi-did"
-import { isCredential, isFullEvidence } from "./util"
+import {
+  isCredential,
+  isFullEvidence,
+  isFullCredentialSchema
+} from "./util"
 
 const jsigs = require('jsonld-signatures')
 
@@ -267,6 +274,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
     verifyPresentation: async (presentation, didDoc?, options?) => {
       const localLoader = typeof options === 'function' ? options : options?.localLoader
       const testEvidence = typeof options === 'object' ? options.testEvidence : false
+      const nonStrictEvidence = typeof options !== 'function' ? options?.nonStrictEvidence : false
       didDoc = didDoc || (
         did.helper().isDIDDocument(presentation.holder) ? presentation.holder : undefined
       )
@@ -379,18 +387,21 @@ export const buildSSICore: BuildSSICoreMethod = async ({
 
           if (testEvidence && credResult.verified && credential.evidence) {
             const [evidenceResult, evidenceErrors] = await _core.verifyEvidence(
-              credential, presentation,
-              {
-                localLoader,
-                nonStrictEvidence: typeof options !== 'function'
-                  ? options?.nonStrictEvidence : false
-              }
+              credential, presentation, { localLoader, nonStrictEvidence }
             )
             credResult.verified = evidenceResult
             if (!evidenceResult) {
-              credResult.error = {
-                errors: evidenceErrors
-              }
+              credResult.error = { errors: evidenceErrors }
+            }
+          }
+
+          if (credResult.verified && credential.credentialSchema) {
+            const [schemaResult, schemaErrors] = await _core.verifySchema(
+              credential, presentation, { localLoader, nonStrictEvidence }
+            )
+            credResult.verified = schemaResult
+            if (!schemaResult) {
+              credResult.error = { errors: schemaErrors }
             }
           }
 
@@ -489,6 +500,69 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           }
 
           return [true, []]
+        })
+
+        if (result.some(([res]) => !res)) {
+          return [false, result.filter(([, errors]) => errors).flatMap(
+            ([, errors]) => Array.isArray(errors) ? errors : []
+          )]
+        }
+      }
+
+      return [true, []]
+    },
+
+    verifySchema: async (credential, presentation, options) => {
+      const localLoader = typeof options === 'function' ? options : options?.localLoader
+      const nonStrictEvidence = typeof options === 'object' ? options.nonStrictEvidence : false
+      if (credential.credentialSchema) {
+        const _documentLoader = localLoader && presentation
+          ? localLoader(
+            did.helper(),
+            buildDocumentLoader(did) as BuildDocumentLoader<Credential>,
+            presentation
+          ) : documentLoader
+
+        const result = await mapValue(credential.credentialSchema, async schema => {
+          if (schema.type.includes(BASE_CREDENTIAL_TYPE)) {
+            if (schema.type.includes(CREDENTIAL_SCHEMA_TYPE_2020)) {
+              const fullSchema = isFullCredentialSchema(schema)
+                ? schema : (await _documentLoader(schema.id)).document
+
+              if (isCredential(fullSchema)) {
+                const [credSchemaResult, credSchameInfo] = await _core.verifyCredential(fullSchema)
+                if (!credSchemaResult) {
+                  return [
+                    false,
+                    credSchameInfo.kind === 'invalid' && credSchameInfo.errors.map(
+                      error => new Error(error.message)
+                    )
+                  ]
+                }
+                const [schemaEvidenceResult, schemaEvidenceInfo] = await _core.verifyEvidence(
+                  fullSchema, presentation, { localLoader, nonStrictEvidence }
+                )
+                if (!schemaEvidenceResult) {
+                  return [false, schemaEvidenceInfo]
+                }
+
+                const [schemaResult, schemaInfo] = validateSchema(
+                  fullSchema.type.includes(SUBJECT_ONLY_CREDENTIAL_SCHEMA_TYPE)
+                    ? credential.credentialSubject
+                    : credential,
+                  convertToSchema(fullSchema.credentialSubject)
+                )
+
+                if (!schemaResult) {
+                  return [false, Array.isArray(schemaInfo) ? schemaInfo.map(
+                    error => new Error(error.message || error.keyword)
+                  ) : [new Error(ERROR_CREDENTAILSCHEMA_UNKNOWN_ERROR)]]
+                }
+              }
+            }
+          }
+
+          return [false, [new Error(ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED)]]
         })
 
         if (result.some(([res]) => !res)) {

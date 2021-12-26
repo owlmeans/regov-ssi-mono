@@ -1,9 +1,16 @@
-import { UnsignedCredential } from "."
+
+import { 
+  CredentialSchema, 
+  FullCredentialSchema, 
+  FullCrednetialEvidnce, 
+  UnsignedCredential 
+} from "./types"
 import {
   Presentation,
   Credential,
   Evidence
 } from "./types"
+
 
 export const isPresentation = (obj: Object): obj is Presentation => {
   return obj.hasOwnProperty('verifiableCredential')
@@ -28,6 +35,10 @@ export const extractSubject = <
   return subject as SubjectT
 }
 
-export const isFullEvidence = (obj: Evidence): obj is Credential => {
-  return !!(obj as any).credentialSubject
+export const isFullEvidence = (obj: Evidence): obj is FullCrednetialEvidnce => {
+  return obj.hasOwnProperty('credentialSubject')
+}
+
+export const isFullCredentialSchema = (obj: CredentialSchema): obj is FullCredentialSchema => {
+  return obj.hasOwnProperty('credentialSubject')
 }

@@ -27,6 +27,7 @@ export type Credential<Subject extends MaybeArray<CredentialSubject> = MaybeArra
   = VCV1<Subject> & {
     holder: CredentialHolder
     evidence?: MaybeArray<Evidence>
+    credentialSchema?: MaybeArray<CredentialSchema>
   }
 
 export type Identity<Subject extends MaybeArray<IdentitySubject> = MaybeArray<IdentitySubject>>
@@ -54,9 +55,19 @@ export type UnsignedCredential<
   > = VCV1Unsigned<Subject> & {
     holder: CredentialHolder
     evidence?: MaybeArray<Evidence>
+    credentialSchema?: MaybeArray<CredentialSchema>
   }
 
+export type CredentialSchema = FullCredentialSchema | PartialCredentialSchema
 
+export interface FullCredentialSchema extends Credential {
+
+}
+
+export type PartialCredentialSchema = {
+  id: string
+  type: CredentialType
+}
 
 export type Evidence = FullCrednetialEvidnce | PartialCredentialEvidence
 
@@ -83,6 +94,7 @@ export type Presentation<
   CredentialT extends Credential = Credential,
   Holder extends PresentationHolder = PresentationHolder
   > = VPV1<CredentialT, PresentationType> & {
+    verifiableCredential: MaybeArray<CredentialT>
     holder: Holder
   }
 
@@ -97,8 +109,12 @@ export type PresentationType = VPV1Type
 
 export const BASE_CREDENTIAL_TYPE = 'VerifiableCredential'
 export const BASE_PRESENTATION_TYPE = 'VerifiablePresentation'
+export const SUBJECT_ONLY_CREDENTIAL_SCHEMA_TYPE = 'SubjectOnlyCredentialSchemaType'
 
 export const ERROR_INVALID_PRESENTATION = 'ERROR_INVALID_PRESENTATION'
 export const ERROR_INVALID_EVIDENCE = 'ERROR_INVALID_EVIDENCE'
 export const ERROR_EVIDENCE_ISNT_TRUSTED = 'ERROR_EVIDENCE_ISNT_TRUSTED'
 export const ERROR_EVIDENCE_ISNT_CREDENTIAL = 'ERROR_EVIDENCE_ISNT_CREDENTIAL'
+
+export const ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED = 'ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED'
+export const ERROR_CREDENTAILSCHEMA_UNKNOWN_ERROR = 'ERROR_CREDENTAILSCHEMA_UNKNOWN_ERROR'

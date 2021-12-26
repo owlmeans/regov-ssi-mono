@@ -1,10 +1,14 @@
+import { normalizeValue } from '@owlmeans/regov-ssi-common'
 import {
+  BASE_CREDENTIAL_TYPE,
+  BASE_PRESENTATION_TYPE,
   buildWalletLoader,
   isCredential,
   isPresentation,
   SSICore,
   WalletWrapper
 } from '@owlmeans/regov-ssi-core'
+import { VERIFICATION_KEY_HOLDER } from '@owlmeans/regov-ssi-did'
 import React, {
   FunctionComponent
 } from 'react'
@@ -17,6 +21,7 @@ import {
   WrappedComponentProps
 } from '../../common'
 import { validateJson } from '../../util'
+import { VerificationResult } from './types'
 
 
 export const CredentialReader: FunctionComponent<CredentialReaderParams> =
@@ -42,6 +47,7 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
         criteriaMode: 'all',
         defaultValues: {
           reader: {
+            verifyIdentityStrictly: true,
             vo: '{}',
             alert: undefined,
           },
@@ -57,20 +63,18 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
             return
           }
 
-          const result: { info?: any } = {}
+          let result: VerificationResult = { type: 'unknown' }
           const vo = JSON.parse(data.reader.vo)
           if (isPresentation(vo)) {
             const [isPresValid, presValidation] = await ssi.verifyPresentation(vo, undefined, {
               testEvidence: true,
-              /** 
-               * @TODO Allow to regulate evidence trust
-               */
-              nonStrictEvidence: true,
+              nonStrictEvidence: !data.reader.verifyIdentityStrictly,
               localLoader: wallet ? buildWalletLoader(wallet) : undefined
             })
 
             if (!isPresValid) {
               if (presValidation.kind === 'invalid') {
+                methods.setValue('output', JSON.stringify(presValidation, undefined, 2))
                 methods.setError('reader.alert', {
                   type: 'reader.vo.presentation',
                   message: presValidation.errors[0].message
@@ -79,45 +83,72 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
               }
             }
 
-            result.info = presValidation
+            result = {
+              type: BASE_PRESENTATION_TYPE,
+              valid: true,
+              credentials: normalizeValue(vo.verifiableCredential).map(
+                cred => {
+                  return {
+                    valid: true,
+                    type: BASE_CREDENTIAL_TYPE,
+                    hasEvidence: !!cred.evidence,
+                    hasSchema: !!cred.credentialSchema,
+                    selfSigned: ssi.did.helper().extractKeyId(cred.proof.verificationMethod)
+                      === VERIFICATION_KEY_HOLDER
+                  }
+                }
+              )
+            }
           } else if (isCredential(vo)) {
             const [isCredValid, credValidation] = await ssi.verifyCredential(vo)
 
             if (!isCredValid) {
               if (credValidation.kind === 'invalid') {
+                methods.setValue('output', JSON.stringify(credValidation, undefined, 2))
                 methods.setError('reader.alert', { message: credValidation.errors[0].message })
                 return
               }
             }
 
-            if (isCredValid) {
-              const [evidenceResult, evidenceErrors] = await ssi.verifyEvidence(vo, undefined, {
-                /** 
-                * @TODO Allow to regulate evidence trust
-                */
-                nonStrictEvidence: true,
-                localLoader: wallet ? buildWalletLoader(wallet) : undefined
+            const [evidenceResult, evidenceErrors] = await ssi.verifyEvidence(vo, undefined, {
+              nonStrictEvidence: !data.reader.verifyIdentityStrictly,
+              localLoader: wallet ? buildWalletLoader(wallet) : undefined
+            })
+            if (!evidenceResult) {
+              methods.setValue('output', JSON.stringify(evidenceErrors, undefined, 2))
+              methods.setError('reader.alert', {
+                type: 'reader.vo.credential',
+                message: evidenceErrors[0].message
               })
-              if (!evidenceResult) {
-                methods.setError('reader.alert', {
-                  type: 'reader.vo.credential',
-                  message: evidenceErrors[0].message
-                })
-              }
+              return
             }
 
-            result.info = credValidation
+            const [schemaResult, schemaErrors] = await ssi.verifySchema(vo, undefined, {
+              nonStrictEvidence: !data.reader.verifyIdentityStrictly,
+              localLoader: wallet ? buildWalletLoader(wallet) : undefined
+            })
+            if (!schemaResult) {
+              methods.setValue('output', JSON.stringify(schemaErrors, undefined, 2))
+              methods.setError('reader.alert', {
+                type: 'reader.vo.credential',
+                message: schemaErrors[0].message
+              })
+              return
+            }
+
+            result = {
+              valid: true,
+              type: BASE_CREDENTIAL_TYPE,
+              hasEvidence: !!vo.evidence,
+              hasSchema: !!vo.credentialSchema,
+              selfSigned: ssi.did.helper().extractKeyId(vo.proof.verificationMethod)
+                === VERIFICATION_KEY_HOLDER
+            }
           } else {
             methods.setError('reader.alert', { type: 'reader.vo.format' })
-            return
           }
 
-          /**
-           * @TODO Add additional validation to check that one trusts the issuer.
-           * Use output as special set of data that describes validated credential
-           */
-
-          methods.setValue('output', JSON.stringify(result, undefined, 2))
+          methods.setValue('output', result)
         } catch (error) {
           loading?.error(error)
           console.log(error)
@@ -146,10 +177,11 @@ export type CredentialReaderParams = {
 
 export type CredentialReaderFields = {
   reader: {
+    verifyIdentityStrictly: boolean
     vo: string
     alert: string | undefined
   },
-  output: string | undefined
+  output: VerificationResult | string | undefined
 }
 
 export type CredentialReaderProps = RegovCompoentProps<
@@ -168,3 +200,4 @@ export type CredentialReaderImplParams = {
 }
 
 export type CredentialReaderImplProps = WrappedComponentProps<CredentialReaderImplParams>
+

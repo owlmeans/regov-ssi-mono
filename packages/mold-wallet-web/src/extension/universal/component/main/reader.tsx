@@ -16,7 +16,8 @@ import {
   PrimaryForm,
   FormMainAction,
   LongOutput,
-  AlertOutput
+  AlertOutput,
+  CheckGroup
 } from '../../../../component'
 import { UniversalCredentialViewParams } from './types'
 
@@ -32,6 +33,7 @@ export const MainReader = ({ ext }: UniversalCredentialViewParams) => <Credentia
 
       return <FormProvider {...methods}>
         <PrimaryForm {...props} title="reader.title">
+          <CheckGroup {...props} fields={["reader.verifyIdentityStrictly"]} />
           <LongTextInput {...props} field="reader.vo" maxRows showImport alert="reader.alert" />
 
           <AlertOutput {...props} field="reader.alert" />

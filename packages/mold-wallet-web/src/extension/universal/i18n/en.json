@@ -135,6 +135,10 @@
   },
   "reader": {
     "title": "Universal Verifiable Credential Reader",
+    "verifyIdentityStrictly": {
+      "label": "Verify Identity Strictly",
+      "hint": "To treat the provided document as valid, all issuers should be trusted."
+    },
     "vo": {
       "import": "Load from file",
       "label": "Verifiable Credential",
