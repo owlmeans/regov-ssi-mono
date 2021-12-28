@@ -45,6 +45,7 @@
     },
     "context": {
       "label": "Context",
+      "import": "Import",
       "hint": "JSON with @context property extension",
       "error": {
         "json": "Context should be a valid JSON array containing strings and objects"
@@ -52,6 +53,7 @@
     },
     "subject": {
       "label": "Credential Subject",
+      "import": "Import",
       "hint": "JSON with corresponding crednetial subject",
       "error": {
         "json": "It doesn't make sense to create a credential without any data inside"
@@ -63,6 +65,14 @@
       "hint": "JSON with corresponding evidence documents (short form)",
       "error": {
         "json": "Evidence should be ommited or be a valid JSON object or array of JSON objects"
+      }
+    },
+    "schema": {
+      "label": "Credential Schema",
+      "import": "Import",
+      "hint": "JSON with corresponding credential schema document",
+      "error": {
+        "json": "Credential schema should be ommited or be a valid JSON Avj object or array of JSON Avj objects"
       }
     },
     "build": "Build VC"

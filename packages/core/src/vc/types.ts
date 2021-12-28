@@ -21,7 +21,7 @@ export type Validated<T> = AffinidiValidatied<T>
 
 export type ContextSchema = ContextObj
 
-export type MultiSchema = ContextSchema | ContextSchema[]
+export type MultiSchema = MaybeArray<ContextSchema>
 
 export type Credential<Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>>
   = VCV1<Subject> & {

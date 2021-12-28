@@ -1,6 +1,6 @@
 import {
   buildExtensionRegistry,
-  CredentialSchema,
+  CredentialDescription,
   Extension, 
   ExtensionRegistry
 } from "@owlmeans/regov-ssi-extension"
@@ -12,6 +12,7 @@ import {
   UIExtension, 
   UIExtensionFactory 
 } from "./extension"
+
 
 export const buildUIExtensionRegistry = <
   Ext extends Extension<string> = Extension<string>
@@ -56,7 +57,7 @@ export const buildUIExtensionRegistry = <
       _registry.registry.registerSync(ext.extension as unknown as Ext)
       _registry.uiExtensions.push(ext)
       Object.entries(ext.extension.schema.credentials).forEach(
-        ([_, cred]: [string, CredentialSchema]) => {
+        ([_, cred]: [string, CredentialDescription]) => {
           _typeToExtension[cred.mainType] = [
             ...(_typeToExtension[cred.mainType] ? _typeToExtension[cred.mainType] : []),
             ext

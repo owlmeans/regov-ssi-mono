@@ -1,4 +1,6 @@
+import { CredentialExtensionFactories } from ".";
 import {
+  CredentialDescription,
   ExtensionSchema
 } from "../schema";
 import { defaultBuildingFactory } from "./factory"
@@ -13,14 +15,21 @@ export const buildExtension = <
   FlowType extends string | undefined = undefined
 >(
   schema: ExtensionSchema<CredType, FlowType>,
-  factories: ExtensionFactories = {}
+  factories?: ExtensionFactories<CredType>
 ): Extension<CredType, FlowType> => {
   const _extension: Extension<CredType, FlowType> = {
     schema,
-    ...{
-      buildingFactory: defaultBuildingFactory
-    },
-    ...factories
+    factories: Object.entries(schema.credentials).reduce(
+      (_factories, [key, description]) => {
+        return {
+          ..._factories,
+          [key]: {
+            buildingFactory: defaultBuildingFactory(description as CredentialDescription),
+            ...(factories ? factories[key as CredType] as CredentialExtensionFactories : {})
+          }
+        }
+      }, {} as ExtensionFactories<CredType>
+    )
   }
 
   return _extension

@@ -1,11 +1,11 @@
-import { CredentialSchema, ExtensionDetails, ExtensionFlow, ExtensionOnboarding, ExtensionSchema } from "./types";
+import { CredentialDescription, ExtensionDetails, ExtensionFlow, ExtensionOnboarding, ExtensionSchema } from "./types";
 
 export const buildExtensionSchema = <
   CredType extends string,
   FlowType extends string | undefined = undefined
 >(
   details: ExtensionDetails,
-  credentials: { [key in CredType]: CredentialSchema },
+  credentials: { [key in CredType]: CredentialDescription },
   flows?: FlowType extends string ? { [key in FlowType]: ExtensionFlow } : undefined
 ): ExtensionSchema<CredType, FlowType> => {
   const _schema: ExtensionSchema<CredType, FlowType> =

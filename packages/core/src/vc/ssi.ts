@@ -173,7 +173,8 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       }
     },
 
-    verifyCredential: async (credential, didDoc, keyId) => {
+    verifyCredential: async (credential, didDoc, options) => {
+      const keyId = typeof options === 'string' ? options : options?.keyId
       if (!didDoc) {
         didDoc = credential.issuer
       }
@@ -202,6 +203,33 @@ export const buildSSICore: BuildSSICoreMethod = async ({
         purpose: new jsigs.purposes.AssertionProofPurpose({ controller: didDoc }),
         compactProof: false,
       })
+
+      if (result.verified && typeof options === 'object') {
+        if (options.verifyEvidence) {
+          const [evidenceResult, evidenceErrors] = await _core.verifyEvidence(credential, undefined, {
+            nonStrictEvidence: options.nonStrictEvidence,
+            localLoader: options.localLoader
+          })
+          if (!evidenceResult) {
+            result.verified = false
+            result.error = {
+              errors: [{ kind: 'evidence', message: evidenceErrors[0].message }]
+            }
+          }
+        }
+        if (result.verified && options.verifySchema) {
+          const [schemaResult, schemaErrors] = await _core.verifySchema(credential, undefined, {
+            nonStrictEvidence: options.nonStrictEvidence,
+            localLoader: options.localLoader
+          })
+          if (!schemaResult) {
+            result.verified = false
+            result.error = {
+              errors: [{ kind: 'schema', message: schemaErrors[0].message }]
+            }
+          }
+        }
+      }
 
       return [
         result.verified,

@@ -1,4 +1,9 @@
-import { BasicCredentialType, MultiSchema } from "@owlmeans/regov-ssi-core"
+import { 
+  BasicCredentialType, 
+  CredentialSchema, 
+  MultiSchema,
+  Evidence
+} from "@owlmeans/regov-ssi-core"
 
 
 export type ExtensionSchema<
@@ -12,7 +17,7 @@ export type ExtensionSchema<
 
 type BasicExtensionFields<CredType extends string> = {
   details: ExtensionDetails
-  credentials: { [key in CredType]: CredentialSchema }
+  credentials: { [key in CredType]: CredentialDescription }
 }
 
 export type ExtensionDetails = {
@@ -29,15 +34,14 @@ export type ExtensionTypes = {
   offer?: string
 }
 
-export type CredentialSchema<
-  Evidance extends {} = any,
-  Schema extends {} = any
+export type CredentialDescription<
+  Schema extends CredentialSchema = CredentialSchema
   > = {
     mainType: string
     credentialContext: MultiSchema
     contextUrl?: string
     mandatoryTypes?: BasicCredentialType
-    evidence?: Evidance | Evidance[]
+    evidence?: BasicCredentialType
     credentialSchema?: Schema | Schema[]
     registryType?: string
     withSource?: boolean

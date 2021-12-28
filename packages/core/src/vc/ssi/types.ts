@@ -96,8 +96,16 @@ export type SignCredentialOptions = {
 export type VerfiyCredentailMethod = (
   credential: Credential,
   did?: DIDDocument | string,
-  keyId?: string
+  keyId?: string | VerifyCredentialOptions
 ) => Promise<[boolean, VerificationResult]>
+
+export type VerifyCredentialOptions = {
+  keyId?: string
+  localLoader?: LocalDocumentLoader
+  verifyEvidence?: boolean
+  verifySchema?: boolean
+  nonStrictEvidence?: boolean
+}
 
 export type VerificationResult<CredentialT extends Credential = Credential>
   = Validated<CredentialT>

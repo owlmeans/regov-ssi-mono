@@ -1,16 +1,13 @@
 import {
   BASE_CREDENTIAL_TYPE,
-  SSICore
+  CredentialType,
+  SSICore,
+  WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import React, {
   FunctionComponent
 } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import {
-  DIDPURPOSE_ASSERTION,
-  DIDPURPOSE_AUTHENTICATION,
-  DIDPURPOSE_VERIFICATION
-} from '@owlmeans/regov-ssi-did'
 import {
   BasicNavigator,
   RegovCompoentProps,
@@ -19,16 +16,15 @@ import {
   WrappedComponentProps
 } from '../../common'
 import { validateJson } from '../../util'
+import { Extension } from '@owlmeans/regov-ssi-extension'
 
 
 export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
   withRegov<CredentialBuilderProps, BasicNavigator>({
     namespace: 'regov-wallet-credential',
-    transformer: (wallet, _) => {
-      return { ssi: wallet?.ssi }
-    }
+    transformer: (wallet, _) => { return { ssi: wallet?.ssi, wallet } }
   }, ({
-    t, i18n, ssi, navigator,
+    t, i18n, ssi, wallet, navigator, ext, defaultType,
     com: ComRenderer,
     renderer: FallbackRenderer
   }) => {
@@ -48,6 +44,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
             type: `["${BASE_CREDENTIAL_TYPE}"]`,
             subject: '{}',
             evidence: '',
+            schema: '',
             alert: undefined,
           },
           outout: undefined
@@ -57,40 +54,25 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
       build: methods => async data => {
         const loading = await navigator?.invokeLoading()
         try {
-          if (!ssi) {
+          if (!ssi || !wallet) {
             methods.setError('builder.alert', { type: 'authenticated' })
             return
           }
-          /**
-           * @PROCEED
-           * @TODO Use extension builder to build skeleton if presented
-           */
-          const key = await ssi.keys.getCryptoKey()
 
-          const did = await ssi.did.helper().createDID(
-            key,
-            {
-              data: data.builder.subject,
-              hash: true,
-              /**
-               * @TODO Should be options to select
-               */
-              purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
-            }
-          )
-
-          const skeleton = await ssi.buildCredential({
-            id: did.id,
-            type: JSON.parse(data.builder.type),
-            holder: did,
-            subject: JSON.parse(data.builder.subject),
-            context: JSON.parse(data.builder.context)
+          const types = JSON.parse(data.builder.type) as CredentialType
+          const factory = ext.factories[
+            Object.entries(ext.factories).map(([type]) => type)
+              .find(type => types.includes(type)) || defaultType
+          ]
+          const unsigned = await factory.buildingFactory(wallet, {
+            type: types,
+            subjectData: JSON.parse(data.builder.subject),
+            context: JSON.parse(data.builder.context),
+            evidence: data.builder.evidence === '' ? undefined : JSON.parse(data.builder.evidence),
+            credentialSchema: data.builder.schema === '' ? undefined : JSON.parse(data.builder.schema),
           })
-          if (data.builder.evidence !== '') {
-            skeleton.evidence = JSON.parse(data.builder.evidence)
-          }
 
-          methods.setValue('output', JSON.stringify(skeleton, undefined, 2))
+          methods.setValue('output', JSON.stringify(unsigned, undefined, 2))
         } catch (e) {
           loading?.error()
           console.log(e)
@@ -128,12 +110,19 @@ export const credentialBuilderValidatorRules: RegovValidationRules = {
     validate: {
       json: (v: string) => v === '' || validateJson(v)
     }
+  },
+  'builder.schema': {
+    validate: {
+      json: (v: string) => v === '' || validateJson(v)
+    }
   }
 }
 
 export type CredentialBuilderParams = {
   ns?: string,
-  com?: FunctionComponent
+  com?: FunctionComponent,
+  ext: Extension<string>
+  defaultType: string
 }
 
 export type CredentialBuilderFields = {
@@ -142,6 +131,7 @@ export type CredentialBuilderFields = {
     type: string
     subject: string
     evidence: string
+    schema: string
     alert: string | undefined
   },
   output: string | undefined
@@ -152,13 +142,13 @@ export type CredentialBuilderProps = RegovCompoentProps<
 >
 
 export type CredentialBuilderState = {
-  ssi?: SSICore
+  ssi?: SSICore,
+  wallet?: WalletWrapper
 }
 
 export type CredentialBuilderImplParams = {
-  build: (
-    methods: UseFormReturn<CredentialBuilderFields>
-  ) => (data: CredentialBuilderFields) => Promise<void>
+  build: (methods: UseFormReturn<CredentialBuilderFields>) =>
+    (data: CredentialBuilderFields) => Promise<void>
 }
 
 export type CredentialBuilderImplProps = WrappedComponentProps<CredentialBuilderImplParams>

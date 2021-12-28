@@ -20,10 +20,11 @@ import {
   AlertOutput
 } from '../../../../component'
 import { UniversalCredentialViewParams } from './types'
+import { UNIVERSAL_EXTENSION_CRED_TYPE } from '@owlmeans/regov-ssi-extension'
 
 
 export const MainBuilder = ({ ext }: UniversalCredentialViewParams) => <CredentialBuilder
-  ns={ext.localization?.ns} com={
+  ns={ext.localization?.ns} ext={ext} defaultType={UNIVERSAL_EXTENSION_CRED_TYPE} com={
     (props: CredentialBuilderImplProps) => {
       const methods = useForm<CredentialBuilderFields>(
         props.form as UseFormProps<CredentialBuilderFields>
@@ -40,9 +41,10 @@ export const MainBuilder = ({ ext }: UniversalCredentialViewParams) => <Credenti
           {/**
            * @TODO Use https://www.npmjs.com/package/jsoneditor instead:
            */}
-          <LongTextInput {...props} field="builder.context" maxRows alert="builder.alert" />
-          <LongTextInput {...props} field="builder.subject" maxRows alert="builder.alert" />
+          <LongTextInput {...props} field="builder.context" showImport maxRows alert="builder.alert" />
+          <LongTextInput {...props} field="builder.subject" showImport maxRows alert="builder.alert" />
           <LongTextInput {...props} field="builder.evidence" showImport maxRows alert="builder.alert" />
+          <LongTextInput {...props} field="builder.schema" showImport maxRows alert="builder.alert" />
 
           <AlertOutput {...props} field="builder.alert" />
 

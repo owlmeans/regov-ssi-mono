@@ -1,21 +1,23 @@
-import { WalletWrapper } from "@owlmeans/regov-ssi-core"
+import {
+  WalletWrapper,
+  Evidence,
+  CredentialSchema
+} from "@owlmeans/regov-ssi-core"
 import {
   DIDPURPOSE_ASSERTION,
   DIDPURPOSE_AUTHENTICATION,
   DIDPURPOSE_VERIFICATION
 } from "@owlmeans/regov-ssi-did"
-import { CredentialSchema } from "../../schema"
+import { CredentialDescription } from "../../schema"
 import { BuildingFactoryParams } from "../types"
 
 
 export const defaultBuildingFactory = <
-  Evidance extends {} = any, Schema extends {} = any,
-  >(schema: CredentialSchema<Evidance, Schema>) =>
+  Schema extends CredentialSchema = CredentialSchema,
+  >(schema: CredentialDescription<Schema>) =>
   async (wallet: WalletWrapper, params: BuildingFactoryParams) => {
 
-    const subject = {
-      data: { '@type': schema.mainType, ...params.subjectData }
-    }
+    const subject = params.subjectData as any
 
     const key = params.key || await wallet.ssi.keys.getCryptoKey()
     const didUnsigned = params.didUnsigned || await wallet.ssi.did.helper().createDID(
@@ -29,7 +31,7 @@ export const defaultBuildingFactory = <
 
     const unsingnedCredentail = await wallet.ssi.buildCredential({
       id: didUnsigned.id,
-      type: [
+      type: params.type || [
         'VerifiableCredential',
         schema.mainType,
         ...(Array.isArray(schema.mandatoryTypes) ? schema.mandatoryTypes : [])
@@ -38,6 +40,16 @@ export const defaultBuildingFactory = <
       context: schema.credentialContext,
       subject
     })
+
+    if (params.schema) {
+      unsingnedCredentail.credentialSchema = params.schema
+    } else if (schema.credentialSchema) {
+      unsingnedCredentail.credentialSchema = schema.credentialSchema
+    }
+
+    if (params.evidence) {
+      unsingnedCredentail.evidence = params.evidence
+    }
 
     return unsingnedCredentail
   }

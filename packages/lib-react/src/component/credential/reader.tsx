@@ -100,40 +100,23 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
               )
             }
           } else if (isCredential(vo)) {
-            const [isCredValid, credValidation] = await ssi.verifyCredential(vo)
+            const [isCredValid, credValidation] = await ssi.verifyCredential(
+              vo, undefined, {
+              nonStrictEvidence: !data.reader.verifyIdentityStrictly,
+              localLoader: wallet ? buildWalletLoader(wallet) : undefined,
+              verifyEvidence: true,
+              verifySchema: true
+            })
 
             if (!isCredValid) {
               if (credValidation.kind === 'invalid') {
                 methods.setValue('output', JSON.stringify(credValidation, undefined, 2))
-                methods.setError('reader.alert', { message: credValidation.errors[0].message })
+                methods.setError('reader.alert', {
+                  type: `reader.vo.${credValidation.errors[0].kind}`,
+                  message: credValidation.errors[0].message
+                })
                 return
               }
-            }
-
-            const [evidenceResult, evidenceErrors] = await ssi.verifyEvidence(vo, undefined, {
-              nonStrictEvidence: !data.reader.verifyIdentityStrictly,
-              localLoader: wallet ? buildWalletLoader(wallet) : undefined
-            })
-            if (!evidenceResult) {
-              methods.setValue('output', JSON.stringify(evidenceErrors, undefined, 2))
-              methods.setError('reader.alert', {
-                type: 'reader.vo.credential',
-                message: evidenceErrors[0].message
-              })
-              return
-            }
-
-            const [schemaResult, schemaErrors] = await ssi.verifySchema(vo, undefined, {
-              nonStrictEvidence: !data.reader.verifyIdentityStrictly,
-              localLoader: wallet ? buildWalletLoader(wallet) : undefined
-            })
-            if (!schemaResult) {
-              methods.setValue('output', JSON.stringify(schemaErrors, undefined, 2))
-              methods.setError('reader.alert', {
-                type: 'reader.vo.credential',
-                message: schemaErrors[0].message
-              })
-              return
             }
 
             result = {
