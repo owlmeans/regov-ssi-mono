@@ -22,10 +22,10 @@ export const buildUniversalExtension = (details: ExtensionDetails) =>
     {
       [UNIVERSAL_EXTENSION_CRED_TYPE]: {
         mainType: UNIVERSAL_EXTENSION_CRED_TYPE,
+        defaultNameKey: 'extension.details.cred.universal.name',
         credentialContext: {
           '@version': 1.1,
           scm: `${details.schemaBaseUrl}/ssi/schema/universal`,
-          data: { '@id': 'scm:data', '@type': '@json' }
         },
         registryType: REGISTRY_TYPE_CREDENTIALS,
         claimable: true,

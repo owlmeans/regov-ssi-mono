@@ -26,6 +26,12 @@ export const MainLoading: FunctionComponent<MainLoadingParams> = withRegov<MainL
           setTimeout(() => handle.close && handle.close(), 100)
         },
 
+        success: (message) => {
+          handle.error
+            ? handle.error(message, 'success')
+            : handle?.close && handle.close()
+        },
+
         error: (err?, type = 'error') => handle.error
           ? handle.error(err || 'error.default', type)
           : handle?.close && handle.close()

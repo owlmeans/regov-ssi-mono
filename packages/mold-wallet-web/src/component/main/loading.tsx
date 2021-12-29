@@ -15,6 +15,9 @@ import {
 } from '@owlmeans/regov-lib-react'
 
 
+/**
+ * @TODO Localize messages with appropriate namespace
+ */
 export const MailLoadingWeb = ({ handle, t }: MainLoadingImplProps) => {
   const [isOpened, setOpen] = useState<boolean>(false)
   const [{ error, type: errorType }, setError] = useState<{ error?: string, type?: string }>({})

@@ -1,7 +1,12 @@
 {
   "extension": {
     "details": {
-      "name": "Universal Credential"
+      "name": "Universal Credential",
+      "cred": {
+        "universal": {
+          "name": "Verifiable Credential"
+        }
+      }
     }
   },
   "menu": {
@@ -32,7 +37,8 @@
   },
   "output": {
     "copy": "Copy",
-    "export": "Export"
+    "export": "Export",
+    "save": "Save"
   },
   "builder": {
     "title": "Universal Verifiable Credential Creation",
@@ -75,7 +81,10 @@
         "json": "Credential schema should be ommited or be a valid JSON Avj object or array of JSON Avj objects"
       }
     },
-    "build": "Build VC"
+    "build": "Build VC",
+    "save": {
+      "success": "Unsigned Verifiable Credential successfully saved"
+    }
   },
   "signer": {
     "title": "Universal Verifiable Credential Signer",

@@ -12,7 +12,8 @@ export const basicNavigator: BasicNavigator = {
   back: async () => { },
   invokeLoading: async () => ({
     finish: () => { },
-    error: (_) => { }
+    error: (_) => { },
+    success: (_) => { }
   })
 }
 
@@ -76,6 +77,7 @@ export type WalletNavigator<
 export type NavigatorLoading = {
   finish: () => void
   error: (err?: string | Error, type?: string) => void
+  success: (message: string) => void
 }
 
 export type WalletNavigatorMethod<Params extends {} | undefined = {}>

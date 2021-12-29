@@ -45,9 +45,7 @@ export type RegistryItem<
   Subject extends CredentialSubject = CredentialSubject,
   PresentationT extends Presentation = Presentation
   > =
-  Credential<Subject> | UnsignedCredential<Subject>
-  | Presentation
-  | PresentationT
+  Credential<Subject> | UnsignedCredential<Subject> | PresentationT
 
 export type LookupCredentialsMethod = <
   Subject extends CredentialSubject = CredentialSubject,
@@ -71,6 +69,7 @@ export type RegistryType = typeof REGISTRY_TYPE_IDENTITIES
 
 export const REGISTRY_TYPE_IDENTITIES = 'identities'
 export const REGISTRY_TYPE_CREDENTIALS = 'credentials'
+export const REGISTRY_TYPE_UNSIGNEDS = 'unsigneds'
 export const REGISTRY_TYPE_CLAIMS = 'claims'
 export const REGISTRY_TYPE_REQUESTS = 'requests'
 
@@ -87,8 +86,5 @@ export type CredentialWrapper<
 
 export type CredentialWrapperMetadata = {
   secure: boolean
-  nonce?: string
-  keyDigest?: string
-  holderDigest?: string
-  ownershipProof?: string
+  title?: string
 }

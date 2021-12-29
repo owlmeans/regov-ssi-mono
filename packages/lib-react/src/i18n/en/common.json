@@ -6,6 +6,10 @@
     "error": {
       "label": "Error",
       "severity": "error"
+    },
+    "success": {
+      "label": "Success",
+      "severity": "success"
     }
   },
   "error": {

@@ -52,7 +52,10 @@ export const MainBuilder = ({ ext }: UniversalCredentialViewParams) => <Credenti
             methods.handleSubmit(props.build(methods))
           } />
 
-          {output ? <LongOutput {...props} field="output" file="universal-uvc.json" /> : undefined}
+          {output ? <LongOutput {...props} field="output" file="universal-uvc.json" 
+            actions={[
+              {title: 'output.save', 'action': props.save(methods) }
+            ]}/> : undefined}
         </PrimaryForm>
       </FormProvider>
     }

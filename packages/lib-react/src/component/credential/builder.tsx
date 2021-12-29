@@ -1,10 +1,14 @@
 import {
   BASE_CREDENTIAL_TYPE,
+  CredentialsRegistryWrapper,
   CredentialType,
+  REGISTRY_SECTION_OWN,
+  REGISTRY_TYPE_UNSIGNEDS,
   SSICore,
   WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import React, {
+  Fragment,
   FunctionComponent
 } from 'react'
 import { UseFormReturn } from 'react-hook-form'
@@ -12,11 +16,15 @@ import {
   BasicNavigator,
   RegovCompoentProps,
   RegovValidationRules,
+  useRegov,
   withRegov,
   WrappedComponentProps
 } from '../../common'
 import { validateJson } from '../../util'
-import { Extension } from '@owlmeans/regov-ssi-extension'
+import {
+  Extension,
+  findAppropriateCredentialType
+} from '@owlmeans/regov-ssi-extension'
 
 
 export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
@@ -28,7 +36,12 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
     com: ComRenderer,
     renderer: FallbackRenderer
   }) => {
+    const { handler } = useRegov()
     const Renderer = ComRenderer || FallbackRenderer
+
+    if (!wallet) {
+      return <Fragment />
+    }
 
     const _props: CredentialBuilderImplProps = {
       t, i18n,
@@ -51,6 +64,8 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
         }
       },
 
+      registry: wallet.getRegistry(REGISTRY_TYPE_UNSIGNEDS),
+
       build: methods => async data => {
         const loading = await navigator?.invokeLoading()
         try {
@@ -60,10 +75,8 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
           }
 
           const types = JSON.parse(data.builder.type) as CredentialType
-          const factory = ext.factories[
-            Object.entries(ext.factories).map(([type]) => type)
-              .find(type => types.includes(type)) || defaultType
-          ]
+          const type = findAppropriateCredentialType(ext, types, defaultType)
+          const factory = ext.factories[type]
           const unsigned = await factory.buildingFactory(wallet, {
             type: types,
             subjectData: JSON.parse(data.builder.subject),
@@ -72,10 +85,39 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
             credentialSchema: data.builder.schema === '' ? undefined : JSON.parse(data.builder.schema),
           })
 
+          methods.setValue('extType', type)
           methods.setValue('output', JSON.stringify(unsigned, undefined, 2))
-        } catch (e) {
-          loading?.error()
-          console.log(e)
+        } catch (error) {
+          loading?.error(error.message)
+          console.log(error)
+        } finally {
+          loading?.finish()
+        }
+      },
+
+      save: methods => async () => {
+        const loading = await navigator?.invokeLoading()
+        try {
+          const type = methods.getValues('extType')
+          const credDetails = ext.schema.credentials[type as keyof typeof ext.schema.credentials]
+          const registry = wallet.getRegistry(REGISTRY_TYPE_UNSIGNEDS)
+          const count = 1 + registry.registry.credentials[REGISTRY_SECTION_OWN].length
+          /**
+           * @TODO What if we scetch a credential for someone else
+           */
+          const wrap = await registry.addCredential(
+            JSON.parse(methods.getValues('output') as string), REGISTRY_SECTION_OWN
+          )
+          /**
+           * @TODO Get alternative name from pop-up
+           * Implement interuptions
+           */
+          wrap.meta.title = `${t(credDetails.defaultNameKey || 'wallet.registry.cred.title')} - ${count}`
+          handler.notify()
+          loading?.success(t('builder.save.success'))
+        } catch (error) {
+          loading?.error(error.message)
+          console.log(error)
         } finally {
           loading?.finish()
         }
@@ -134,6 +176,7 @@ export type CredentialBuilderFields = {
     schema: string
     alert: string | undefined
   },
+  extType: string
   output: string | undefined
 }
 
@@ -149,6 +192,8 @@ export type CredentialBuilderState = {
 export type CredentialBuilderImplParams = {
   build: (methods: UseFormReturn<CredentialBuilderFields>) =>
     (data: CredentialBuilderFields) => Promise<void>
+  registry: CredentialsRegistryWrapper
+  save: (methods: UseFormReturn<CredentialBuilderFields>) => () => Promise<void>
 }
 
 export type CredentialBuilderImplProps = WrappedComponentProps<CredentialBuilderImplParams>

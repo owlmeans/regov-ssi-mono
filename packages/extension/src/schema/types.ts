@@ -48,6 +48,7 @@ export type CredentialDescription<
     claimable?: boolean
     listed?: boolean
     selfIssuing?: boolean
+    defaultNameKey?: string
   }
 
 export type ExtensionOnboarding<

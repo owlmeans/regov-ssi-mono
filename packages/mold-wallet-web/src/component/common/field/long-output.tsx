@@ -8,12 +8,13 @@ import {
   useFormContext,
   Controller
 } from 'react-hook-form'
-import { FormMainButton } from '../button'
+import { ButtonParams, FormMainButton } from '../button'
 import { saveAs } from 'file-saver'
 import copy from 'copy-to-clipboard'
 
 
-export const LongOutput = ({ field, rules, t, i18n, file }: LongOutputProps) => {
+export const LongOutput = (props: LongOutputProps) => {
+  const { field, rules, t, i18n, file, actions } = props
   const { control } = useFormContext()
   const valueHolder = { value: '' }
 
@@ -21,6 +22,9 @@ export const LongOutput = ({ field, rules, t, i18n, file }: LongOutputProps) => 
     <Grid item>&nbsp;</Grid>
     <Grid item container direction="row" justifyContent="flex-end" alignItems="flex-start"
       columnSpacing={1}>
+      {actions?.map(
+        action => <Grid item key={action.title}><FormMainButton {...props} {...action} /></Grid>
+      )}
       {file
         ? <Grid item>
           <FormMainButton t={t} i18n={i18n} title={`${field}.export`} action={
@@ -47,9 +51,7 @@ export const LongOutput = ({ field, rules, t, i18n, file }: LongOutputProps) => 
             ? _field.value
             : JSON.stringify(_field.value, undefined, 2)
 
-          return <Typography variant="caption">
-            <pre>{valueHolder.value}</pre>
-          </Typography>
+          return <Typography variant="caption"><pre>{valueHolder.value}</pre></Typography>
         }} />
     </Grid>
   </Grid>
@@ -57,5 +59,6 @@ export const LongOutput = ({ field, rules, t, i18n, file }: LongOutputProps) => 
 
 export type LongOutputProps = WrappedComponentProps<{
   field: string,
-  file?: string
+  file?: string,
+  actions?: ButtonParams[]
 }>
