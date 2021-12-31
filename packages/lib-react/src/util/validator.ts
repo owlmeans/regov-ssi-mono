@@ -24,3 +24,11 @@ export const passwordValidation = {
   minLength: 8,
   maxLength: 64
 }
+
+export const generalNameVlidation = (required: boolean = true) => ({
+  required,
+  maxLength: 32,
+  validate: {
+    pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
+  }
+})

@@ -26,6 +26,18 @@ export const WalletMainMenu = () => {
           await handler.loadStore(async () => undefined) 
           await loading.finish()
         }
+      },
+      {
+        title: 'menu.dashboard',
+        action: async () => {
+          nav.home()
+        }
+      },
+      {
+        title: 'menu.wallet',
+        action: async () => {
+          nav.menu('/credential/list')
+        }
       }
     ]} />
   </NavigatorContextProvider>

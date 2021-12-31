@@ -40,6 +40,14 @@
     "export": "Export",
     "save": "Save"
   },
+  "name": {
+    "label": "Credential name",
+    "hint": "It will be used if you decide to save the credential in your wallet",
+    "error": {
+      "maxLength": "Name is too long",
+      "pattern": "Please try to use only letters"
+    }
+  },
   "builder": {
     "title": "Universal Verifiable Credential Creation",
     "type": {
@@ -83,7 +91,7 @@
     },
     "build": "Build VC",
     "save": {
-      "success": "Unsigned Verifiable Credential successfully saved"
+      "success": "Unsigned Verifiable Credential \"{{name}}\" successfully saved"
     }
   },
   "signer": {

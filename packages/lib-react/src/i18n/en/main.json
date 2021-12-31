@@ -1,5 +1,7 @@
 {
   "menu": {
-    "logout": "Logout"
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "wallet": "Credentials Wallet"
   }
 }

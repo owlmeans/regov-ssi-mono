@@ -14,6 +14,9 @@ import {
   StoreLoginWeb,
   StoreListWeb
 } from "./store"
+import {
+  CredentialListWeb
+} from '../screen/credential'
 
 export const webComponentMap: ImplementationMap = {
   'StoreCreation': StoreCreationWeb,
@@ -22,4 +25,5 @@ export const webComponentMap: ImplementationMap = {
   'MainLoading': MailLoadingWeb,
   'MainMenu': MainMenuWeb,
   'StoreList': StoreListWeb,
+  'CredentialList': CredentialListWeb
 }

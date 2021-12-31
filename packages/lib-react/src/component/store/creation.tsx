@@ -19,6 +19,7 @@ import {
   WrappedComponentProps
 } from '../../common'
 import { 
+  generalNameVlidation,
   loginAliasValidation, 
   passwordValidation 
 } from '../../util'
@@ -95,13 +96,7 @@ export const StoreCreation: FunctionComponent<StoreCreationParams> =
     }, { namespace: 'regov-wallet-store' })
 
 export const storeCreationValidationRules: RegovValidationRules = {
-  'creation.name': {
-    required: true,
-    maxLength: 32,
-    validate: {
-      pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
-    }
-  },
+  'creation.name': generalNameVlidation(),
   'creation.login': loginAliasValidation,
   'creation.password.input': passwordValidation
 }

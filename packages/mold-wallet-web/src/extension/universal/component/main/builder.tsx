@@ -34,6 +34,7 @@ export const MainBuilder = ({ ext }: UniversalCredentialViewParams) => <Credenti
 
       return <FormProvider {...methods}>
         <PrimaryForm {...props} title="builder.title">
+          <MainTextInput {...props} field="name" />
           {/**
            * @TODO Propose types in drop down
            */}

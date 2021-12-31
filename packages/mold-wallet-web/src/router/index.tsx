@@ -8,6 +8,7 @@ import {
 
 import {
   basicNavigator,
+  CredentialList,
   extendNavigator,
   MainDashboard,
   useRegov,
@@ -40,6 +41,7 @@ export const NavigationRoot = () => {
           }
         )
       }
+      <Route path="credential/list" element={<CredentialList />} />
     </Route>
 
     <Route path="/store">

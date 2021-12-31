@@ -20,7 +20,7 @@ import {
   withRegov,
   WrappedComponentProps
 } from '../../common'
-import { validateJson } from '../../util'
+import { generalNameVlidation, validateJson } from '../../util'
 import {
   Extension,
   findAppropriateCredentialType
@@ -60,6 +60,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
             schema: '',
             alert: undefined,
           },
+          name: '',
           outout: undefined
         }
       },
@@ -108,13 +109,12 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
           const wrap = await registry.addCredential(
             JSON.parse(methods.getValues('output') as string), REGISTRY_SECTION_OWN
           )
-          /**
-           * @TODO Get alternative name from pop-up
-           * Implement interuptions
-           */
-          wrap.meta.title = `${t(credDetails.defaultNameKey || 'wallet.registry.cred.title')} - ${count}`
+          const name = methods.getValues('name')
+          wrap.meta.title = name !== ''
+            ? name
+            : `${t(credDetails.defaultNameKey || 'wallet.registry.cred.title')} - ${count}`
           handler.notify()
-          loading?.success(t('builder.save.success'))
+          loading?.success(t('builder.save.success', { name: wrap.meta.title }))
         } catch (error) {
           loading?.error(error.message)
           console.log(error)
@@ -157,7 +157,8 @@ export const credentialBuilderValidatorRules: RegovValidationRules = {
     validate: {
       json: (v: string) => v === '' || validateJson(v)
     }
-  }
+  },
+  'name': generalNameVlidation(false)
 }
 
 export type CredentialBuilderParams = {
@@ -176,6 +177,7 @@ export type CredentialBuilderFields = {
     schema: string
     alert: string | undefined
   },
+  name: string
   extType: string
   output: string | undefined
 }
