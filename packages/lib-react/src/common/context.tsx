@@ -129,7 +129,7 @@ export type RegovCompoentProps<
   State extends EmptyState = EmptyState,
   Nav extends WalletNavigator = BasicNavigator
   > = PropsWithChildren<{
-    renderer: FunctionComponent<WrappedComponentProps<Props & State>>
+    renderer: FunctionComponent<WrappedComponentProps<Props, State>>
     config: Config
     navigator?: Nav
     t: TFunction

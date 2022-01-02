@@ -1,34 +1,73 @@
 import React from 'react'
 
 import {
-  Card,
-  CardContent,
-} from '@mui/material'
-import {
-  CredentialListImplProps
+  CredentialList,
+  CredentialListTab,
+  useNavigator,
+  CredentialListNavigator,
+  CredentialListNavigatorParams,
+  NavigatorContextProvider
 } from '@owlmeans/regov-lib-react'
 import {
-  SimpleList,
-  SimpleListItem
-} from '../../component/common'
+  RegistryType,
+  REGISTRY_SECTION_OWN,
+  REGISTRY_SECTION_PEER,
+  REGISTRY_TYPE_CLAIMS,
+  REGISTRY_TYPE_CREDENTIALS,
+  REGISTRY_TYPE_IDENTITIES,
+  REGISTRY_TYPE_UNSIGNEDS
+} from '@owlmeans/regov-ssi-core'
+import { useNavigate, useParams } from 'react-router-dom'
 
 
-export const CredentialListWeb = (props: CredentialListImplProps) => {
-  console.log(props)
+export const WalletCredentialList = () => {
+  const navigate = useNavigate()
+  const { tab, section } = useParams<{ tab: RegistryType, section: string }>()
+  const nav = useNavigator<CredentialListNavigator>({
+    menu: async (location: string, params: CredentialListNavigatorParams) => {
+      navigate(`/credential/list/${location}/${(params).section || ''}`)
+    }
+  })
 
-  return <Card>
-    <CardContent>
-      <SimpleList {...props} title="">
-        {
-          props.credentials.map(
-            wrapper => <SimpleListItem
-              {...props}
-              key={wrapper.credential.id}
-              noTranslation
-              label={wrapper.meta.title || ''} />
-          )
-        }
-      </SimpleList>
-    </CardContent>
-  </Card>
+  return <NavigatorContextProvider navigator={nav}>
+    <CredentialList tab={tab} section={section} tabs={walletCredentialListTabs} />
+  </NavigatorContextProvider>
 }
+
+
+const walletCredentialListTabs: CredentialListTab[] = [
+  {
+    name: REGISTRY_TYPE_CREDENTIALS,
+    registry: {
+      type: REGISTRY_TYPE_CREDENTIALS,
+      defaultSection: REGISTRY_SECTION_OWN,
+      allowPeer: true,
+      // sections?: string[]
+    }
+  },
+
+  {
+    name: REGISTRY_TYPE_IDENTITIES,
+    registry: {
+      type: REGISTRY_TYPE_IDENTITIES,
+      defaultSection: REGISTRY_SECTION_PEER,
+      allowPeer: true,
+    }
+  },
+  {
+    name: REGISTRY_TYPE_CLAIMS,
+    registry: {
+      type: REGISTRY_TYPE_CLAIMS,
+      defaultSection: REGISTRY_SECTION_OWN,
+      allowPeer: true,
+    }
+  },
+  {
+    name: REGISTRY_TYPE_UNSIGNEDS,
+    registry: {
+      type: REGISTRY_TYPE_UNSIGNEDS,
+      defaultSection: REGISTRY_SECTION_OWN,
+      allowPeer: false,
+    }
+  },
+]

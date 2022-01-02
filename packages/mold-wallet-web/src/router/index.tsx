@@ -8,7 +8,6 @@ import {
 
 import {
   basicNavigator,
-  CredentialList,
   extendNavigator,
   MainDashboard,
   useRegov,
@@ -18,7 +17,8 @@ import {
   WalletStoreCreation,
   WalletStoreLogin,
   WalletMainAuthArea,
-  WalletStoreList
+  WalletStoreList,
+  WalletCredentialList,
 } from '../screen'
 
 import {
@@ -41,7 +41,9 @@ export const NavigationRoot = () => {
           }
         )
       }
-      <Route path="credential/list" element={<CredentialList />} />
+      <Route path="credential">
+        <Route path="list/:tab/:section" element={<WalletCredentialList />} />
+      </Route>
     </Route>
 
     <Route path="/store">

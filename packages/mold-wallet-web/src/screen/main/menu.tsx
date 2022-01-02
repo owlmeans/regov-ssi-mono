@@ -8,6 +8,7 @@ import {
   useNavigator,
   useRegov
 } from '@owlmeans/regov-lib-react'
+import { REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS } from '@owlmeans/regov-ssi-core'
 
 
 export const WalletMainMenu = () => {
@@ -36,7 +37,7 @@ export const WalletMainMenu = () => {
       {
         title: 'menu.wallet',
         action: async () => {
-          nav.menu('/credential/list')
+          nav.menu(`/credential/list/${REGISTRY_TYPE_CREDENTIALS}/${REGISTRY_SECTION_OWN}`)
         }
       }
     ]} />

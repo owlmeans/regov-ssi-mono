@@ -65,6 +65,9 @@ export type GetCredentialMethod = <
 
 export type RegistryType = typeof REGISTRY_TYPE_IDENTITIES
   | typeof REGISTRY_TYPE_CREDENTIALS
+  | typeof REGISTRY_TYPE_UNSIGNEDS
+  | typeof REGISTRY_TYPE_CLAIMS
+  | typeof REGISTRY_TYPE_REQUESTS
   | string
 
 export const REGISTRY_TYPE_IDENTITIES = 'identities'

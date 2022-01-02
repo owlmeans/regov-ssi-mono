@@ -2,6 +2,7 @@ import React from 'react'
 
 import {
   Box,
+  Divider,
   Tab,
   Tabs
 } from '@mui/material'
@@ -37,7 +38,7 @@ export const Main = (ext: Extension<UniversalCredentialT>) => {
     const navigate = useNavigate()
 
     return <Box>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box>
         <Tabs value={tab} onChange={(_, tab) => navigate(`${UNIVERSAL_EXTENSION_SCREEN_PATH}/${tab}`)}
           variant="scrollable" scrollButtons="auto">
           <Tab label={t('tab.read.label')} value="read" />
@@ -48,6 +49,7 @@ export const Main = (ext: Extension<UniversalCredentialT>) => {
           <Tab label={t('tab.request.label')} value="request" />
           <Tab label={t('tab.response.label')} value="response" />
         </Tabs>
+        <Divider />
       </Box>
       {tab === 'read' && <Box><MainReader ext={ext} /></Box>}
       {tab === 'build' && <Box><MainBuilder ext={ext} /></Box>}

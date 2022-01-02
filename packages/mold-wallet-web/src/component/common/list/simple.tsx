@@ -18,18 +18,15 @@ import {
 
 
 export const SimpleList = (props: SimpleListProps) => {
-  const { t, title, actions, children } = props
+  const { t, title, actions, children, headerAction } = props
 
   return <Card>
-    <CardHeader title={t(title)} />
+    <CardHeader title={t(title)} action={headerAction} />
     <CardContent>
       <List>{children}</List>
     </CardContent>
     <CardActions>
-      <Grid container spacing={1}
-        direction="row"
-        justifyContent="flex-end"
-        alignItems="center">
+      <Grid container spacing={1} direction="row" justifyContent="flex-end" alignItems="center">
         {actions?.map(
           action => <Grid item key={action.title}><FormMainButton {...props} {...action} /></Grid>
         )}
@@ -42,5 +39,6 @@ export type SimpleListProps = WrappedComponentProps<SimpleListParams>
 
 export type SimpleListParams = {
   title: string,
+  headerAction?: React.ReactNode
   actions?: ButtonParams[]
 }
