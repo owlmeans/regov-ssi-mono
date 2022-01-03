@@ -4,7 +4,7 @@ import {
 } from '@owlmeans/regov-lib-react'
 import { 
   WalletApp ,
-  buildUIUniversalExtension,
+  buildUniversalExtensionUI,
   UniversalCredentailExtension
 } from '@owlmeans/regov-mold-wallet-web'
 
@@ -13,7 +13,7 @@ import { config } from './config'
 
 const registry = buildUIExtensionRegistry<UniversalCredentailExtension>()
 
-registry.registerSync(buildUIUniversalExtension({
+registry.registerSync(buildUniversalExtensionUI({
   name: '',
   code: 'example-uvc',
   organization: 'Example Org.',

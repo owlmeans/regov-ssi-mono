@@ -1,4 +1,5 @@
-import { CredentialDescription, ExtensionDetails, ExtensionFlow, ExtensionOnboarding, ExtensionSchema } from "./types";
+import { addToValue, normalizeValue } from "@owlmeans/regov-ssi-common";
+import { CredentialDescription, ExtensionDetails, ExtensionFlow, ExtensionEvent, ExtensionSchema } from "./types";
 
 export const buildExtensionSchema = <
   CredType extends string,
@@ -23,18 +24,7 @@ export const buildExtensionSchema = <
   return _schema
 }
 
-export const addOnboardingToSchema = <
-  CredType extends string,
-  FlowType extends string
->(
+export const addObserverToSchema = <CredType extends string, FlowType extends string>(
   schema: ExtensionSchema<CredType, FlowType>,
-  onboarding: ExtensionOnboarding<CredType, FlowType> | ExtensionOnboarding<CredType, FlowType>[]
-): ExtensionSchema<CredType, FlowType> => {
-  return {
-    ...schema,
-    onboardings: [
-      ...(schema.onboardings || []),
-      ...(Array.isArray(onboarding) ? onboarding : [onboarding])
-    ]
-  }
-}
+  event: ExtensionEvent<FlowType> | ExtensionEvent<FlowType>[]
+): ExtensionSchema<CredType, FlowType> => ({ ...schema, events: addToValue(schema.events, event) })

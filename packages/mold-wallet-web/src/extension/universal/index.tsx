@@ -22,7 +22,7 @@ import {
 export { UniversalCredentailExtension } from '@owlmeans/regov-ssi-extension'
 
 
-export const buildUIUniversalExtension = (
+export const buildUniversalExtensionUI = (
   details: ExtensionDetails,
   ns = UNIVERSAL_CREDENTAIL_I18N_NS
 ) => {

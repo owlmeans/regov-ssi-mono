@@ -1,8 +1,10 @@
+import { MaybeArray } from "@owlmeans/regov-ssi-common"
 import { 
   BasicCredentialType, 
   CredentialSchema, 
   MultiSchema,
-  Evidence
+  Evidence,
+  WalletWrapper
 } from "@owlmeans/regov-ssi-core"
 
 
@@ -11,7 +13,7 @@ export type ExtensionSchema<
   FlowType extends string | undefined = undefined
   > = FlowType extends string ? {
     flows: { [key in FlowType]: ExtensionFlow }
-    onboardings: ExtensionOnboarding<CredType, FlowType>[]
+    events: ExtensionEvent<FlowType>[]
   } & BasicExtensionFields<CredType>
   : BasicExtensionFields<CredType>
 
@@ -37,30 +39,30 @@ export type ExtensionTypes = {
 export type CredentialDescription<
   Schema extends CredentialSchema = CredentialSchema
   > = {
+    defaultNameKey?: string
     mainType: string
+    mandatoryTypes?: BasicCredentialType
     credentialContext: MultiSchema
     contextUrl?: string
-    mandatoryTypes?: BasicCredentialType
-    evidence?: BasicCredentialType
+    evidence?: BasicCredentialType | BasicCredentialType[]
     credentialSchema?: Schema | Schema[]
     registryType?: string
-    withSource?: boolean
     claimable?: boolean
     listed?: boolean
     selfIssuing?: boolean
-    defaultNameKey?: string
   }
 
-export type ExtensionOnboarding<
-  CredType extends string,
+export type ExtensionEvent<
   FlowType extends string
   > = {
-    creds: CredType[]
+    filter?: ExtensionEventFilter
+    trigger: MaybeArray<string>
     flow: FlowType
   }
 
+export type ExtensionEventFilter = (wallet: WalletWrapper) => Promise<boolean>
+
 export type ExtensionFlow = {
-  type: string
   initialStep: ExtensionFlowStep
   steps: { [key: string]: ExtensionFlowStep }
 }
@@ -69,7 +71,7 @@ export type ExtensionFlowStep = {
   previous?: string
   next?: string
   changeStateMethod?: string
-  type: string
+  widget: string
 }
 
 
@@ -93,3 +95,6 @@ export const EXTENSION_ITEM_PURPOSE_VERIFY = 'verify'
 export const EXTENSION_ITEM_PURPOSE_STORE = 'store'
 export const EXTENSION_ITEM_PURPOSE_CUSTOM = 'custom'
 export const EXTENSION_ITEM_PURPOSE_ROUTE = 'route'
+
+export const EXTESNION_TRIGGER_AUTHENTICATION = 'wallet:authentication'
+export const EXTESNION_TRIGGER_AUTHENTICATED = 'wallet:authenticated'

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "> @TODO: description",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
-  "homepage": "https://github.com/owlmeans/js-molds#readme",
+  "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "> @TODO: license",
   "type": "commonjs",
   "main": "dist/index.js",
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/owlmeans/js-molds.git",
+    "url": "git+https://github.com/owlmeans/regov-ssi-mono.git",
     "directory": "packages/mold-wallet-web"
   },
   "source": "src/index.ts",
