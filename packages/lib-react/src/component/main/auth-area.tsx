@@ -11,7 +11,7 @@ import {
 } from '../../common'
 
 
-export const MainAuthArea: FunctionComponent = withRegov<MainAuthAreaProps>(
+export const MainAuthArea: FunctionComponent<EmptyProps> = withRegov<MainAuthAreaProps>(
   {
     namespace: 'regov-wallet-main',
     transformer: wallet => ({ alias: wallet?.store.alias })

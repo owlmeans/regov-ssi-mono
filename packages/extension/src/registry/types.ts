@@ -1,4 +1,6 @@
+import { MaybeArray } from "@owlmeans/regov-ssi-common";
 import { Extension } from "../ext";
+import { ExtensionEvent } from "../schema";
 
 
 export type ExtensionRegistry<
@@ -10,6 +12,7 @@ export type ExtensionRegistry<
     getExtension: (type: string, code?: string) => Ext
     register: (ext: Ext) => Promise<void>
     registerSync: (ext: Ext) => void
+    getObservers: <FlowType extends string>(event: MaybeArray<string>) =>  [ExtensionEvent<FlowType>, Ext][]
   }
 
 

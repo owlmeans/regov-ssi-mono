@@ -12,6 +12,7 @@ import { DIDDocumentUnsinged } from '@owlmeans/regov-ssi-did'
 
 import {
   CredentialDescription,
+  EventParams,
   ExtensionSchema
 } from "../schema"
 
@@ -22,7 +23,7 @@ export type Extension<
   > = {
     schema: ExtensionSchema<CredType, FlowType>
     flowStateMap?: {
-      [key: string]: FlowStateMethod
+      [key: string]: FlowStateMethod<CredType, FlowType>
     }
     localization?: ExtensionLocalization,
     factories: ExtensionFactories<CredType>
@@ -85,7 +86,12 @@ export type BuildingFactoryParams = {
   context?: MultiSchema
 }
 
-export type FlowStateMethod = () => void
+export type FlowStateMethod<
+  CredType extends string, FlowType extends string | undefined = undefined
+  > = (
+    wallet: WalletWrapper, 
+    params: EventParams<CredType, FlowType>
+  ) => Promise<void>
 
 
 export type ExtensionLocalization = {

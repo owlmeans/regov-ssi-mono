@@ -1,16 +1,19 @@
+import { MaybeArray } from "@owlmeans/regov-ssi-common"
+import { WalletWrapper } from "@owlmeans/regov-ssi-core"
 import {
   buildExtensionRegistry,
   CredentialDescription,
-  Extension, 
-  ExtensionRegistry
+  Extension,
+  ExtensionRegistry,
+  EventParams
 } from "@owlmeans/regov-ssi-extension"
-import { 
-  EmptyProps, 
+import {
+  EmptyProps,
 } from "../common"
 import { ManuItemParams } from "../component"
-import { 
-  UIExtension, 
-  UIExtensionFactory 
+import {
+  UIExtension,
+  UIExtensionFactory
 } from "./extension"
 
 
@@ -96,6 +99,31 @@ export const buildUIExtensionRegistry = <
       })
     },
 
+    triggerEvent: async (wallet, event, params) => {
+      const observers = _registry.registry.getObservers(event)
+      await Promise.all(observers.map(
+        async ([event, ext]) => {
+          console.log('event::triggered', event.trigger)
+          if (event.filter && !await event.filter(wallet)) {
+            return
+          }
+          console.log('event::filter passed')
+          const _ext = (ext as unknown as Extension<string, string>)
+          if (_ext.schema.flows) {
+            const flow = _ext.schema.flows[event.flow]
+            const step = params?.step || flow.initialStep
+            const descr = flow.steps[step]
+            if (_ext.flowStateMap && _ext.flowStateMap[descr.stateMethod]) {
+              console.log('event::flow', flow, step, descr)
+              _ext.flowStateMap[descr.stateMethod](wallet, {
+                ...params, step, flow, ext: _ext
+              })
+            }
+          }
+        }
+      ))
+    },
+
     getMenuItems: () => _registry.uiExtensions.flatMap(ext => ext.menuItems || [])
   }
 
@@ -126,6 +154,10 @@ export type UIExtensionRegistry<
     registerSync: (ext: InfererdUIExtension<Ext>) => void
 
     produceComponent: UIExtensionFactory<Ext extends Extension<infer CredType> ? CredType : never>
+
+    triggerEvent: <Params extends EventParams<string, string>>(
+      wallet: WalletWrapper, event: MaybeArray<string>, params?: Params
+    ) => Promise<void>
 
     getMenuItems: () => ManuItemParams[]
   }

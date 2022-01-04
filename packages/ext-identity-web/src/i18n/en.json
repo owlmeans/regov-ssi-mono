@@ -1,0 +1,12 @@
+{
+  "extension": {
+    "details": {
+      "name": "Basic Identity",
+      "cred": {
+        "identity": {
+          "name": "Basic Identity"
+        }
+      }
+    }
+  }
+}

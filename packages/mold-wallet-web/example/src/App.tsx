@@ -1,3 +1,4 @@
+import { buildIdentityExtensionUI } from '@owlmeans/regov-ext-identity-web'
 import {
   buildUIExtensionRegistry,
   
@@ -16,6 +17,14 @@ const registry = buildUIExtensionRegistry<UniversalCredentailExtension>()
 registry.registerSync(buildUniversalExtensionUI({
   name: '',
   code: 'example-uvc',
+  organization: 'Example Org.',
+  home: 'https://my-example.org/',
+  schemaBaseUrl: 'https://my-example.org/schemas/'
+}))
+
+registry.registerSync(buildIdentityExtensionUI('', {
+  name: '',
+  code: 'example-identity',
   organization: 'Example Org.',
   home: 'https://my-example.org/',
   schemaBaseUrl: 'https://my-example.org/schemas/'

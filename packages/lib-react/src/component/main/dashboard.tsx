@@ -24,7 +24,6 @@ export type MainDashboardProps = RegovCompoentProps<MainDashboardParams, MainDas
 
 export type MainDashboardParams = {}
 
-export type MainDashboardImplParams = {
-}
+export type MainDashboardImplParams = {}
 
 export type MainDashboardImplProps = WrappedComponentProps<MainDashboardImplParams>

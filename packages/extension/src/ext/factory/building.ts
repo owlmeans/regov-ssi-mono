@@ -1,7 +1,7 @@
 import {
   WalletWrapper,
-  Evidence,
-  CredentialSchema
+  CredentialSchema,
+  BASE_CREDENTIAL_TYPE
 } from "@owlmeans/regov-ssi-core"
 import {
   DIDPURPOSE_ASSERTION,
@@ -32,7 +32,7 @@ export const defaultBuildingFactory = <
     const unsingnedCredentail = await wallet.ssi.buildCredential({
       id: didUnsigned.id,
       type: params.type || [
-        'VerifiableCredential',
+        BASE_CREDENTIAL_TYPE,
         schema.mainType,
         ...(Array.isArray(schema.mandatoryTypes) ? schema.mandatoryTypes : [])
       ],

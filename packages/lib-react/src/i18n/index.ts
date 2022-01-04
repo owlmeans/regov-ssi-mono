@@ -5,6 +5,7 @@ import enStore from './en/store.json'
 import enCommon from './en/common.json'
 import enMain from './en/main.json'
 import enCredential from './en/credential.json'
+import enFlow from './en/flow.json'
 
 export * from './setup'
 
@@ -19,6 +20,7 @@ export const i18nDefaultOptions: InitOptions = {
       'regov-wallet-common': enCommon,
       'regov-wallet-main': enMain,
       'regov-wallet-credential': enCredential,
+      'regov-wallet-flow': enFlow
     }
   },
   ns: [

@@ -1,11 +1,12 @@
 import { MaybeArray } from "@owlmeans/regov-ssi-common"
-import { 
-  BasicCredentialType, 
-  CredentialSchema, 
+import {
+  BasicCredentialType,
+  CredentialSchema,
   MultiSchema,
   Evidence,
   WalletWrapper
 } from "@owlmeans/regov-ssi-core"
+import { Extension } from "../ext"
 
 
 export type ExtensionSchema<
@@ -60,31 +61,40 @@ export type ExtensionEvent<
     flow: FlowType
   }
 
+export type EventParams<
+  CredType extends string,
+  FlowType extends string | undefined = undefined
+  > = {
+    ext?: Extension<CredType, FlowType>
+    step?: string
+    flow?: ExtensionFlow
+  }
+
 export type ExtensionEventFilter = (wallet: WalletWrapper) => Promise<boolean>
 
 export type ExtensionFlow = {
-  initialStep: ExtensionFlowStep
+  code: string
+  initialStep: string
   steps: { [key: string]: ExtensionFlowStep }
 }
 
 export type ExtensionFlowStep = {
   previous?: string
   next?: string
-  changeStateMethod?: string
-  widget: string
+  stateMethod: string
 }
 
 
 export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_CLAIM
- | typeof EXTENSION_ITEM_PURPOSE_OFFER
- | typeof EXTENSION_ITEM_PURPOSE_ISSUE
- | typeof EXTENSION_ITEM_PURPOSE_REQUEST
- | typeof EXTENSION_ITEM_PURPOSE_RESPONSE
- | typeof EXTENSION_ITEM_PURPOSE_VERIFY
- | typeof EXTENSION_ITEM_PURPOSE_STORE
- | typeof EXTENSION_ITEM_PURPOSE_CUSTOM
- | typeof EXTENSION_ITEM_PURPOSE_ROUTE
- | string
+  | typeof EXTENSION_ITEM_PURPOSE_OFFER
+  | typeof EXTENSION_ITEM_PURPOSE_ISSUE
+  | typeof EXTENSION_ITEM_PURPOSE_REQUEST
+  | typeof EXTENSION_ITEM_PURPOSE_RESPONSE
+  | typeof EXTENSION_ITEM_PURPOSE_VERIFY
+  | typeof EXTENSION_ITEM_PURPOSE_STORE
+  | typeof EXTENSION_ITEM_PURPOSE_CUSTOM
+  | typeof EXTENSION_ITEM_PURPOSE_ROUTE
+  | string
 
 export const EXTENSION_ITEM_PURPOSE_CLAIM = 'claim'
 export const EXTENSION_ITEM_PURPOSE_OFFER = 'offer'

@@ -1,4 +1,6 @@
 
+import { MaybeArray, normalizeValue } from '@owlmeans/regov-ssi-common'
+import { ExtensionEvent } from '../schema'
 import { Extension } from '../ext'
 import { ERROR_NO_EXTENSION, ExtensionRegistry } from './types'
 
@@ -16,7 +18,7 @@ export const buildExtensionRegistry = <
     register: async (ext) => {
       _registry.registerSync(ext)
     },
-    
+
     registerSync: ext => {
       _registry.extensions.push(ext)
       Object.entries(ext.schema.credentials).forEach(([_, cred]) => {
@@ -47,6 +49,19 @@ export const buildExtensionRegistry = <
 
     registerAll: async (exts) => {
       await Promise.all(exts.map(async ext => _registry.register(ext)))
+    },
+
+    getObservers: <FlowType extends string>(event: MaybeArray<string>) => {
+      const events = normalizeValue(event)
+      type ObserverExtension = Extension<string, string>
+      const observers = (_registry.extensions as ObserverExtension[]).flatMap(
+        (ext: ObserverExtension) => (
+          ext.schema.events?.filter(
+            event => normalizeValue(event.trigger).some(type => events.includes(type))
+          ) || []).map(observer => [observer, ext])
+      )
+
+      return observers as [ExtensionEvent<FlowType>, Ext][]
     }
   }
 

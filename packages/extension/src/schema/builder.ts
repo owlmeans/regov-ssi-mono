@@ -27,4 +27,6 @@ export const buildExtensionSchema = <
 export const addObserverToSchema = <CredType extends string, FlowType extends string>(
   schema: ExtensionSchema<CredType, FlowType>,
   event: ExtensionEvent<FlowType> | ExtensionEvent<FlowType>[]
-): ExtensionSchema<CredType, FlowType> => ({ ...schema, events: addToValue(schema.events, event) })
+): ExtensionSchema<CredType, FlowType> => ({
+  ...schema, events: normalizeValue(addToValue(schema.events, event))
+})

@@ -14,16 +14,16 @@ import {
 export const BASIC_IDENTITY_TYPE = 'Identity'
 
 export const buildIdentityExtension = (type: string, details: ExtensionDetails) => {
-  const REGOV_IDENTITY_TYPE = type || 'OwlMeans:Regov:Identity'
-  const FLOW_ONBOARDING = `_Flow:${REGOV_IDENTITY_TYPE}:Onboarding`
+  const identityType = type || 'OwlMeans:Regov:Identity'
+  const onboardingFlow = `_Flow:${identityType}:Onboarding`
 
-  type IdentityCredentials = typeof REGOV_IDENTITY_TYPE
-  type IdentityFlows = typeof FLOW_ONBOARDING
+  type IdentityCredentials = typeof identityType
+  type IdentityFlows = typeof onboardingFlow
 
   let schema = buildExtensionSchema<IdentityCredentials, IdentityFlows>(details, {
-    [REGOV_IDENTITY_TYPE]: {
-      mainType: REGOV_IDENTITY_TYPE,
-      mandatoryTypes: [REGOV_IDENTITY_TYPE, BASIC_IDENTITY_TYPE],
+    [identityType]: {
+      mainType: identityType,
+      mandatoryTypes: [identityType, BASIC_IDENTITY_TYPE],
       defaultNameKey: 'cred.type.identity.name',
       credentialContext: {
         '@version': 1.1,
@@ -44,11 +44,13 @@ export const buildIdentityExtension = (type: string, details: ExtensionDetails) 
       selfIssuing: true,
     }
   }, {
-    [FLOW_ONBOARDING]: {
-      initialStep: { widget: 'onboarding.welcom', next: 'final' },
+    [onboardingFlow]: {
+      code: onboardingFlow,
+      initialStep: 'welcome',
       steps: {
-        final: { widget: 'onboarding.create', next: 'congrat' },
-        congrat: { widget: 'onboarding.congrat' }
+        welcome:  { stateMethod: 'onboarding.welcom', next: 'create' },
+        create: { stateMethod: 'onboarding.create', next: 'congrat' },
+        congrat: { stateMethod: 'onboarding.congrat' }
       }
     }
   })
@@ -58,8 +60,8 @@ export const buildIdentityExtension = (type: string, details: ExtensionDetails) 
       return true
     },
     trigger: EXTESNION_TRIGGER_AUTHENTICATED,
-    flow: FLOW_ONBOARDING
+    flow: onboardingFlow
   })
 
-  return buildExtension<IdentityCredentials>(schema)
+  return buildExtension<IdentityCredentials, string>(schema)
 }
