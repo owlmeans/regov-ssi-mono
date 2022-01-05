@@ -9,14 +9,11 @@ import {
 } from "../common"
 import { ManuItemParams } from "../component"
 
-export const buildUIExtension = <
-  CredType extends string,
-  FlowType extends string | undefined = undefined
->(
-  extension: Extension<CredType, FlowType>,
+export const buildUIExtension = <CredType extends string>(
+  extension: Extension<CredType>,
   produceComponent: UIExtensionFactory<CredType>
 ) => {
-  const _extension: UIExtension<CredType, FlowType> = {
+  const _extension: UIExtension<CredType> = {
     extension,
 
     produceComponent
@@ -26,10 +23,10 @@ export const buildUIExtension = <
 }
 
 export type UIExtension<
-  CredType extends string,
-  FlowType extends string | undefined = undefined
-  > = {
-    extension: Extension<CredType, FlowType>
+  CredType extends string, 
+  Ext extends Extension<CredType> = Extension<CredType> 
+> = {
+    extension: Ext
 
     produceComponent: UIExtensionFactory<CredType>
 

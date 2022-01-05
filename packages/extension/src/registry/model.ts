@@ -5,14 +5,15 @@ import { Extension } from '../ext'
 import { ERROR_NO_EXTENSION, ExtensionRegistry } from './types'
 
 export const buildExtensionRegistry = <
-  Ext extends Extension<string, string | undefined> = Extension<string, string | undefined>
->(): ExtensionRegistry<Ext> => {
+  CredType extends string,
+  Ext extends Extension<CredType> = Extension<CredType>
+>(): ExtensionRegistry<CredType, Ext> => {
 
   const _typeToExtension: {
     [type: string]: Ext[]
   } = {}
 
-  const _registry: ExtensionRegistry<Ext> = {
+  const _registry: ExtensionRegistry<CredType, Ext> = {
     extensions: [],
 
     register: async (ext) => {
@@ -21,12 +22,14 @@ export const buildExtensionRegistry = <
 
     registerSync: ext => {
       _registry.extensions.push(ext)
-      Object.entries(ext.schema.credentials).forEach(([_, cred]) => {
-        _typeToExtension[cred.mainType] = [
-          ...(_typeToExtension[cred.mainType] ? _typeToExtension[cred.mainType] : []),
-          ext
-        ]
-      })
+      if (ext.schema.credentials) {
+        Object.entries<typeof ext.schema.credentials[CredType]>(ext.schema.credentials)
+          .forEach(([_, cred]) => {
+            _typeToExtension[cred.mainType] = [
+              ...(_typeToExtension[cred.mainType] ? _typeToExtension[cred.mainType] : []), ext
+            ]
+          })
+      }
     },
 
     getExtensions: (type) => {
@@ -51,17 +54,16 @@ export const buildExtensionRegistry = <
       await Promise.all(exts.map(async ext => _registry.register(ext)))
     },
 
-    getObservers: <FlowType extends string>(event: MaybeArray<string>) => {
+    getObservers: (event) => {
       const events = normalizeValue(event)
-      type ObserverExtension = Extension<string, string>
-      const observers = (_registry.extensions as ObserverExtension[]).flatMap(
-        (ext: ObserverExtension) => (
+      const observers = (_registry.extensions).flatMap(
+        ext => (
           ext.schema.events?.filter(
             event => normalizeValue(event.trigger).some(type => events.includes(type))
           ) || []).map(observer => [observer, ext])
       )
 
-      return observers as [ExtensionEvent<FlowType>, Ext][]
+      return observers as [ExtensionEvent<CredType>, Ext][]
     }
   }
 

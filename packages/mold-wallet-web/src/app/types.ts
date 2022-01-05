@@ -9,7 +9,7 @@ import { NavigateFunction } from "react-router-dom"
 
 export type WalletAppParams = {
   config: Config
-  extensions?: UIExtensionRegistry
+  extensions?: UIExtensionRegistry<string>
 }
 
 export type RootNavigatorBuilder = (navigate: NavigateFunction, handler: WalletHandler) => BasicNavigator

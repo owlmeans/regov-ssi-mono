@@ -10,16 +10,13 @@ import {
 } from "./types";
 
 
-export const buildExtension = <
-  CredType extends string,
-  FlowType extends string | undefined = undefined
->(
-  schema: ExtensionSchema<CredType, FlowType>,
+export const buildExtension = <CredType extends string>(
+  schema: ExtensionSchema<CredType>,
   factories?: ExtensionFactories<CredType>
-): Extension<CredType, FlowType> => {
-  const _extension: Extension<CredType, FlowType> = {
+): Extension<CredType> => {
+  const _extension: Extension<CredType> = {
     schema,
-    factories: Object.entries(schema.credentials).reduce(
+    factories: schema.credentials ? Object.entries(schema.credentials).reduce(
       (_factories, [key, description]) => {
         return {
           ..._factories,
@@ -29,7 +26,17 @@ export const buildExtension = <
           }
         }
       }, {} as ExtensionFactories<CredType>
-    )
+    ) : {} as ExtensionFactories<CredType>,
+
+    getEvents: (trigger, code) => {
+      if (!_extension.schema.events) {
+        return []
+      }
+
+      return _extension.schema.events.filter(event =>
+        event.trigger === trigger && (!code || event.code === code)
+      )
+    }
   }
 
   return _extension

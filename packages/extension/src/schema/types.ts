@@ -3,24 +3,15 @@ import {
   BasicCredentialType,
   CredentialSchema,
   MultiSchema,
-  Evidence,
   WalletWrapper
 } from "@owlmeans/regov-ssi-core"
 import { Extension } from "../ext"
 
 
-export type ExtensionSchema<
-  CredType extends string,
-  FlowType extends string | undefined = undefined
-  > = FlowType extends string ? {
-    flows: { [key in FlowType]: ExtensionFlow }
-    events: ExtensionEvent<FlowType>[]
-  } & BasicExtensionFields<CredType>
-  : BasicExtensionFields<CredType>
-
-type BasicExtensionFields<CredType extends string> = {
+export type ExtensionSchema<CredType extends string> = {
   details: ExtensionDetails
-  credentials: { [key in CredType]: CredentialDescription }
+  credentials?: { [key in CredType]: CredentialDescription }
+  events?: ExtensionEvent<CredType>[]
 }
 
 export type ExtensionDetails = {
@@ -53,36 +44,24 @@ export type CredentialDescription<
     selfIssuing?: boolean
   }
 
-export type ExtensionEvent<
-  FlowType extends string
-  > = {
-    filter?: ExtensionEventFilter
-    trigger: MaybeArray<string>
-    flow: FlowType
-  }
-
-export type EventParams<
-  CredType extends string,
-  FlowType extends string | undefined = undefined
-  > = {
-    ext?: Extension<CredType, FlowType>
-    step?: string
-    flow?: ExtensionFlow
-  }
-
-export type ExtensionEventFilter = (wallet: WalletWrapper) => Promise<boolean>
-
-export type ExtensionFlow = {
-  code: string
-  initialStep: string
-  steps: { [key: string]: ExtensionFlowStep }
+export type ExtensionEvent<CredType extends string> = {
+  trigger: MaybeArray<string>
+  code?: string
+  filter?: ExtensionEventFilter<CredType>
+  method?: EventObserverMethod<CredType>
 }
 
-export type ExtensionFlowStep = {
-  previous?: string
-  next?: string
-  stateMethod: string
+export type EventObserverMethod<CredType extends string> = (
+  wallet: WalletWrapper,
+  params: EventParams<CredType>
+) => Promise<void>
+
+export type EventParams<CredType extends string> = {
+  ext?: Extension<CredType>
 }
+
+export type ExtensionEventFilter<CredType extends string> =
+  (wallet: WalletWrapper, params: EventParams<CredType>) => Promise<boolean>
 
 
 export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_CLAIM

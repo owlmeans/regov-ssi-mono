@@ -163,7 +163,7 @@ export type ContextParams = {
   map: ImplementationMap,
   handler: WalletHandler,
   config: Config,
-  extensions?: UIExtensionRegistry
+  extensions?: UIExtensionRegistry<string>
 }
 
 export type Config = {

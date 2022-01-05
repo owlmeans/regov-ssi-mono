@@ -5,8 +5,7 @@ import {
   ExtensionDetails,
   EXTESNION_TRIGGER_AUTHENTICATED
 } from "@owlmeans/regov-ssi-extension"
-import {
-  WalletWrapper,
+import { 
   REGISTRY_TYPE_IDENTITIES
 } from "@owlmeans/regov-ssi-core"
 
@@ -15,12 +14,10 @@ export const BASIC_IDENTITY_TYPE = 'Identity'
 
 export const buildIdentityExtension = (type: string, details: ExtensionDetails) => {
   const identityType = type || 'OwlMeans:Regov:Identity'
-  const onboardingFlow = `_Flow:${identityType}:Onboarding`
 
   type IdentityCredentials = typeof identityType
-  type IdentityFlows = typeof onboardingFlow
 
-  let schema = buildExtensionSchema<IdentityCredentials, IdentityFlows>(details, {
+  let schema = buildExtensionSchema<IdentityCredentials>(details, {
     [identityType]: {
       mainType: identityType,
       mandatoryTypes: [identityType, BASIC_IDENTITY_TYPE],
@@ -43,25 +40,14 @@ export const buildIdentityExtension = (type: string, details: ExtensionDetails) 
       listed: true,
       selfIssuing: true,
     }
-  }, {
-    [onboardingFlow]: {
-      code: onboardingFlow,
-      initialStep: 'welcome',
-      steps: {
-        welcome:  { stateMethod: 'onboarding.welcom', next: 'create' },
-        create: { stateMethod: 'onboarding.create', next: 'congrat' },
-        congrat: { stateMethod: 'onboarding.congrat' }
-      }
-    }
   })
 
-  schema = addObserverToSchema<IdentityCredentials, IdentityFlows>(schema, {
-    filter: async (_: WalletWrapper) => {
+  schema = addObserverToSchema<IdentityCredentials>(schema, {
+    filter: async (_) => {
       return true
     },
-    trigger: EXTESNION_TRIGGER_AUTHENTICATED,
-    flow: onboardingFlow
+    trigger: EXTESNION_TRIGGER_AUTHENTICATED
   })
 
-  return buildExtension<IdentityCredentials, string>(schema)
+  return buildExtension<IdentityCredentials>(schema)
 }

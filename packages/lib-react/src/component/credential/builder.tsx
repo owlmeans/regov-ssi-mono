@@ -100,7 +100,10 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
         const loading = await navigator?.invokeLoading()
         try {
           const type = methods.getValues('extType')
-          const credDetails = ext.schema.credentials[type as keyof typeof ext.schema.credentials]
+          const credDetails = ext.schema.credentials
+            ? ext.schema.credentials[type as keyof typeof ext.schema.credentials]
+            : { defaultNameKey: 'wallet.registry.cred.title' }
+
           const registry = wallet.getRegistry(REGISTRY_TYPE_UNSIGNEDS)
           const count = 1 + registry.registry.credentials[REGISTRY_SECTION_OWN].length
           /**
