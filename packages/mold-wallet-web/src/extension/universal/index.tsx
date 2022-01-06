@@ -50,6 +50,7 @@ export const buildUniversalExtensionUI = (
             }
           ] as UIExtensionFactoryProduct<{}>[]
       }
+      
       return [] as UIExtensionFactoryProduct<{}>[]
     }
   )

@@ -8,6 +8,7 @@ import {
   MailLoadingWeb,
   MainMenuWeb,
   MainDashboardWeb,
+  MainModalWeb
 } from './main'
 import {
   StoreCreationWeb,
@@ -26,5 +27,6 @@ export const webComponentMap: ImplementationMap = {
   'MainLoading': MailLoadingWeb,
   'MainMenu': MainMenuWeb,
   'StoreList': StoreListWeb,
-  'CredentialList': CredentialListWeb
+  'CredentialList': CredentialListWeb,
+  'MainModal': MainModalWeb,
 }

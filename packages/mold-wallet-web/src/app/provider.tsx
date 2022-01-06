@@ -6,7 +6,7 @@ import {
   MainLoading,
   RegovProvider,
   WalletHandler,
-  OnboardingFlow
+  MainModal
 } from "@owlmeans/regov-lib-react"
 import { useNavigate } from "react-router-dom"
 import { buildDevWallet } from "../debug/util/builder"
@@ -43,7 +43,7 @@ export const AppProvider = ({
   return <RegovProvider i18n={i18n} map={webComponentMap} handler={handler}
     config={config} navigator={navigator} extensions={extensions}>
     <MainLoading nav={navigator} />
-    <OnboardingFlow />
+    <MainModal />
     {children}
   </RegovProvider>
 }

@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   ExtensionDetails,
   ExtensionItemPurpose,
@@ -9,8 +10,10 @@ import { buildIdentityExtension } from '@owlmeans/regov-ext-identity'
 import en from './i18n/en.json'
 import {
   buildUIExtension,
-  UIExtensionFactoryProduct
+  UIExtensionFactoryProduct,
+  MainModalEventTriggerParams
 } from '@owlmeans/regov-lib-react'
+import { DialogContent } from '@mui/material'
 
 
 export const REGOV_IDENTITY_DEFAULT_NAMESPACE = 'regov-ext-basic-identity'
@@ -36,8 +39,17 @@ export const buildIdentityExtensionUI = <CredType extends string>(
   }
 
   if (extension.schema.events) {
-    extension.getEvents(EXTESNION_TRIGGER_AUTHENTICATED)[0].method = async (_, __) => {
-      console.log('observer called')
+    extension.getEvents(EXTESNION_TRIGGER_AUTHENTICATED)[0].method = async (
+      _, params: MainModalEventTriggerParams
+    ) => {
+      params.handle.getContent = () => <DialogContent>
+        <div>Hello world</div>
+      </DialogContent>
+
+
+      if (params.handle.setOpen) {
+        params.handle.setOpen(true)
+      }
     }
   }
 

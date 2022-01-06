@@ -112,8 +112,11 @@ export const buildUIExtensionRegistry = <
           }
           console.log('event::filter passed')
           if (event.method) {
+            if (!_params.ext) {
+              _params.ext = ext
+            }
             console.log('event::call_method')
-            event.method(wallet, { ...params, ext })
+            event.method(wallet, _params)
           }
         }
       ))
