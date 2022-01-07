@@ -2,8 +2,7 @@ import React, {
   FunctionComponent
 } from 'react'
 import { 
-  useForm, 
-  UseFormProps 
+  useForm
 } from 'react-hook-form'
 
 import {
@@ -23,7 +22,9 @@ import {
 
 export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withRegov<IdentityCreationProps>(
   { namespace: REGOV_IDENTITY_DEFAULT_NAMESPACE }, ({t, i18n}) => {
-    const form: UseFormProps<IdentityCreationFields> = {
+    const props = {t, i18n}
+
+    const methods = useForm<IdentityCreationFields>({
       mode: 'onChange',
       criteriaMode: 'all',
       defaultValues: {
@@ -35,21 +36,15 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
         },
         name: '',
       }
-    }
-
-    const _props = {
-      t, i18n, form: form as UseFormProps
-    }
-
-    const methods = useForm<IdentityCreationFields>(form)
+    })
 
     return <WalletFormProvider {...methods}>
-      <PrimaryForm {..._props} title="creation.title">
-        <MainTextInput {..._props} field="name" />
-        <MainTextOutput {..._props} field="creation.identifier" showHint />
-        <MainTextOutput {..._props} field="creation.sourceApp" showHint />
-        <MainTextOutput {..._props} field="creation.uuid" showHint />
-        <MainTextOutput {..._props} field="creation.createdAt" showHint />
+      <PrimaryForm {...props} title="creation.title">
+        <MainTextInput {...props} field="name" />
+        <MainTextOutput {...props} field="creation.identifier" showHint />
+        <MainTextOutput {...props} field="creation.sourceApp" showHint />
+        <MainTextOutput {...props} field="creation.uuid" showHint />
+        <MainTextOutput {...props} field="creation.createdAt" showHint />
       </PrimaryForm>
     </WalletFormProvider>
   })
