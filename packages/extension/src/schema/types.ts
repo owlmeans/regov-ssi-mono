@@ -54,7 +54,7 @@ export type ExtensionEvent<CredType extends string> = {
 export type EventObserverMethod<CredType extends string> = (
   wallet: WalletWrapper,
   params: EventParams<CredType>
-) => Promise<void>
+) => Promise<boolean | undefined | void>
 
 export type EventParams<CredType extends string> = {
   ext?: Extension<CredType>

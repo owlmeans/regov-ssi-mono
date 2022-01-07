@@ -6,7 +6,7 @@ import React, {
   FunctionComponent,
   ReactNode,
   useEffect,
-  useState
+  useMemo,
 } from 'react'
 import {
   RegovCompoentProps,
@@ -20,18 +20,16 @@ export const MainModal: FunctionComponent<MainModalParams> = withRegov<MainModal
   'MainModal', props => {
     const { i18n, t, alias, renderer: Renderer } = props
     const { extensions, handler } = useRegov()
-    const [handle] = useState<MainModalHandle>({})
-    const _props = {
-      i18n, t, alias, handle
-    }
+    const handle = useMemo<MainModalHandle>(() => ({}), [alias])
+    const _props = { i18n, t, alias, handle }
     useEffect(() => {
       if (handler.wallet && extensions?.triggerEvent) {
         extensions.triggerEvent<MainModalEventTriggerParams>(
-          handler.wallet, EXTESNION_TRIGGER_AUTHENTICATED,
-          { handle }
+          handler.wallet, EXTESNION_TRIGGER_AUTHENTICATED, { handle }
         )
       }
-    }, [props.alias])
+    }, [alias])
+    
     return <Renderer {..._props} />
   },
   {

@@ -1,3 +1,5 @@
+export * from './types'
+
 import React from 'react'
 import {
   ExtensionDetails,
@@ -13,10 +15,9 @@ import {
   UIExtensionFactoryProduct,
   MainModalEventTriggerParams
 } from '@owlmeans/regov-lib-react'
-import { DialogContent } from '@mui/material'
+import { Onboarding } from './component'
+import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
 
-
-export const REGOV_IDENTITY_DEFAULT_NAMESPACE = 'regov-ext-basic-identity'
 
 export const REGOV_IDENTITY_DEFAULT_TYPE = 'OwlMeans:Regov:Identity'
 
@@ -42,14 +43,13 @@ export const buildIdentityExtensionUI = <CredType extends string>(
     extension.getEvents(EXTESNION_TRIGGER_AUTHENTICATED)[0].method = async (
       _, params: MainModalEventTriggerParams
     ) => {
-      params.handle.getContent = () => <DialogContent>
-        <div>Hello world</div>
-      </DialogContent>
-
+      params.handle.getContent = () => <Onboarding {...params} ns={ns} ext={extension} />
 
       if (params.handle.setOpen) {
         params.handle.setOpen(true)
       }
+
+      return true
     }
   }
 

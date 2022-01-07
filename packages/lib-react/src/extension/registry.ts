@@ -103,12 +103,15 @@ export const buildUIExtensionRegistry = <
 
     triggerEvent: async (wallet, event, params) => {
       const observers = _registry.registry.getObservers(event)
-      await Promise.all(observers.map(
-        async ([event, ext]) => {
+      await observers.reduce(
+        async (proceed, [event, ext]) => {
+          if (!proceed) {
+            return false
+          }
           const _params = params || { ext }
-          console.log('event::triggered', event.trigger)
+          console.log(`event::triggered:${event.trigger}:${ext.schema.details.code}`, event.code)
           if (event.filter && !await event.filter(wallet, _params)) {
-            return
+            return true
           }
           console.log('event::filter passed')
           if (event.method) {
@@ -116,10 +119,16 @@ export const buildUIExtensionRegistry = <
               _params.ext = ext
             }
             console.log('event::call_method')
-            event.method(wallet, _params)
+
+            if (await event.method(wallet, _params)) {
+              console.log('event::bubbling_stoped')
+              return false
+            }
           }
-        }
-      ))
+
+          return true
+        }, Promise.resolve(true)
+      )
     },
 
     getMenuItems: () => _registry.uiExtensions.flatMap(ext => ext.menuItems || []),
