@@ -77,6 +77,8 @@ export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_CLAIM
   | typeof EXTENSION_ITEM_PURPOSE_STORE
   | typeof EXTENSION_ITEM_PURPOSE_CUSTOM
   | typeof EXTENSION_ITEM_PURPOSE_ROUTE
+  | typeof EXTENSION_ITEM_PURPOSE_DASHBOARD
+  | typeof EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET
   | string
 
 export const EXTENSION_ITEM_PURPOSE_CLAIM = 'claim'
@@ -88,6 +90,8 @@ export const EXTENSION_ITEM_PURPOSE_VERIFY = 'verify'
 export const EXTENSION_ITEM_PURPOSE_STORE = 'store'
 export const EXTENSION_ITEM_PURPOSE_CUSTOM = 'custom'
 export const EXTENSION_ITEM_PURPOSE_ROUTE = 'route'
+export const EXTENSION_ITEM_PURPOSE_DASHBOARD = 'dashboard'
+export const EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET = 'dashboard_widget'
 
 export const EXTESNION_TRIGGER_AUTHENTICATION = 'wallet:authentication'
 export const EXTESNION_TRIGGER_AUTHENTICATED = 'wallet:authenticated'

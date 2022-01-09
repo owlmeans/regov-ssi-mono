@@ -17,6 +17,7 @@ import {
   EmptyProps,
   MainModalEventTriggerParams,
   RegovCompoentProps,
+  useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../types'
@@ -26,6 +27,7 @@ import { IdentityCreation, IdentityCreationProceedHandle } from './identity'
 
 export const Onboarding: FunctionComponent<OnboardingParams> =
   withRegov<OnboardingProps>({ namespace: REGOV_IDENTITY_DEFAULT_NAMESPACE }, props => {
+    const { handler } = useRegov()
     const { t, ns, handle } = props
 
     const [activeStep, setActiveStep] = useState(0)
@@ -78,6 +80,7 @@ export const Onboarding: FunctionComponent<OnboardingParams> =
           </Grid>}
           {2 === activeStep && <Grid item>
             <FormMainButton {...props} title="step.finish.finish" action={() => {
+              handler.notify()
               handle.setOpen && handle.setOpen(false)
             }} />
           </Grid>}

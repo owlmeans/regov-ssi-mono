@@ -56,7 +56,6 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
     useEffect(() => {
       (async () => {
         const loader = await navigator?.invokeLoading()
-        console.log('Use loader', loader)
         try {
           if (!handler.wallet) {
             throw ERROR_CREATION_AUTHENTICATION
@@ -84,8 +83,6 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
         }
       })().catch(e => { throw e })
     }, [])
-
-    console.log('unsigned identity to use', !!unsignedIdentity)
 
     proceedHandle.proceed = async (next) => methods.handleSubmit(async () => {
       const loader = await navigator?.invokeLoading()

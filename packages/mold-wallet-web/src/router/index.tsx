@@ -9,6 +9,7 @@ import {
 import {
   basicNavigator,
   extendNavigator,
+  MainAuthArea,
   MainDashboard,
   useRegov,
   WalletHandler,
@@ -16,9 +17,9 @@ import {
 import {
   WalletStoreCreation,
   WalletStoreLogin,
-  WalletMainAuthArea,
   WalletStoreList,
   WalletCredentialList,
+  WalletMainMenu,
 } from '../screen'
 
 import {
@@ -30,14 +31,13 @@ export const NavigationRoot = () => {
   const { extensions } = useRegov()
 
   return <Routes>
-    <Route path="/" element={<WalletMainAuthArea />}>
+    <Route path="/" element={<MainAuthArea menu={<WalletMainMenu />} />}>
       <Route path="" element={<MainDashboard />} />
       {
         extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_ROUTE).map(
           ext => {
-            return ext.params
-              && <Route key={`${ext.extensionCode}:${ext.params.path}`}
-                path={ext.params.path as string} element={<ext.com />} />
+            return ext.params && <Route key={`${ext.extensionCode}-${ext.params.path}`}
+              path={ext.params.path as string} element={<ext.com />} />
           }
         )
       }

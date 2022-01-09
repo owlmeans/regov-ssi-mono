@@ -11,10 +11,9 @@ import {
 export const MainDashboard: FunctionComponent<MainDashboardParams> = withRegov<
   MainDashboardProps
 >('MainDashboard', props => {
+  const { t, i18n } = props
   const _props: MainDashboardImplProps = {
-    t: props.t,
-
-    i18n: props.i18n
+    t, i18n
   }
 
   return <props.renderer {..._props} />

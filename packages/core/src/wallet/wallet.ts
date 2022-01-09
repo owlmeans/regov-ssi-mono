@@ -141,9 +141,13 @@ export const buildWalletWrapper: WalletWrapperBuilder =
         return _getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential() !== undefined
       },
 
-      getIdentity: <Identity extends Credential = Credential>() => {
+      getIdentity: <
+        Subject extends CredentialSubject = CredentialSubject,
+        Identity extends Credential<Subject> = Credential<Subject>
+      >() => {
         if (_wallet.hasIdentity()) {
-          return _getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential() as unknown as Identity
+          return _getRegistry(REGISTRY_TYPE_IDENTITIES)
+            .getCredential() as unknown as CredentialWrapper<Subject, Identity>
         }
 
         return undefined

@@ -41,6 +41,15 @@
       "next": "Next"
     }
   },
+  "widget": {
+    "dashboard": {
+      "issuedAt": "Issued",
+      "action": {
+        "copy": "Copy",
+        "export": "Export"
+      }
+    }
+  },
   "creation": {
     "title": "ID — Verifiable Credential for Identity",
     "defaultIdentityTitle": "My Identity",

@@ -4,6 +4,7 @@ import React from 'react'
 import {
   ExtensionDetails,
   ExtensionItemPurpose,
+  EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
   EXTESNION_TRIGGER_AUTHENTICATED
 } from '@owlmeans/regov-ssi-extension'
 
@@ -15,7 +16,7 @@ import {
   UIExtensionFactoryProduct,
   MainModalEventTriggerParams
 } from '@owlmeans/regov-lib-react'
-import { Onboarding } from './component'
+import { DashboardWidget, Onboarding } from './component'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
 
 
@@ -56,7 +57,19 @@ export const buildIdentityExtensionUI = <CredType extends string>(
 
   const uiExt = buildUIExtension<IdentityCredentials>(
     extension,
-    (__: ExtensionItemPurpose, _?: IdentityCredentials) => {
+    (purpose: ExtensionItemPurpose, _?: IdentityCredentials) => {
+
+      switch (purpose) {
+        case EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET:
+          return [
+            {
+              com: DashboardWidget(extension),
+              extensionCode: `${details.code}DashboardWidget`,
+              params: {},
+              order: 0
+            }
+          ] as UIExtensionFactoryProduct<{}>[]
+      }
 
       return [] as UIExtensionFactoryProduct<{}>[]
     }
