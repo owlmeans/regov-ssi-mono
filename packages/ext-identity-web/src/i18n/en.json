@@ -9,6 +9,10 @@
       }
     }
   },
+  "identityName": {
+    "label": "Identity Name",
+    "hint": "It will be used only to list the Identity into your wallet. Nobody else will see it."
+  },
   "step": {
     "welcom": {
       "label": "Welcome!",
@@ -28,10 +32,29 @@
       "label": "Create your Identity"
     },
     "finish": {
-      "label": "Congratulations!"
+      "label": "Congratulations!",
+      "title": "You have a Digital Identity",
+      "congratulation": "Now you can create and sign credentials via your wallet!",
+      "finish": "Ok"
     },
     "general": {
       "next": "Next"
+    }
+  },
+  "creation": {
+    "title": "ID — Verifiable Credential for Identity",
+    "defaultIdentityTitle": "My Identity",
+    "identifier": {
+      "hint": "ID"
+    },
+    "sourceApp": {
+      "hint": "Issuing App"
+    },
+    "uuid": {
+      "hint": "Unique Sequence"
+    },
+    "createdAt": {
+      "hint": "Creation Date"
     }
   }
 }

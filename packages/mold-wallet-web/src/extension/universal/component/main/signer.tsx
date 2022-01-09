@@ -19,10 +19,11 @@ import {
   AlertOutput
 } from '../../../../component'
 import { UniversalCredentialViewParams } from './types'
+import { UNIVERSAL_EXTENSION_CRED_TYPE } from '@owlmeans/regov-ssi-extension'
 
 
 export const MainSigner = ({ ext }: UniversalCredentialViewParams) => <CredentialSigner
-  ns={ext.localization?.ns} com={
+  ns={ext.localization?.ns} ext={ext} defaultType={UNIVERSAL_EXTENSION_CRED_TYPE}  com={
     (props: CredentialSignerImplProps) => {
       const methods = useForm<CredentialSignerFields>(
         props.form as UseFormProps<CredentialSignerFields>

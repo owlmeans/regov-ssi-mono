@@ -1,18 +1,21 @@
+import { BASE_CREDENTIAL_TYPE, BasicCredentialType } from "@owlmeans/regov-ssi-core";
 import { CredentialExtensionFactories } from ".";
 import {
   CredentialDescription,
   ExtensionSchema
 } from "../schema";
-import { defaultBuildingFactory } from "./factory"
+import { findAppropriateCredentialType } from "../util";
+import { defaultBuildingFactory, defaultSigningFactory } from "./factory"
 import {
   Extension,
-  ExtensionFactories
+  ExtensionFactories,
+  ExtensionFactoriesParam
 } from "./types";
 
 
 export const buildExtension = <CredType extends string>(
   schema: ExtensionSchema<CredType>,
-  factories?: ExtensionFactories<CredType>
+  factories?: ExtensionFactoriesParam<CredType>
 ): Extension<CredType> => {
   const _extension: Extension<CredType> = {
     schema,
@@ -22,11 +25,29 @@ export const buildExtension = <CredType extends string>(
           ..._factories,
           [key]: {
             buildingFactory: defaultBuildingFactory(description as CredentialDescription),
-            ...(factories ? factories[key as CredType] as CredentialExtensionFactories : {})
+            signingFactory: defaultSigningFactory(description as CredentialDescription),
+            ...(factories
+              ? Object.entries(factories[key as CredType]).reduce((_facts, [method, builder]) => {
+                if (schema.credentials) {
+                  return {
+                    ..._facts,
+                    [method]: builder(schema.credentials[key as CredType])
+                  }
+                }
+                return _facts
+              }, {} as CredentialExtensionFactories)
+              : {}
+            )
           }
         }
       }, {} as ExtensionFactories<CredType>
     ) : {} as ExtensionFactories<CredType>,
+
+    getFactory: (type, defaultType = BASE_CREDENTIAL_TYPE) => {
+      type = findAppropriateCredentialType(_extension, type, defaultType)
+
+      return _extension.factories[type as CredType]
+    },
 
     getEvents: (trigger, code) => {
       if (!_extension.schema.events) {

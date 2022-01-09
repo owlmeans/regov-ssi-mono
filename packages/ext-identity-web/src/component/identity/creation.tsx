@@ -1,14 +1,18 @@
 import React, {
-  FunctionComponent
+  FunctionComponent,
+  useEffect,
+  useState
 } from 'react'
-import { 
+import {
   useForm
 } from 'react-hook-form'
 
 import {
   EmptyProps,
+  generalNameVlidation,
   MainModalEventTriggerParams,
   RegovCompoentProps,
+  useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
@@ -16,40 +20,146 @@ import {
   MainTextInput,
   MainTextOutput,
   PrimaryForm,
-  WalletFormProvider
+  WalletFormProvider,
+  dateFormatter,
+  AlertOutput
 } from '@owlmeans/regov-mold-wallet-web'
+import {
+  CredentialSubject,
+  REGISTRY_TYPE_IDENTITIES,
+  UnsignedCredential,
+  Credential
+} from '@owlmeans/regov-ssi-core'
+import {
+  BASIC_IDENTITY_TYPE,
+  IdentitySubject
+} from '@owlmeans/regov-ext-identity'
+import {
+  ERROR_CREATION_AUTHENTICATION,
+  ERROR_CREATION_EXTENSION,
+  ERROR_CREATION_READYTO_SIGN
+} from './types'
 
 
 export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withRegov<IdentityCreationProps>(
-  { namespace: REGOV_IDENTITY_DEFAULT_NAMESPACE }, ({t, i18n}) => {
-    const props = {t, i18n}
+  { namespace: REGOV_IDENTITY_DEFAULT_NAMESPACE }, ({ t, i18n, ext, navigator, proceedHandle }) => {
+    const { handler } = useRegov()
+    const props = {
+      t, i18n,
+      rules: {
+        'identityName': generalNameVlidation(true)
+      }
+    }
+
+    const [unsignedIdentity, setUnsignedIdentity] = useState<UnsignedCredential | undefined>(undefined)
+
+    useEffect(() => {
+      (async () => {
+        const loader = await navigator?.invokeLoading()
+        console.log('Use loader', loader)
+        try {
+          if (!handler.wallet) {
+            throw ERROR_CREATION_AUTHENTICATION
+          }
+          if (!ext) {
+            throw ERROR_CREATION_EXTENSION
+          }
+          const factory = ext.getFactory(ext.schema.details.defaultCredType || BASIC_IDENTITY_TYPE)
+          const unsignedIdentity = await factory.buildingFactory(handler.wallet, { subjectData: {} })
+          setUnsignedIdentity(unsignedIdentity)
+
+          methods.setValue('creation', {
+            ...unsignedIdentity.credentialSubject as unknown as IdentitySubject,
+            alert: undefined
+          })
+        } catch (error) {
+          console.log(error)
+          if (error.message) {
+            methods.setError('creation.alert', { type: error.message })
+            return
+          }
+          loader?.error(error.message)
+        } finally {
+          loader?.finish()
+        }
+      })().catch(e => { throw e })
+    }, [])
+
+    console.log('unsigned identity to use', !!unsignedIdentity)
+
+    proceedHandle.proceed = async (next) => methods.handleSubmit(async () => {
+      const loader = await navigator?.invokeLoading()
+      try {
+        if (!handler.wallet) {
+          throw ERROR_CREATION_AUTHENTICATION
+        }
+        if (!unsignedIdentity || !ext) {
+          throw ERROR_CREATION_READYTO_SIGN
+        }
+        const factory = ext.getFactory(unsignedIdentity.type)
+        const identity = await factory.signingFactory(handler.wallet, { unsigned: unsignedIdentity })
+
+        const registry = handler.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+
+        const item = await registry.addCredential<CredentialSubject, Credential<CredentialSubject>>(
+          identity as Credential<CredentialSubject>
+        )
+
+        item.meta.title = methods.getValues('identityName')
+
+        if (!item.meta.title || item.meta.title === '') {
+          item.meta.title = 'Main ID'
+        }
+
+        registry.registry.rootCredential = identity.id
+
+        next()
+      } catch (error) {
+        console.log(error)
+        if (error.message) {
+          methods.setError('creation.alert', { type: error.message })
+          return
+        }
+        loader?.error(error.message)
+      } finally {
+        loader?.finish()
+      }
+    })()
 
     const methods = useForm<IdentityCreationFields>({
       mode: 'onChange',
       criteriaMode: 'all',
       defaultValues: {
         creation: {
-          identifier: "xxxxx",
-          sourceApp: "Example App",
-          uuid: "xxxx-yyy-zzzz",
-          createdAt: new Date()
+          identifier: '',
+          sourceApp: '',
+          uuid: '',
+          createdAt: '',
+          alert: undefined
         },
-        name: '',
+        identityName: t('creation.defaultIdentityTitle'),
       }
     })
 
     return <WalletFormProvider {...methods}>
       <PrimaryForm {...props} title="creation.title">
-        <MainTextInput {...props} field="name" />
-        <MainTextOutput {...props} field="creation.identifier" showHint />
+        <MainTextInput {...props} field="identityName" />
         <MainTextOutput {...props} field="creation.sourceApp" showHint />
+        <MainTextOutput {...props} field="creation.identifier" showHint />
         <MainTextOutput {...props} field="creation.uuid" showHint />
-        <MainTextOutput {...props} field="creation.createdAt" showHint />
+        <MainTextOutput {...props} field="creation.createdAt" showHint formatter={dateFormatter} />
+        <AlertOutput {...props} field="creation.alert" />
       </PrimaryForm>
     </WalletFormProvider>
   })
 
-export type IdentityCreationParams = MainModalEventTriggerParams & EmptyProps
+export type IdentityCreationParams = MainModalEventTriggerParams & EmptyProps & {
+  proceedHandle: IdentityCreationProceedHandle
+}
+
+export type IdentityCreationProceedHandle = {
+  proceed?: (next: () => void) => Promise<void>
+}
 
 export type IdentityCreationProps = RegovCompoentProps<IdentityCreationParams>
 
@@ -58,7 +168,8 @@ export type IdentityCreationFields = {
     identifier: string
     sourceApp: string
     uuid: string
-    createdAt: Date
+    createdAt: string
+    alert: string | undefined
   }
-  name: string
+  identityName: string
 }

@@ -5,7 +5,7 @@ import {
   ImplementationMap
 } from '@owlmeans/regov-lib-react'
 import {
-  MailLoadingWeb,
+  MainLoadingWeb,
   MainMenuWeb,
   MainDashboardWeb,
   MainModalWeb
@@ -24,7 +24,7 @@ export const webComponentMap: ImplementationMap = {
   'StoreCreation': StoreCreationWeb,
   'StoreLogin': StoreLoginWeb,
   'MainDashboard': MainDashboardWeb,
-  'MainLoading': MailLoadingWeb,
+  'MainLoading': MainLoadingWeb,
   'MainMenu': MainMenuWeb,
   'StoreList': StoreListWeb,
   'CredentialList': CredentialListWeb,

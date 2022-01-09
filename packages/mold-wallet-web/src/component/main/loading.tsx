@@ -18,7 +18,7 @@ import {
 /**
  * @TODO Localize messages with appropriate namespace
  */
-export const MailLoadingWeb = ({ handle, t }: MainLoadingImplProps) => {
+export const MainLoadingWeb = ({ handle, t }: MainLoadingImplProps) => {
   const [isOpened, setOpen] = useState<boolean>(false)
   const [{ error, type: errorType }, setError] = useState<{ error?: string, type?: string }>({})
 
@@ -33,7 +33,7 @@ export const MailLoadingWeb = ({ handle, t }: MainLoadingImplProps) => {
   const handleClose = () => setError({})
 
   return <Fragment>
-    <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isOpened}>
+    <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.modal + 1 }} open={isOpened}>
       <CircularProgress color="inherit" />
     </Backdrop>
 

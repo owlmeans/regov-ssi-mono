@@ -1,12 +1,15 @@
 import { CryptoKey, MaybeArray } from '@owlmeans/regov-ssi-common'
 import {
   Presentation,
+  Credential,
   UnsignedCredential,
   WalletWrapper,
   Evidence,
   CredentialSchema,
   CredentialType,
-  MultiSchema
+  MultiSchema,
+  BasicCredentialType,
+  BASE_CREDENTIAL_TYPE
 } from '@owlmeans/regov-ssi-core'
 import { DIDDocumentUnsinged } from '@owlmeans/regov-ssi-did'
 
@@ -21,6 +24,7 @@ export type Extension<CredType extends string> = {
   schema: ExtensionSchema<CredType>
   factories: ExtensionFactories<CredType>
   localization?: ExtensionLocalization
+  getFactory: (type: BasicCredentialType, defaultType?: string) => CredentialExtensionFactories
   getEvents: (trigger: string, code?: string) => ExtensionEvent<CredType>[]
 }
 
@@ -28,8 +32,13 @@ export type ExtensionFactories<CredType extends string> = {
   [key in CredType]: CredentialExtensionFactories
 }
 
+export type ExtensionFactoriesParam<CredType extends string> = {
+  [key in CredType]: CredentialExtensionFactoriesBuilder
+}
+
 export type CredentialExtensionFactoriesBuilder = {
   buildingFactory?: BuildingFactoryMethodBuilder
+  signingFactory?: SigningFactoryMethodBuilder
 }
 
 export type CredentialExtensionFactories = {
@@ -42,10 +51,7 @@ export type CredentialExtensionFactories = {
     Schema extends CredentialSchema = CredentialSchema,
     >(schema: CredentialDescription<Schema>) =>
     <Params>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
-  signingFactory?: <
-    Schema extends CredentialSchema = CredentialSchema,
-    >(schema: CredentialDescription<Schema>) =>
-    <Params>(wallet: WalletWrapper, params: Params) => Promise<Credential>
+  signingFactory: SigningFactoryMethod
   issuingFactory?: <
     Schema extends CredentialSchema = CredentialSchema,
     >(schema: CredentialDescription<Schema>) =>
@@ -68,8 +74,9 @@ export type BuildingFactoryMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
   >(schema: CredentialDescription<Schema>) => BuildingFactoryMethod
 
-export type BuildingFactoryMethod = <Params extends BuildingFactoryParams>(wallet: WalletWrapper, params: Params) =>
-  Promise<UnsignedCredential>
+export type BuildingFactoryMethod = <
+  Params extends BuildingFactoryParams
+  >(wallet: WalletWrapper, params: Params) => Promise<UnsignedCredential>
 
 export type BuildingFactoryParams = {
   didUnsigned?: DIDDocumentUnsinged
@@ -79,6 +86,19 @@ export type BuildingFactoryParams = {
   type?: CredentialType
   schema?: MaybeArray<CredentialSchema>
   context?: MultiSchema
+}
+
+export type SigningFactoryMethodBuilder = <
+  Schema extends CredentialSchema = CredentialSchema,
+  >(schema: CredentialDescription<Schema>) => SigningFactoryMethod
+
+export type SigningFactoryMethod = <
+  Params extends SigningFactoryParams
+  >(wallet: WalletWrapper, params: Params) => Promise<Credential>
+
+export type SigningFactoryParams = {
+  unsigned: UnsignedCredential,
+  evidence?: MaybeArray<Evidence>
 }
 
 export type ExtensionLocalization = {

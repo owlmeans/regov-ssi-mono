@@ -1,6 +1,6 @@
 import { DIDRegistryBundle, DIDRegistryWrapper } from "@owlmeans/regov-ssi-did"
 import { CryptoHelper } from "@owlmeans/regov-ssi-common"
-import { SSICore } from "../vc/ssi/types"
+import { SSICore , Credential } from "../vc"
 import { CreateKeyOptions, KeyChain, KeyChainWrapper } from "../keys/types"
 import { BasicStore, EncryptedStore, SecureStore } from "../store/types"
 import { CredentialsRegistry, CredentialsRegistryWrapper, RegistryType } from './registry/types'
@@ -45,6 +45,8 @@ export type WalletWrapper = {
   ssi: SSICore
 
   hasIdentity: () => boolean
+
+  getIdentity: <Identity extends Credential = Credential>() => Identity | undefined
 
   getRegistry: GetRegistryMethod
 

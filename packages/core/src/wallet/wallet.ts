@@ -141,6 +141,14 @@ export const buildWalletWrapper: WalletWrapperBuilder =
         return _getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential() !== undefined
       },
 
+      getIdentity: <Identity extends Credential = Credential>() => {
+        if (_wallet.hasIdentity()) {
+          return _getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential() as unknown as Identity
+        }
+
+        return undefined
+      },
+
       export: async (_password?: string) => {
         if (_password) {
           password = _password

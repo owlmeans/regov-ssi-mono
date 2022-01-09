@@ -7,7 +7,7 @@ import {
   EXTESNION_TRIGGER_AUTHENTICATED
 } from '@owlmeans/regov-ssi-extension'
 
-import { buildIdentityExtension } from '@owlmeans/regov-ext-identity'
+import { BuildExtensionParams, buildIdentityExtension } from '@owlmeans/regov-ext-identity'
 
 import en from './i18n/en.json'
 import {
@@ -23,13 +23,14 @@ export const REGOV_IDENTITY_DEFAULT_TYPE = 'OwlMeans:Regov:Identity'
 
 export const buildIdentityExtensionUI = <CredType extends string>(
   type: CredType,
+  params: BuildExtensionParams,
   details: ExtensionDetails,
   ns = REGOV_IDENTITY_DEFAULT_NAMESPACE
 ) => {
   const identityType = type || REGOV_IDENTITY_DEFAULT_TYPE
   type IdentityCredentials = typeof identityType
 
-  const extension = buildIdentityExtension(type, {
+  const extension = buildIdentityExtension(type, params, {
     ...details,
     name: details.name === '' ? 'extension.details.name' : details.name,
   })

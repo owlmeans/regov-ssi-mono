@@ -1,6 +1,6 @@
-import { 
-  buildIdentityExtensionUI, 
-  REGOV_IDENTITY_DEFAULT_TYPE 
+import {
+  buildIdentityExtensionUI,
+  REGOV_IDENTITY_DEFAULT_TYPE
 } from '@owlmeans/regov-ext-identity-web'
 import {
   buildUIExtensionRegistry,
@@ -29,7 +29,7 @@ registry.registerSync<UniversalCredentialT>(buildUniversalExtensionUI({
   schemaBaseUrl: 'https://my-example.org/schemas/'
 }))
 
-registry.registerSync<IdentityType>(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, {
+registry.registerSync<IdentityType>(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName: config.name }, {
   name: '',
   code: 'example-identity',
   organization: 'Example Org.',

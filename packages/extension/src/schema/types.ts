@@ -3,7 +3,8 @@ import {
   BasicCredentialType,
   CredentialSchema,
   MultiSchema,
-  WalletWrapper
+  WalletWrapper,
+  CredentialSubject
 } from "@owlmeans/regov-ssi-core"
 import { Extension } from "../ext"
 
@@ -17,6 +18,7 @@ export type ExtensionSchema<CredType extends string> = {
 export type ExtensionDetails = {
   name: string
   code: string
+  defaultCredType?: string
   types?: ExtensionTypes
   organization?: string
   home?: string
@@ -29,7 +31,8 @@ export type ExtensionTypes = {
 }
 
 export type CredentialDescription<
-  Schema extends CredentialSchema = CredentialSchema
+  Schema extends CredentialSchema = CredentialSchema,
+  Subject extends CredentialSubject = CredentialSubject
   > = {
     defaultNameKey?: string
     mainType: string
@@ -42,6 +45,7 @@ export type CredentialDescription<
     claimable?: boolean
     listed?: boolean
     selfIssuing?: boolean
+    defaultSubject?: Subject
   }
 
 export type ExtensionEvent<CredType extends string> = {

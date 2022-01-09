@@ -77,7 +77,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
 
           const types = JSON.parse(data.builder.type) as CredentialType
           const type = findAppropriateCredentialType(ext, types, defaultType)
-          const factory = ext.factories[type]
+          const factory = ext.getFactory(type, defaultType)
           const unsigned = await factory.buildingFactory(wallet, {
             type: types,
             subjectData: JSON.parse(data.builder.subject),

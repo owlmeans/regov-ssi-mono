@@ -29,7 +29,7 @@ import {
   COMMON_CRYPTO_ERROR_NOID,
   COMMON_CRYPTO_ERROR_NOPK,
   COMMON_CRYPTO_ERROR_NOPUBKEY,
-  basicHelper,
+  makeRandomUuid,
   mapValue,
   MaybeArray,
   addToValue,
@@ -286,7 +286,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             }),
             documentLoader,
             purpose: new jsigs.purposes.AuthenticationProofPurpose({
-              challenge: options?.challange || unsignedPresentation.id || basicHelper.makeRandomUuid(),
+              challenge: options?.challange || unsignedPresentation.id || makeRandomUuid(),
               domain: options?.domain || holder.id
             }),
             compactProof: false,

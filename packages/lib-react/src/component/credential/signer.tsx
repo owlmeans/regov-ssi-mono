@@ -1,15 +1,8 @@
-import { addToValue } from '@owlmeans/regov-ssi-common'
 import {
   SSICore,
   UnsignedCredential,
-  Credential,
 } from '@owlmeans/regov-ssi-core'
-import { 
-  DIDDocument, 
-  DIDDocumentUnsinged, 
-  VERIFICATION_KEY_CONTROLLER, 
-  VERIFICATION_KEY_HOLDER 
-} from '@owlmeans/regov-ssi-did'
+import { Extension } from '@owlmeans/regov-ssi-extension'
 import React, {
   FunctionComponent
 } from 'react'
@@ -18,6 +11,7 @@ import {
   BasicNavigator,
   RegovCompoentProps,
   RegovValidationRules,
+  useRegov,
   withRegov,
   WrappedComponentProps
 } from '../../common'
@@ -31,10 +25,11 @@ export const CredentialSigner: FunctionComponent<CredentialSignerParams> =
       return { ssi: wallet?.ssi }
     }
   }, ({
-    t, i18n, ssi, navigator,
+    t, i18n, ssi, navigator, ext, defaultType,
     com: ComRenderer,
     renderer: FallbackRenderer
   }) => {
+    const { handler } = useRegov()
     const Renderer = ComRenderer || FallbackRenderer
 
     const _props: CredentialSignerImplProps = {
@@ -58,55 +53,24 @@ export const CredentialSigner: FunctionComponent<CredentialSignerParams> =
       sign: methods => async data => {
         const loading = await navigator?.invokeLoading()
         try {
-          if (!ssi) {
+          if (!ssi || !handler.wallet) {
             methods.setError('signer.alert', { type: 'authenticated' })
             return
           }
 
           const unsigned = JSON.parse(data.signer.unsigned) as UnsignedCredential
-          const unsignedDid = unsigned.holder as DIDDocumentUnsinged
-          let issuer: DIDDocument | undefined = undefined
-
-          if (data.signer.evidence !== '') {
-            const evidence = JSON.parse(data.signer.evidence) as Credential
-            const signer = evidence.holder['@context']
-              ? evidence.holder as DIDDocument
-              : evidence.issuer
-            const signerKey = await ssi.did.helper().extractKey(signer, VERIFICATION_KEY_HOLDER)
-            if (!signerKey) {
-              methods.setError('signer.alert', { type: 'evidence.holder.key' })
+          const factory = ext.getFactory(unsigned.type, defaultType)
+          try {
+            const cred = await factory.signingFactory(handler.wallet, { unsigned })
+            methods.setValue('output', JSON.stringify(cred, undefined, 2))
+          } catch (error) {
+            console.log(error)
+            if (error.message) {
+              methods.setError('signer.alert', { type: error.message })
               return
             }
-            await ssi.keys.expandKey(signerKey)
-            if (!signerKey.pk) {
-              methods.setError('signer.alert', { type: 'evidence.holder.pk' })
-              return
-            }
-            if (!signer || typeof signer === 'string') {
-              methods.setError('signer.alert', { type: 'evidence.signer.type' })
-              return
-            }
-            issuer = signer
-            unsigned.evidence = addToValue(unsigned.evidence, evidence)
-            unsigned.holder = await ssi.did.helper().signDID(signerKey, unsignedDid, VERIFICATION_KEY_CONTROLLER)
-          } else {
-            const signerKey = await ssi.did.helper().extractKey(unsignedDid, VERIFICATION_KEY_HOLDER)
-            if (!signerKey) {
-              methods.setError('signer.alert', { type: 'evidence.holder.key' })
-              return
-            }
-            await ssi.keys.expandKey(signerKey)
-            if (!signerKey.pk) {
-              methods.setError('signer.alert', { type: 'evidence.holder.pk' })
-              return
-            }
-            issuer = await ssi.did.helper().signDID(signerKey, unsignedDid)
-            unsigned.holder = { id: issuer.id }
+            throw error
           }
-
-          const cred = await ssi.signCredential(unsigned, issuer, { keyId: VERIFICATION_KEY_HOLDER })
-
-          methods.setValue('output', JSON.stringify(cred, undefined, 2))
         } catch (error) {
           loading?.error(error)
           console.log(error)
@@ -134,8 +98,10 @@ export const credentialSignerValidatorRules: RegovValidationRules = {
 }
 
 export type CredentialSignerParams = {
-  ns?: string,
+  ns?: string
   com?: FunctionComponent
+  ext: Extension<string>
+  defaultType: string
 }
 
 export type CredentialSignerFields = {

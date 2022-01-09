@@ -13,9 +13,12 @@ import {
   useFormContext,
 } from 'react-hook-form'
 import { formatError } from '../error'
+import { OutputFieldFormatter } from './formatter'
 
 
-export const MainTextOutput = ({ t, field, showHint, showLabel, showIntro, inlineLabel }: MainTextOutputProps) => {
+export const MainTextOutput = (
+  { t, field, showHint, showLabel, showIntro, inlineLabel, formatter, formatTemplate }: MainTextOutputProps
+) => {
   const { control } = useFormContext()
   const showIntroLabel = !inlineLabel && showLabel
   const innlineLabel = inlineLabel || (!showIntroLabel && showLabel)
@@ -32,7 +35,7 @@ export const MainTextOutput = ({ t, field, showHint, showLabel, showIntro, inlin
             innlineLabel && <Typography color="primary" marginRight={1} variant="subtitle1">
               {t(`${field}.label`)}:
             </Typography>
-          } value={_field.value} />
+          } value={formatter ? formatter(_field.value, formatTemplate) : _field.value} />
         {(showHint || fieldState.invalid) && <FormHelperText error={fieldState.invalid}>
           {fieldState.invalid ? formatError(t, field, fieldState) : t(`${field}.hint`)}
         </FormHelperText>}
@@ -47,4 +50,6 @@ export type MainTextOutputProps = WrappedComponentProps<{
   showIntro?: boolean
   inlineLabel?: boolean
   showLabel?: boolean
+  formatter?: OutputFieldFormatter
+  formatTemplate?: string
 }>
