@@ -1,12 +1,5 @@
-import React, {
-  Fragment, useState
-} from 'react'
+import React, { Fragment, useMemo } from 'react'
 
-import {
-  MenuOpen,
-  FileDownload,
-  ContentCopy
-} from '@mui/icons-material'
 import {
   CredentialWrapper,
   geCompatibletSubject
@@ -21,17 +14,15 @@ import {
 } from '@owlmeans/regov-ssi-extension'
 import {
   Grid,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
   Typography
 } from '@mui/material'
 import { IdentitySubject } from '@owlmeans/regov-ext-identity'
-import { dateFormatter } from '@owlmeans/regov-mold-wallet-web'
-import saveAs from 'file-saver'
-import copy from 'copy-to-clipboard'
+import {
+  dateFormatter,
+  ItemMenuHandle,
+  MenuIconButton,
+  ItemMenu
+} from '@owlmeans/regov-mold-wallet-web'
 
 
 export const DashboardWidget = (ext: Extension<string>) =>
@@ -41,14 +32,13 @@ export const DashboardWidget = (ext: Extension<string>) =>
       return { identityWrap: wallet?.getIdentity() }
     }
   }, (props: DashboardWidgetProps) => {
-    const { t, identityWrap } = props
+    const { t, i18n, identityWrap } = props
     if (!identityWrap) {
       return <Fragment />
     }
     const subject = geCompatibletSubject<IdentitySubject>(identityWrap.credential)
 
-    const [menuOpened, setMenuOpened] = useState<boolean>(false)
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+    const handle: ItemMenuHandle = useMemo(() => ({ handler: undefined }), [identityWrap.credential.id])
 
     return <Grid container direction="column" justifyContent="space-between" alignItems="space-between">
       <Grid item container px={1} direction="row" justifyContent="space-between" alignItems="flex-start">
@@ -62,42 +52,9 @@ export const DashboardWidget = (ext: Extension<string>) =>
         </Grid>
         <Grid item container xs={2} pr={1} direction="row" justifyContent="flex-end" alignItems="flex-end">
           <Grid item>
-            <IconButton size="large" color="primary" edge="end" onClick={event => {
-              setAnchorEl(event.currentTarget)
-              setMenuOpened(true)
-            }}>
-              <MenuOpen fontSize="inherit" />
-            </IconButton>
-            {
-              /**
-               * @OTOD Export as a separate, standard credentiala action component
-               */
-            }
-            <Menu open={menuOpened} anchorEl={anchorEl} onClose={() => setMenuOpened(false)}>
-              <MenuItem onClick={() => {
-                copy(JSON.stringify(identityWrap.credential), {
-                  message: t([`widget.dashboard.clipboard.copyhint`, 'clipboard.copyhint']),
-                  format: 'text/plain'
-                })
-                setMenuOpened(false)
-              }}>
-                <ListItemIcon>
-                  <ContentCopy fontSize="medium" />
-                </ListItemIcon>
-                <ListItemText primary={t('widget.dashboard.action.copy')} />
-              </MenuItem>
-              <MenuItem onClick={() => {
-                saveAs(new Blob(
-                  [JSON.stringify(identityWrap.credential)], { type: "text/plain;charset=utf-8" }
-                ), `${identityWrap.meta.title}.identity.json`)
-                setMenuOpened(false)
-              }}>
-                <ListItemIcon>
-                  <FileDownload fontSize="medium" />
-                </ListItemIcon>
-                <ListItemText primary={t('widget.dashboard.action.export')} />
-              </MenuItem>
-            </Menu>
+            <MenuIconButton handle={handle} />
+            <ItemMenu handle={handle} content={identityWrap.credential} i18n={i18n} prettyOutput
+              exportTitle={`${identityWrap.meta.title}.identity`} />
           </Grid>
         </Grid>
       </Grid>

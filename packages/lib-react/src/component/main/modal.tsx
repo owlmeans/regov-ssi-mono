@@ -1,13 +1,13 @@
-import {
-  EventParams,
-  EXTESNION_TRIGGER_AUTHENTICATED
-} from '@owlmeans/regov-ssi-extension'
 import React, {
   FunctionComponent,
   ReactNode,
   useEffect,
   useMemo,
 } from 'react'
+import {
+  EventParams,
+  EXTESNION_TRIGGER_AUTHENTICATED
+} from '@owlmeans/regov-ssi-extension'
 import {
   RegovCompoentProps,
   useRegov,
@@ -29,7 +29,7 @@ export const MainModal: FunctionComponent<MainModalParams> = withRegov<MainModal
         )
       }
     }, [alias])
-    
+
     return <Renderer {..._props} />
   },
   {

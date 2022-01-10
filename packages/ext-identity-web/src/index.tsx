@@ -3,18 +3,21 @@ export * from './types'
 import React from 'react'
 import {
   ExtensionDetails,
-  ExtensionItemPurpose,
-  EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
-  EXTESNION_TRIGGER_AUTHENTICATED
+  EXTESNION_TRIGGER_AUTHENTICATED,
 } from '@owlmeans/regov-ssi-extension'
 
-import { BuildExtensionParams, buildIdentityExtension } from '@owlmeans/regov-ext-identity'
+import {
+  BuildExtensionParams,
+  buildIdentityExtension
+} from '@owlmeans/regov-ext-identity'
 
 import en from './i18n/en.json'
 import {
   buildUIExtension,
   UIExtensionFactoryProduct,
-  MainModalEventTriggerParams
+  MainModalEventTriggerParams,
+  ExtensionItemPurpose,
+  EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
 } from '@owlmeans/regov-lib-react'
 import { DashboardWidget, Onboarding } from './component'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
@@ -58,7 +61,6 @@ export const buildIdentityExtensionUI = <CredType extends string>(
   const uiExt = buildUIExtension<IdentityCredentials>(
     extension,
     (purpose: ExtensionItemPurpose, _?: IdentityCredentials) => {
-
       switch (purpose) {
         case EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET:
           return [

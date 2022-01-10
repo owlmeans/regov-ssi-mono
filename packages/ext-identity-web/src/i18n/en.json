@@ -43,11 +43,7 @@
   },
   "widget": {
     "dashboard": {
-      "issuedAt": "Issued",
-      "action": {
-        "copy": "Copy",
-        "export": "Export"
-      }
+      "issuedAt": "Issued"
     }
   },
   "creation": {

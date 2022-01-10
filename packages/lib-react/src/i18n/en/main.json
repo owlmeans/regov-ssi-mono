@@ -2,6 +2,10 @@
   "menu": {
     "logout": "Logout",
     "dashboard": "Dashboard",
-    "wallet": "Credentials Wallet"
+    "wallet": "Credentials Wallet",
+    "action": {
+      "copy": { "title": "Copy" },
+      "export": { "title": "Export" }
+    }
   }
 }

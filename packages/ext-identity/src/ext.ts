@@ -3,8 +3,8 @@ import {
   buildExtension,
   buildExtensionSchema,
   ExtensionDetails,
-  EXTESNION_TRIGGER_AUTHENTICATED,
   defaultBuildingFactory,
+  EXTESNION_TRIGGER_AUTHENTICATED,
 } from "@owlmeans/regov-ssi-extension"
 import {
   CredentialSubject,

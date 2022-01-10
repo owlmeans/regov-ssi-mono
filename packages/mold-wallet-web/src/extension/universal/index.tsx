@@ -2,13 +2,13 @@ import {
   ExtensionDetails,
   buildUniversalExtension,
   UniversalCredentialT,
-  ExtensionItemPurpose,
-  EXTENSION_ITEM_PURPOSE_ROUTE,
 } from '@owlmeans/regov-ssi-extension'
 
 import {
   buildUIExtension,
   UIExtensionFactoryProduct,
+  ExtensionItemPurpose,
+  EXTENSION_ITEM_PURPOSE_ROUTE,
 } from '@owlmeans/regov-lib-react'
 
 import en from './i18n/en.json'

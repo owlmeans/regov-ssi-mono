@@ -1,9 +1,11 @@
 import { FunctionComponent } from "react"
 
 import {
-  Extension,
-  ExtensionItemPurpose
+  Extension
 } from "@owlmeans/regov-ssi-extension"
+import {
+  ExtensionItemPurpose
+} from "@owlmeans/regov-lib-react"
 import {
   EmptyProps,
 } from "../common"

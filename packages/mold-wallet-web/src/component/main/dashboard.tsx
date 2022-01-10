@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import {
   EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET
-} from '@owlmeans/regov-ssi-extension'
+} from '@owlmeans/regov-lib-react'
 
 
 export const MainDashboardWeb = ({ }: MainDashboardImplProps) => {

@@ -13,6 +13,7 @@ import {
   MainDashboard,
   useRegov,
   WalletHandler,
+  EXTENSION_ITEM_PURPOSE_ROUTE,
 } from '@owlmeans/regov-lib-react'
 import {
   WalletStoreCreation,
@@ -21,10 +22,6 @@ import {
   WalletCredentialList,
   WalletMainMenu,
 } from '../screen'
-
-import {
-  EXTENSION_ITEM_PURPOSE_ROUTE
-} from '@owlmeans/regov-ssi-extension'
 
 
 export const NavigationRoot = () => {
