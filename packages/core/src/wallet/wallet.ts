@@ -29,7 +29,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
     _store.data.keyChain = keyChain.keys
 
     const did = buildDidRegistryWarpper(
-      buildDidHelper(crypto, { prefix: options?.prefix }),
+      buildDidHelper(crypto, { prefix: options?.prefix, schemaPath: options?.didSchemaPath }),
       _store.data.registry
     )
     _store.data.registry = did.registry

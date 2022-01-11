@@ -110,7 +110,7 @@ const _test = async () => {
         crypto: nodeCryptoHelper
       }),
       crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schema: 'did-schema'}))
+      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schemaPath: 'did-schema'}))
     })
 
     const ctxBob = await buildSSICore({
@@ -119,7 +119,7 @@ const _test = async () => {
         crypto: nodeCryptoHelper
       }),
       crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schema: 'did-schema'}))
+      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schemaPath: 'did-schema'}))
     })
 
     const ctxCharly = await buildSSICore({
@@ -128,7 +128,7 @@ const _test = async () => {
         crypto: nodeCryptoHelper
       }),
       crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schema: 'did-schema'}))
+      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schemaPath: 'did-schema'}))
     })
 
     const uAliceDid = await ctxAlice.did.helper().createDID(
