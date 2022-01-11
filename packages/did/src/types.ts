@@ -89,7 +89,7 @@ export type DIDDocumentPayload = {
 
 export type BuildDIDHelperOptions = {
   prefix?: string
-  schema?: string
+  schemaPath?: string
 }
 
 export type MakeDIDIdOptions = {
@@ -199,4 +199,4 @@ export const DID_EXTRACTKEY_WRONG_DID = 'DID_EXTRACTKEY_WRONG_DID'
 export const DEFAULT_APP_SCHEMA_URL = process.env.APP_SCHEMA_URL
 
 export const DEFAULT_DID_PREFIX = process.env.DID_PREFIX
-export const DEFAULT_DID_SCHEMA = process.env.DID_SCHEMA
+export const DEFAULT_DID_SCHEMA_PATH = process.env.DID_SCHEMA_PATH

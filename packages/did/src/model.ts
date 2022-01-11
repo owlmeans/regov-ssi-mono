@@ -25,7 +25,7 @@ import {
   DIDHelper,
   DEFAULT_APP_SCHEMA_URL,
   DEFAULT_DID_PREFIX,
-  DEFAULT_DID_SCHEMA,
+  DEFAULT_DID_SCHEMA_PATH,
   MakeDIDIdOptions,
   DIDDocumentPayload,
   DID_ERROR_NOVERIFICATION_METHOD,
@@ -50,7 +50,7 @@ const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
  * 1. Verify that ids produces correctly
  */
 export const buildDidHelper =
-  (crypto: CryptoHelper, buildOptions: BuildDIDHelperOptions = { prefix: DEFAULT_DID_PREFIX, schema: DEFAULT_DID_SCHEMA }): DIDHelper => {
+  (crypto: CryptoHelper, buildOptions: BuildDIDHelperOptions = { prefix: DEFAULT_DID_PREFIX, schemaPath: DEFAULT_DID_SCHEMA_PATH }): DIDHelper => {
     let __buildDocumentLoader: BuildDocumentLoader | undefined
 
     const _buildDocumentLoader = (didDoc: DIDDocument | DIDDocumentUnsinged) => {
@@ -287,7 +287,7 @@ export const buildDidHelper =
               'https://w3id.org/did/v1',
               {
                 '@version': 1.1,
-                didx: `${baseSchemaUrl || 'https://example.org'}${buildOptions.schema ? `/${buildOptions.schema}` : ''}#`,
+                didx: `${baseSchemaUrl || 'https://example.org'}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`,
                 xsd: 'http://www.w3.org/2001/XMLSchema#',
                 nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
                 publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }

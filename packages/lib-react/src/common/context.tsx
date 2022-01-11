@@ -168,7 +168,7 @@ export type ContextParams = {
 
 export type Config = {
   DID_PREFIX: string
-  DID_SCHEMA?: string
+  DID_SCHEMA_PATH?: string
   development?: boolean
   baseSchemaUrl?: string
   code: string
