@@ -22,8 +22,11 @@ import {
   DIDDocument,
   DIDPURPOSE_VERIFICATION,
   DIDHelper,
+  DEFAULT_APP_SCHEMA_URL,
   DEFAULT_DID_PREFIX,
+  DEFAULT_DID_SCHEMA_PATH,
   MakeDIDIdOptions,
+  BuildDIDHelperOptions,
   DIDDocumentPayload,
   DID_ERROR_NOVERIFICATION_METHOD,
   DIDDocumentUnsinged,
@@ -47,7 +50,13 @@ const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
  * 1. Verify that ids produces correctly
  */
 export const buildDidHelper =
-  (crypto: CryptoHelper, didPrefix = DEFAULT_DID_PREFIX): DIDHelper => {
+  (
+    crypto: CryptoHelper, 
+    buildOptions: BuildDIDHelperOptions = {
+      prefix: DEFAULT_DID_PREFIX,
+      schemaPath: DEFAULT_DID_SCHEMA_PATH
+    }
+  ): DIDHelper => {
     let __buildDocumentLoader: BuildDocumentLoader | undefined
 
     const _buildDocumentLoader = (didDoc: DIDDocument | DIDDocumentUnsinged) => {
@@ -59,7 +68,7 @@ export const buildDidHelper =
         throw new Error(COMMON_CRYPTO_ERROR_NOID)
       }
 
-      return `did:${didPrefix}:${!options.hash
+      return `did:${buildOptions.prefix}:${!options.hash
         ? `${key.id}${options.data ? `:${options.data}` : ''}`
         : crypto.makeId(
           key.id,
@@ -258,7 +267,7 @@ export const buildDidHelper =
 
       parseDIDId: _parseDIDId,
 
-      createDID: async (key, options = {}) => {
+      createDID: async (key, options = {}, baseSchemaUrl = DEFAULT_APP_SCHEMA_URL) => {
         if (!key.pubKey) {
           throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
         }
@@ -284,7 +293,7 @@ export const buildDidHelper =
               'https://w3id.org/did/v1',
               {
                 '@version': 1.1,
-                didx: 'https://example.org/did-schema#',
+                didx: `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`,
                 xsd: 'http://www.w3.org/2001/XMLSchema#',
                 nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
                 publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
@@ -471,7 +480,7 @@ export const buildDidHelper =
           'utf8'
         ))
 
-        return `${did.id};${didPrefix}:state=${compressed}`
+        return `${did.id};${buildOptions.prefix}:state=${compressed}`
       },
 
       extractKey: _extractKey,

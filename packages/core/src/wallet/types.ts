@@ -28,7 +28,7 @@ export type WalletWrapperBuilder = <Store extends BasicStore = BasicStore>(
 ) => Promise<WalletWrapper>
 
 export type WalletOptions = {
-  prefix?: string
+  prefix?: string,
   defaultSchema?: string,
   key?: CreateKeyOptions
 }
