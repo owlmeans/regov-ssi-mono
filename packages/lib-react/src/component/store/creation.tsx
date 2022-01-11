@@ -69,7 +69,11 @@ export const StoreCreation: FunctionComponent<StoreCreationParams> =
                 name: data.creation.name,
                 alias: data.creation.login,
               },
-              { prefix: config.DID_PREFIX }
+              { 
+                prefix: config.DID_PREFIX,
+                defaultSchema: config.baseSchemaUrl,
+                didSchemaPath: config.DID_SCHEMA_PATH,
+              }
             )
             handler.stores[wallet.store.alias] = await wallet.export()
             handler.notify()

@@ -50,9 +50,9 @@ export const buildIdentityExtensionUI = <CredType extends string>(
     ) => {
       params.handle.getContent = () => <Onboarding {...params} ns={ns} ext={extension} />
 
-      // if (params.handle.setOpen) {
-      //   params.handle.setOpen(true)
-      // }
+      if (params.handle.setOpen) {
+        params.handle.setOpen(true)
+      }
 
       return true
     }
