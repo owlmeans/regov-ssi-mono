@@ -9,7 +9,7 @@ export type DIDHelper = {
   extractProofController: (did: DIDDocument, keyId?: string) => string
   expandVerificationMethod: ExpandVerificationMethod
 
-  createDID: (key: CryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
+  createDID: (key: CryptoKey, options?: CreateDIDMethodOptions, schema?: string) => Promise<DIDDocumentUnsinged>
   signDID: (
     key: CryptoKey,
     didDocUnsigned: DIDDocumentUnsinged | DIDDocument,
@@ -85,6 +85,11 @@ export type DIDDocumentPayload = {
   keyAgreement?: MaybeArray<string | DIDKeyAgreement>
   capabilityInvocation?: MaybeArray<string | DIDCapability>
   capabilityDelegation?: MaybeArray<string | DIDDelegation>
+}
+
+export type BuildDIDHelperOptions = {
+  prefix?: string
+  schema?: string
 }
 
 export type MakeDIDIdOptions = {
@@ -191,4 +196,7 @@ export const DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD = 'DID_ERROR_VERIFICA
 
 export const DID_EXTRACTKEY_WRONG_DID = 'DID_EXTRACTKEY_WRONG_DID'
 
+export const DEFAULT_APP_SCHEMA_URL = process.env.APP_SCHEMA_URL
+
 export const DEFAULT_DID_PREFIX = process.env.DID_PREFIX
+export const DEFAULT_DID_SCHEMA = process.env.DID_SCHEMA
