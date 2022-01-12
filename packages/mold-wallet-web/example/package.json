@@ -18,6 +18,8 @@
     "@owlmeans/regov-ssi-extension": "link:../../extension",
     "@owlmeans/regov-ext-identity": "link:../../ext-identity",
     "@owlmeans/regov-ext-identity-web": "link:../../ext-identity-web",
+    "@owlmeans/regov-ext-groups": "link:../../ext-groups",
+    "@owlmeans/regov-ext-groups-web": "link:../../ext-groups-web",
     "@types/react-dom": "^17.0.11",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

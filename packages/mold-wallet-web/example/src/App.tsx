@@ -12,6 +12,7 @@ import {
 import {
   UniversalCredentialT
 } from '@owlmeans/regov-ssi-extension'
+import groupsExtension, { RegovGroupExtensionTypes } from '@owlmeans/regov-ext-groups-web'
 
 import { config } from './config'
 
@@ -19,7 +20,11 @@ import { config } from './config'
 const EXAMPLE_IDENTITY_TYPE = 'ExampleIdentity'
 type IdentityType = typeof EXAMPLE_IDENTITY_TYPE | typeof REGOV_IDENTITY_DEFAULT_TYPE
 
-const registry = buildUIExtensionRegistry<UniversalCredentialT | IdentityType>()
+const registry = buildUIExtensionRegistry<
+  UniversalCredentialT
+  | IdentityType
+  | RegovGroupExtensionTypes
+>()
 
 registry.registerSync<UniversalCredentialT>(buildUniversalExtensionUI({
   name: '',
@@ -36,6 +41,8 @@ registry.registerSync<IdentityType>(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TY
   home: 'https://my-example.org/',
   schemaBaseUrl: 'https://my-example.org/schemas/'
 }))
+
+registry.registerSync<RegovGroupExtensionTypes>(groupsExtension)
 
 export const App = () => {
   return <WalletApp config={config} extensions={registry.normalize()} />

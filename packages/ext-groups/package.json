@@ -1,10 +1,10 @@
 {
-  "name": "@owlmeans/regov-ext-identity",
-  "version": "0.0.1",
-  "description": "Simple Identity Extension for Regov SSI",
+  "name": "@owlmeans/regov-ext-groups",
+  "version": "0.1.0",
+  "description": "Groups VC Extension for Regov SSI",
   "keywords": [
     "Regov",
-    "identity",
+    "groups",
     "SSI"
   ],
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
@@ -24,13 +24,13 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/owlmeans/regov-ssi-mono.git",
-    "directory": "packages/ext-identity"
+    "directory": "packages/ext-groups"
   },
   "sources": "src/index.ts",
   "scripts": {
     "build": "microbundle-crl --no-compress --format modern,cjs",
     "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
-  },
+  }, 
   "peerDependencies": {
     "@owlmeans/regov-ssi-common": "^0.2.3",
     "@owlmeans/regov-ssi-core": "^0.4.2",
