@@ -54,7 +54,8 @@ export const buildDidHelper =
     crypto: CryptoHelper, 
     buildOptions: BuildDIDHelperOptions = {
       prefix: DEFAULT_DID_PREFIX,
-      schemaPath: DEFAULT_DID_SCHEMA_PATH
+      schemaPath: DEFAULT_DID_SCHEMA_PATH,
+      baseSchemaUrl: DEFAULT_APP_SCHEMA_URL
     }
   ): DIDHelper => {
     let __buildDocumentLoader: BuildDocumentLoader | undefined
@@ -267,7 +268,7 @@ export const buildDidHelper =
 
       parseDIDId: _parseDIDId,
 
-      createDID: async (key, options = {}, baseSchemaUrl = DEFAULT_APP_SCHEMA_URL) => {
+      createDID: async (key, options = {}) => {
         if (!key.pubKey) {
           throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
         }
@@ -283,6 +284,8 @@ export const buildDidHelper =
 
         const holder = _makeDIDId(key)
         const keyId = options.keyId || VERIFICATION_KEY_HOLDER
+
+        const baseSchemaUrl = options.baseSchemaUrl || buildOptions.baseSchemaUrl || DEFAULT_APP_SCHEMA_URL
 
         let didDocUnsigned: DIDDocumentUnsinged = options.source
           ? {

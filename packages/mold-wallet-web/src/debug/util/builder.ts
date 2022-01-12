@@ -7,7 +7,8 @@ export const buildDevWallet = async (config: Config, alias = DEFAULT_DEVELOPMENT
   await buildWalletWrapper(
     webCryptoHelper, '11111111', { alias, name: 'Development wallet' }, { 
       prefix: config.DID_PREFIX,
-      defaultSchema: config.baseSchemaUrl
+      defaultSchema: config.baseSchemaUrl,
+      didSchemaPath: config.DID_SCHEMA_PATH,
     }
   )
 

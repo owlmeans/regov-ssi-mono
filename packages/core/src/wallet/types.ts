@@ -30,6 +30,7 @@ export type WalletWrapperBuilder = <Store extends BasicStore = BasicStore>(
 export type WalletOptions = {
   prefix?: string,
   defaultSchema?: string,
+  didSchemaPath?: string
   key?: CreateKeyOptions
 }
 

@@ -9,7 +9,7 @@ export type DIDHelper = {
   extractProofController: (did: DIDDocument, keyId?: string) => string
   expandVerificationMethod: ExpandVerificationMethod
 
-  createDID: (key: CryptoKey, options?: CreateDIDMethodOptions, schema?: string) => Promise<DIDDocumentUnsinged>
+  createDID: (key: CryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
   signDID: (
     key: CryptoKey,
     didDocUnsigned: DIDDocumentUnsinged | DIDDocument,
@@ -90,6 +90,7 @@ export type DIDDocumentPayload = {
 export type BuildDIDHelperOptions = {
   prefix?: string
   schemaPath?: string
+  baseSchemaUrl?: string
 }
 
 export type MakeDIDIdOptions = {
@@ -103,6 +104,7 @@ export type CreateDIDMethodOptions = MakeDIDIdOptions & {
   id?: string
   purpose?: MaybeArray<DIDDocumentPurpose>
   alsoKnownAs?: MaybeArray<string>,
+  baseSchemaUrl?: string
   source?: DIDDocument | DIDDocumentUnsinged,
   keyId?: SignDID_KeyId
 }
