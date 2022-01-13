@@ -11,6 +11,8 @@ import {
   withRegov,
   WrappedComponentProps
 } from '../../common'
+import { castMenuItemParams } from '../../extension/helper'
+import { ManuItemParams } from '../../extension/types'
 
 
 export const MainMenu: FunctionComponent<MainMenuParams> = withRegov<MainMenuProps>(
@@ -23,11 +25,7 @@ export const MainMenu: FunctionComponent<MainMenuParams> = withRegov<MainMenuPro
       ...extensions ? extensions?.getMenuItems() : []
     ].map(item => ({
       ...item, action: async () => {
-        const res = typeof item.action === 'function'
-          ? await item.action()
-          : typeof item.action === 'string'
-            ? { path: item.action }
-            : item.action
+        const res = await castMenuItemParams(item)
 
         res && navigator?.menu(res.path, res.params)
       }
@@ -58,17 +56,6 @@ export type MainMenuItemImplParams = {
   ns?: string
 }
 
-export type ManuItemParams = {
-  title: string
-  action: (() => Promise<void | MenuActionResult> | MenuActionResult | void)
-  | MenuActionResult
-  | string
-  ns?: string
-  order?: number
-}
-
-export type MenuActionResult = { path: string, params?: Object }
-
 export type MainMenuItemImplProps = WrappedComponentProps<
   MainMenuItemImplParams
 >
@@ -76,3 +63,5 @@ export type MainMenuItemImplProps = WrappedComponentProps<
 export type MainMenuNavigation = BasicNavigator & {
   menu: WalletNavigatorMenuMethod<string, Object>
 }
+
+export const MENU_TAG_MAIN = 'main'

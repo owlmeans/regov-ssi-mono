@@ -9,7 +9,7 @@ import {
 import {
   EmptyProps,
 } from "../common"
-import { ManuItemParams } from "../component"
+import { ManuItemParams } from "./types"
 
 export const buildUIExtension = <CredType extends string>(
   extension: Extension<CredType>,

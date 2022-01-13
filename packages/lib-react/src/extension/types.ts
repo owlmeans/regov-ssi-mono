@@ -25,3 +25,17 @@ export const EXTENSION_ITEM_PURPOSE_ROUTE = 'route'
 export const EXTENSION_ITEM_PURPOSE_DASHBOARD = 'dashboard'
 export const EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET = 'dashboard_widget'
 export const EXTENSION_ITEM_PURPOSE_SIGNER = 'signer'
+
+
+
+export type ManuItemParams = {
+  title: string
+  action: (() => Promise<void | MenuActionResult> | MenuActionResult | void)
+  | MenuActionResult
+  | string
+  ns?: string
+  order?: number
+  menuTag?: string | string[]
+}
+
+export type MenuActionResult = { path: string, params?: Object }

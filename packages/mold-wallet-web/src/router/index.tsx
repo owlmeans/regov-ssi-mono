@@ -21,6 +21,7 @@ import {
   WalletStoreList,
   WalletCredentialList,
   WalletMainMenu,
+  CredentialCreation,
 } from '../screen'
 
 
@@ -30,16 +31,13 @@ export const NavigationRoot = () => {
   return <Routes>
     <Route path="/" element={<MainAuthArea menu={<WalletMainMenu />} />}>
       <Route path="" element={<MainDashboard />} />
-      {
-        extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_ROUTE).map(
-          ext => {
-            return ext.params && <Route key={`${ext.extensionCode}-${ext.params.path}`}
-              path={ext.params.path as string} element={<ext.com />} />
-          }
-        )
-      }
+      {extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_ROUTE).map(ext => {
+        return ext.params && <Route key={`${ext.extensionCode}-${ext.params.path}`}
+          path={ext.params.path as string} element={<ext.com />} />
+      })}
       <Route path="credential">
         <Route path="list/:tab/:section" element={<WalletCredentialList />} />
+        <Route path="create/:ext/:type" element={<CredentialCreation />} />
       </Route>
     </Route>
 

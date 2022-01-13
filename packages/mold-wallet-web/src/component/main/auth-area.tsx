@@ -23,12 +23,8 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
     </AppBar>
     <Grid container direction="row" justifyContent="center" alignItems="flex-start"
       style={{ marginTop: 80 }}>
-      <Grid item xs={4} sm={3} lg={2} xl={1}>
-        {menu}
-      </Grid>
-      <Grid item xs={8} sm={9} lg={10} xl={11}>
-        <Outlet />
-      </Grid>
+      <Grid item xs={4} sm={3} lg={2} xl={1}>{menu}</Grid>
+      <Grid item xs={8} sm={9} lg={10} xl={11}><Outlet /></Grid>
     </Grid>
   </Fragment>
 }

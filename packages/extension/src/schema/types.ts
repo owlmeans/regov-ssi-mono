@@ -39,7 +39,7 @@ export type CredentialDescription<
     mandatoryTypes?: BasicCredentialType
     credentialContext: MultiSchema
     contextUrl?: string
-    evidence?: BasicCredentialType | BasicCredentialType[]
+    evidence?: CredentialEvidenceDesctiption | CredentialEvidenceDesctiption[]
     credentialSchema?: Schema | Schema[]
     registryType?: string
     claimable?: boolean
@@ -47,6 +47,11 @@ export type CredentialDescription<
     selfIssuing?: boolean
     defaultSubject?: Subject
   }
+
+export type CredentialEvidenceDesctiption = {
+  type: BasicCredentialType,
+  schema?: CredentialSchema | CredentialSchema[]
+}
 
 export type ExtensionEvent<CredType extends string> = {
   trigger: MaybeArray<string>

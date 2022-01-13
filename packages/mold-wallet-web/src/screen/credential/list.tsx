@@ -18,6 +18,7 @@ import {
   REGISTRY_TYPE_UNSIGNEDS
 } from '@owlmeans/regov-ssi-core'
 import { useNavigate, useParams } from 'react-router-dom'
+import { CredentialHeader } from '../../component'
 
 
 export const WalletCredentialList = () => {
@@ -25,11 +26,15 @@ export const WalletCredentialList = () => {
   const { tab, section } = useParams<{ tab: RegistryType, section: string }>()
   const nav = useNavigator<CredentialListNavigator>({
     menu: async (location: string, params: CredentialListNavigatorParams) => {
-      navigate(`/credential/list/${location}/${(params).section || ''}`)
+      navigate(`/credential/list/${location}/${params.section || ''}`)
+    },
+    create: async (path: string) => {
+      navigate(`/credential/create/${path}`)
     }
   })
 
   return <NavigatorContextProvider navigator={nav}>
+    <CredentialHeader />
     <CredentialList tab={tab} section={section} tabs={walletCredentialListTabs} />
   </NavigatorContextProvider>
 }
@@ -42,10 +47,8 @@ const walletCredentialListTabs: CredentialListTab[] = [
       type: REGISTRY_TYPE_CREDENTIALS,
       defaultSection: REGISTRY_SECTION_OWN,
       allowPeer: true,
-      // sections?: string[]
     }
   },
-
   {
     name: REGISTRY_TYPE_IDENTITIES,
     registry: {

@@ -1,4 +1,4 @@
-import { MaybeArray } from "@owlmeans/regov-ssi-common"
+import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-common"
 import { WalletWrapper } from "@owlmeans/regov-ssi-core"
 import {
   buildExtensionRegistry,
@@ -10,11 +10,16 @@ import {
 import {
   EmptyProps,
 } from "../common"
-import { ManuItemParams } from "../component"
+import {
+  MENU_TAG_MAIN
+} from "../component"
 import {
   UIExtension,
-  UIExtensionFactory
+  UIExtensionFactory,
 } from "./extension"
+import {
+  ManuItemParams
+} from './types'
 
 
 export const buildUIExtensionRegistry = <
@@ -131,7 +136,17 @@ export const buildUIExtensionRegistry = <
       )
     },
 
-    getMenuItems: () => _registry.uiExtensions.flatMap(ext => ext.menuItems || []),
+    getMenuItems: (tag?: string) =>
+      _registry.uiExtensions.flatMap(ext => ext.menuItems?.filter(item => {
+        if (!tag) {
+          tag = MENU_TAG_MAIN
+        }
+        if (tag === MENU_TAG_MAIN && !item.menuTag) {
+          return true
+        }
+
+        return normalizeValue(item.menuTag).some(value => value === tag)
+      }) || []),
 
     normalize: () => _registry
   }
@@ -163,7 +178,7 @@ export type UIExtensionRegistry<
       wallet: WalletWrapper, event: MaybeArray<string>, params?: Params
     ) => Promise<void>
 
-    getMenuItems: () => ManuItemParams[]
+    getMenuItems: (tag?: string) => ManuItemParams[]
 
     normalize: () => UIExtensionRegistry<string>
   }
