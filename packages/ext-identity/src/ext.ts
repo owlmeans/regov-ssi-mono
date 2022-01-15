@@ -69,8 +69,6 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
           uuid: makeRandomUuid()
         }
         
-        updatedSubjectData.createdAt = (new Date).toISOString()
-
         const unsigned = await defaultBuildingFactory(credSchema)(wallet, {
           ...params, subjectData: updatedSubjectData
         })

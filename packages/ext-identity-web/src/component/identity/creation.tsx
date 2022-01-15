@@ -110,6 +110,8 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
 
         registry.registry.rootCredential = identity.id
 
+        handler.notify()
+
         next()
       } catch (error) {
         console.log(error)

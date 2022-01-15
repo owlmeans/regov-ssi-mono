@@ -131,7 +131,6 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
   })
 
 
-
 export const credentialBuilderValidatorRules: RegovValidationRules = {
   'builder.context': {
     required: true,

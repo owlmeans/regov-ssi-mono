@@ -9,3 +9,10 @@ export type RegovGroupCredential = typeof REGOV_CREDENTIAL_TYPE_GROUP
 export type RegovGroupMembershipCredential = typeof REGOV_CREDENTIAL_TYPE_MEMBERSHIP
 
 export type RegovGroupExtensionTypes = RegovGroupCredential | RegovGroupMembershipCredential
+
+export type GroupSubject = {
+  uuid: string
+  name: string
+  description: string
+  createdAt: string
+}

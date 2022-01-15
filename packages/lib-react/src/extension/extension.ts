@@ -4,12 +4,13 @@ import {
   Extension
 } from "@owlmeans/regov-ssi-extension"
 import {
-  ExtensionItemPurpose
-} from "@owlmeans/regov-lib-react"
-import {
   EmptyProps,
 } from "../common"
-import { ManuItemParams } from "./types"
+import { 
+  ManuItemParams,
+  ExtensionItemPurpose 
+} from "./types"
+import { MaybeArray } from "@owlmeans/regov-ssi-common"
 
 export const buildUIExtension = <CredType extends string>(
   extension: Extension<CredType>,
@@ -39,7 +40,7 @@ export type UIExtensionFactory<CredType extends string> = <
   Type extends EmptyProps = EmptyProps
   >(
   purpose: ExtensionItemPurpose,
-  type?: CredType
+  type?: MaybeArray<CredType>
 ) => UIExtensionFactoryProduct<Type>[]
 
 export type UIExtensionFactoryProduct<

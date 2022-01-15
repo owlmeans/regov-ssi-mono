@@ -1,7 +1,11 @@
 // import React from 'react'
 
 import {
-  buildUIExtension, ExtensionItemPurpose,
+  buildUIExtension, 
+  ExtensionItemPurpose, 
+  EXTENSION_ITEM_PURPOSE_CREATION, 
+  EXTENSION_ITEM_PURPOSE_ITEM, 
+  UIExtensionFactoryProduct,
 } from '@owlmeans/regov-lib-react'
 import {
   groupsExtension,
@@ -12,6 +16,7 @@ import {
   MENU_TAG_CRED_NEW
 } from '@owlmeans/regov-mold-wallet-web'
 import { commonEn } from './i18n'
+import { GroupCreation, GroupItem } from './component'
 
 
 if (groupsExtension.localization) {
@@ -19,7 +24,29 @@ if (groupsExtension.localization) {
 }
 
 export const groupsUIExtension = buildUIExtension<RegovGroupExtensionTypes>(groupsExtension,
-  (_purpose: ExtensionItemPurpose, _type?: RegovGroupExtensionTypes) => {
+  (purpose: ExtensionItemPurpose, type?: RegovGroupExtensionTypes) => {
+    switch (purpose) {
+      case EXTENSION_ITEM_PURPOSE_CREATION:
+        switch (type) {
+          case REGOV_CREDENTIAL_TYPE_GROUP:
+            return [{
+              com: GroupCreation(groupsExtension),
+              extensionCode: `${groupsExtension.schema.details.code}GroupCreation`,
+              params: {},
+              order: 0
+            }] as UIExtensionFactoryProduct<{}>[]
+        }
+      case EXTENSION_ITEM_PURPOSE_ITEM:
+        switch (type) {
+          case REGOV_CREDENTIAL_TYPE_GROUP:
+            return [{
+              com: GroupItem(groupsExtension),
+              extensionCode: `${groupsExtension.schema.details.code}GroupItem`,
+              params: {},
+              order: 0
+            }] as UIExtensionFactoryProduct<{}>[]
+        }
+    }
     return []
   }
 )

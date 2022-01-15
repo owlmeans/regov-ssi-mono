@@ -3,5 +3,48 @@
     "new": {
       "group": "Decentralized Group"
     }
+  },
+  "group": {
+    "list": {
+      "item": {
+        "unknown": "Unknown Group",
+        "type": "Regov Decentralized Group"
+      }
+    },
+    "uuid": {
+      "hint": "Unique Sequence"
+    },
+    "name": {
+      "label": "Group name",
+      "hint": "This is the group name, that will be seen by other people",
+      "error": {
+        "maxLength": "The name you provided is too long",
+        "pattern": "Name contains prohibited symbols"
+      }
+    },
+    "description": {
+      "label": "Group description",
+      "hint": "This is the group description, that will be seen by other people",
+      "error": {
+        "maxLength": "The decription you wrote is too long"
+      }
+    },
+    "createdAt": {
+      "hint": "Creation date"
+    },
+    "creation": {
+      "defaultName": "My Group",
+      "title": "Create a new decentralized group",
+      "create": "Create",
+      "success": "Congratulation! The group credential is successfully created!",
+      "credentialName": {
+        "label": "Credentail title",
+        "hint": "Nobody will see this name except you. It's required to easier find the credential in lists.",
+        "error": {
+          "maxLength": "Credential name is too long",
+          "pattern": "Credential name contains prohibited symbols"
+        }
+      }
+    }
   }
 }

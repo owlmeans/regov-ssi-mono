@@ -1,17 +1,22 @@
 import {
   buildExtension,
-  buildExtensionSchema
+  buildExtensionSchema,
+  defaultBuildingFactory,
+  defaultSigningFactory
 } from "@owlmeans/regov-ssi-extension"
 import {
   REGISTRY_TYPE_IDENTITIES,
-  REGISTRY_TYPE_CREDENTIALS
+  REGISTRY_TYPE_CREDENTIALS,
+  UnsignedCredential
 } from '@owlmeans/regov-ssi-core'
 import {
   BASIC_IDENTITY_TYPE,
+  GroupSubject,
   RegovGroupExtensionTypes,
   REGOV_CREDENTIAL_TYPE_GROUP,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP
 } from "./types"
+import { makeRandomUuid } from "@owlmeans/regov-ssi-common"
 
 
 export const groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
@@ -20,7 +25,6 @@ export const groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTyp
 }, {
   [REGOV_CREDENTIAL_TYPE_GROUP]: {
     mainType: REGOV_CREDENTIAL_TYPE_GROUP,
-    mandatoryTypes: [BASIC_IDENTITY_TYPE, REGOV_CREDENTIAL_TYPE_GROUP],
     defaultNameKey: 'cred.group.name',
     credentialContext: {
       '@version': 1.1,
@@ -36,7 +40,7 @@ export const groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTyp
   },
   [REGOV_CREDENTIAL_TYPE_MEMBERSHIP]: {
     mainType: REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
-    mandatoryTypes: [BASIC_IDENTITY_TYPE, REGOV_CREDENTIAL_TYPE_MEMBERSHIP],
+    mandatoryTypes: [BASIC_IDENTITY_TYPE],
     defaultNameKey: 'cred.membership.name',
     credentialContext: {
       '@version': 1.1,
@@ -56,7 +60,43 @@ export const groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTyp
   }
 })
 
-export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsExtensionSchema)
+export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsExtensionSchema, {
+  [REGOV_CREDENTIAL_TYPE_GROUP]: {
+    buildingFactory: (credSchema) => async (wallet, params) => {
+      const inputData = params.subjectData as GroupSubject
+      const updatedSubjectData = {
+        ...credSchema.defaultSubject,
+        ...inputData,
+        createdAt: inputData.createdAt || (new Date).toISOString(),
+        uuid: makeRandomUuid()
+      }
+      if (!updatedSubjectData.name) {
+        updatedSubjectData.name = ''
+      }
+      if (!updatedSubjectData.description) {
+        updatedSubjectData.description = ''
+      }
+
+      const unsigned = await defaultBuildingFactory(credSchema)(wallet, {
+        ...params, subjectData: updatedSubjectData
+      })
+
+      return unsigned as unknown as UnsignedCredential
+    },
+
+    signingFactory: (credSchema) => async (wallet, params) => {
+      if (!params.evidence) {
+        const identity = wallet.getIdentity()
+        if (identity) {
+          params.evidence = identity.credential
+        }
+      }
+      
+      return defaultSigningFactory(credSchema)(wallet, params)
+    }
+  },
+  [REGOV_CREDENTIAL_TYPE_MEMBERSHIP]: {}
+})
 
 groupsExtension.localization = {
   ns: 'owlmeans-regov-ext-groups',

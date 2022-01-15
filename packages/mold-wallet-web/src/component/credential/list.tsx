@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 
 import {
   Box,
@@ -7,7 +7,9 @@ import {
   Tabs,
 } from '@mui/material'
 import {
-  CredentialListImplProps
+  CredentialListImplProps,
+  useRegov,
+  EXTENSION_ITEM_PURPOSE_ITEM
 } from '@owlmeans/regov-lib-react'
 import {
   SimpleList,
@@ -20,6 +22,7 @@ import { REGISTRY_SECTION_OWN } from '@owlmeans/regov-ssi-core'
 export const CredentialListWeb = (props: CredentialListImplProps) => {
   const { credentials, tabs, t, tab, section } = props
   const currentTab = tabs.find(_tab => _tab.name === tab) || tabs[0]
+  const { extensions } = useRegov()
 
   return <Box>
     <Box>
@@ -41,6 +44,13 @@ export const CredentialListWeb = (props: CredentialListImplProps) => {
           wrapper => {
             const credHint = wrapper.credential.type.join(', ')
             const signStatus = `list.item.${wrapper.credential.proof ? 'signed' : 'unsigned'}`
+
+            const renderers = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_ITEM, wrapper.credential.type)
+            if (renderers && renderers.length > 0) {
+              const renderer = renderers[0]
+              const Renderer = renderer.com as FunctionComponent<{ wrapper: typeof wrapper }>
+              return <Renderer key={wrapper.credential.id} wrapper={wrapper} />
+            }
 
             return <SimpleListItem key={wrapper.credential.id} {...props} noTranslation
               label={wrapper.meta.title || t('list.item.unknown')}

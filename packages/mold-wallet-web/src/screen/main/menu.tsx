@@ -8,7 +8,9 @@ import {
   useNavigator,
   useRegov
 } from '@owlmeans/regov-lib-react'
-import { REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS } from '@owlmeans/regov-ssi-core'
+import { 
+  CREDENTIAL_LIST_ROUTE 
+} from '../../component'
 
 
 export const WalletMainMenu = () => {
@@ -21,23 +23,20 @@ export const WalletMainMenu = () => {
   return <NavigatorContextProvider navigator={nav}>
     <MainMenu defaultItems={[
       {
-        title: 'menu.logout',
-        action: async () => {
-          const loading = await nav.invokeLoading() 
-          await handler.loadStore(async () => undefined) 
+        title: 'menu.logout', action: async () => {
+          const loading = await nav.invokeLoading()
+          await handler.loadStore(async () => undefined)
           await loading.finish()
         }
       },
       {
-        title: 'menu.dashboard',
-        action: async () => {
+        title: 'menu.dashboard', action: async () => {
           nav.home()
         }
       },
       {
-        title: 'menu.wallet',
-        action: async () => {
-          nav.menu(`/credential/list/${REGISTRY_TYPE_CREDENTIALS}/${REGISTRY_SECTION_OWN}`)
+        title: 'menu.wallet', action: async () => {
+          nav.menu(CREDENTIAL_LIST_ROUTE)
         }
       }
     ]} />

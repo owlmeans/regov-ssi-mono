@@ -1,5 +1,6 @@
 import {
   addToValue,
+  CryptoKey,
   normalizeValue
 } from "@owlmeans/regov-ssi-common"
 import {
@@ -23,19 +24,25 @@ export const defaultSigningFactory: SigningFactoryMethodBuilder = schema =>
     let issuer: DIDDocument | undefined = undefined
 
     if (params.evidence) {
-      let signerKey: ExtractKeyMethod | undefined = undefined
+      let signerKey: CryptoKey | undefined = undefined
       await Promise.all(normalizeValue(params.evidence).map(async evidence => {
         if (!isCredential(evidence)) {
           throw ERROR_FACTORY_EVIDENCE_HOLDER_FORMAT
         }
-        if (!wallet.did.helper().isDIDDocument(evidence.holder)) {
-          return
-        }
 
-        const signer = evidence.holder['@context']
+        const signer = wallet.did.helper().isDIDDocument(evidence.holder)
           ? evidence.holder as DIDDocument
           : evidence.issuer
-        const signerKey = await wallet.ssi.did.helper().extractKey(signer, VERIFICATION_KEY_HOLDER)
+
+        if (!wallet.did.helper().isDIDDocument(signer)) {
+          return
+        }
+        
+        /**
+         * @TODO It shouldn't work this way. If there is more than one evidence,
+         * it will take the last one. It's actually not very logical :)
+         */
+        signerKey = await wallet.ssi.did.helper().extractKey(signer, VERIFICATION_KEY_HOLDER)
         if (!signerKey) {
           throw new Error('evidence.holder.key')
         }

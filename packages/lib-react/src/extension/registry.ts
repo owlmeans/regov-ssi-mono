@@ -53,6 +53,10 @@ export const buildUIExtensionRegistry = <
       return ext
     },
 
+    getExtensionByCode: (code) => {
+      return _registry.uiExtensions.find(ext => ext.extension.schema.details.code === code)
+    },
+
     registerAll: async exts => {
       await Promise.all(exts.map(async ext => _registry.register(ext)))
     },
@@ -76,7 +80,14 @@ export const buildUIExtensionRegistry = <
       }
     },
 
-    produceComponent: <Type extends EmptyProps = EmptyProps>(purpose: string, type?: CredType) => {
+    produceComponent: <Type extends EmptyProps = EmptyProps>(purpose: string, type?: MaybeArray<CredType>) => {
+      if (type) {
+        const types = normalizeValue(type)
+        type = types.find(type => {
+          return !!_typeToExtension[type]
+        })
+      }
+
       const wraps = type ? _typeToExtension[type].flatMap(
         ext => ext.produceComponent<Type>(purpose, type as any)
       ) : _registry.uiExtensions.flatMap(
@@ -165,6 +176,8 @@ export type UIExtensionRegistry<
     getExtensions: (type: string) => UIExtension<CredType, Ext>[]
 
     getExtension: (type: string, code?: string) => UIExtension<CredType, Ext>
+
+    getExtensionByCode: (ext: string) => UIExtension<CredType, Ext> | undefined
 
     registerAll: (exts: UIExtension<CredType, Ext>[]) => Promise<void>
 
