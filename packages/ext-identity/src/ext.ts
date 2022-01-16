@@ -27,7 +27,7 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
   let schema = buildExtensionSchema<IdentityCredentials>(details, {
     [identityType]: {
       mainType: identityType,
-      mandatoryTypes: [identityType, BASIC_IDENTITY_TYPE],
+      mandatoryTypes: [BASIC_IDENTITY_TYPE],
       defaultNameKey: 'cred.type.identity.name',
       credentialContext: {
         '@version': 1.1,

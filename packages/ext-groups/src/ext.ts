@@ -1,8 +1,11 @@
 import {
+  addObserverToSchema,
   buildExtension,
   buildExtensionSchema,
   defaultBuildingFactory,
-  defaultSigningFactory
+  defaultSigningFactory,
+  EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  IncommigDocumentEventParams
 } from "@owlmeans/regov-ssi-extension"
 import {
   REGISTRY_TYPE_IDENTITIES,
@@ -19,7 +22,7 @@ import {
 import { makeRandomUuid } from "@owlmeans/regov-ssi-common"
 
 
-export const groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
+let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
   name: 'extension.details.name',
   code: 'owlmean-regov-groups'
 }, {
@@ -60,6 +63,17 @@ export const groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTyp
   }
 })
 
+groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
+  trigger: EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  filter: async (_, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>) => {
+    if (!params.credential.type || !Array.isArray(params.credential.type)) {
+      return false
+    }
+
+    return params.credential.type.includes(REGOV_CREDENTIAL_TYPE_GROUP)
+  },
+})
+
 export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsExtensionSchema, {
   [REGOV_CREDENTIAL_TYPE_GROUP]: {
     buildingFactory: (credSchema) => async (wallet, params) => {
@@ -91,7 +105,7 @@ export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsEx
           params.evidence = identity.credential
         }
       }
-      
+
       return defaultSigningFactory(credSchema)(wallet, params)
     }
   },

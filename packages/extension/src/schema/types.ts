@@ -4,7 +4,9 @@ import {
   CredentialSchema,
   MultiSchema,
   WalletWrapper,
-  CredentialSubject
+  CredentialSubject,
+  Credential,
+  Presentation
 } from "@owlmeans/regov-ssi-core"
 import { Extension } from "../ext"
 
@@ -75,3 +77,11 @@ export type ExtensionEventFilter<CredType extends string> =
 export const EXTESNION_TRIGGER_AUTHENTICATION = 'wallet:authentication'
 export const EXTESNION_TRIGGER_AUTHENTICATED = 'wallet:authenticated'
 export const EXTESNION_TRIGGER_DEFAULT_SIGNATURE = 'signer:default-signature'
+export const EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED = 'documnet:received'
+
+export type IncommigDocumentEventParams<CredType extends string> =  EventParams<CredType> & {
+  credential: Credential | Presentation,
+  statusHandler: {
+    successful: boolean
+  }
+}

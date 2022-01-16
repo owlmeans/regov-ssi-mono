@@ -1,10 +1,10 @@
 // import React from 'react'
 
 import {
-  buildUIExtension, 
-  ExtensionItemPurpose, 
-  EXTENSION_ITEM_PURPOSE_CREATION, 
-  EXTENSION_ITEM_PURPOSE_ITEM, 
+  buildUIExtension,
+  ExtensionItemPurpose,
+  EXTENSION_ITEM_PURPOSE_CREATION,
+  EXTENSION_ITEM_PURPOSE_ITEM,
   UIExtensionFactoryProduct,
 } from '@owlmeans/regov-lib-react'
 import {
@@ -16,11 +16,28 @@ import {
   MENU_TAG_CRED_NEW
 } from '@owlmeans/regov-mold-wallet-web'
 import { commonEn } from './i18n'
-import { GroupCreation, GroupItem } from './component'
+import {
+  GroupCreation,
+  GroupItem
+} from './component'
+import {
+  EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  IncommigDocumentEventParams
+} from '@owlmeans/regov-ssi-extension'
 
 
 if (groupsExtension.localization) {
   groupsExtension.localization.translations['en'] = commonEn
+}
+
+if (groupsExtension.schema.events) {
+  groupsExtension.getEvents(EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
+    _, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>
+  ) => {
+    console.log(params)
+
+    return true
+  }
 }
 
 export const groupsUIExtension = buildUIExtension<RegovGroupExtensionTypes>(groupsExtension,

@@ -47,7 +47,6 @@ export const LongTextInput = ({ t, field, rules, rows, maxRows, i18n, showImport
       ? <Grid item container direction="row" justifyContent="flex-end" alignItems="flex-start"
         columnSpacing={1}>
         <Grid item>
-
           <FormHeaderButton t={t} i18n={i18n} title={`${field}.import`} action={open} />
         </Grid>
       </Grid>

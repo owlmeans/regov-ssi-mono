@@ -1,4 +1,12 @@
 
+export const validateJsonOrEmpty = (v: string) => {
+  if (v === '') {
+    return true
+  }
+
+  return validateJson(v)
+}
+
 export const validateJson = (v: string) => {
   try {
     const tmp = JSON.parse(v)

@@ -1,6 +1,7 @@
 import React, {
   Dispatch,
   Fragment,
+  PropsWithChildren,
   SetStateAction,
   useState
 } from 'react'
@@ -18,7 +19,7 @@ import { ContentCopy, FileDownload, MenuOpen } from '@mui/icons-material'
 import { i18n } from 'i18next'
 
 
-export const ItemMenu = ({ i18n, handle, content, prettyOutput, exportTitle }: ItemMenuParams) => {
+export const ItemMenu = ({ i18n, handle, content, prettyOutput, exportTitle, children }: ItemMenuParams) => {
   const { t } = useTranslation('regov-wallet-main', { i18n })
   const [anchor, setAnchor] = useState<HTMLElement | undefined>(undefined)
   if (typeof content === 'object') {
@@ -55,16 +56,17 @@ export const ItemMenu = ({ i18n, handle, content, prettyOutput, exportTitle }: I
         <ListItemText primary={t('menu.action.export.title')} />
       </MenuItem>
     }
+    {children}
   </Menu>
 }
 
-export type ItemMenuParams = {
+export type ItemMenuParams = PropsWithChildren<{
   handle: ItemMenuHandle
   content: string | Object
   prettyOutput?: boolean
   exportTitle?: string
   i18n: i18n
-}
+}>
 
 export type ItemMenuHandle = {
   handler: undefined | {

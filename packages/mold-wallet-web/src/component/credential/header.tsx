@@ -45,7 +45,7 @@ export const CredentialHeader = withRegov<
           onClick={() => setOpenCreation(true)}>{t('header.create')}</Button>
       </Grid>
     </Grid>
-    <Dialog open={openCreation} scroll="paper">
+    <Dialog open={openCreation} scroll="paper" onClose={() => setOpenCreation(false)}>
       <DialogTitle>{t('header.create-dialog.title')}</DialogTitle>
       <DialogContent>
         <MenuList>

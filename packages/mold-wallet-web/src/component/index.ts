@@ -18,7 +18,8 @@ import {
   StoreListWeb
 } from "./store"
 import {
-  CredentialListWeb
+  CredentialListWeb,
+  CredentialProcessorWeb
 } from './credential'
 
 
@@ -31,5 +32,6 @@ export const webComponentMap: ImplementationMap = {
   'StoreList': StoreListWeb,
   'CredentialList': CredentialListWeb,
   'MainModal': MainModalWeb,
+  'CredentialProcessor': CredentialProcessorWeb,
   'MainAuthArea': MainAuthAreaWeb,
 }
