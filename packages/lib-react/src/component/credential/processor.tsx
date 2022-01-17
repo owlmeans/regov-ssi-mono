@@ -47,6 +47,9 @@ export const CredentialProcessor: FunctionComponent<CredentialProcessorParams> =
     process: methods => async data => {
       const loading = await navigator?.invokeLoading()
       try {
+        if (data.document === '') {
+          return
+        }
         if (!handler.wallet || !extensions?.triggerEvent) {
           methods.setError('document', { type: 'authenticated' })
           return

@@ -15,7 +15,7 @@ import {
 } from '@mui/material'
 import {
   EmptyProps,
-  MainModalEventTriggerParams,
+  MainModalAuthenticatedEventParams,
   RegovCompoentProps,
   useRegov,
   withRegov
@@ -89,6 +89,6 @@ export const Onboarding: FunctionComponent<OnboardingParams> =
     </Fragment>
   })
 
-export type OnboardingParams = MainModalEventTriggerParams & EmptyProps
+export type OnboardingParams = MainModalAuthenticatedEventParams & EmptyProps
 
 export type OnboardingProps = RegovCompoentProps<OnboardingParams>

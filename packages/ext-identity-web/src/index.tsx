@@ -15,12 +15,17 @@ import en from './i18n/en.json'
 import {
   buildUIExtension,
   UIExtensionFactoryProduct,
-  MainModalEventTriggerParams,
+  MainModalAuthenticatedEventParams,
   ExtensionItemPurpose,
   EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
 } from '@owlmeans/regov-lib-react'
 import { DashboardWidget, Onboarding } from './component'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
+import {
+  REGISTRY_TYPE_IDENTITIES,
+  Credential,
+  CredentialSubject
+} from '@owlmeans/regov-ssi-core'
 
 
 export const REGOV_IDENTITY_DEFAULT_TYPE = 'OwlMeans:Regov:Identity'
@@ -46,15 +51,39 @@ export const buildIdentityExtensionUI = <CredType extends string>(
 
   if (extension.schema.events) {
     extension.getEvents(EXTESNION_TRIGGER_AUTHENTICATED)[0].method = async (
-      _, params: MainModalEventTriggerParams
+      wallet, params: MainModalAuthenticatedEventParams
     ) => {
+      if (params.config.development && extension.schema.details.defaultCredType) {
+        const factory = extension.getFactory(extension.schema.details.defaultCredType)
+        const unsigned = await factory.buildingFactory(wallet, { subjectData: {} })
+        const identity = await factory.signingFactory(wallet, { unsigned })
+
+        const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+
+        const item = await registry.addCredential<CredentialSubject, Credential<CredentialSubject>>(
+          identity as Credential<CredentialSubject>
+        )
+        item.meta.title = 'Main ID'
+        registry.registry.rootCredential = identity.id
+
+        if (params.handler) {
+          params.handler.notify()
+        }
+
+        console.info('DEV: Identity initiated.')
+
+        return false
+      }
+
       params.handle.getContent = () => <Onboarding {...params} ns={ns} ext={extension} />
 
       if (params.handle.setOpen) {
         params.handle.setOpen(true)
+
+        return true
       }
 
-      return true
+      return false
     }
   }
 
@@ -70,7 +99,7 @@ export const buildIdentityExtensionUI = <CredType extends string>(
               params: {},
               order: 0
             }
-          ] as UIExtensionFactoryProduct<{}>[]
+          ] as UIExtensionFactoryProduct[]
       }
 
       return [] as UIExtensionFactoryProduct<{}>[]

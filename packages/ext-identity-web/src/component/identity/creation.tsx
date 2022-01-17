@@ -10,7 +10,7 @@ import {
 import {
   EmptyProps,
   generalNameVlidation,
-  MainModalEventTriggerParams,
+  MainModalAuthenticatedEventParams,
   RegovCompoentProps,
   useRegov,
   withRegov
@@ -152,7 +152,7 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
     </WalletFormProvider>
   })
 
-export type IdentityCreationParams = MainModalEventTriggerParams & EmptyProps & {
+export type IdentityCreationParams = MainModalAuthenticatedEventParams & EmptyProps & {
   proceedHandle: IdentityCreationProceedHandle
 }
 

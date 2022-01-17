@@ -1,7 +1,12 @@
 import React, {
-  Fragment, FunctionComponent, useMemo
+  Fragment, 
+  FunctionComponent, 
+  useMemo
 } from 'react'
-import { GroupSubject, RegovGroupCredential } from '@owlmeans/regov-ext-groups'
+import { 
+  GroupSubject, 
+  RegovGroupCredential 
+} from '@owlmeans/regov-ext-groups'
 import {
   EmptyProps,
   RegovCompoentProps,
@@ -25,7 +30,11 @@ import {
 import {
   Groups
 } from '@mui/icons-material'
-import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-mold-wallet-web'
+import { 
+  ItemMenu, 
+  ItemMenuHandle, 
+  MenuIconButton 
+} from '@owlmeans/regov-mold-wallet-web'
 
 
 export const GroupItem = (ext: Extension<RegovGroupCredential>): FunctionComponent<GroupItemParams> =>

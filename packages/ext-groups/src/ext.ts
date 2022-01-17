@@ -17,7 +17,8 @@ import {
   GroupSubject,
   RegovGroupExtensionTypes,
   REGOV_CREDENTIAL_TYPE_GROUP,
-  REGOV_CREDENTIAL_TYPE_MEMBERSHIP
+  REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
+  REGOV_EXT_GROUP_NAMESPACE
 } from "./types"
 import { makeRandomUuid } from "@owlmeans/regov-ssi-common"
 
@@ -113,7 +114,7 @@ export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsEx
 })
 
 groupsExtension.localization = {
-  ns: 'owlmeans-regov-ext-groups',
+  ns: REGOV_EXT_GROUP_NAMESPACE,
   translations: {
   }
 }

@@ -31,3 +31,17 @@ export const addToValue = <Type>(value: MaybeArray<Type> | undefined, add: Maybe
 }
 
 export const extractId = (id: Idish) => typeof id === 'string' ? id : id.id
+
+export const getDeepValue = <Type, Subject extends {}>(subject: Subject, key: string, def?: Type): Type => {
+  const parts = key.split('.')
+  return parts.reduce((value, key) => {
+    if (subject.hasOwnProperty(key)) {
+      const tmp = (subject as any)[key]
+      subject = tmp
+
+      return tmp
+    }
+
+    return def
+  }, def) as Type
+}

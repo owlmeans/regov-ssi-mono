@@ -32,7 +32,7 @@ export const MainResponder = ({ ext }: UniversalCredentialViewParams) => <Creden
 
       return <FormProvider {...methods}>
         <PrimaryForm {...props} title="responder.title">
-          <LongTextInput {...props} field="responder.unsigned" />
+          <LongTextInput {...props} sourceCode field="responder.unsigned" />
 
           <AlertOutput {...props} field="responder.alert" />
 

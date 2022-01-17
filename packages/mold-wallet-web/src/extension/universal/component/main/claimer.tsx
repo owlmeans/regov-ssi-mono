@@ -32,8 +32,8 @@ export const MainClaimer = ({ ext }: UniversalCredentialViewParams) => <Credenti
 
       return <FormProvider {...methods}>
         <PrimaryForm {...props} title="claimer.title">
-          <LongTextInput {...props} field="claimer.unsigned" showImport maxRows alert="claimer.alert" />
-          <LongTextInput {...props} field="claimer.holder" showImport maxRows alert="claimer.alert" />
+          <LongTextInput {...props} field="claimer.unsigned" showImport sourceCode maxRows alert="claimer.alert" />
+          <LongTextInput {...props} field="claimer.holder" showImport sourceCode maxRows alert="claimer.alert" />
 
           <AlertOutput {...props} field="claimer.alert" />
 

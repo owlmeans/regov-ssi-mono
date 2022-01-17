@@ -1,3 +1,5 @@
+import { CredentialWrapper } from "@owlmeans/regov-ssi-core"
+import { EmptyProps } from ".."
 
 export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_CLAIM
 | typeof EXTENSION_ITEM_PURPOSE_OFFER
@@ -51,3 +53,15 @@ export type ManuItemParams = {
 }
 
 export type MenuActionResult = { path: string, params?: Object }
+
+export type PurposeListItemParams = EmptyProps & {
+  wrapper: CredentialWrapper
+}
+
+export type PurposeCredentialCreationParams = EmptyProps & {
+  next: () => void
+}
+
+export type PurposeDashboardWidgetParams = EmptyProps & {
+  
+}

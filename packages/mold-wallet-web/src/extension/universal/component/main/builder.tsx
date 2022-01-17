@@ -42,10 +42,10 @@ export const MainBuilder = ({ ext }: UniversalCredentialViewParams) => <Credenti
           {/**
            * @TODO Use https://www.npmjs.com/package/jsoneditor instead:
            */}
-          <LongTextInput {...props} field="builder.context" showImport maxRows alert="builder.alert" />
-          <LongTextInput {...props} field="builder.subject" showImport maxRows alert="builder.alert" />
-          <LongTextInput {...props} field="builder.evidence" showImport maxRows alert="builder.alert" />
-          <LongTextInput {...props} field="builder.schema" showImport maxRows alert="builder.alert" />
+          <LongTextInput {...props} field="builder.context" showImport maxRows sourceCode alert="builder.alert" />
+          <LongTextInput {...props} field="builder.subject" showImport maxRows sourceCode alert="builder.alert" />
+          <LongTextInput {...props} field="builder.evidence" showImport maxRows sourceCode alert="builder.alert" />
+          <LongTextInput {...props} field="builder.schema" showImport maxRows sourceCode alert="builder.alert" />
 
           <AlertOutput {...props} field="builder.alert" />
 

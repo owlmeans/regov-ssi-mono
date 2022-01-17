@@ -1,4 +1,4 @@
-// import React from 'react'
+import React from 'react'
 
 import {
   buildUIExtension,
@@ -6,11 +6,16 @@ import {
   EXTENSION_ITEM_PURPOSE_CREATION,
   EXTENSION_ITEM_PURPOSE_ITEM,
   UIExtensionFactoryProduct,
+  PurposeListItemParams,
+  PurposeCredentialCreationParams,
+  MainModalHandle,
+  EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
+  MainModalShareEventParams,
 } from '@owlmeans/regov-lib-react'
 import {
   groupsExtension,
   RegovGroupExtensionTypes,
-  REGOV_CREDENTIAL_TYPE_GROUP
+  REGOV_CREDENTIAL_TYPE_GROUP,
 } from '@owlmeans/regov-ext-groups'
 import {
   MENU_TAG_CRED_NEW
@@ -21,9 +26,15 @@ import {
   GroupItem
 } from './component'
 import {
+  addObserverToSchema,
   EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED,
   IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-extension'
+import { GroupView } from './component/credential/group/view'
+import { RegovGroupUIExtension } from './types'
+import {
+  Credential
+} from '@owlmeans/regov-ssi-core'
 
 
 if (groupsExtension.localization) {
@@ -31,16 +42,37 @@ if (groupsExtension.localization) {
 }
 
 if (groupsExtension.schema.events) {
+  let modalHandler: MainModalHandle
+
   groupsExtension.getEvents(EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
     _, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>
   ) => {
-    console.log(params)
+    if (modalHandler) {
+      modalHandler.getContent = () => <GroupView ext={groupsExtension}
+        credential={params.credential as Credential} />
+      if (modalHandler.setOpen) {
+        modalHandler.setOpen(true)
+      }
 
-    return true
+      params.statusHandler.successful = true
+
+      return true
+    }
+
+    return false
   }
+
+  groupsExtension.schema = addObserverToSchema(groupsExtension.schema, {
+    trigger: EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
+    method: async (_, params: MainModalShareEventParams) => {
+      modalHandler = params.handle
+
+      return false
+    }
+  })
 }
 
-export const groupsUIExtension = buildUIExtension<RegovGroupExtensionTypes>(groupsExtension,
+export const groupsUIExtension: RegovGroupUIExtension = buildUIExtension<RegovGroupExtensionTypes>(groupsExtension,
   (purpose: ExtensionItemPurpose, type?: RegovGroupExtensionTypes) => {
     switch (purpose) {
       case EXTENSION_ITEM_PURPOSE_CREATION:
@@ -51,7 +83,7 @@ export const groupsUIExtension = buildUIExtension<RegovGroupExtensionTypes>(grou
               extensionCode: `${groupsExtension.schema.details.code}GroupCreation`,
               params: {},
               order: 0
-            }] as UIExtensionFactoryProduct<{}>[]
+            }] as UIExtensionFactoryProduct<PurposeCredentialCreationParams>[]
         }
       case EXTENSION_ITEM_PURPOSE_ITEM:
         switch (type) {
@@ -61,10 +93,10 @@ export const groupsUIExtension = buildUIExtension<RegovGroupExtensionTypes>(grou
               extensionCode: `${groupsExtension.schema.details.code}GroupItem`,
               params: {},
               order: 0
-            }] as UIExtensionFactoryProduct<{}>[]
+            }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
         }
     }
-    return []
+    return [] as UIExtensionFactoryProduct<{}>[]
   }
 )
 
@@ -82,3 +114,4 @@ groupsUIExtension.menuItems = [
     }
   }
 ]
+

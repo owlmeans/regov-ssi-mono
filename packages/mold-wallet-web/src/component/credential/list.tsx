@@ -9,7 +9,8 @@ import {
 import {
   CredentialListImplProps,
   useRegov,
-  EXTENSION_ITEM_PURPOSE_ITEM
+  EXTENSION_ITEM_PURPOSE_ITEM,
+  PurposeListItemParams
 } from '@owlmeans/regov-lib-react'
 import {
   ItemMenu,
@@ -59,7 +60,7 @@ const CredentialListItem = ({ wrapper, props }: CredentialListItemProps) => {
   const renderers = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_ITEM, wrapper.credential.type)
   if (renderers && renderers.length > 0) {
     const renderer = renderers[0]
-    const Renderer = renderer.com as FunctionComponent<{ wrapper: typeof wrapper }>
+    const Renderer = renderer.com as FunctionComponent<PurposeListItemParams>
     
     return <Renderer wrapper={wrapper} />
   }

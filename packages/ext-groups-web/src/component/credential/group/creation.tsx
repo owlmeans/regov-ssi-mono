@@ -31,7 +31,7 @@ import {
   ERROR_CREATION_AUTHENTICATION,
   ERROR_CREATION_EXTENSION,
   ERROR_CREATION_READYTO_SIGN
-} from '../types'
+} from '../../types'
 import {
   CredentialSubject,
   REGISTRY_TYPE_CREDENTIALS,

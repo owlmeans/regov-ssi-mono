@@ -12,36 +12,41 @@ import {
   RegovCompoentProps,
   useRegov,
   withRegov,
-  WrappedComponentProps
+  WrappedComponentProps,
+  Config,
+  WalletHandler
 } from '../../common'
 
 
 export const MainModal: FunctionComponent<MainModalParams> = withRegov<MainModalProps>(
   'MainModal', props => {
     const { i18n, t, alias, renderer: Renderer } = props
-    const { extensions, handler } = useRegov()
+    const { extensions, handler, config } = useRegov()
     const handle = useMemo<MainModalHandle>(() => ({}), [alias])
     const _props = { i18n, t, alias, handle }
     useEffect(() => {
-      if (handler.wallet && extensions?.triggerEvent) {
-        extensions.triggerEvent<MainModalEventTriggerParams>(
-          handler.wallet, EXTESNION_TRIGGER_AUTHENTICATED, { handle }
-        )
-      }
+      (async () => {
+        if (handler.wallet && extensions?.triggerEvent) {
+          await extensions.triggerEvent<MainModalShareEventParams>(
+            handler.wallet, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, { handle }
+          )
+
+          await extensions.triggerEvent<MainModalAuthenticatedEventParams>(
+            handler.wallet, EXTESNION_TRIGGER_AUTHENTICATED, { handle, config, handler }
+          )
+        }
+      })()
     }, [alias])
 
     return <Renderer {..._props} />
   },
-  {
-    namespace: 'regov-wallet-flow',
-    transformer: (wallet) => {
-      return { alias: wallet?.store.alias }
-    }
-  }
+  { namespace: 'regov-wallet-flow', transformer: (wallet) => ({ alias: wallet?.store.alias }) }
 )
 
-export type MainModalEventTriggerParams = EventParams<string> & {
-  handle: MainModalHandle,
+export type MainModalAuthenticatedEventParams = EventParams<string> & {
+  handle: MainModalHandle
+  config: Config
+  handler: WalletHandler
 }
 
 export type MainModalParams = {
@@ -66,3 +71,9 @@ export type MainModalHandle = {
 }
 
 export type MainModalImplProps = WrappedComponentProps<MainModalImplParams, MainModalState>
+
+export type MainModalShareEventParams = EventParams<string> & {
+  handle: MainModalHandle
+}
+
+export const EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER = 'regov:wallet:sharehandler'

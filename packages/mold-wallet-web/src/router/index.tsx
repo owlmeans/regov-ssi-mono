@@ -14,6 +14,7 @@ import {
   useRegov,
   WalletHandler,
   EXTENSION_ITEM_PURPOSE_ROUTE,
+  Config,
 } from '@owlmeans/regov-lib-react'
 import {
   WalletStoreCreation,
@@ -50,13 +51,16 @@ export const NavigationRoot = () => {
   </Routes>
 }
 
-export const createRootNavigator = (navigate: NavigateFunction, handler: WalletHandler) =>
+export const createRootNavigator = (navigate: NavigateFunction, handler: WalletHandler, config: Config) =>
   extendNavigator(basicNavigator, {
     assertAuth: async () => {
       if (handler.wallet) {
         return true
       }
-      navigate('/store/list')
+
+      if (!config.development) {
+        navigate('/store/list')
+      }
 
       return false
     },

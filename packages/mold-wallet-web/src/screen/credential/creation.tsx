@@ -8,7 +8,8 @@ import {
 import {
   useRegov,
   withRegov,
-  EXTENSION_ITEM_PURPOSE_CREATION
+  EXTENSION_ITEM_PURPOSE_CREATION,
+  PurposeCredentialCreationParams
 } from '@owlmeans/regov-lib-react'
 import {
   CREDENTIAL_LIST_ROUTE
@@ -36,7 +37,7 @@ export const CredentialCreation = withRegov({ namespace: 'regov-wallet-credentia
     return <Fragment />
   }
 
-  const Renderer = renderers[0].com as FunctionComponent<{ next: () => void }>
+  const Renderer = renderers[0].com as FunctionComponent<PurposeCredentialCreationParams>
 
   return <Renderer next={() => navigate(CREDENTIAL_LIST_ROUTE)} />
 })

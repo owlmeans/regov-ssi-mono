@@ -33,8 +33,8 @@ export const MainSigner = ({ ext }: UniversalCredentialViewParams) => <Credentia
 
       return <FormProvider {...methods}>
         <PrimaryForm {...props} title="signer.title">
-          <LongTextInput {...props} field="signer.unsigned" showImport maxRows alert="signer.alert" />
-          <LongTextInput {...props} field="signer.evidence" showImport maxRows alert="signer.alert" />
+          <LongTextInput {...props} field="signer.unsigned" showImport sourceCode maxRows alert="signer.alert" />
+          <LongTextInput {...props} field="signer.evidence" showImport sourceCode maxRows alert="signer.alert" />
 
           <AlertOutput {...props} field="signer.alert" />
 

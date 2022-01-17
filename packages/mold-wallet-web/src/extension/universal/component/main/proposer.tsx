@@ -33,8 +33,8 @@ export const MainProposer = ({ ext }: UniversalCredentialViewParams) => <Credent
 
       return <FormProvider {...methods}>
         <PrimaryForm {...props} title="proposer.title">
-          <LongTextInput {...props} field="proposer.claim" maxRows showImport alert="proposer.alert"/>
-          <LongTextInput {...props} field="proposer.issuer" maxRows showImport alert="proposer.alert"/>
+          <LongTextInput {...props} field="proposer.claim" maxRows sourceCode showImport alert="proposer.alert"/>
+          <LongTextInput {...props} field="proposer.issuer" maxRows sourceCode showImport alert="proposer.alert"/>
 
           <AlertOutput {...props} field="proposer.alert" />
 

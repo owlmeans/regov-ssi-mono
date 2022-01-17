@@ -22,7 +22,7 @@ export const AppProvider = ({
   handler, config, extensions, i18n, navigatorBuilder, children
 }: ProviderParams) => {
   const navigate = useNavigate()
-  const navigator = navigatorBuilder(navigate, handler)
+  const navigator = navigatorBuilder(navigate, handler, config)
   const [firstLoad, setFirstLoad] = useState(true)
   if (config.development) {
     const storedAssertAuth = navigator.assertAuth

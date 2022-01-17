@@ -13,7 +13,9 @@ import { useDropzone } from "react-dropzone"
 import { FormHeaderButton } from '../button'
 
 
-export const LongTextInput = ({ t, field, rules, rows, maxRows, i18n, showImport, alert }: LongTextInputProps) => {
+export const LongTextInput = ({ 
+  t, field, rules, rows, maxRows, i18n, showImport, alert, sourceCode 
+}: LongTextInputProps) => {
   const { control, setValue, setError } = useFormContext()
   const onDrop = useCallback(async (files: File[]) => {
     if (files.length) {
@@ -58,6 +60,9 @@ export const LongTextInput = ({ t, field, rules, rows, maxRows, i18n, showImport
           rows = rows || 3
 
           return <TextField fullWidth margin="normal" variant="outlined" InputLabelProps={{ shrink: true }}
+            InputProps={{
+              sx: sourceCode ? { fontSize: 12, fontFamily: "monospace" } : {},
+            }}
             multiline {...(
               maxRows
                 ? typeof maxRows === 'boolean'
@@ -82,5 +87,6 @@ export type LongTextInputProps = WrappedComponentProps<{
   rows?: number
   maxRows?: number | boolean
   showImport?: boolean
+  sourceCode?: boolean
   alert?: string
 }>
