@@ -212,7 +212,7 @@ export const buildDidHelper =
     }
 
     const _isDIDSigned = (obj: DIDDocument | DIDDocumentUnsinged): obj is DIDDocument => {
-      return !obj.hasOwnProperty('proof')
+      return obj.hasOwnProperty('proof')
     }
 
     const _extractKey: ExtractKeyMethod = async (did, keyId) => {
