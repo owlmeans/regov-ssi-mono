@@ -3,6 +3,7 @@ import React, {
   FunctionComponent
 } from 'react'
 import {
+  CredentialEvidenceWidget,
   EmptyProps,
   RegovCompoentProps,
   withRegov
@@ -67,18 +68,8 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
             </Paper>
           </Grid>
         </Grid>
-        Evidence chain
         <Grid item>
-          Evicence chain extension
-        </Grid>
-        <Grid item container direction="column" justifyContent="flex-start" alignItems="stretch">
-          Trust block
-          <Grid item>
-            Evidence trust list
-          </Grid>
-          <Grid item>
-            Issuer trust
-          </Grid>
+          <CredentialEvidenceWidget />
         </Grid>
       </Grid>
     </DialogContent>
