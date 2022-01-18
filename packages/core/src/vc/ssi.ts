@@ -327,7 +327,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       /**
        * @TODO Fix any type of options
        */
-      const _gerVerifySuite = async (options: any) => {
+      const _getVerifySuite = async (options: any) => {
         const didId = did.helper().parseDIDId(options.verificationMethod)
         let _didDoc = await did.lookUpDid<DIDDocument>(didId.did)
         if (!_didDoc) {
@@ -400,7 +400,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           const credResult = await jsigs.verify(
             credential,
             {
-              suite: await _gerVerifySuite({
+              suite: await _getVerifySuite({
                 verificationMethod: credential.proof.verificationMethod
               }),
               documentLoader: _documentLoader,
@@ -454,7 +454,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
         const presResult = await jsigs.verify(
           presentation,
           {
-            suite: await _gerVerifySuite({
+            suite: await _getVerifySuite({
               verificationMethod: presentation.proof.verificationMethod
             }),
             documentLoader: _documentLoader,
