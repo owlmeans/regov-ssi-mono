@@ -26,7 +26,7 @@ const _test = async () => {
       crypto: nodeCryptoHelper
     }),
     crypto: nodeCryptoHelper,
-    did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schemaPath: 'did-schema' }))
+    did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
   })
 
   const subject = {
@@ -110,7 +110,7 @@ const _test = async () => {
         crypto: nodeCryptoHelper
       }),
       crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schemaPath: 'did-schema'}))
+      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
     })
 
     const ctxBob = await buildSSICore({
@@ -119,7 +119,7 @@ const _test = async () => {
         crypto: nodeCryptoHelper
       }),
       crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schemaPath: 'did-schema'}))
+      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
     })
 
     const ctxCharly = await buildSSICore({
@@ -128,7 +128,7 @@ const _test = async () => {
         crypto: nodeCryptoHelper
       }),
       crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper, { prefix: 'exap', schemaPath: 'did-schema'}))
+      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
     })
 
     const uAliceDid = await ctxAlice.did.helper().createDID(
@@ -201,7 +201,7 @@ const _test = async () => {
     console.log(depDid, await ctxCharly.did.helper().verifyDID(depDid))
 
     const cred = await ctxBob.signCredential(uCred, depDid)
-    ctxCharly.did.addPeerDID(bobDid)
+    ctxCharly.did.addPeerDID(depDid)
     console.log('-- CHARLY VERIFIES CRED --')
     console.log(await ctxCharly.verifyCredential(cred, depDid))
 
