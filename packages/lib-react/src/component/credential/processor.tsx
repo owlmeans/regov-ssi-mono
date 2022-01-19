@@ -10,7 +10,7 @@ import {
   WrappedComponentProps
 } from '../../common'
 import {
-  EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-extension'
 import {
@@ -58,7 +58,7 @@ export const CredentialProcessor: FunctionComponent<CredentialProcessorParams> =
           successful: false
         }
         await extensions.triggerEvent<IncommigDocumentEventParams<string>>(
-          handler.wallet, EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED, {
+          handler.wallet, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, {
           credential: JSON.parse(data.document), statusHandler
         })
         if (!statusHandler.successful) {

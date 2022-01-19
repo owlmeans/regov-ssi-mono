@@ -27,7 +27,7 @@ import {
 } from './component'
 import {
   addObserverToSchema,
-  EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-extension'
 import { GroupView } from './component/credential/group/view'
@@ -44,15 +44,19 @@ if (groupsExtension.localization) {
 if (groupsExtension.schema.events) {
   let modalHandler: MainModalHandle
 
-  groupsExtension.getEvents(EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
+  groupsExtension.getEvents(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
     _, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>
   ) => {
     if (modalHandler) {
       modalHandler.getContent = () => <GroupView ext={groupsExtension}
+        close={() => modalHandler.setOpen && modalHandler.setOpen(false)}
         credential={params.credential as Credential} />
       if (modalHandler.setOpen) {
         modalHandler.setOpen(true)
       }
+      /**
+       * @TODO Clean up processor on reset
+       */
 
       params.statusHandler.successful = true
 

@@ -17,6 +17,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  IconButton,
   Paper,
 } from '@mui/material'
 import {
@@ -27,16 +28,30 @@ import {
   EntityRenderer,
   EntityTextRenderer
 } from '@owlmeans/regov-mold-wallet-web'
-import { People } from '@mui/icons-material'
+import {
+  Close,
+  People
+} from '@mui/icons-material'
 
 
 export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupViewProps>({
   namespace: REGOV_EXT_GROUP_NAMESPACE
-}, ({ t, credential }) => {
+}, ({ t, credential, close }) => {
   const subject = geCompatibletSubject<GroupSubject>(credential)
 
   return <Fragment>
-    <DialogTitle>{t('group.view.title', { name: subject.name })}</DialogTitle>
+    <DialogTitle>
+      <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Grid item xs={8}>
+          {t('group.view.title', { name: subject.name })}
+        </Grid>
+        <Grid item xs={4} container direction="row" justifyContent="flex-end" alignItems="flex-start">
+          <Grid item>
+            {close && <IconButton onClick={close}><Close /></IconButton>}
+          </Grid>
+        </Grid>
+      </Grid>
+    </DialogTitle>
     <DialogContent>
       <Grid container direction="column" justifyContent="flex-start" alignItems="stretch">
         <Grid item container direction="row" justifyContent="space-between" alignItems="flex-start">
@@ -68,8 +83,8 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
             </Paper>
           </Grid>
         </Grid>
-        <Grid item>
-          <CredentialEvidenceWidget />
+        <Grid item pt={1} px={1}>
+          <CredentialEvidenceWidget credential={credential} />
         </Grid>
       </Grid>
     </DialogContent>
@@ -79,6 +94,7 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
 export type GroupViewParams = EmptyProps & {
   ext: RegovGroupExtension,
   credential: Credential
+  close?: () => void
 }
 
 export type GroupViewProps = RegovCompoentProps<GroupViewParams>

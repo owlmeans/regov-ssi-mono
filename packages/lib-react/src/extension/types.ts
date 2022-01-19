@@ -18,6 +18,7 @@ export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_CLAIM
 | typeof EXTENSION_ITEM_PURPOSE_DASHBOARD
 | typeof EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET
 | typeof EXTENSION_ITEM_PURPOSE_SIGNER
+| typeof EXTENSION_ITEM_PURPOSE_EVIDENCE
 | typeof EXTENSION_ITEM_PURPOSE_CREATION
 | string
 
@@ -38,6 +39,7 @@ export const EXTENSION_ITEM_PURPOSE_ROUTE = 'route'
 export const EXTENSION_ITEM_PURPOSE_DASHBOARD = 'dashboard'
 export const EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET = 'dashboard_widget'
 export const EXTENSION_ITEM_PURPOSE_SIGNER = 'signer'
+export const EXTENSION_ITEM_PURPOSE_EVIDENCE = 'evidence'
 export const EXTENSION_ITEM_PURPOSE_CREATION = 'creation'
 
 
@@ -55,6 +57,10 @@ export type ManuItemParams = {
 export type MenuActionResult = { path: string, params?: Object }
 
 export type PurposeListItemParams = EmptyProps & {
+  wrapper: CredentialWrapper
+}
+
+export type PurposeEvidenceWidgetParams = EmptyProps & {
   wrapper: CredentialWrapper
 }
 

@@ -4,10 +4,13 @@ import {
   buildExtensionSchema,
   ExtensionDetails,
   defaultBuildingFactory,
-  EXTESNION_TRIGGER_AUTHENTICATED,
+  EXTENSION_TRIGGER_AUTHENTICATED,
+  EXTENSION_TRIGGER_RETRIEVE_NAME,
+  RetreiveNameEventParams,
 } from "@owlmeans/regov-ssi-extension"
 import {
   CredentialSubject,
+  geCompatibletSubject,
   REGISTRY_TYPE_IDENTITIES,
   UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
@@ -54,7 +57,23 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
 
   schema = addObserverToSchema<IdentityCredentials>(schema, {
     filter: async wallet => !wallet.hasIdentity(),
-    trigger: EXTESNION_TRIGGER_AUTHENTICATED
+    trigger: EXTENSION_TRIGGER_AUTHENTICATED
+  })
+
+  schema = addObserverToSchema(schema, {
+    trigger: EXTENSION_TRIGGER_RETRIEVE_NAME,
+    filter: async (_, params: RetreiveNameEventParams<IdentityCredentials>) => {
+      if (!params.credential.type || !Array.isArray(params.credential.type)) {
+        return false
+      }
+  
+      return params.credential.type.includes(identityType)
+    },
+    
+    method: async (_, { credential, setName }: RetreiveNameEventParams<IdentityCredentials>) => {
+      const subject = geCompatibletSubject<IdentitySubject>(credential)
+      setName(subject.identifier)
+    }
   })
 
   const extension = buildExtension<IdentityCredentials>(schema, {

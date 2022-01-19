@@ -4,13 +4,16 @@ import {
   buildExtensionSchema,
   defaultBuildingFactory,
   defaultSigningFactory,
-  EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED,
-  IncommigDocumentEventParams
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  EXTENSION_TRIGGER_RETRIEVE_NAME,
+  IncommigDocumentEventParams,
+  RetreiveNameEventParams
 } from "@owlmeans/regov-ssi-extension"
 import {
   REGISTRY_TYPE_IDENTITIES,
   REGISTRY_TYPE_CREDENTIALS,
-  UnsignedCredential
+  UnsignedCredential,
+  geCompatibletSubject
 } from '@owlmeans/regov-ssi-core'
 import {
   BASIC_IDENTITY_TYPE,
@@ -65,7 +68,7 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
 })
 
 groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
-  trigger: EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   filter: async (_, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>) => {
     if (!params.credential.type || !Array.isArray(params.credential.type)) {
       return false
@@ -73,6 +76,22 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
 
     return params.credential.type.includes(REGOV_CREDENTIAL_TYPE_GROUP)
   },
+})
+
+groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
+  trigger: EXTENSION_TRIGGER_RETRIEVE_NAME,
+  filter: async (_, params: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
+    if (!params.credential.type || !Array.isArray(params.credential.type)) {
+      return false
+    }
+
+    return params.credential.type.includes(REGOV_CREDENTIAL_TYPE_GROUP)
+  },
+  
+  method: async (_, { credential, setName }: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
+    const subject = geCompatibletSubject<GroupSubject>(credential)
+    setName(subject.name)
+  }
 })
 
 export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsExtensionSchema, {

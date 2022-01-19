@@ -74,14 +74,20 @@ export type EventParams<CredType extends string> = {
 export type ExtensionEventFilter<CredType extends string> =
   (wallet: WalletWrapper, params: EventParams<CredType>) => Promise<boolean>
 
-export const EXTESNION_TRIGGER_AUTHENTICATION = 'wallet:authentication'
-export const EXTESNION_TRIGGER_AUTHENTICATED = 'wallet:authenticated'
-export const EXTESNION_TRIGGER_DEFAULT_SIGNATURE = 'signer:default-signature'
-export const EXTESNION_TRIGGER_INCOMMING_DOC_RECEIVED = 'documnet:received'
+export const EXTENSION_TRIGGER_AUTHENTICATION = 'wallet:authentication'
+export const EXTENSION_TRIGGER_AUTHENTICATED = 'wallet:authenticated'
+export const EXTENSION_TRIGGER_DEFAULT_SIGNATURE = 'signer:default-signature'
+export const EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED = 'documnet:received'
+export const EXTENSION_TRIGGER_RETRIEVE_NAME = 'credentail:get-name'
 
-export type IncommigDocumentEventParams<CredType extends string> =  EventParams<CredType> & {
+export type IncommigDocumentEventParams<CredType extends string> = EventParams<CredType> & {
   credential: Credential | Presentation,
   statusHandler: {
     successful: boolean
   }
+}
+
+export type RetreiveNameEventParams<CredType extends string> = EventParams<CredType> & {
+  credential: Credential
+  setName: (name: string) => void
 }

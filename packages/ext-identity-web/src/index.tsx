@@ -3,7 +3,7 @@ export * from './types'
 import React from 'react'
 import {
   ExtensionDetails,
-  EXTESNION_TRIGGER_AUTHENTICATED,
+  EXTENSION_TRIGGER_AUTHENTICATED,
 } from '@owlmeans/regov-ssi-extension'
 
 import {
@@ -50,7 +50,7 @@ export const buildIdentityExtensionUI = <CredType extends string>(
   }
 
   if (extension.schema.events) {
-    extension.getEvents(EXTESNION_TRIGGER_AUTHENTICATED)[0].method = async (
+    extension.getEvents(EXTENSION_TRIGGER_AUTHENTICATED)[0].method = async (
       wallet, params: MainModalAuthenticatedEventParams
     ) => {
       if (params.config.development && extension.schema.details.defaultCredType) {

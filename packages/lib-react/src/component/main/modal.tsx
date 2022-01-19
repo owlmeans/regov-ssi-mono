@@ -6,7 +6,7 @@ import React, {
 } from 'react'
 import {
   EventParams,
-  EXTESNION_TRIGGER_AUTHENTICATED
+  EXTENSION_TRIGGER_AUTHENTICATED
 } from '@owlmeans/regov-ssi-extension'
 import {
   RegovCompoentProps,
@@ -32,7 +32,7 @@ export const MainModal: FunctionComponent<MainModalParams> = withRegov<MainModal
           )
 
           await extensions.triggerEvent<MainModalAuthenticatedEventParams>(
-            handler.wallet, EXTESNION_TRIGGER_AUTHENTICATED, { handle, config, handler }
+            handler.wallet, EXTENSION_TRIGGER_AUTHENTICATED, { handle, config, handler }
           )
         }
       })()
