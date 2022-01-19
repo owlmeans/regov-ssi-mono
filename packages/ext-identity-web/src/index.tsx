@@ -18,8 +18,13 @@ import {
   MainModalAuthenticatedEventParams,
   ExtensionItemPurpose,
   EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
+  EXTENSION_ITEM_PURPOSE_EVIDENCE,
 } from '@owlmeans/regov-lib-react'
-import { DashboardWidget, Onboarding } from './component'
+import { 
+  DashboardWidget, 
+  EvidenceWidget, 
+  Onboarding 
+} from './component'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
 import {
   REGISTRY_TYPE_IDENTITIES,
@@ -100,6 +105,15 @@ export const buildIdentityExtensionUI = <CredType extends string>(
               order: 0
             }
           ] as UIExtensionFactoryProduct[]
+        case EXTENSION_ITEM_PURPOSE_EVIDENCE:
+          return [
+            {
+              com: EvidenceWidget(extension),
+              extensionCode: `${details.code}EvidenceWidget`,
+              params: {},
+              order: 0
+            }
+          ]
       }
 
       return [] as UIExtensionFactoryProduct<{}>[]

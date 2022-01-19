@@ -11,6 +11,8 @@ import {
   MainModalHandle,
   EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
   MainModalShareEventParams,
+  EXTENSION_ITEM_PURPOSE_EVIDENCE,
+  PurposeEvidenceWidgetParams,
 } from '@owlmeans/regov-lib-react'
 import {
   groupsExtension,
@@ -23,14 +25,15 @@ import {
 import { commonEn } from './i18n'
 import {
   GroupCreation,
-  GroupItem
+  GroupItem,
+  GroupView,
+  EvidenceWidget
 } from './component'
 import {
   addObserverToSchema,
   EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-extension'
-import { GroupView } from './component/credential/group/view'
 import { RegovGroupUIExtension } from './types'
 import {
   Credential
@@ -98,6 +101,16 @@ export const groupsUIExtension: RegovGroupUIExtension = buildUIExtension<RegovGr
               params: {},
               order: 0
             }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
+        }
+      case EXTENSION_ITEM_PURPOSE_EVIDENCE:
+        switch (type) {
+          case REGOV_CREDENTIAL_TYPE_GROUP:
+            return [{
+              com: EvidenceWidget(groupsExtension),
+              extensionCode: `${groupsExtension.schema.details.code}EvidenceWidget`,
+              params: {},
+              order: 0
+            }] as UIExtensionFactoryProduct<PurposeEvidenceWidgetParams>[]
         }
     }
     return [] as UIExtensionFactoryProduct<{}>[]

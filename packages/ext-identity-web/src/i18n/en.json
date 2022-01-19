@@ -44,6 +44,11 @@
   "widget": {
     "dashboard": {
       "issuedAt": "Issued"
+    },
+    "evidence": {
+      "issuedAt": "Issuance date",
+      "uuid": "Unique Sequence",
+      "sourceApp": "Issuing App"
     }
   },
   "creation": {

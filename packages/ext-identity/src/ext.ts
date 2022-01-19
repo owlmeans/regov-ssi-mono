@@ -72,7 +72,7 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
     
     method: async (_, { credential, setName }: RetreiveNameEventParams<IdentityCredentials>) => {
       const subject = geCompatibletSubject<IdentitySubject>(credential)
-      setName(subject.identifier)
+      setName(`ID: ${subject.identifier}`)
     }
   })
 

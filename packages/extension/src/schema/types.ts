@@ -81,7 +81,7 @@ export const EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED = 'documnet:received'
 export const EXTENSION_TRIGGER_RETRIEVE_NAME = 'credentail:get-name'
 
 export type IncommigDocumentEventParams<CredType extends string> = EventParams<CredType> & {
-  credential: Credential | Presentation,
+  credential: Credential | Presentation
   statusHandler: {
     successful: boolean
   }

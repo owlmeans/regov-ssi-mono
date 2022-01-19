@@ -23,43 +23,41 @@ import {
 
 
 export const CredentialEvidenceWidget: FunctionComponent<EvidenceWidgetParams> = withRegov<EvidenceWidgetProps>(
-  'CredentialEvidenceWidget', ({
-    t, i18n, credential, isChild, renderer: Renderer
-  }) => {
-  const evidence = normalizeValue(credential.evidence)
-  const { extensions, handler } = useRegov()
-  const [names, setNames] = useState<string[]>(new Array(evidence.length).fill(''))
-  useEffect(() => {
-    (async () => {
-      if (extensions) {
-        const newNames = new Array(evidence.length).fill('')
-        await Promise.all(evidence.map(
-          async (evidence, idx) => handler.wallet && extensions.triggerEvent<RetreiveNameEventParams<string>>(
-            handler.wallet, EXTENSION_TRIGGER_RETRIEVE_NAME, {
-            credential: evidence as Credential, setName: (name: string) => { newNames[idx] = name }
-          })
-        ))
-        setNames(newNames)
-      }
-    })()
-  }, [credential.id])
+  'CredentialEvidenceWidget', ({ t, i18n, credential, isChild, renderer: Renderer }) => {
+    const evidence = normalizeValue(credential.evidence)
+    const { extensions, handler } = useRegov()
+    const [names, setNames] = useState<string[]>(new Array(evidence.length).fill(''))
+    useEffect(() => {
+      (async () => {
+        if (extensions) {
+          const newNames = new Array(evidence.length).fill('')
+          await Promise.all(evidence.map(
+            async (evidence, idx) => handler.wallet && extensions.triggerEvent<RetreiveNameEventParams<string>>(
+              handler.wallet, EXTENSION_TRIGGER_RETRIEVE_NAME, {
+              credential: evidence as Credential, setName: (name: string) => { newNames[idx] = name }
+            })
+          ))
+          setNames(newNames)
+        }
+      })()
+    }, [credential.id])
 
-  const props: EvidenceWidgetImplProps = {
-    t, i18n, isChild, tabs: []
-  }
+    const props: EvidenceWidgetImplProps = {
+      t, i18n, isChild, tabs: []
+    }
 
-  if (credential.evidence) {
-    props.tabs = evidence.map((evidence, idx) => ({
-      idx,
-      title: names[idx].trim() !== '' ? names[idx] : `${t('widget.evidence.tabs.title')} ${idx}`,
-      evidence: evidence as Credential
-    }))
+    if (credential.evidence) {
+      props.tabs = evidence.map((evidence, idx) => ({
+        idx,
+        title: names[idx].trim() !== '' ? names[idx] : `${t('widget.evidence.tabs.title')} ${idx}`,
+        evidence: evidence as Credential
+      }))
 
-    return <Renderer {...props} />
-  }
+      return <Renderer {...props} />
+    }
 
-  return <Fragment />
-}, { namespace: 'regov-wallet-credential' })
+    return <Fragment />
+  }, { namespace: 'regov-wallet-credential' })
 
 export type EvidenceWidgetParams = EmptyProps & {
   credential: Credential

@@ -67,7 +67,7 @@ export const CredentialEvidenceWidgetWeb = (props: EvidenceWidgetImplProps) => {
         {tab.evidence.evidence && <Grid item>
           <Accordion TransitionProps={{ unmountOnExit: true }}>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography>Accordion 1</Typography>
+              <Typography>{t('widget.evidence.accordion.summary')}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <CredentialEvidenceWidget isChild credential={tab.evidence as Credential} />
