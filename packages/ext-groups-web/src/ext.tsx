@@ -52,7 +52,10 @@ if (groupsExtension.schema.events) {
   ) => {
     if (modalHandler) {
       modalHandler.getContent = () => <GroupView ext={groupsExtension}
-        close={() => modalHandler.setOpen && modalHandler.setOpen(false)}
+        close={() => {
+          params.cleanUp()
+          modalHandler.setOpen && modalHandler.setOpen(false)
+        }}
         credential={params.credential as Credential} />
       if (modalHandler.setOpen) {
         modalHandler.setOpen(true)

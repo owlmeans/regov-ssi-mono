@@ -1,17 +1,21 @@
 import React, {
   Fragment,
-  FunctionComponent
+  FunctionComponent,
+  useEffect,
+  useState
 } from 'react'
 import {
   CredentialEvidenceWidget,
   EmptyProps,
   RegovCompoentProps,
+  useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
 import {
   REGOV_EXT_GROUP_NAMESPACE,
   RegovGroupExtension,
-  GroupSubject
+  GroupSubject,
+  REGOV_CREDENTIAL_TYPE_GROUP
 } from '@owlmeans/regov-ext-groups'
 import {
   DialogContent,
@@ -19,6 +23,7 @@ import {
   Grid,
   IconButton,
   Paper,
+  Typography,
 } from '@mui/material'
 import {
   Credential,
@@ -36,8 +41,26 @@ import {
 
 export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupViewProps>({
   namespace: REGOV_EXT_GROUP_NAMESPACE
-}, ({ t, credential, close }) => {
+}, ({ t, credential, close, ext }) => {
   const subject = geCompatibletSubject<GroupSubject>(credential)
+  const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
+  const { handler, extensions } = useRegov()
+
+  const [validationResult, setValidationResult] = useState('')
+
+  useEffect(() => {
+    (async () => {
+      if (!handler.wallet || !extensions) {
+        return
+      }
+      const res = JSON.stringify(
+        await factory.validationFactory(handler.wallet, {
+          credential, extensions: extensions.registry
+        })
+      ,undefined, 2)
+      setValidationResult(res)
+    })()
+  }, [subject.uuid])
 
   return <Fragment>
     <DialogTitle>
@@ -79,7 +102,7 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
           </Grid>
           <Grid item xs={12} sm={6} md={5} px={1}>
             <Paper elevation={3}>
-              Trust summary
+              <Typography variant="caption"><pre>{validationResult}</pre></Typography>
             </Paper>
           </Grid>
         </Grid>

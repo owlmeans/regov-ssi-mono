@@ -9,9 +9,9 @@ import {
   CredentialType,
   MultiSchema,
   BasicCredentialType,
-  BASE_CREDENTIAL_TYPE
 } from '@owlmeans/regov-ssi-core'
 import { DIDDocumentUnsinged } from '@owlmeans/regov-ssi-did'
+import { ExtensionRegistry } from '../registry'
 
 import {
   CredentialDescription,
@@ -39,10 +39,13 @@ export type ExtensionFactoriesParam<CredType extends string> = {
 export type CredentialExtensionFactoriesBuilder = {
   buildingFactory?: BuildingFactoryMethodBuilder
   signingFactory?: SigningFactoryMethodBuilder
+  validationFactory?: ValidationFactoryMethodBuilder
 }
 
 export type CredentialExtensionFactories = {
   buildingFactory: BuildingFactoryMethod
+  signingFactory: SigningFactoryMethod
+  validationFactory: ValidationFactoryMethod
   claimingFactory?: <
     Schema extends CredentialSchema = CredentialSchema,
     >(schema: CredentialDescription<Schema>) =>
@@ -51,7 +54,6 @@ export type CredentialExtensionFactories = {
     Schema extends CredentialSchema = CredentialSchema,
     >(schema: CredentialDescription<Schema>) =>
     <Params>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
-  signingFactory: SigningFactoryMethod
   issuingFactory?: <
     Schema extends CredentialSchema = CredentialSchema,
     >(schema: CredentialDescription<Schema>) =>
@@ -99,6 +101,37 @@ export type SigningFactoryMethod = <
 export type SigningFactoryParams = {
   unsigned: UnsignedCredential,
   evidence?: MaybeArray<Evidence>
+}
+
+export type ValidationFactoryMethodBuilder = <
+  Schema extends CredentialSchema = CredentialSchema
+  >(schema: CredentialDescription<Schema>) => ValidationFactoryMethod
+
+export type ValidationFactoryMethod = <
+  Params extends ValidationFactoryParams
+  >(wallet: WalletWrapper, params: Params) => Promise<ValidationResult>
+
+export type ValidationFactoryParams = {
+  credential: Credential
+  extensions: ExtensionRegistry<string>
+}
+
+export interface ValidationResult {
+  valid: boolean
+  trusted: boolean
+  cause?: MaybeArray<string | ValidationErrorCause>
+  evidence: MaybeArray<EvidenceValidationResult>
+}
+
+export type ValidationErrorCause = {
+  kind?: string
+  message?: string
+}
+
+export interface EvidenceValidationResult {
+  type: string
+  result: ValidationResult
+  trustCredential?: Credential[]
 }
 
 export type ExtensionLocalization = {

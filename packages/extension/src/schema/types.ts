@@ -41,18 +41,21 @@ export type CredentialDescription<
     mandatoryTypes?: BasicCredentialType
     credentialContext: MultiSchema
     contextUrl?: string
-    evidence?: CredentialEvidenceDesctiption | CredentialEvidenceDesctiption[]
-    credentialSchema?: Schema | Schema[]
+    evidence?: MaybeArray<CredentialEvidenceDesctiption>
+    credentialSchema?: MaybeArray<Schema>
     registryType?: string
     claimable?: boolean
     listed?: boolean
     selfIssuing?: boolean
+    trustable?: boolean
     defaultSubject?: Subject
   }
 
 export type CredentialEvidenceDesctiption = {
-  type: BasicCredentialType,
-  schema?: CredentialSchema | CredentialSchema[]
+  type: string,
+  schema?: MaybeArray<CredentialSchema>
+  issuerRelated?: boolean // Isn't used
+  trustedBranch?: boolean // Isn't used
 }
 
 export type ExtensionEvent<CredType extends string> = {
@@ -85,6 +88,7 @@ export type IncommigDocumentEventParams<CredType extends string> = EventParams<C
   statusHandler: {
     successful: boolean
   }
+  cleanUp: () => void
 }
 
 export type RetreiveNameEventParams<CredType extends string> = EventParams<CredType> & {

@@ -6,7 +6,8 @@
   ],
   "scripts": {
     "watch": "lerna run build:watch --parallel",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "start": "cd ./packages/mold-wallet-web/example/ && yarn start"
   },
   "devDependencies": {
     "react-router-dom": "^6.0.2",

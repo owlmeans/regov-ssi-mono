@@ -40,6 +40,11 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
       description: "http://www.w3.org/2001/XMLSchema#string",
       createdAt: "http://www.w3.org/2001/XMLSchema#datetime",
     },
+    evidence: {
+      type: BASIC_IDENTITY_TYPE,
+      issuerRelated: true,
+      trustedBranch: true
+    },
     registryType: REGISTRY_TYPE_CREDENTIALS,
     selfIssuing: true,
     claimable: false,

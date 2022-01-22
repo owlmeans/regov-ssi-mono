@@ -19,6 +19,7 @@
       "hint": "Unique Sequence"
     },
     "name": {
+      "label": "Group name",
       "hint": "This is the group name, that will be seen by other people",
       "error": {
         "maxLength": "The name you provided is too long",

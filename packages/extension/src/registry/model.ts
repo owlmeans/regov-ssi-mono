@@ -28,6 +28,14 @@ export const buildExtensionRegistry = <
             _typeToExtension[cred.mainType] = [
               ...(_typeToExtension[cred.mainType] ? _typeToExtension[cred.mainType] : []), ext
             ]
+            normalizeValue(cred.mandatoryTypes).forEach(type => {
+              if (!type) {
+                return
+              }
+              _typeToExtension[type] = [
+                ...(_typeToExtension[type] ? _typeToExtension[type] : []), ext
+              ]
+            })
           })
       }
     },
