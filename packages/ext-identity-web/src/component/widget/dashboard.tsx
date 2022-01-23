@@ -6,7 +6,7 @@ import {
 } from '@owlmeans/regov-ssi-core'
 import {
   EmptyImplProps,
-  RegovCompoentProps,
+  RegovComponetProps,
   withRegov
 } from '@owlmeans/regov-lib-react'
 import {
@@ -81,6 +81,6 @@ type DashboardWidgetState = {
   identityWrap: CredentialWrapper
 }
 
-type DashboardWidgetProps = RegovCompoentProps<
+type DashboardWidgetProps = RegovComponetProps<
   DashboardWidgetParams, EmptyImplProps, DashboardWidgetState
 >

@@ -11,7 +11,7 @@ import {
   EmptyProps,
   generalNameVlidation,
   MainModalAuthenticatedEventParams,
-  RegovCompoentProps,
+  RegovComponetProps,
   useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
@@ -160,7 +160,7 @@ export type IdentityCreationProceedHandle = {
   proceed?: (next: () => void) => Promise<void>
 }
 
-export type IdentityCreationProps = RegovCompoentProps<IdentityCreationParams>
+export type IdentityCreationProps = RegovComponetProps<IdentityCreationParams>
 
 export type IdentityCreationFields = {
   creation: {

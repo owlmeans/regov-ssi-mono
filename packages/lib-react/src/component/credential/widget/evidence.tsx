@@ -7,7 +7,7 @@ import React, {
 import {
   EmptyImplProps,
   EmptyProps,
-  RegovCompoentProps,
+  RegovComponetProps,
   useRegov,
   withRegov,
   WrappedComponentProps
@@ -64,7 +64,7 @@ export type EvidenceWidgetParams = EmptyProps & {
   isChild?: boolean
 }
 
-export type EvidenceWidgetProps = RegovCompoentProps<EvidenceWidgetParams, EvidenceWidgetImplParams>
+export type EvidenceWidgetProps = RegovComponetProps<EvidenceWidgetParams, EvidenceWidgetImplParams>
 
 export type EvidenceWidgetImplParams = EmptyImplProps & {
   tabs: EvidenceTab[]

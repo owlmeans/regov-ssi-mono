@@ -7,7 +7,7 @@ import React, {
 import {
   CredentialEvidenceWidget,
   EmptyProps,
-  RegovCompoentProps,
+  RegovComponetProps,
   useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
@@ -23,7 +23,6 @@ import {
   Grid,
   IconButton,
   Paper,
-  Typography,
 } from '@mui/material'
 import {
   Credential,
@@ -31,12 +30,17 @@ import {
 } from '@owlmeans/regov-ssi-core'
 import {
   EntityRenderer,
-  EntityTextRenderer
+  EntityTextRenderer,
+  ValidationResultWidget
 } from '@owlmeans/regov-mold-wallet-web'
 import {
   Close,
   People
 } from '@mui/icons-material'
+import {
+  ValidationResult,
+  VALIDATION_FAILURE_CHECKING
+} from '@owlmeans/regov-ssi-extension'
 
 
 export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupViewProps>({
@@ -46,18 +50,21 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
   const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
   const { handler, extensions } = useRegov()
 
-  const [validationResult, setValidationResult] = useState('')
+  const [result, setValidationResult] = useState<ValidationResult>({
+    valid: false,
+    trusted: false,
+    cause: VALIDATION_FAILURE_CHECKING,
+    evidence: []
+  })
 
   useEffect(() => {
     (async () => {
       if (!handler.wallet || !extensions) {
         return
       }
-      const res = JSON.stringify(
-        await factory.validationFactory(handler.wallet, {
-          credential, extensions: extensions.registry
-        })
-      ,undefined, 2)
+      const res = await factory.validationFactory(handler.wallet, {
+        credential, extensions: extensions.registry
+      })
       setValidationResult(res)
     })()
   }, [subject.uuid])
@@ -102,7 +109,7 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
           </Grid>
           <Grid item xs={12} sm={6} md={5} px={1}>
             <Paper elevation={3}>
-              <Typography variant="caption"><pre>{validationResult}</pre></Typography>
+              <ValidationResultWidget result={result} />
             </Paper>
           </Grid>
         </Grid>
@@ -120,5 +127,5 @@ export type GroupViewParams = EmptyProps & {
   close?: () => void
 }
 
-export type GroupViewProps = RegovCompoentProps<GroupViewParams>
+export type GroupViewProps = RegovComponetProps<GroupViewParams>
 

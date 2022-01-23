@@ -63,19 +63,19 @@ export const RegovProvider = ({
 }
 
 export const withRegov = <
-  Type extends RegovCompoentProps = RegovCompoentProps,
+  Type extends RegovComponetProps = RegovComponetProps,
   Nav extends WalletNavigator = BasicNavigator,
   Transformer extends ObserverTransformerOption = ObserverTransformerOption<
-    Type extends RegovCompoentProps<any, any, infer State> ? State : never,
-    Type extends RegovCompoentProps<infer Props, any, any> ? Props : never
+    Type extends RegovComponetProps<any, any, infer State> ? State : never,
+    Type extends RegovComponetProps<infer Props, any, any> ? Props : never
   >
 >(
   name: string | RegovHOCOptions<Transformer>,
   Com: FunctionComponent<Type>,
   options?: RegovHOCOptions<Transformer>
 ) => {
-  type T = Type extends RegovCompoentProps<infer Props, any, any> ? Props : never
-  type S = Type extends RegovCompoentProps<any, any, infer State> ? State : never
+  type T = Type extends RegovComponetProps<infer Props, any, any> ? Props : never
+  type S = Type extends RegovComponetProps<any, any, infer State> ? State : never
 
   return ((props: PropsWithChildren<T>): FunctionComponentElement<Type> => {
     if (typeof name !== 'string') {
@@ -123,7 +123,7 @@ export const withRegov = <
 }
 
 
-export type RegovCompoentProps<
+export type RegovComponetProps<
   Type extends EmptyProps = EmptyProps,
   Props extends EmptyImplProps = EmptyImplProps,
   State extends EmptyState = EmptyState,

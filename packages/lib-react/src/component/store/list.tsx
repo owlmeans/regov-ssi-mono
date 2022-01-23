@@ -6,7 +6,7 @@ import React, {
 import {
   BasicNavigator,
   EmptyProps,
-  RegovCompoentProps,
+  RegovComponetProps,
   useRegov,
   WalletNavigatorMethod,
   withRegov,
@@ -61,7 +61,7 @@ export const StoreList: FunctionComponent<StoreListParams> =
       }
   })
 
-export type StoreListProps = RegovCompoentProps<StoreListParams, StoreListImplParams, StoreListState, StoreListNavigator>
+export type StoreListProps = RegovComponetProps<StoreListParams, StoreListImplParams, StoreListState, StoreListNavigator>
 
 export type StoreListState = {
   counter: number

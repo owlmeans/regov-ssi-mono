@@ -10,7 +10,7 @@ import {
 import {
   BasicNavigator,
   EmptyProps,
-  RegovCompoentProps,
+  RegovComponetProps,
   RegovValidationRules,
   useRegov,
   WalletNavigatorMenuMethod,
@@ -105,7 +105,7 @@ export const storeCreationValidationRules: RegovValidationRules = {
   'creation.password.input': passwordValidation
 }
 
-export type StoreCreationProps = RegovCompoentProps<StoreCreationParams, StoreCreationImplParams>
+export type StoreCreationProps = RegovComponetProps<StoreCreationParams, StoreCreationImplParams>
 
 export type StoreCreationParams = {
   defaultAlias: string

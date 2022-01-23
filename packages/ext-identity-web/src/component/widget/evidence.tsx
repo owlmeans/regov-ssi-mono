@@ -3,7 +3,7 @@ import { Extension } from '@owlmeans/regov-ssi-extension'
 import {
   EmptyProps,
   PurposeEvidenceWidgetParams,
-  RegovCompoentProps,
+  RegovComponetProps,
   withRegov
 } from '@owlmeans/regov-lib-react'
 import {
@@ -52,4 +52,4 @@ export const EvidenceWidget = (ext: Extension<string>): FunctionComponent<Eviden
 
 export type EvidenceWidgetParams = EmptyProps & PurposeEvidenceWidgetParams
 
-export type EvidenceWidgetProps = RegovCompoentProps<EvidenceWidgetParams>
+export type EvidenceWidgetProps = RegovComponetProps<EvidenceWidgetParams>

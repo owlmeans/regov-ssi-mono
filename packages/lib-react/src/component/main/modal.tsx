@@ -9,7 +9,7 @@ import {
   EXTENSION_TRIGGER_AUTHENTICATED
 } from '@owlmeans/regov-ssi-extension'
 import {
-  RegovCompoentProps,
+  RegovComponetProps,
   useRegov,
   withRegov,
   WrappedComponentProps,
@@ -57,7 +57,7 @@ export type MainModalState = {
   alias: string | undefined
 }
 
-export type MainModalProps = RegovCompoentProps<
+export type MainModalProps = RegovComponetProps<
   MainModalParams, MainModalImplParams, MainModalState
 >
 

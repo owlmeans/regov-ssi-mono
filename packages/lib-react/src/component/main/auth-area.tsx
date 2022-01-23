@@ -6,7 +6,7 @@ import React, {
 } from 'react'
 import {
   EmptyProps,
-  RegovCompoentProps,
+  RegovComponetProps,
   useRegov,
   withRegov,
   WrappedComponentProps
@@ -39,7 +39,7 @@ export type MainAuthAraeState = {
   alias: string | undefined
 }
 
-export type MainAuthAreaProps = RegovCompoentProps<
+export type MainAuthAreaProps = RegovComponetProps<
   MainAuthAreaParams, MainAuthAreaImplProps, MainAuthAraeState
 >
 

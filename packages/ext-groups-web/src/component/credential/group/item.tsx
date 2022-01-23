@@ -9,7 +9,7 @@ import {
 } from '@owlmeans/regov-ext-groups'
 import {
   EmptyProps,
-  RegovCompoentProps,
+  RegovComponetProps,
   withRegov
 } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
@@ -70,5 +70,5 @@ export type GroupItemParams = EmptyProps & {
   action?: () => void
 }
 
-export type GroupItemProps = RegovCompoentProps<GroupItemParams>
+export type GroupItemProps = RegovComponetProps<GroupItemParams>
 

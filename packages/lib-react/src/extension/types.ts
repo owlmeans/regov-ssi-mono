@@ -20,6 +20,7 @@ export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_CLAIM
 | typeof EXTENSION_ITEM_PURPOSE_SIGNER
 | typeof EXTENSION_ITEM_PURPOSE_EVIDENCE
 | typeof EXTENSION_ITEM_PURPOSE_CREATION
+| typeof EXTENSION_ITEM_PURPOSE_VALIDATION
 | string
 
 export const EXTENSION_ITEM_PURPOSE_CLAIM = 'claim'
@@ -40,6 +41,7 @@ export const EXTENSION_ITEM_PURPOSE_DASHBOARD = 'dashboard'
 export const EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET = 'dashboard_widget'
 export const EXTENSION_ITEM_PURPOSE_SIGNER = 'signer'
 export const EXTENSION_ITEM_PURPOSE_EVIDENCE = 'evidence'
+export const EXTENSION_ITEM_PURPOSE_VALIDATION = 'validation'
 export const EXTENSION_ITEM_PURPOSE_CREATION = 'creation'
 
 

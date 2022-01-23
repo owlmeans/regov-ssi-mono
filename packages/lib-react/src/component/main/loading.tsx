@@ -5,7 +5,7 @@ import {
   BasicNavigator,
   EmptyProps,
   NavigatorLoading,
-  RegovCompoentProps,
+  RegovComponetProps,
   withRegov,
   WrappedComponentProps
 } from '../../common'
@@ -53,7 +53,7 @@ export const MainLoading: FunctionComponent<MainLoadingParams> = withRegov<MainL
 )
 
 
-export type MainLoadingProps = RegovCompoentProps<MainLoadingParams, MainLoadingImplProps>
+export type MainLoadingProps = RegovComponetProps<MainLoadingParams, MainLoadingImplProps>
 
 export type MainLoadingParams = {
   nav: BasicNavigator

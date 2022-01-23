@@ -6,7 +6,7 @@ import {
   castMenuItemParams,
   CredentialListNavigator,
   EmptyProps,
-  RegovCompoentProps,
+  RegovComponetProps,
   useNavigator,
   useRegov,
   withRegov
@@ -74,4 +74,4 @@ export const CredentialHeader = withRegov<
 })
 
 
-export type CredentialHeaderProps = RegovCompoentProps<EmptyProps>
+export type CredentialHeaderProps = RegovComponetProps<EmptyProps>

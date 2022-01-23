@@ -12,7 +12,7 @@ import {
   WalletNavigatorMethod,
   RegovValidationRules,
   WrappedComponentProps,
-  RegovCompoentProps,
+  RegovComponetProps,
   useRegov,
   EmptyProps,
   EmptyState
@@ -86,7 +86,7 @@ export type StoreLoginParams = {
   alias: string
 } & EmptyProps
 
-export type StoreLoginProps = RegovCompoentProps<
+export type StoreLoginProps = RegovComponetProps<
   StoreLoginParams, StoreLoginImplParams, EmptyState, StoreLoginNavigator
 >
 

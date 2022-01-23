@@ -138,3 +138,5 @@ export type ExtensionLocalization = {
   ns: string,
   translations: { [key: string]: Object }
 }
+
+export const VALIDATION_FAILURE_CHECKING = 'checking'

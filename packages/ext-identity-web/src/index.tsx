@@ -7,6 +7,7 @@ import {
 } from '@owlmeans/regov-ssi-extension'
 
 import {
+  BASIC_IDENTITY_TYPE,
   BuildExtensionParams,
   buildIdentityExtension
 } from '@owlmeans/regov-ext-identity'
@@ -19,11 +20,13 @@ import {
   ExtensionItemPurpose,
   EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
   EXTENSION_ITEM_PURPOSE_EVIDENCE,
+  EXTENSION_ITEM_PURPOSE_VALIDATION,
 } from '@owlmeans/regov-lib-react'
-import { 
-  DashboardWidget, 
-  EvidenceWidget, 
-  Onboarding 
+import {
+  DashboardWidget,
+  EvidenceWidget,
+  Onboarding,
+  ValidationWidget
 } from './component'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
 import {
@@ -94,7 +97,7 @@ export const buildIdentityExtensionUI = <CredType extends string>(
 
   const uiExt = buildUIExtension<IdentityCredentials>(
     extension,
-    (purpose: ExtensionItemPurpose, _?: IdentityCredentials) => {
+    (purpose: ExtensionItemPurpose, type?: IdentityCredentials) => {
       switch (purpose) {
         case EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET:
           return [
@@ -114,6 +117,16 @@ export const buildIdentityExtensionUI = <CredType extends string>(
               order: 0
             }
           ]
+        case EXTENSION_ITEM_PURPOSE_VALIDATION:
+          switch (type) {
+            case BASIC_IDENTITY_TYPE:
+              return [{
+                com: ValidationWidget(extension),
+                extensionCode: `${details.code}ValidationWidget`,
+                params: {},
+                order: 0
+              }]
+          }
       }
 
       return [] as UIExtensionFactoryProduct<{}>[]

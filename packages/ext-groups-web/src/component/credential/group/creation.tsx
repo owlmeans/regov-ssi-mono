@@ -12,7 +12,7 @@ import {
 import {
   EmptyProps,
   generalNameVlidation,
-  RegovCompoentProps,
+  RegovComponetProps,
   useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
@@ -174,7 +174,7 @@ export type GroupCreationParams = EmptyProps & {
   next: () => void
 }
 
-export type GroupCreationProps = RegovCompoentProps<GroupCreationParams>
+export type GroupCreationProps = RegovComponetProps<GroupCreationParams>
 
 export type GroupCreationFields = {
   group: {
