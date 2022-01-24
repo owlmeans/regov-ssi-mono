@@ -1,5 +1,10 @@
 import { normalizeValue } from "@owlmeans/regov-ssi-common"
-import { buildWalletLoader, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from "@owlmeans/regov-ssi-core"
+import { 
+  buildWalletLoader, 
+  Credential,
+  REGISTRY_SECTION_PEER, 
+  REGISTRY_TYPE_IDENTITIES 
+} from "@owlmeans/regov-ssi-core"
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
 import { ERROR_CANT_IDENTIFY_CREDENTIAL } from "./types"
 import { EvidenceValidationResult, ValidationFactoryMethodBuilder } from "../types"
@@ -21,6 +26,7 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
         if (!evidence[index]) {
           return {
             type: evidenceSchema.type,
+            schema: evidenceSchema,
             result: {
               valid: false,
               cause: 'no-evidence',
@@ -49,6 +55,8 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
 
         return {
           type: evidenceSchema.type,
+          schema: evidenceSchema,
+          instance: evidence[index] as Credential,
           result: result,
           trustCredential: normalizeValue(result.evidence).flatMap(
             evidence => normalizeValue(evidence.trustCredential) as []

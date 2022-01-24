@@ -15,6 +15,7 @@ import { ExtensionRegistry } from '../registry'
 
 import {
   CredentialDescription,
+  CredentialEvidenceDesctiption,
   ExtensionEvent,
   ExtensionSchema
 } from "../schema"
@@ -131,6 +132,8 @@ export type ValidationErrorCause = {
 export interface EvidenceValidationResult {
   type: string
   result: ValidationResult
+  instance?: Credential
+  schema?: CredentialEvidenceDesctiption
   trustCredential?: Credential[]
 }
 

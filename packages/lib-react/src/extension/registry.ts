@@ -81,17 +81,17 @@ export const buildUIExtensionRegistry = <
     },
 
     produceComponent: <Type extends EmptyProps = EmptyProps>(purpose: string, type?: MaybeArray<CredType>) => {
-      if (type) {
+      if (type && Array.isArray(type)) {
         const types = normalizeValue(type)
         type = types.find(type => {
           return !!_typeToExtension[type]
         })
       }
-
-      const wraps = type ? _typeToExtension[type].flatMap(
+      
+      const wraps = type && _typeToExtension[type] ? _typeToExtension[type].flatMap(
         ext => ext.produceComponent<Type>(purpose, type as any)
       ) : _registry.uiExtensions.flatMap(
-        ext => ext.produceComponent<Type>(purpose)
+        ext => ext.produceComponent<Type>(purpose, type)
       )
 
       return wraps.sort((a, b) => {
@@ -125,19 +125,19 @@ export const buildUIExtensionRegistry = <
             return false
           }
           const _params = params || { ext }
-          console.log(`event::triggered:${event.trigger}:${ext.schema.details.code}`, event.code)
+          console.info(`event::triggered:${event.trigger}:${ext.schema.details.code}`, event.code)
           if (event.filter && !await event.filter(wallet, _params)) {
             return true
           }
-          console.log('event::filter passed')
+          console.info('event::filter passed')
           if (event.method) {
             if (!_params.ext) {
               _params.ext = ext
             }
-            console.log('event::call_method')
+            console.info('event::call_method')
 
             if (await event.method(wallet, _params)) {
-              console.log('event::bubbling_stoped')
+              console.info('event::bubbling_stoped')
               return false
             }
           }

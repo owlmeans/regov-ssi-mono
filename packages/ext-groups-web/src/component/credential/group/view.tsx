@@ -93,9 +93,7 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
                     <Grid item>
                       <People fontSize="large" />
                     </Grid>
-                    <Grid item>
-                      {subject.name}
-                    </Grid>
+                    <Grid item>{subject.name}</Grid>
                   </Grid>
                 </Fragment>
               } subject={subject}>

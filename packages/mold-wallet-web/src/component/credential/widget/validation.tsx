@@ -20,7 +20,7 @@ import { normalizeValue } from '@owlmeans/regov-ssi-common'
 export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = withRegov<ResultWidgetProps>({
   namespace: 'regov-wallet-credential'
 }, ({ t, result }) => {
-  const {extensions} = useRegov()
+  const { extensions } = useRegov()
 
   return <List subheader={<ListSubheader>{t('widget.validation.header.title')}</ListSubheader>}>
     <ListItem>
@@ -35,12 +35,11 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
         secondary={t(`widget.validation.main.${result.valid ? 'valid' : 'invalid'}`)} />
     </ListItem>
     {normalizeValue(result.evidence).flatMap(
-      evidence => {
-        const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, evidence.type) || []
-        
+      result => {
+        const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, result.type) || []
         return coms.map((com, idx) => {
           const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
-          return <Renderer key={idx} result={evidence} />
+          return <Renderer key={idx} result={result} />
         })
       }
     )}
