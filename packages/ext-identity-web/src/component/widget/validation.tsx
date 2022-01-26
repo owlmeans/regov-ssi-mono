@@ -1,46 +1,83 @@
-import { List, ListItem, ListItemText } from '@mui/material'
-import { IdentitySubject } from '@owlmeans/regov-ext-identity'
-import {
-  ResultWidgetParams,
-  ValidationResultWidget
-} from '@owlmeans/regov-lib-react'
-import { normalizeValue } from '@owlmeans/regov-ssi-common'
-import { geCompatibletSubject } from '@owlmeans/regov-ssi-core'
-import { Extension } from '@owlmeans/regov-ssi-extension'
 import React, {
-  FunctionComponent
+  Fragment,
+  FunctionComponent,
+  useState
 } from 'react'
 import {
-  Credential
+  Credential,
+  geCompatibletSubject
 } from '@owlmeans/regov-ssi-core'
+import {
+  Collapse,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography
+} from '@mui/material'
+import {
+  Done,
+  ExpandLess,
+  ExpandMore,
+  ErrorOutline
+} from '@mui/icons-material'
+import { IdentitySubject } from '@owlmeans/regov-ext-identity'
+import {
+  EXTENSION_ITEM_PURPOSE_VALIDATION,
+  ResultWidgetParams,
+  useRegov,
+  ValidationResultWidget,
+  ResultWidgetParams as ResultItemWidgetParams
+} from '@owlmeans/regov-lib-react'
+import { normalizeValue } from '@owlmeans/regov-ssi-common'
+import { Extension } from '@owlmeans/regov-ssi-extension'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
 
 
 export const ValidationWidget = (_: Extension<string>): FunctionComponent<ResultWidgetParams> =>
   (props: ResultWidgetParams) => <ValidationResultWidget ns={props.ns || REGOV_IDENTITY_DEFAULT_NAMESPACE}
     result={props.result} com={(props) => {
-      const { result } = props
+      const { result, t } = props
       const subject = geCompatibletSubject<IdentitySubject>(result.instance as Credential)
-      /**
-       * @TODO
-       * 1. Add trust and validation vizualization
-       * 2. Add Collapse component to unwrap nested lists
-       */
-      return <List>
+      const [opened, setOpened] = useState<boolean>(false)
+      const { extensions } = useRegov()
+
+      const evidence = normalizeValue(result.result.evidence)
+
+      return <Fragment>
         <ListItem>
-          <ListItemText primary={`ID: ${subject.identifier}`} />
+          <ListItemAvatar>
+            {result.result.trusted && result.result.valid
+              ? <Done fontSize="small" color="success" />
+              : <ErrorOutline fontSize="small" color="error" />}
+          </ListItemAvatar>
+          <ListItemText primary={<Typography variant="body2">{`ID: ${subject.identifier}`}</Typography>}
+            secondary={<Fragment>
+              <Typography variant='caption'>{
+                t(`widget.validation.main.${result.result.trusted ? 'trusted' : 'untrusted'}`)
+              }</Typography>
+              <Typography variant='caption'>{
+                t(`widget.validation.main.${result.result.valid ? 'valid' : 'invalid'}`)
+              }</Typography>
+            </Fragment>} />
+          {
+            evidence.length > 0
+              ? opened
+                ? <ExpandLess onClick={() => setOpened(false)} />
+                : <ExpandMore onClick={() => setOpened(true)} />
+              : undefined
+          }
         </ListItem>
-        {
-          normalizeValue(result.result.evidence).map(
-            (evidence) => {
-              /**
-               * @TODO use event to recurse the display
-               */
-              return <ListItem>
-                <ListItemText key={evidence.type} primary={evidence.type} />
-              </ListItem>
-            }
-          )
-        }
-      </List>
+        {evidence.map((evidence) => {
+          const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, evidence.type) || []
+          return <Collapse in={opened} unmountOnExit>
+            <List>
+              {coms.map((com, idx) => {
+                const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
+                return <Renderer key={idx} result={evidence} />
+              })}
+            </List>
+          </Collapse>
+        })}
+      </Fragment>
     }} />

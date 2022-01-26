@@ -73,6 +73,7 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
         return {
           valid: true,
           trusted: true,
+          instance: identity.credential,
           evidence: evidenceValidation
         }
       }
@@ -88,6 +89,7 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
 
         return false
       }, true as boolean),
+      instance: credential,
       evidence: evidenceValidation
     }
   }

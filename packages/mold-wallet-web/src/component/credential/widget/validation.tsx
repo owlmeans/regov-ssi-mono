@@ -1,4 +1,5 @@
 import React, {
+  Fragment,
   FunctionComponent
 } from 'react'
 import {
@@ -12,38 +13,63 @@ import {
 import {
   ValidationResult
 } from '@owlmeans/regov-ssi-extension'
-import { Avatar, List, ListItem, ListItemAvatar, ListItemText, ListSubheader } from '@mui/material'
-import { Done, ErrorOutline } from '@mui/icons-material'
+import {
+  Avatar,
+  List,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+  ListSubheader,
+  Typography
+} from '@mui/material'
+import {
+  Done,
+  ErrorOutline
+} from '@mui/icons-material'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
+import { EvidenceTrust, EvidenceTrustHandle } from './evidence/'
 
 
 export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = withRegov<ResultWidgetProps>({
   namespace: 'regov-wallet-credential'
 }, ({ t, result }) => {
   const { extensions } = useRegov()
+  const handle: EvidenceTrustHandle = {
+    reload: () => {}
+  }
 
-  return <List subheader={<ListSubheader>{t('widget.validation.header.title')}</ListSubheader>}>
-    <ListItem>
-      <ListItemAvatar>
-        <Avatar>
-          {result.trusted && result.valid
-            ? <Done color="success" />
-            : <ErrorOutline color="error" />}
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText primary={t(`widget.validation.main.${result.trusted ? 'trusted' : 'untrusted'}`)}
-        secondary={t(`widget.validation.main.${result.valid ? 'valid' : 'invalid'}`)} />
-    </ListItem>
-    {normalizeValue(result.evidence).flatMap(
-      result => {
-        const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, result.type) || []
-        return coms.map((com, idx) => {
-          const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
-          return <Renderer key={idx} result={result} />
-        })
-      }
-    )}
-  </List>
+  return <Fragment>
+    <List subheader={<ListSubheader>
+      <Typography variant="subtitle1">{t('widget.validation.header.title')}</Typography>
+    </ListSubheader>}>
+      <ListItemButton onClick={() => {
+        if (!result.instance || !handle.setResult) { 
+          return
+        }
+        handle.setResult(result, result.instance)
+      }}>
+        <ListItemAvatar>
+          <Avatar>
+            {result.trusted && result.valid
+              ? <Done color="success" />
+              : <ErrorOutline color="error" />}
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText primary={t(`widget.validation.main.${result.trusted ? 'trusted' : 'untrusted'}`)}
+          secondary={t(`widget.validation.main.${result.valid ? 'valid' : 'invalid'}`)} />
+      </ListItemButton>
+      <EvidenceTrust handle={handle}/>
+      {normalizeValue(result.evidence).flatMap(
+        result => {
+          const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, result.type) || []
+          return coms.map((com, idx) => {
+            const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
+            return <Renderer key={idx} result={result} />
+          })
+        }
+      )}
+    </List>
+  </Fragment>
 })
 
 export type ResultWidgetParams = EmptyProps & {

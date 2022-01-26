@@ -122,6 +122,7 @@ export interface ValidationResult {
   trusted: boolean
   cause?: MaybeArray<string | ValidationErrorCause>
   evidence: MaybeArray<EvidenceValidationResult>
+  instance?: Credential
 }
 
 export type ValidationErrorCause = {

@@ -49,6 +49,14 @@
       "issuedAt": "Issuance date",
       "uuid": "Unique Sequence",
       "sourceApp": "Issuing App"
+    },
+    "validation": {
+      "main": {
+        "valid": "Credential is valid ✅",
+        "invalid": "Credential is invalid ❌",
+        "trusted": "Credential is trusted ✅",
+        "untrusted": "Credential is untrusted ⛔️"
+      }
     }
   },
   "creation": {

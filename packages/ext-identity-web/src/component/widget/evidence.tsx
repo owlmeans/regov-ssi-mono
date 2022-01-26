@@ -1,4 +1,6 @@
-import React, { FunctionComponent } from 'react'
+import React, { 
+  FunctionComponent 
+} from 'react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import {
   EmptyProps,

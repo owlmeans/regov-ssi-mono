@@ -28,7 +28,7 @@ import {
   CredentialSubject,
   Credential
 } from '@owlmeans/regov-ssi-core'
-import { StandardEvidenceWidget } from './evidence/standard'
+import { StandardEvidenceWidget } from './evidence/'
 import { ExpandMore } from '@mui/icons-material'
 
 

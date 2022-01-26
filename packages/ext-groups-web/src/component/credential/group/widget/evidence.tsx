@@ -12,7 +12,10 @@ import {
 import {
   geCompatibletSubject
 } from '@owlmeans/regov-ssi-core'
-import { EntityRenderer, EntityTextRenderer } from '@owlmeans/regov-mold-wallet-web'
+import {
+  EntityRenderer,
+  EntityTextRenderer
+} from '@owlmeans/regov-mold-wallet-web'
 import { GroupSubject } from '@owlmeans/regov-ext-groups'
 
 

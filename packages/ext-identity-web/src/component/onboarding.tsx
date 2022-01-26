@@ -22,7 +22,10 @@ import {
 } from '@owlmeans/regov-lib-react'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../types'
 import { FormMainButton } from '@owlmeans/regov-mold-wallet-web'
-import { IdentityCreation, IdentityCreationProceedHandle } from './identity'
+import {
+  IdentityCreation,
+  IdentityCreationProceedHandle
+} from './identity'
 
 
 export const Onboarding: FunctionComponent<OnboardingParams> =
