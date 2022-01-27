@@ -32,11 +32,9 @@ import { EvidenceTrust, EvidenceTrustHandle } from './evidence/'
 
 export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = withRegov<ResultWidgetProps>({
   namespace: 'regov-wallet-credential'
-}, ({ t, result }) => {
+}, ({ t, reload, result }) => {
   const { extensions } = useRegov()
-  const handle: EvidenceTrustHandle = {
-    reload: () => {}
-  }
+  const handle: EvidenceTrustHandle = { reload }
 
   return <Fragment>
     <List subheader={<ListSubheader>
@@ -74,6 +72,7 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
 
 export type ResultWidgetParams = EmptyProps & {
   result: ValidationResult
+  reload?: () => void
 }
 
 export type ResultWidgetProps = RegovComponetProps<ResultWidgetParams>

@@ -16,7 +16,8 @@
       }
     },
     "uuid": {
-      "hint": "Unique Sequence"
+      "hint": "Unique Sequence",
+      "label": "Unique Sequence"
     },
     "name": {
       "label": "Group name",
@@ -34,7 +35,8 @@
       }
     },
     "createdAt": {
-      "hint": "Creation date"
+      "hint": "Creation date",
+      "label": "Creation date"
     },
     "creation": {
       "defaultName": "My Group",

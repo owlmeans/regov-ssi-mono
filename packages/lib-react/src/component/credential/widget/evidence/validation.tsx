@@ -12,9 +12,9 @@ import {
 
 export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = withRegov<ResultWidgetProps>(
   {namespace: 'regov-wallet-credential'},
-  ({t, i18n, result, com: Renderer}) => {
+  ({t, i18n, result, reload, com: Renderer}) => {
     const props = {
-      t, i18n, result
+      t, i18n, result, reload
     }
 
     return Renderer ? <Renderer {...props}/> : <Fragment />
@@ -23,12 +23,14 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
 
 export type ResultWidgetParams = EmptyProps & {
   result: EvidenceValidationResult
+  reload?: () => void
   com?: FunctionComponent<ResultWidgetImplProps>
 }
 
 export type ResultWidgetProps = RegovComponetProps<ResultWidgetParams, ResultWidgetImplParams>
 
 export type ResultWidgetImplParams = {
+  reload?: () => void
   result: EvidenceValidationResult
 }
 

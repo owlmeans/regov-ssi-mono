@@ -10,8 +10,8 @@ import {
 import {
   Collapse,
   List,
-  ListItem,
   ListItemAvatar,
+  ListItemButton,
   ListItemText,
   Typography
 } from '@mui/material'
@@ -32,20 +32,29 @@ import {
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
+import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-mold-wallet-web'
 
 
 export const ValidationWidget = (_: Extension<string>): FunctionComponent<ResultWidgetParams> =>
   (props: ResultWidgetParams) => <ValidationResultWidget ns={props.ns || REGOV_IDENTITY_DEFAULT_NAMESPACE}
     result={props.result} com={(props) => {
-      const { result, t } = props
+      const { result, reload, t } = props
       const subject = geCompatibletSubject<IdentitySubject>(result.instance as Credential)
       const [opened, setOpened] = useState<boolean>(false)
       const { extensions } = useRegov()
 
       const evidence = normalizeValue(result.result.evidence)
 
+      const handle: EvidenceTrustHandle = { reload }
+
       return <Fragment>
-        <ListItem>
+        <ListItemButton onClick={() => {
+          if (!result.instance || !handle.setEvidence) {
+            return
+          }
+
+          handle.setEvidence(result)
+        }}>
           <ListItemAvatar>
             {result.result.trusted && result.result.valid
               ? <Done fontSize="small" color="success" />
@@ -67,7 +76,8 @@ export const ValidationWidget = (_: Extension<string>): FunctionComponent<Result
                 : <ExpandMore onClick={() => setOpened(true)} />
               : undefined
           }
-        </ListItem>
+        </ListItemButton>
+        <EvidenceTrust handle={handle} />
         {evidence.map((evidence) => {
           const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, evidence.type) || []
           return <Collapse in={opened} unmountOnExit>

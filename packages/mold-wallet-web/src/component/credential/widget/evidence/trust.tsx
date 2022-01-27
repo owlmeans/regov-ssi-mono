@@ -20,7 +20,7 @@ import {
   withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  Credential, CredentialSubject
+  Credential, CredentialSubject, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES
 } from '@owlmeans/regov-ssi-core'
 import {
   EvidenceValidationResult,
@@ -33,7 +33,7 @@ import { StandardEvidenceWidget } from './standard'
 
 export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<EvidenceTrustProps>(
   { namespace: 'regov-wallet-credential' },
-  ({ handle, t }) => {
+  ({ handle, t, navigator }) => {
     const { extensions, handler } = useRegov()
     const [open, setOpen] = useState<boolean>(false)
     const [credential, setCredential] = useState<Credential | undefined>(undefined)
@@ -58,6 +58,31 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
       return <Fragment />
     }
 
+    const trust = async () => {
+      const loader = await navigator?.invokeLoading()
+      try {
+        /**
+         * @TODO this "as Credential" idiom is an typing errors
+         * There is something wrong with MaybeArray and subject it looks like
+         * some around validation type is broken
+         * 
+         * @TODO 1. Figure out: why identity isn't treated as trusted after
+         * getting into pear identity list.
+         * 2. Make sure that the trusted evidence leads to trust from any trust level
+         * 3. Add naming of trusted credential
+         * 4. Add confirmtion flow for credential trust
+         */
+        await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
+          .addCredential(credential as Credential<CredentialSubject>, REGISTRY_SECTION_PEER)
+        loader?.success(t('widget.trust.result.success'))
+      } catch (error) {
+        loader?.error(error.message)
+      } finally {
+        handler.notify()
+        loader?.finish()
+      }
+    }
+
     const renderers = extensions.produceComponent(EXTENSION_ITEM_PURPOSE_EVIDENCE, credential.type)
     const renderer = renderers && renderers[0]
     const Renderer = (renderer?.com || StandardEvidenceWidget) as FunctionComponent<PurposeEvidenceWidgetParams>
@@ -76,8 +101,8 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
         }} />
       </DialogContent>
       <DialogActions>
-        <Button >{t('widget.trust.action.cancel')}</Button>
-        <Button >{t('widget.trust.action.trust')}</Button>
+        <Button onClick={close}>{t('widget.trust.action.cancel')}</Button>
+        <Button onClick={trust}>{t('widget.trust.action.trust')}</Button>
       </DialogActions>
     </Dialog>
   }

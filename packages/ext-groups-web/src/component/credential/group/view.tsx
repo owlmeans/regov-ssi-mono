@@ -49,6 +49,9 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
   const subject = geCompatibletSubject<GroupSubject>(credential)
   const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
   const { handler, extensions } = useRegov()
+  const [counter, setCounter] = useState<number>(0)
+
+  const reload = () => setCounter(counter + 1)
 
   const [result, setValidationResult] = useState<ValidationResult>({
     valid: false,
@@ -67,7 +70,7 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
       })
       setValidationResult(res)
     })()
-  }, [subject.uuid])
+  }, [subject.uuid, counter])
 
   return <Fragment>
     <DialogTitle>
@@ -107,7 +110,7 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
           </Grid>
           <Grid item xs={12} sm={6} md={5} px={1}>
             <Paper elevation={3}>
-              <ValidationResultWidget result={result} />
+              <ValidationResultWidget result={result} reload={reload}/>
             </Paper>
           </Grid>
         </Grid>
