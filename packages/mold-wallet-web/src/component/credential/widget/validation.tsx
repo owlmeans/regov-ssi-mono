@@ -62,7 +62,7 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
           const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, result.type) || []
           return coms.map((com, idx) => {
             const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
-            return <Renderer key={idx} result={result} />
+            return <Renderer key={idx} reload={reload} result={result} />
           })
         }
       )}

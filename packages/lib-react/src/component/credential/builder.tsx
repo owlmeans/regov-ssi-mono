@@ -90,7 +90,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
           methods.setValue('output', JSON.stringify(unsigned, undefined, 2))
         } catch (error) {
           loading?.error(error.message)
-          console.log(error)
+          console.error(error)
         } finally {
           loading?.finish()
         }
@@ -120,7 +120,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
           loading?.success(t('builder.save.success', { name: wrap.meta.title }))
         } catch (error) {
           loading?.error(error.message)
-          console.log(error)
+          console.error(error)
         } finally {
           loading?.finish()
         }

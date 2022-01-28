@@ -37,7 +37,7 @@ import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-mold-wallet-
 
 export const ValidationWidget = (_: Extension<string>): FunctionComponent<ResultWidgetParams> =>
   (props: ResultWidgetParams) => <ValidationResultWidget ns={props.ns || REGOV_IDENTITY_DEFAULT_NAMESPACE}
-    result={props.result} com={(props) => {
+    result={props.result} reload={props.reload} com={(props) => {
       const { result, reload, t } = props
       const subject = geCompatibletSubject<IdentitySubject>(result.instance as Credential)
       const [opened, setOpened] = useState<boolean>(false)
@@ -84,7 +84,7 @@ export const ValidationWidget = (_: Extension<string>): FunctionComponent<Result
             <List>
               {coms.map((com, idx) => {
                 const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
-                return <Renderer key={idx} result={evidence} />
+                return <Renderer key={idx} reload={reload} result={evidence} />
               })}
             </List>
           </Collapse>

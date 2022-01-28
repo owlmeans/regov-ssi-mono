@@ -79,7 +79,7 @@ export const GroupCreation = (ext: Extension<RegovGroupCredential>): FunctionCom
             }
           })
         } catch (error) {
-          console.log(error)
+          console.info(error)
           if (error.message) {
             methods.setError('group.creation.alert', { type: error.message })
             return
@@ -146,7 +146,7 @@ export const GroupCreation = (ext: Extension<RegovGroupCredential>): FunctionCom
 
         next()
       } catch (error) {
-        console.log(error)
+        console.info(error)
         if (error.message) {
           methods.setError('group.creation.alert', { type: error.message })
           return

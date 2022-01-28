@@ -64,7 +64,7 @@ export const CredentialSigner: FunctionComponent<CredentialSignerParams> =
             const cred = await factory.signingFactory(handler.wallet, { unsigned })
             methods.setValue('output', JSON.stringify(cred, undefined, 2))
           } catch (error) {
-            console.log(error)
+            console.error(error)
             if (error.message) {
               methods.setError('signer.alert', { type: error.message })
               return
@@ -73,7 +73,7 @@ export const CredentialSigner: FunctionComponent<CredentialSignerParams> =
           }
         } catch (error) {
           loading?.error(error)
-          console.log(error)
+          console.error(error)
         } finally {
           loading?.finish()
         }

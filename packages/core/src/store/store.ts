@@ -32,7 +32,7 @@ export const buildStore = async (crypto: CryptoHelper, password: string, store?:
             )
           }
         } catch (e) {
-          console.log(e)
+          console.error(e)
           
           throw new Error(ERROR_STORE_CANT_DECRYPT)
         }

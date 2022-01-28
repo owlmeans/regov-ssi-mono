@@ -85,7 +85,7 @@ export const StoreCreation: FunctionComponent<StoreCreationParams> =
             }
           } catch (e) {
             loading?.error()
-            console.log(e)
+            console.error(e)
           } finally {
             loading?.finish()
           }

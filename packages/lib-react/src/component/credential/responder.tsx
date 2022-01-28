@@ -57,7 +57,7 @@ export const CredentialResponder: FunctionComponent<CredentialResponderParams> =
           methods.setValue('output', JSON.stringify(data, undefined, 2))
         } catch (e) {
           loading?.error()
-          console.log(e)
+          console.error(e)
         } finally {
           loading?.finish()
         }

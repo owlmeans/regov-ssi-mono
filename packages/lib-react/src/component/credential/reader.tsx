@@ -134,7 +134,7 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
           methods.setValue('output', result)
         } catch (error) {
           loading?.error(error)
-          console.log(error)
+          console.error(error)
         } finally {
           loading?.finish()
         }

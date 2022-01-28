@@ -72,7 +72,7 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
             alert: undefined
           })
         } catch (error) {
-          console.log(error)
+          console.info(error)
           if (error.message) {
             methods.setError('creation.alert', { type: error.message })
             return
@@ -114,7 +114,7 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
 
         next()
       } catch (error) {
-        console.log(error)
+        console.info(error)
         if (error.message) {
           methods.setError('creation.alert', { type: error.message })
           return

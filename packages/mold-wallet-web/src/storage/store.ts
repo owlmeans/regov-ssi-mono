@@ -53,14 +53,14 @@ export const buildStorageHelper = (
     },
 
     commit: async () => {
-      console.log('STORE COMMITS')
+      console.info('STORE COMMITS')
 
       let promises: Promise<string | null[] | null>[] = []
 
       Object.entries(handler.stores).map(
         ([alias, store]) => {
           if (store.toRemove) {
-            console.log(`::: remove ${alias}`)
+            console.info(`::: remove ${alias}`)
             promises.push(storage.removeItem(alias).then(_ => null))
             delete handler.stores[alias]
             _helper.touch(alias)
@@ -77,7 +77,7 @@ export const buildStorageHelper = (
             return null
           }
 
-          console.log(`::: commit ${alias}`)
+          console.info(`::: commit ${alias}`)
 
           store.toRemove = false
 
@@ -90,7 +90,7 @@ export const buildStorageHelper = (
         _commited.push(handler.wallet.store.alias)
         promises.push(handler.wallet.export().then(
           value => {
-            console.log(`::: wallet commit ${value.alias}`)
+            console.info(`::: wallet commit ${value.alias}`)
             handler.stores[value.alias] = value
             value.toRemove = false
             return storage.setItem(
@@ -104,7 +104,7 @@ export const buildStorageHelper = (
         keys => Promise.all(keys.map(
           async alias => {
             if (!handler.stores[alias]) {
-              console.log(`::: cleanup ${alias}`)
+              console.info(`::: cleanup ${alias}`)
               await storage.removeItem(alias)
               _helper.touch(alias)
             }
@@ -117,7 +117,7 @@ export const buildStorageHelper = (
     },
 
     commitAsync: () => {
-      _helper.commit().catch(e => console.log(e))
+      _helper.commit().catch(e => console.error(e))
     }
   }
 

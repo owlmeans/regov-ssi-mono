@@ -449,7 +449,7 @@ export const buildDidHelper =
 
           return res.verified
         } catch (e) {
-          console.log(e)
+          console.error(e)
         }
         return false
       },

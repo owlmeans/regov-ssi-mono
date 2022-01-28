@@ -68,7 +68,7 @@ export const CredentialProcessor: FunctionComponent<CredentialProcessorParams> =
         }
       } catch (error) {
         loading?.error(error.message)
-        console.log(error)
+        console.error(error)
       } finally {
         loading?.finish()
       }

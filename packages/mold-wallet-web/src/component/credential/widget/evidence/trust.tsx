@@ -75,6 +75,7 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
         await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
           .addCredential(credential as Credential<CredentialSubject>, REGISTRY_SECTION_PEER)
         loader?.success(t('widget.trust.result.success'))
+        close()
       } catch (error) {
         loader?.error(error.message)
       } finally {

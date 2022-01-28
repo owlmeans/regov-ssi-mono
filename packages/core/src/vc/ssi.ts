@@ -167,7 +167,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           }
         ) as C
       } catch (e: any) {
-        console.log(e.details)
+        console.error(e.details)
 
         throw e
       }
@@ -293,7 +293,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           }
         ) as Presentation<C, H>
       } catch (e: any) {
-        console.log(e.details)
+        console.error(e.details)
 
         throw e
       }

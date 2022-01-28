@@ -54,13 +54,13 @@ export const WalletApp = ({ config, extensions }: WalletAppParams) => {
   useEffect(() => {
     storage.init().then(
       async _ => {
-        console.log('STORE INITIALIZED')
+        console.info('STORE INITIALIZED')
         setLoaded(true)
       }
     )
 
     return () => {
-      console.log('STORE DETACHED')
+      console.info('STORE DETACHED')
       storage.detach()
     }
   }, [storage])

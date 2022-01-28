@@ -1,9 +1,9 @@
 import { normalizeValue } from "@owlmeans/regov-ssi-common"
-import { 
-  buildWalletLoader, 
+import {
+  buildWalletLoader,
   Credential,
-  REGISTRY_SECTION_PEER, 
-  REGISTRY_TYPE_IDENTITIES 
+  REGISTRY_SECTION_PEER,
+  REGISTRY_TYPE_IDENTITIES
 } from "@owlmeans/regov-ssi-core"
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
 import { ERROR_CANT_IDENTIFY_CREDENTIAL } from "./types"
@@ -51,7 +51,9 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
           throw ERROR_CANT_IDENTIFY_CREDENTIAL
         }
         const factory = ext.getFactory(credInfo.mainType)
-        const result = await factory.validationFactory(wallet, { credential, extensions })
+        const result = await factory.validationFactory(wallet, {
+          credential: evidence[index] as Credential, extensions
+        })
 
         return {
           type: evidenceSchema.type,
@@ -64,9 +66,10 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
         }
       })) : []
 
-    if (result && schema.trustable) {
+
+    if (result) { // && schema.trustable) {
       const identity = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
-        (credential.issuer as unknown as DIDDocument).id, REGISTRY_SECTION_PEER
+        credential.id, REGISTRY_SECTION_PEER
       )
 
       if (identity) {

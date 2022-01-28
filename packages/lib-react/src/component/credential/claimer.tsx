@@ -106,7 +106,7 @@ export const CredentialClaimer: FunctionComponent<CredentialClaimerParams> =
           methods.setValue('output', JSON.stringify(claim, undefined, 2))
         } catch (error) {
           loading?.error(error)
-          console.log(error)
+          console.error(error)
         } finally {
           loading?.finish()
         }

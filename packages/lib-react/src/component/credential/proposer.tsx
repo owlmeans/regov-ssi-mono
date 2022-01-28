@@ -171,7 +171,7 @@ export const CredentialProposer: FunctionComponent<CredentialProposerParams> =
           methods.setValue('output', JSON.stringify(offer, undefined, 2))
         } catch (error) {
           loading?.error(error)
-          console.log(error)
+          console.error(error)
         } finally {
           loading?.finish()
         }
