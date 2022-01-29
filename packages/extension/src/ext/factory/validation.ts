@@ -36,20 +36,33 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
           }
         }
 
-        const ext = extensions.getExtension(evidenceSchema.type)
+        if (!normalizeValue(evidence[index]?.type).includes(evidenceSchema.type)) {
+          return {
+            type: evidenceSchema.type,
+            schema: evidenceSchema,
+            result: {
+              valid: false,
+              cause: 'wrong-type-evidence',
+              trusted: false,
+              evidence: []
+            }
+          }
+        }
 
+        const ext = extensions.getExtension(evidenceSchema.type)
         if (!ext.schema.credentials) {
           throw ERROR_CANT_IDENTIFY_CREDENTIAL
         }
         let credInfo: CredentialDescription | undefined = ext.schema.credentials[evidenceSchema.type]
         if (!credInfo) {
-          credInfo = Object.entries(ext.schema.credentials).map(([key, info]) => info).find(info => {
+          credInfo = Object.entries(ext.schema.credentials).map(([, info]) => info).find(info => {
             return info.mandatoryTypes?.includes(evidenceSchema.type)
           })
         }
         if (!credInfo) {
           throw ERROR_CANT_IDENTIFY_CREDENTIAL
         }
+
         const factory = ext.getFactory(credInfo.mainType)
         const result = await factory.validationFactory(wallet, {
           credential: evidence[index] as Credential, extensions

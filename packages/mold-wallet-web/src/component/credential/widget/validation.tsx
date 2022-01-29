@@ -14,6 +14,9 @@ import {
   ValidationResult
 } from '@owlmeans/regov-ssi-extension'
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Avatar,
   List,
   ListItemAvatar,
@@ -24,7 +27,8 @@ import {
 } from '@mui/material'
 import {
   Done,
-  ErrorOutline
+  ErrorOutline,
+  ExpandMore
 } from '@mui/icons-material'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
 import { EvidenceTrust, EvidenceTrustHandle } from './evidence/'
@@ -41,7 +45,7 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
       <Typography variant="subtitle1">{t('widget.validation.header.title')}</Typography>
     </ListSubheader>}>
       <ListItemButton onClick={() => {
-        if (!result.instance || !handle.setResult) { 
+        if (!result.instance || !handle.setResult) {
           return
         }
         handle.setResult(result, result.instance)
@@ -56,16 +60,23 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
         <ListItemText primary={t(`widget.validation.main.${result.trusted ? 'trusted' : 'untrusted'}`)}
           secondary={t(`widget.validation.main.${result.valid ? 'valid' : 'invalid'}`)} />
       </ListItemButton>
-      <EvidenceTrust handle={handle}/>
-      {normalizeValue(result.evidence).flatMap(
-        result => {
-          const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, result.type) || []
-          return coms.map((com, idx) => {
-            const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
-            return <Renderer key={idx} reload={reload} result={result} />
-          })
-        }
-      )}
+      <EvidenceTrust handle={handle} />
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {normalizeValue(result.evidence).flatMap(
+            result => {
+              const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, result.type) || []
+              return coms.map((com, idx) => {
+                const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
+                return <Renderer key={idx} reload={reload} result={result} />
+              })
+            }
+          )}
+        </AccordionDetails>
+      </Accordion>
     </List>
   </Fragment>
 })

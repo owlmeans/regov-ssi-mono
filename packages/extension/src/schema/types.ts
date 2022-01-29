@@ -54,8 +54,6 @@ export type CredentialDescription<
 export type CredentialEvidenceDesctiption = {
   type: string,
   schema?: MaybeArray<CredentialSchema>
-  issuerRelated?: boolean // Isn't used
-  trustedBranch?: boolean // Isn't used
 }
 
 export type ExtensionEvent<CredType extends string> = {

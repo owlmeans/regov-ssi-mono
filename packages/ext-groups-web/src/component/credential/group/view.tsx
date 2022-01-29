@@ -87,7 +87,7 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
     </DialogTitle>
     <DialogContent>
       <Grid container direction="column" justifyContent="flex-start" alignItems="stretch">
-        <Grid item container direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Grid item container direction="row" justifyContent="space-between" alignItems="stretch">
           <Grid item xs={12} sm={6} md={7} px={1}>
             <Paper elevation={3}>
               <EntityRenderer t={t} entity="group" title={

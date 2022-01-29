@@ -9,18 +9,25 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Typography
 } from '@mui/material'
 import {
   EmptyProps,
   EXTENSION_ITEM_PURPOSE_EVIDENCE,
+  generalNameVlidation,
   PurposeEvidenceWidgetParams,
   RegovComponetProps,
   useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  Credential, CredentialSubject, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES
+  Credential,
+  CredentialSubject,
+  REGISTRY_SECTION_PEER,
+  REGISTRY_TYPE_IDENTITIES
 } from '@owlmeans/regov-ssi-core'
 import {
   EvidenceValidationResult,
@@ -29,16 +36,36 @@ import {
   ValidationResult
 } from '@owlmeans/regov-ssi-extension'
 import { StandardEvidenceWidget } from './standard'
+import {
+  MainTextInput,
+  WalletFormProvider
+} from '../../../common'
+import { useForm } from 'react-hook-form'
+import { Report, Warning } from '@mui/icons-material'
 
 
 export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<EvidenceTrustProps>(
   { namespace: 'regov-wallet-credential' },
-  ({ handle, t, navigator }) => {
+  (props) => {
+    const { handle, t, navigator } = props
     const { extensions, handler } = useRegov()
     const [open, setOpen] = useState<boolean>(false)
     const [credential, setCredential] = useState<Credential | undefined>(undefined)
     const [result, setResult] = useState<ValidationResult | undefined>(undefined)
     const [title, setTitle] = useState<string>('')
+    const [step, setStep] = useState<string>('input') // input, confirmation
+    const methods = useForm<EvidenceTrustFields>({
+      mode: 'onChange',
+      criteriaMode: 'all',
+      defaultValues: {
+        trust: {
+          field: {
+            name: ''
+          }
+        }
+      }
+    })
+
     handle.setResult = (result, credential) => {
       setOpen(true)
       setResult(result)
@@ -65,15 +92,14 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
          * @TODO this "as Credential" idiom is an typing errors
          * There is something wrong with MaybeArray and subject it looks like
          * some around validation type is broken
-         * 
-         * @TODO 1. Figure out: why identity isn't treated as trusted after
-         * getting into pear identity list.
-         * 2. Make sure that the trusted evidence leads to trust from any trust level
-         * 3. Add naming of trusted credential
-         * 4. Add confirmtion flow for credential trust
          */
-        await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
+        const wrapper = await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
           .addCredential(credential as Credential<CredentialSubject>, REGISTRY_SECTION_PEER)
+
+        if (wrapper) {
+          wrapper.meta.title = methods.getValues('trust.field.name')
+        }
+
         loader?.success(t('widget.trust.result.success'))
         close()
       } catch (error) {
@@ -93,17 +119,51 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
       credential, setName: (name: string) => { setTitle(name) }
     })
 
-    return <Dialog open={open} scroll="paper" onClose={close}>
-      <DialogTitle>{t('widget.trust.title')}</DialogTitle>
+    const _props = {
+      ...props,
+      rules: {
+        'trust.field.name': generalNameVlidation(true)
+      }
+    }
+
+    return <Dialog open={open} scroll="paper" fullWidth onClose={close}>
+      <DialogTitle>
+        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+          <Grid item>
+            <Warning color="warning" fontSize="large" />
+          </Grid>
+          <Grid item>
+            {t('widget.trust.title')}
+          </Grid>
+        </Grid>
+      </DialogTitle>
       <DialogContent>
-        <Renderer wrapper={{
-          credential: credential as Credential<CredentialSubject>,
-          meta: { secure: false, title }
-        }} />
+        {step === 'input' && <Fragment>
+          <WalletFormProvider {...methods}>
+            <MainTextInput {..._props} field="trust.field.name" />
+          </WalletFormProvider>
+          <Renderer wrapper={{
+            credential: credential as Credential<CredentialSubject>,
+            meta: { secure: false, title }
+          }} />
+        </Fragment>}
+        {step === 'confirmation' && <Fragment>
+          <Typography variant="h6">
+            <Report color="error" fontSize="small" />
+            {t('widget.trust.confirmation.title')}
+          </Typography>
+          <DialogContentText>{t('widget.trust.confirmation.text')}</DialogContentText>
+        </Fragment>}
       </DialogContent>
       <DialogActions>
-        <Button onClick={close}>{t('widget.trust.action.cancel')}</Button>
-        <Button onClick={trust}>{t('widget.trust.action.trust')}</Button>
+        {step === 'input' && <Fragment>
+          <Button onClick={close}>{t('widget.trust.action.cancel')}</Button>
+          <Button onClick={methods.handleSubmit(() => setStep('confirmation'))}>{t('widget.trust.action.trust')}</Button>
+        </Fragment>}
+        {step === 'confirmation' && <Fragment>
+          <Button onClick={() => setStep('input')}>{t('widget.trust.action.back')}</Button>
+          <Button onClick={methods.handleSubmit(trust)}>{t('widget.trust.action.confirm')}</Button>
+        </Fragment>}
       </DialogActions>
     </Dialog>
   }
@@ -120,3 +180,11 @@ export type EvidenceTrustHandle = {
 }
 
 export type EvidenceTrustProps = RegovComponetProps<EvidenceTrustParams>
+
+export type EvidenceTrustFields = {
+  trust: {
+    field: {
+      name: string
+    }
+  }
+}
