@@ -13,7 +13,7 @@ import {
   Typography
 } from '@mui/material'
 import {
-  geCompatibletSubject
+  getCompatibleSubject
 } from '@owlmeans/regov-ssi-core'
 import { IdentitySubject } from '@owlmeans/regov-ext-identity'
 import { dateFormatter } from '@owlmeans/regov-mold-wallet-web'
@@ -23,7 +23,7 @@ export const EvidenceWidget = (ext: Extension<string>): FunctionComponent<Eviden
   withRegov<EvidenceWidgetProps>({ namespace: ext.localization?.ns }, (props: EvidenceWidgetProps) => {
     const { wrapper, t } = props
 
-    const subject = geCompatibletSubject<IdentitySubject>(wrapper.credential)
+    const subject = getCompatibleSubject<IdentitySubject>(wrapper.credential)
 
     return <Grid container direction="column" justifyContent="space-between" alignItems="space-between">
       <Grid item container px={1} direction="row" justifyContent="space-between" alignItems="flex-start">

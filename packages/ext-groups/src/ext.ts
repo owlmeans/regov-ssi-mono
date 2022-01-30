@@ -13,11 +13,12 @@ import {
   REGISTRY_TYPE_IDENTITIES,
   REGISTRY_TYPE_CREDENTIALS,
   UnsignedCredential,
-  geCompatibletSubject
+  getCompatibleSubject
 } from '@owlmeans/regov-ssi-core'
 import {
   BASIC_IDENTITY_TYPE,
   GroupSubject,
+  MembershipSubject,
   RegovGroupExtensionTypes,
   REGOV_CREDENTIAL_TYPE_GROUP,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
@@ -42,8 +43,6 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
     },
     evidence: {
       type: BASIC_IDENTITY_TYPE,
-      issuerRelated: true,
-      trustedBranch: true
     },
     registryType: REGISTRY_TYPE_CREDENTIALS,
     selfIssuing: true,
@@ -94,7 +93,7 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   },
   
   method: async (_, { credential, setName }: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
-    const subject = geCompatibletSubject<GroupSubject>(credential)
+    const subject = getCompatibleSubject<GroupSubject>(credential)
     setName(subject.name)
   }
 })
@@ -134,7 +133,34 @@ export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsEx
       return defaultSigningFactory(credSchema)(wallet, params)
     }
   },
-  [REGOV_CREDENTIAL_TYPE_MEMBERSHIP]: {}
+  [REGOV_CREDENTIAL_TYPE_MEMBERSHIP]: {
+    buildingFactory: (credSchema) => async (wallet, params) => {
+      const inputData = params.subjectData as MembershipSubject
+      const updatedSubjectData = {
+        ...credSchema.defaultSubject,
+        ...inputData,
+        createdAt: inputData.createdAt || (new Date).toISOString(),
+      }
+      if (!updatedSubjectData.groupId) {
+        updatedSubjectData.groupId = ''
+      }
+      if (!updatedSubjectData.role) {
+        updatedSubjectData.role = ''
+      }
+      if (!updatedSubjectData.description) {
+        updatedSubjectData.description = ''
+      }
+      if (!updatedSubjectData.memberCode) {
+        updatedSubjectData.memberCode = ''
+      }
+
+      const unsigned = await defaultBuildingFactory(credSchema)(wallet, {
+        ...params, subjectData: updatedSubjectData
+      })
+
+      return unsigned as unknown as UnsignedCredential
+    },
+  }
 })
 
 groupsExtension.localization = {

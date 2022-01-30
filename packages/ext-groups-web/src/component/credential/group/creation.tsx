@@ -28,8 +28,8 @@ import {
   WalletFormProvider
 } from '@owlmeans/regov-mold-wallet-web'
 import {
-  ERROR_CREATION_AUTHENTICATION,
-  ERROR_CREATION_EXTENSION,
+  ERROR_WIDGET_AUTHENTICATION,
+  ERROR_WIDGET_EXTENSION,
   ERROR_CREATION_READYTO_SIGN
 } from '../../types'
 import {
@@ -62,10 +62,10 @@ export const GroupCreation = (ext: Extension<RegovGroupCredential>): FunctionCom
         const loader = await navigator?.invokeLoading()
         try {
           if (!handler.wallet) {
-            throw ERROR_CREATION_AUTHENTICATION
+            throw ERROR_WIDGET_AUTHENTICATION
           }
           if (!ext) {
-            throw ERROR_CREATION_EXTENSION
+            throw ERROR_WIDGET_EXTENSION
           }
           const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
           const unsginedGroup = await factory.buildingFactory(handler.wallet, { subjectData: {} })
@@ -79,7 +79,7 @@ export const GroupCreation = (ext: Extension<RegovGroupCredential>): FunctionCom
             }
           })
         } catch (error) {
-          console.info(error)
+          console.error(error)
           if (error.message) {
             methods.setError('group.creation.alert', { type: error.message })
             return
@@ -112,7 +112,7 @@ export const GroupCreation = (ext: Extension<RegovGroupCredential>): FunctionCom
       const loader = await navigator?.invokeLoading()
       try {
         if (!handler.wallet) {
-          throw ERROR_CREATION_AUTHENTICATION
+          throw ERROR_WIDGET_AUTHENTICATION
         }
         if (!unsginedGroup || !ext) {
           throw ERROR_CREATION_READYTO_SIGN

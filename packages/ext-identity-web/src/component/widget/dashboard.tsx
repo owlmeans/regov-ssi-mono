@@ -2,7 +2,7 @@ import React, { Fragment, useMemo } from 'react'
 
 import {
   CredentialWrapper,
-  geCompatibletSubject
+  getCompatibleSubject
 } from '@owlmeans/regov-ssi-core'
 import {
   EmptyImplProps,
@@ -36,7 +36,7 @@ export const DashboardWidget = (ext: Extension<string>) =>
     if (!identityWrap) {
       return <Fragment />
     }
-    const subject = geCompatibletSubject<IdentitySubject>(identityWrap.credential)
+    const subject = getCompatibleSubject<IdentitySubject>(identityWrap.credential)
 
     const handle: ItemMenuHandle = useMemo(() => ({ handler: undefined }), [identityWrap.credential.id])
 

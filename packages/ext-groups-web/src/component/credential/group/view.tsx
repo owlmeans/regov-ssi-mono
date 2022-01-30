@@ -18,6 +18,9 @@ import {
   REGOV_CREDENTIAL_TYPE_GROUP
 } from '@owlmeans/regov-ext-groups'
 import {
+  Button,
+  Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
@@ -26,7 +29,7 @@ import {
 } from '@mui/material'
 import {
   Credential,
-  geCompatibletSubject
+  getCompatibleSubject
 } from '@owlmeans/regov-ssi-core'
 import {
   EntityRenderer,
@@ -41,12 +44,13 @@ import {
   ValidationResult,
   VALIDATION_FAILURE_CHECKING
 } from '@owlmeans/regov-ssi-extension'
+import { MembershipClaim } from '../membership'
 
 
 export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupViewProps>({
   namespace: REGOV_EXT_GROUP_NAMESPACE
 }, ({ t, credential, close, ext }) => {
-  const subject = geCompatibletSubject<GroupSubject>(credential)
+  const subject = getCompatibleSubject<GroupSubject>(credential)
   const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
   const { handler, extensions } = useRegov()
   const [counter, setCounter] = useState<number>(0)
@@ -71,6 +75,8 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
       setValidationResult(res)
     })()
   }, [subject.uuid, counter])
+
+  const [claimMembership, setClaimMembership] = useState<boolean>(false)
 
   return <Fragment>
     <DialogTitle>
@@ -110,7 +116,7 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
           </Grid>
           <Grid item xs={12} sm={6} md={5} px={1}>
             <Paper elevation={3}>
-              <ValidationResultWidget result={result} reload={reload}/>
+              <ValidationResultWidget result={result} reload={reload} />
             </Paper>
           </Grid>
         </Grid>
@@ -119,6 +125,12 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
         </Grid>
       </Grid>
     </DialogContent>
+    <DialogActions>
+      {result.trusted && <Button onClick={() => setClaimMembership(true)}>{t('group.view.claimMembership')}</Button>}
+    </DialogActions>
+    <Dialog open={claimMembership} fullWidth onClose={() => setClaimMembership(false)} scroll="paper">
+      <MembershipClaim ext={ext} group={credential} close={() => setClaimMembership(false)} />
+    </Dialog>
   </Fragment>
 })
 

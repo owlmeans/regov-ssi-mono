@@ -6,6 +6,7 @@ import React, {
   useState
 } from 'react'
 import {
+  ClickAwayListener,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -26,38 +27,45 @@ export const ItemMenu = ({ i18n, handle, content, prettyOutput, exportTitle, chi
     content = JSON.stringify(content, undefined, prettyOutput ? 2 : undefined)
   }
   const _content = content as string
-  handle.handler = { setAnchor, close: () => setAnchor(undefined) }
+  handle.handler = {
+    setAnchor, close: () => { setAnchor(undefined) }
+  }
 
   if (!anchor) {
     return <Fragment />
   }
 
-  return <Menu open={!!anchor} anchorEl={anchor} onClose={() => setAnchor(undefined)}>
-    <MenuItem onClick={() => {
-      copy(_content, {
-        message: t([`widget.dashboard.clipboard.copyhint`, 'clipboard.copyhint']),
-        format: 'text/plain'
-      })
-      setAnchor(undefined)
-    }}>
-      <ListItemIcon>
-        <ContentCopy fontSize="medium" />
-      </ListItemIcon>
-      <ListItemText primary={t('menu.action.copy.title')} />
-    </MenuItem>
-    {exportTitle &&
+  return <ClickAwayListener onClickAway={event => {
+    event.stopPropagation()
+    handle.handler?.close()
+  }}>
+    <Menu open={!!anchor} anchorEl={anchor} onClose={handle.handler.close}>
       <MenuItem onClick={() => {
-        saveAs(new Blob([_content], { type: "text/plain;charset=utf-8" }), `${exportTitle}.json`)
-        setAnchor(undefined)
+        copy(_content, {
+          message: t([`widget.dashboard.clipboard.copyhint`, 'clipboard.copyhint']),
+          format: 'text/plain'
+        })
+        handle.handler?.close()
       }}>
         <ListItemIcon>
-          <FileDownload fontSize="medium" />
+          <ContentCopy fontSize="medium" />
         </ListItemIcon>
-        <ListItemText primary={t('menu.action.export.title')} />
+        <ListItemText primary={t('menu.action.copy.title')} />
       </MenuItem>
-    }
-    {children}
-  </Menu>
+      {exportTitle &&
+        <MenuItem onClick={() => {
+          saveAs(new Blob([_content], { type: "text/plain;charset=utf-8" }), `${exportTitle}.json`)
+          handle.handler?.close()
+        }}>
+          <ListItemIcon>
+            <FileDownload fontSize="medium" />
+          </ListItemIcon>
+          <ListItemText primary={t('menu.action.export.title')} />
+        </MenuItem>
+      }
+      {children}
+    </Menu>
+  </ClickAwayListener>
 }
 
 export type ItemMenuParams = PropsWithChildren<{
@@ -77,6 +85,7 @@ export type ItemMenuHandle = {
 
 export const MenuIconButton = ({ handle }: MenuIconButtonParams) => {
   return <IconButton size="large" color="primary" edge="end" onClick={event => {
+    event.stopPropagation()
     handle.handler?.setAnchor(event.currentTarget)
   }}>
     <MenuOpen fontSize="inherit" />

@@ -21,3 +21,11 @@ export type GroupSubject = {
 }
 
 export type RegovGroupExtension = Extension<RegovGroupExtensionTypes>
+
+export type MembershipSubject = {
+  groupId: string
+  role: string
+  memberCode: string
+  description: string
+  createdAt: string
+}

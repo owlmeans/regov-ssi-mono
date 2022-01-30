@@ -44,6 +44,6 @@ export const isFullCredentialSchema = (obj: CredentialSchema): obj is FullCreden
   return obj.hasOwnProperty('credentialSubject')
 }
 
-export const geCompatibletSubject = <Type extends MaybeArray<{}>>(cred: UnsignedCredential): Type  => {
+export const getCompatibleSubject = <Type extends MaybeArray<{}>>(cred: UnsignedCredential): Type  => {
   return cred.credentialSubject as unknown as Type
 }

@@ -7,7 +7,8 @@
   "group": {
     "title": "Decentralized Group Credential",
     "view": {
-      "title": "Decentralized group: \"{{name}}\""
+      "title": "Decentralized group: \"{{name}}\"",
+      "claimMembership": "Claim Membership"
     },
     "list": {
       "item": {
@@ -50,6 +51,36 @@
           "maxLength": "Credential name is too long",
           "pattern": "Credential name contains prohibited symbols"
         }
+      }
+    }
+  },
+  "membership": {
+    "claim": {
+      "title": "Create a claim for the group membership",
+      "create": "Create claim",
+      "groupId": {
+        "label": "Group ID",
+        "hint": "ID of a group you request membership from"
+      },
+      "role": {
+        "label": "Member role",
+        "hint": "Title of the member role"
+      },
+      "description": {
+        "label": "Member description",
+        "hint": "Short info about the group member and its role"
+      },
+      "memberCode": {
+        "label": "Group Member Code",
+        "hint": "Unique sequence that allows to identity the member"
+      },
+      "createdAt": {
+        "hint": "Creation date"
+      }
+    },
+    "group": {
+      "name": {
+        "hint": "This is the group name you request a membership for"
       }
     }
   }

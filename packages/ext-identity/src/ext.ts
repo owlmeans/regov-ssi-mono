@@ -10,7 +10,7 @@ import {
 } from "@owlmeans/regov-ssi-extension"
 import {
   CredentialSubject,
-  geCompatibletSubject,
+  getCompatibleSubject,
   REGISTRY_TYPE_IDENTITIES,
   UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
@@ -71,7 +71,7 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
     },
     
     method: async (_, { credential, setName }: RetreiveNameEventParams<IdentityCredentials>) => {
-      const subject = geCompatibletSubject<IdentitySubject>(credential)
+      const subject = getCompatibleSubject<IdentitySubject>(credential)
       setName(`ID: ${subject.identifier}`)
     }
   })

@@ -5,7 +5,7 @@ import React, {
 } from 'react'
 import {
   Credential,
-  geCompatibletSubject
+  getCompatibleSubject
 } from '@owlmeans/regov-ssi-core'
 import {
   Collapse,
@@ -39,7 +39,7 @@ export const ValidationWidget = (_: Extension<string>): FunctionComponent<Result
   (props: ResultWidgetParams) => <ValidationResultWidget ns={props.ns || REGOV_IDENTITY_DEFAULT_NAMESPACE}
     result={props.result} reload={props.reload} com={(props) => {
       const { result, reload, t } = props
-      const subject = geCompatibletSubject<IdentitySubject>(result.instance as Credential)
+      const subject = getCompatibleSubject<IdentitySubject>(result.instance as Credential)
       const [opened, setOpened] = useState<boolean>(false)
       const { extensions } = useRegov()
 

@@ -10,7 +10,7 @@ import {
   Paper,
 } from '@mui/material'
 import {
-  geCompatibletSubject
+  getCompatibleSubject
 } from '@owlmeans/regov-ssi-core'
 import {
   EntityRenderer,
@@ -23,7 +23,7 @@ export const EvidenceWidget = (ext: Extension<string>): FunctionComponent<Eviden
   withRegov<EvidenceWidgetProps>({ namespace: ext.localization?.ns }, (props: EvidenceWidgetProps) => {
     const { wrapper, t } = props
 
-    const subject = geCompatibletSubject<GroupSubject>(wrapper.credential)
+    const subject = getCompatibleSubject<GroupSubject>(wrapper.credential)
 
     return <Paper elevation={3}>
       <EntityRenderer t={t} entity="group" subject={subject}>
