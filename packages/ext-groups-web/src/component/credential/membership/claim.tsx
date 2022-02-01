@@ -8,6 +8,7 @@ import React, {
 import {
   Credential,
   getCompatibleSubject,
+  REGISTRY_TYPE_CLAIMS,
   UnsignedCredential
 } from '@owlmeans/regov-ssi-core'
 import {
@@ -27,6 +28,7 @@ import {
   DialogContent
 } from '@mui/material'
 import {
+  AlertOutput,
   dateFormatter,
   FormMainAction,
   MainTextInput,
@@ -36,6 +38,8 @@ import {
 } from '@owlmeans/regov-mold-wallet-web'
 import { useForm } from 'react-hook-form'
 import {
+  ERROR_MEMBERSHIP_READYTO_CLAIM,
+  ERROR_NO_IDENTITY,
   ERROR_WIDGET_AUTHENTICATION,
   ERROR_WIDGET_EXTENSION
 } from '../../types'
@@ -47,7 +51,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
   const { group, t, i18n, navigator, ext } = props
   const { handler } = useRegov()
   const groupSubjet = group ? getCompatibleSubject<GroupSubject>(group) : undefined
-  const [unsignedMemberhips, setUnsignedMembership] = useState<UnsignedCredential | undefined>(undefined)
+  const [unsignedMemberhip, setUnsignedMembership] = useState<UnsignedCredential | undefined>(undefined)
 
   const methods = useForm<MembershipClaimFields>({
     mode: 'onChange',
@@ -99,17 +103,80 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
     t, i18n
   }
 
+  const claim = async (data: MembershipClaimFields) => {
+    const loader = await navigator?.invokeLoading()
+    try {
+      if (!handler.wallet) {
+        throw ERROR_WIDGET_AUTHENTICATION
+      }
+      if (!unsignedMemberhip || !ext) {
+        throw ERROR_MEMBERSHIP_READYTO_CLAIM
+      }
+      /**
+       * @TODO Move all this stuff to some credential specific method
+       */
+      const extendSubject = {
+        role: data.membership.claim.role,
+        description: data.membership.claim.description
+      }
+      unsignedMemberhip.credentialSubject = {
+        ...unsignedMemberhip.credentialSubject,
+        ...extendSubject
+      }
+
+      const identity = handler.wallet.getIdentity()?.credential
+      if (!identity) {
+        throw ERROR_NO_IDENTITY
+      }
+      unsignedMemberhip.evidence = [identity]
+      if (group) {
+        unsignedMemberhip.evidence.push(group)
+      }
+      const factory = ext.getFactory(unsignedMemberhip.type)
+      const claim = await factory.claimingFactory(handler.wallet, { unsignedClaim: unsignedMemberhip })
+
+      const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
+      const item = await registry.addCredential(claim)
+
+      item.meta.title = t('membership.claim.meta.title', { 
+        group: groupSubjet?.name,
+        role: data.membership.claim.role
+      })
+
+      loader?.success(t('membership.claim.success'))
+
+      handler.notify()
+
+      /**
+       * @TODO Redirect to proper screen
+       * 1. It should view screen
+       * 2. View screen should allow to export / download the claim some visible way
+       * 3. The parent screen (if there are some) should also be closed
+       */
+      props.close && props.close()
+    } catch (error) {
+      console.error(error)
+      if (error.message) {
+        methods.setError('membership.claim.alert', { type: error.message })
+        return
+      }
+      loader?.error(error)
+    } finally {
+      loader?.finish()
+    }
+  }
+
   return <Fragment>
     <DialogContent>
       <WalletFormProvider {...methods}>
         <PrimaryForm {..._props} title="membership.claim.title">
           {groupSubjet && <MainTextOutput {..._props} field="membership.group.name" showHint />}
-          <MainTextInput {..._props} field="membership.claim.groupId" />
+          <MainTextOutput {..._props} field="membership.claim.groupId" showHint />
           <MainTextInput {..._props} field="membership.claim.role" />
+          <MainTextInput {..._props} field="membership.claim.description" />
           <MainTextOutput {...props} field="membership.claim.createdAt" showHint formatter={dateFormatter} />
-          <FormMainAction {...props} title="membership.claim.create" action={methods.handleSubmit(() => {
-            console.log(unsignedMemberhips)
-          })} />
+          <AlertOutput {...props} field="membership.claim.alert" />
+          <FormMainAction {...props} title="membership.claim.create" action={methods.handleSubmit(claim)} />
         </PrimaryForm>
       </WalletFormProvider>
     </DialogContent>
@@ -127,6 +194,8 @@ export type MembershipClaimProps = RegovComponetProps<MembershipClaimParams>
 export type MembershipClaimFields = {
   membership: {
     group: GroupSubject | undefined
-    claim: MembershipSubject
+    claim: MembershipSubject & {
+      alert?: string
+    }
   }
 }

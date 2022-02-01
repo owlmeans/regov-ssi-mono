@@ -58,17 +58,18 @@
     "claim": {
       "title": "Create a claim for the group membership",
       "create": "Create claim",
+      "success": "Claim for the group membership is created successfully",
       "groupId": {
         "label": "Group ID",
         "hint": "ID of a group you request membership from"
       },
       "role": {
         "label": "Member role",
-        "hint": "Title of the member role"
+        "hint": "Put down the role you are applying to"
       },
       "description": {
-        "label": "Member description",
-        "hint": "Short info about the group member and its role"
+        "label": "Application description",
+        "hint": "Short info about you for the application"
       },
       "memberCode": {
         "label": "Group Member Code",
@@ -76,6 +77,9 @@
       },
       "createdAt": {
         "hint": "Creation date"
+      },
+      "meta": {
+        "title": "Claim \"{{role}}\" role for \"{{group}}\" group"
       }
     },
     "group": {

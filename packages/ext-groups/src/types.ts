@@ -4,6 +4,8 @@ export const REGOV_CREDENTIAL_TYPE_GROUP = 'OwlMeans:Regov:Group'
 
 export const REGOV_CREDENTIAL_TYPE_MEMBERSHIP = 'OwlMeans:Regov:Group:Membership'
 
+export const REGOV_CLAIM_TYPE = 'OwlMeans:Regov:Group:Claim'
+
 export const BASIC_IDENTITY_TYPE = 'Identity'
 
 export const REGOV_EXT_GROUP_NAMESPACE = 'owlmeans-regov-ext-groups'

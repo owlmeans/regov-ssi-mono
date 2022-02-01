@@ -48,11 +48,13 @@ export type CredentialDescription<
     listed?: boolean
     selfIssuing?: boolean
     trustable?: boolean
+    claimType?: string
     defaultSubject?: Subject
   }
 
 export type CredentialEvidenceDesctiption = {
-  type: string,
+  type: string
+  signing?: boolean
   schema?: MaybeArray<CredentialSchema>
 }
 

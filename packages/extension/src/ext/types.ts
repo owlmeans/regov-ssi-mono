@@ -10,7 +10,7 @@ import {
   MultiSchema,
   BasicCredentialType,
 } from '@owlmeans/regov-ssi-core'
-import { DIDDocumentUnsinged } from '@owlmeans/regov-ssi-did'
+import { DIDDocument, DIDDocumentUnsinged } from '@owlmeans/regov-ssi-did'
 import { ExtensionRegistry } from '../registry'
 
 import {
@@ -41,16 +41,14 @@ export type CredentialExtensionFactoriesBuilder = {
   buildingFactory?: BuildingFactoryMethodBuilder
   signingFactory?: SigningFactoryMethodBuilder
   validationFactory?: ValidationFactoryMethodBuilder
+  claimingFactory?: ClaimingFactoryMethodBuilder
 }
 
 export type CredentialExtensionFactories = {
   buildingFactory: BuildingFactoryMethod
   signingFactory: SigningFactoryMethod
   validationFactory: ValidationFactoryMethod
-  claimingFactory?: <
-    Schema extends CredentialSchema = CredentialSchema,
-    >(schema: CredentialDescription<Schema>) =>
-    <Params>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+  claimingFactory: ClaimingFactoryMethod
   offeringFactory?: <
     Schema extends CredentialSchema = CredentialSchema,
     >(schema: CredentialDescription<Schema>) =>
@@ -137,6 +135,21 @@ export interface EvidenceValidationResult {
   schema?: CredentialEvidenceDesctiption
   trustCredential?: Credential[]
 }
+
+export type ClaimingFactoryMethodBuilder = <
+  Schema extends CredentialSchema = CredentialSchema
+  >(schema: CredentialDescription<Schema>) => ClaimingFactoryMethod
+
+export type ClaimingFactoryMethod = <
+  Params extends ClaimingFactoryParams
+  >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+
+export type ClaimingFactoryParams = {
+  unsignedClaim: UnsignedCredential
+  holder?: DIDDocument
+  claimType?: string
+}
+
 
 export type ExtensionLocalization = {
   ns: string,

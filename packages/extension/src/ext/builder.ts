@@ -5,7 +5,7 @@ import {
   ExtensionSchema
 } from "../schema";
 import { findAppropriateCredentialType } from "../util";
-import { defaultBuildingFactory, defaultSigningFactory, defaultValidationFactory } from "./factory"
+import { defaultBuildingFactory, defaultClaimingFactory, defaultSigningFactory, defaultValidationFactory } from "./factory"
 import {
   Extension,
   ExtensionFactories,
@@ -27,6 +27,7 @@ export const buildExtension = <CredType extends string>(
             buildingFactory: defaultBuildingFactory(description as CredentialDescription),
             signingFactory: defaultSigningFactory(description as CredentialDescription),
             validationFactory: defaultValidationFactory(description as CredentialDescription),
+            claimingFactory: defaultClaimingFactory(description as CredentialDescription),
             ...(factories
               ? Object.entries(factories[key as CredType]).reduce((_facts, [method, builder]) => {
                 if (schema.credentials) {

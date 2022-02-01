@@ -20,6 +20,7 @@ import {
   GroupSubject,
   MembershipSubject,
   RegovGroupExtensionTypes,
+  REGOV_CLAIM_TYPE,
   REGOV_CREDENTIAL_TYPE_GROUP,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
   REGOV_EXT_GROUP_NAMESPACE
@@ -29,7 +30,10 @@ import { makeRandomUuid } from "@owlmeans/regov-ssi-common"
 
 let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
   name: 'extension.details.name',
-  code: 'owlmean-regov-groups'
+  code: 'owlmean-regov-groups',
+  types: {
+    claim: REGOV_CLAIM_TYPE
+  }
 }, {
   [REGOV_CREDENTIAL_TYPE_GROUP]: {
     mainType: REGOV_CREDENTIAL_TYPE_GROUP,
@@ -43,6 +47,7 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
     },
     evidence: {
       type: BASIC_IDENTITY_TYPE,
+      signing: true,
     },
     registryType: REGISTRY_TYPE_CREDENTIALS,
     selfIssuing: true,
@@ -65,9 +70,15 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
     selfIssuing: false,
     claimable: true,
     listed: true,
-    evidence: {
-      type: REGOV_CREDENTIAL_TYPE_GROUP
-    }
+    evidence: [
+      { 
+        type: BASIC_IDENTITY_TYPE,
+        signing: true 
+      },
+      { 
+        type: REGOV_CREDENTIAL_TYPE_GROUP
+      }
+    ]
   }
 })
 
@@ -91,7 +102,7 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
 
     return params.credential.type.includes(REGOV_CREDENTIAL_TYPE_GROUP)
   },
-  
+
   method: async (_, { credential, setName }: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
     const subject = getCompatibleSubject<GroupSubject>(credential)
     setName(subject.name)

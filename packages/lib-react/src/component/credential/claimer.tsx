@@ -1,13 +1,8 @@
 import {
-  isCredential,
   SSICore,
   UnsignedCredential
 } from '@owlmeans/regov-ssi-core'
-import {
-  DIDDocument,
-  DIDDocumentUnsinged,
-  VERIFICATION_KEY_HOLDER
-} from '@owlmeans/regov-ssi-did'
+import { Extension } from '@owlmeans/regov-ssi-extension'
 import React, {
   FunctionComponent
 } from 'react'
@@ -16,6 +11,7 @@ import {
   BasicNavigator,
   RegovComponetProps,
   RegovValidationRules,
+  useRegov,
   withRegov,
   WrappedComponentProps
 } from '../../common'
@@ -29,11 +25,12 @@ export const CredentialClaimer: FunctionComponent<CredentialClaimerParams> =
       return { ssi: wallet?.ssi }
     }
   }, ({
-    t, i18n, ssi, navigator,
-    claimType,
+    t, i18n, ssi, navigator, ext,
+    claimType, defaultType,
     com: ComRenderer,
     renderer: FallbackRenderer
   }) => {
+    const { handler } = useRegov()
     const Renderer = ComRenderer || FallbackRenderer
 
     const _props: CredentialClaimerImplProps = {
@@ -57,53 +54,25 @@ export const CredentialClaimer: FunctionComponent<CredentialClaimerParams> =
       claim: methods => async data => {
         const loading = await navigator?.invokeLoading()
         try {
-          if (!ssi) {
+          if (!ssi || !handler.wallet) {
             methods.setError('claimer.alert', { type: 'authenticated' })
             return
           }
 
-          const unsigned = JSON.parse(data.claimer.unsigned) as UnsignedCredential
-          const unsignedDid = unsigned.holder as DIDDocumentUnsinged
+          const unsignedClaim = JSON.parse(data.claimer.unsigned) as UnsignedCredential
+          const factory = ext.getFactory(unsignedClaim.type, defaultType)
 
-          const signerKey = await ssi.did.helper().extractKey(unsignedDid, VERIFICATION_KEY_HOLDER)
-          if (!signerKey) {
-            methods.setError('claimer.alert', { type: 'claimer.holder.key' })
-            return
-          }
-          await ssi.keys.expandKey(signerKey)
-          if (!signerKey.pk) {
-            methods.setError('claimer.alert', { type: 'claimer.holder.pk' })
-            return
-          }
-          const issuer = await ssi.did.helper().signDID(signerKey, unsignedDid)
-          unsigned.holder = { id: issuer.id }
-          if (claimType) {
-            unsigned.type.push(claimType)
-          }
-
-          const cred = await ssi.signCredential(unsigned, issuer, { keyId: VERIFICATION_KEY_HOLDER })
-
-          let holder: DIDDocument | Credential = data.claimer.holder === ''
-            ? cred.issuer
-            : JSON.parse(data.claimer.holder)
-
-          if (isCredential(holder)) {
-            if (typeof holder.issuer === 'string') {
-              methods.setError('claimer.alert', { type: 'claimer.holder.format' })
+          try {
+            const claim = await factory.claimingFactory(handler.wallet, { unsignedClaim, claimType })
+            methods.setValue('output', JSON.stringify(claim, undefined, 2))
+          } catch (error) {
+            console.error(error)
+            if (error.message) {
+              methods.setError('claimer.alert', { type: error.message })
               return
             }
-            holder = holder.issuer
+            throw error
           }
-
-          if (!ssi.did.helper().isDIDDocument(holder)) {
-            methods.setError('claimer.alert', { type: 'claimer.holder.format' })
-            return
-          }
-
-          const unsignedClaim = await ssi.buildPresentation([cred], { holder, type: claimType })
-          const claim = await ssi.signPresentation(unsignedClaim, holder)
-
-          methods.setValue('output', JSON.stringify(claim, undefined, 2))
         } catch (error) {
           loading?.error(error)
           console.error(error)
@@ -131,9 +100,11 @@ export const credentialClaimerValidatorRules: RegovValidationRules = {
 }
 
 export type CredentialClaimerParams = {
-  ns?: string,
+  ns?: string
   claimType?: string
   com?: FunctionComponent
+  ext: Extension<string>
+  defaultType: string
 }
 
 export type CredentialClaimerFields = {

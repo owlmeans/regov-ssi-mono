@@ -37,24 +37,26 @@ export const defaultSigningFactory: SigningFactoryMethodBuilder = schema =>
         if (!wallet.did.helper().isDIDDocument(signer)) {
           return
         }
-        
-        /**
-         * @TODO It shouldn't work this way. If there is more than one evidence,
-         * it will take the last one. It's actually not very logical :)
-         */
-        signerKey = await wallet.ssi.did.helper().extractKey(signer, VERIFICATION_KEY_HOLDER)
-        if (!signerKey) {
-          throw new Error('evidence.holder.key')
-        }
-        await wallet.ssi.keys.expandKey(signerKey)
-        if (!signerKey.pk) {
-          throw new Error('evidence.holder.pk')
-        }
-        if (!signer || typeof signer === 'string') {
-          throw new Error('evidence.signer.type')
-        }
-        issuer = signer
+
         unsigned.evidence = addToValue(unsigned.evidence, evidence)
+
+        const evidenceInfo = normalizeValue(schema.evidence).find(
+          _evidence => _evidence && evidence.type.includes(_evidence.type)
+        )
+        if (evidenceInfo?.signing) {
+          signerKey = await wallet.ssi.did.helper().extractKey(signer, VERIFICATION_KEY_HOLDER)
+          if (!signerKey) {
+            throw new Error('evidence.holder.key')
+          }
+          await wallet.ssi.keys.expandKey(signerKey)
+          if (!signerKey.pk) {
+            throw new Error('evidence.holder.pk')
+          }
+          if (!signer || typeof signer === 'string') {
+            throw new Error('evidence.signer.type')
+          }
+          issuer = signer
+        }
       }))
       if (!signerKey) {
         throw ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED
