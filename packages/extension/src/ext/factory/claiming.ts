@@ -42,6 +42,9 @@ export const defaultClaimingFactory: ClaimingFactoryMethodBuilder = schema =>
       throw new Error('claimer.holder.format')
     }
 
-    const unsignedClaim = await wallet.ssi.buildPresentation([cred], { holder, type: schema.claimType })
+    const unsignedClaim = await wallet.ssi.buildPresentation([cred], {
+      holder, type: schema.claimType,
+      id: wallet.did.helper().makeDIDId(signerKey, { data: JSON.stringify([cred]), hash: true })
+    })
     return wallet.ssi.signPresentation(unsignedClaim, holder)
   }

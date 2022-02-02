@@ -41,7 +41,7 @@ export const WalletCredentialList = () => {
 }
 
 
-const walletCredentialListTabs: CredentialListTab[] = [
+export const walletCredentialListTabs: CredentialListTab[] = [
   {
     name: REGISTRY_TYPE_CREDENTIALS,
     registry: {

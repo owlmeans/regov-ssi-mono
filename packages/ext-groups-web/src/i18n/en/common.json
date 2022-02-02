@@ -80,6 +80,11 @@
       },
       "meta": {
         "title": "Claim \"{{role}}\" role for \"{{group}}\" group"
+      },
+      "list": {
+        "item": {
+          "type": "Membership claim"
+        }
       }
     },
     "group": {

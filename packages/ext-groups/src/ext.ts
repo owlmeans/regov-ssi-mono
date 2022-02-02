@@ -13,7 +13,8 @@ import {
   REGISTRY_TYPE_IDENTITIES,
   REGISTRY_TYPE_CREDENTIALS,
   UnsignedCredential,
-  getCompatibleSubject
+  getCompatibleSubject,
+  isPresentation
 } from '@owlmeans/regov-ssi-core'
 import {
   BASIC_IDENTITY_TYPE,
@@ -79,12 +80,20 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
         type: REGOV_CREDENTIAL_TYPE_GROUP
       }
     ]
+  },
+  [REGOV_CLAIM_TYPE]: {
+    mainType: REGOV_CLAIM_TYPE,
+    credentialContext: {}
   }
 })
 
 groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   filter: async (_, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>) => {
+    if (isPresentation(params.credential)) {
+      return true
+    }
+
     if (!params.credential.type || !Array.isArray(params.credential.type)) {
       return false
     }
@@ -171,7 +180,8 @@ export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsEx
 
       return unsigned as unknown as UnsignedCredential
     },
-  }
+  },
+  [REGOV_CLAIM_TYPE]: {}
 })
 
 groupsExtension.localization = {

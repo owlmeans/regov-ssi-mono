@@ -61,7 +61,7 @@ const CredentialListItem = ({ wrapper, props }: CredentialListItemProps) => {
   if (renderers && renderers.length > 0) {
     const renderer = renderers[0]
     const Renderer = renderer.com as FunctionComponent<PurposeListItemParams>
-    
+
     return <Renderer wrapper={wrapper} />
   }
 

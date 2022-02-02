@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 
 import {
   buildUIExtension,
@@ -17,6 +17,7 @@ import {
 import {
   groupsExtension,
   RegovGroupExtensionTypes,
+  REGOV_CLAIM_TYPE,
   REGOV_CREDENTIAL_TYPE_GROUP,
 } from '@owlmeans/regov-ext-groups'
 import {
@@ -27,7 +28,9 @@ import {
   GroupCreation,
   GroupItem,
   GroupView,
-  EvidenceWidget
+  EvidenceWidget,
+  MembershipClaimView,
+  MembershipClaimItem
 } from './component'
 import {
   addObserverToSchema,
@@ -36,7 +39,7 @@ import {
 } from '@owlmeans/regov-ssi-extension'
 import { RegovGroupUIExtension } from './types'
 import {
-  Credential
+  Credential, isPresentation, Presentation
 } from '@owlmeans/regov-ssi-core'
 
 
@@ -50,13 +53,18 @@ if (groupsExtension.schema.events) {
   groupsExtension.getEvents(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
     _, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>
   ) => {
+    const close = () => {
+      params.cleanUp()
+      modalHandler.setOpen && modalHandler.setOpen(false)
+    }
     if (modalHandler) {
-      modalHandler.getContent = () => <GroupView ext={groupsExtension}
-        close={() => {
-          params.cleanUp()
-          modalHandler.setOpen && modalHandler.setOpen(false)
-        }}
-        credential={params.credential as Credential} />
+      if (isPresentation(params.credential)) {
+        modalHandler.getContent = () => <MembershipClaimView ext={groupsExtension} close={close}
+          credential={params.credential as Presentation} />
+      } else {
+        modalHandler.getContent = () => <GroupView ext={groupsExtension} close={close}
+          credential={params.credential as Credential} />
+      }
       if (modalHandler.setOpen) {
         modalHandler.setOpen(true)
       }
@@ -101,6 +109,13 @@ export const groupsUIExtension: RegovGroupUIExtension = buildUIExtension<RegovGr
             return [{
               com: GroupItem(groupsExtension),
               extensionCode: `${groupsExtension.schema.details.code}GroupItem`,
+              params: {},
+              order: 0
+            }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
+          case REGOV_CLAIM_TYPE:
+            return [{
+              com: MembershipClaimItem(groupsExtension) as unknown as FunctionComponent<PurposeListItemParams>,
+              extensionCode: `${groupsExtension.schema.details.code}MembershipClaimItem`,
               params: {},
               order: 0
             }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
