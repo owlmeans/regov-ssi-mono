@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form'
 export const MembershipClaimView: FunctionComponent<ClaimViewParams> =
   withRegov<ClaimViewProps>({
     namespace: REGOV_EXT_GROUP_NAMESPACE
-  }, ({ credential: presentation, t, i18n }) => {
+  }, ({ credential: presentation, t, i18n, close }) => {
     const subject = getCompatibleSubject<MembershipSubject>(presentation.verifiableCredential[0])
     const { handler } = useRegov()
 

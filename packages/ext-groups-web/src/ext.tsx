@@ -15,6 +15,8 @@ import {
   PurposeEvidenceWidgetParams,
 } from '@owlmeans/regov-lib-react'
 import {
+  getGroupFromMembershipClaimPresentation,
+  getGroupOwnerIdentity,
   groupsExtension,
   RegovGroupExtensionTypes,
   REGOV_CLAIM_TYPE,
@@ -30,7 +32,8 @@ import {
   GroupView,
   EvidenceWidget,
   MembershipClaimView,
-  MembershipClaimItem
+  MembershipClaimItem,
+  MembershipOffer
 } from './component'
 import {
   addObserverToSchema,
@@ -39,7 +42,7 @@ import {
 } from '@owlmeans/regov-ssi-extension'
 import { RegovGroupUIExtension } from './types'
 import {
-  Credential, isPresentation, Presentation
+  Credential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES
 } from '@owlmeans/regov-ssi-core'
 
 
@@ -51,7 +54,7 @@ if (groupsExtension.schema.events) {
   let modalHandler: MainModalHandle
 
   groupsExtension.getEvents(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
-    _, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>
+    wallet, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>
   ) => {
     const close = () => {
       params.cleanUp()
@@ -59,8 +62,23 @@ if (groupsExtension.schema.events) {
     }
     if (modalHandler) {
       if (isPresentation(params.credential)) {
-        modalHandler.getContent = () => <MembershipClaimView ext={groupsExtension} close={close}
-          credential={params.credential as Presentation} />
+        if (params.credential.type.includes(REGOV_CLAIM_TYPE)) {
+          let isOwner = false
+          const group = getGroupFromMembershipClaimPresentation(params.credential)
+          if (group) {
+            const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+            const owner = getGroupOwnerIdentity(group)
+            isOwner = !!registry.getCredential(owner?.id)
+          }
+
+          if (isOwner) {
+            modalHandler.getContent = () => <MembershipOffer ext={groupsExtension} close={close}
+              credential={params.credential as Presentation} />
+          } else {
+            modalHandler.getContent = () => <MembershipClaimView ext={groupsExtension} close={close}
+              credential={params.credential as Presentation} />
+          }
+        }
       } else {
         modalHandler.getContent = () => <GroupView ext={groupsExtension} close={close}
           credential={params.credential as Credential} />

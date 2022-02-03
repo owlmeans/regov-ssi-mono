@@ -62,7 +62,6 @@ const CredentialListItem = ({ wrapper, props }: CredentialListItemProps) => {
     const renderer = renderers[0]
     const Renderer = renderer.com as FunctionComponent<PurposeListItemParams>
 
-    console.log('to tirgger !!! : ', wrapper, props.id)
     return <Renderer wrapper={wrapper} trigger={wrapper.credential.id === props.id} />
   }
 

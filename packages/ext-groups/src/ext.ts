@@ -72,11 +72,11 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
     claimable: true,
     listed: true,
     evidence: [
-      { 
+      {
         type: BASIC_IDENTITY_TYPE,
-        signing: true 
+        signing: true
       },
-      { 
+      {
         type: REGOV_CREDENTIAL_TYPE_GROUP
       }
     ]
@@ -90,7 +90,7 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
 groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   filter: async (_, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>) => {
-    if (isPresentation(params.credential)) {
+    if (isPresentation(params.credential) && params.credential.type.includes(REGOV_CLAIM_TYPE)) {
       return true
     }
 
