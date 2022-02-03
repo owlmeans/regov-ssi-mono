@@ -129,7 +129,10 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
       {result.trusted && <Button onClick={() => setClaimMembership(true)}>{t('group.view.claimMembership')}</Button>}
     </DialogActions>
     <Dialog open={claimMembership} fullWidth onClose={() => setClaimMembership(false)} scroll="paper">
-      <MembershipClaim ext={ext} group={credential} close={() => setClaimMembership(false)} />
+      <MembershipClaim ext={ext} group={credential} 
+        close={() => setClaimMembership(false)} 
+        finish={() => close && close()}
+        />
     </Dialog>
   </Fragment>
 })

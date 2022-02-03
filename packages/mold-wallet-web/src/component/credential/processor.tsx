@@ -5,7 +5,7 @@ import React, {
 } from 'react'
 import {
   CredentialProcessorFields,
-  CredentialProcessorImplProps
+  CredentialProcessorImplProps,
 } from '@owlmeans/regov-lib-react'
 import { useDropzone } from 'react-dropzone'
 import {
@@ -33,6 +33,7 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
   const methods = useForm<CredentialProcessorFields>(
     form as UseFormProps<CredentialProcessorFields>
   )
+
   const { control, setError, setValue, trigger, watch, handleSubmit, reset } = methods
 
   const onDrop = useCallback(async (files: File[]) => {

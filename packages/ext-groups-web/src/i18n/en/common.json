@@ -87,6 +87,13 @@
         }
       }
     },
+    "claimView": {
+      "title": "Membership Claim Preview",
+      "close": "Cancel",
+      "role": {
+        "hint": "Role you claim"
+      }
+    }, 
     "group": {
       "name": {
         "hint": "This is the group name you request a membership for"

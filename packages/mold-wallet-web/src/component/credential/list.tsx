@@ -62,7 +62,8 @@ const CredentialListItem = ({ wrapper, props }: CredentialListItemProps) => {
     const renderer = renderers[0]
     const Renderer = renderer.com as FunctionComponent<PurposeListItemParams>
 
-    return <Renderer wrapper={wrapper} />
+    console.log('to tirgger !!! : ', wrapper, props.id)
+    return <Renderer wrapper={wrapper} trigger={wrapper.credential.id === props.id} />
   }
 
   return <SimpleListItem {...props} noTranslation label={wrapper.meta.title || t('list.item.unknown')}

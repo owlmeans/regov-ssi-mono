@@ -8,12 +8,14 @@ import React, {
 import {
   Credential,
   getCompatibleSubject,
+  REGISTRY_SECTION_OWN,
   REGISTRY_TYPE_CLAIMS,
   UnsignedCredential
 } from '@owlmeans/regov-ssi-core'
 import {
   EmptyProps,
   RegovComponetProps,
+  useNavigator,
   useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
@@ -34,7 +36,9 @@ import {
   MainTextInput,
   MainTextOutput,
   PrimaryForm,
-  WalletFormProvider
+  WalletFormProvider,
+  ListNavigator,
+  partialListNavigator
 } from '@owlmeans/regov-mold-wallet-web'
 import { useForm } from 'react-hook-form'
 import {
@@ -43,13 +47,18 @@ import {
   ERROR_WIDGET_AUTHENTICATION,
   ERROR_WIDGET_EXTENSION
 } from '../../types'
+import { useNavigate } from 'react-router-dom'
 
 
-export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withRegov<MembershipClaimProps>({
+export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withRegov<
+  MembershipClaimProps, ListNavigator
+>({
   namespace: REGOV_EXT_GROUP_NAMESPACE
 }, (props) => {
-  const { group, t, i18n, navigator, ext } = props
+  const { group, t, i18n, ext } = props
   const { handler } = useRegov()
+  const navigate = useNavigate()
+  const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
   const groupSubjet = group ? getCompatibleSubject<GroupSubject>(group) : undefined
   const [unsignedMemberhip, setUnsignedMembership] = useState<UnsignedCredential | undefined>(undefined)
 
@@ -138,7 +147,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
       const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
       const item = await registry.addCredential(claim)
 
-      item.meta.title = t('membership.claim.meta.title', { 
+      item.meta.title = t('membership.claim.meta.title', {
         group: groupSubjet?.name,
         role: data.membership.claim.role
       })
@@ -147,13 +156,14 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
 
       handler.notify()
 
-      /**
-       * @TODO Redirect to proper screen
-       * 1. It should view screen
-       * 2. View screen should allow to export / download the claim some visible way
-       * 3. The parent screen (if there are some) should also be closed
-       */
-      props.close && props.close()
+      if (props.finish && item.credential.id) {
+        props.finish()
+        
+        await (navigator as ListNavigator).item(REGISTRY_TYPE_CLAIMS, {
+          section: REGISTRY_SECTION_OWN,
+          id: item.credential.id
+        })
+      }
     } catch (error) {
       console.error(error)
       if (error.message) {
@@ -187,6 +197,7 @@ export type MembershipClaimParams = EmptyProps & {
   ext: RegovGroupExtension,
   group?: Credential,
   close?: () => void
+  finish?: () => void
 }
 
 export type MembershipClaimProps = RegovComponetProps<MembershipClaimParams>

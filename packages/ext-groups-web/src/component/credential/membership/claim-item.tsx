@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useMemo } from 'react'
+import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
 import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import { MembershipSubject, RegovGroupClaim } from '@owlmeans/regov-ext-groups'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-extension'
@@ -9,7 +9,7 @@ import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-mold-w
 
 
 export const MembershipClaimItem = (ext: Extension<RegovGroupClaim>): FunctionComponent<ClaimItemParams> =>
-  withRegov<ClaimItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, wrapper, action }) => {
+  withRegov<ClaimItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, wrapper, trigger, action }) => {
     const { extensions, handler } = useRegov()
     const presentation = wrapper.credential as Presentation
     const subject = getCompatibleSubject<MembershipSubject>(presentation.verifiableCredential[0])
@@ -27,6 +27,10 @@ export const MembershipClaimItem = (ext: Extension<RegovGroupClaim>): FunctionCo
         cleanUp: () => undefined
       })
     })
+
+    console.log('TRIGGER', trigger)
+
+    useEffect(() => { trigger && action && action() }, [trigger, wrapper.credential.id])
 
     return <ListItem>
       <ListItemButton onClick={action}>
@@ -55,6 +59,7 @@ export const MembershipClaimItem = (ext: Extension<RegovGroupClaim>): FunctionCo
 export type ClaimItemParams = EmptyProps & {
   wrapper: CredentialWrapper<CredentialSubject, Presentation<Credential<CredentialSubject>>>
   action?: () => void
+  trigger?: boolean
 }
 
 export type ClaimItemProps = RegovComponetProps<ClaimItemParams>

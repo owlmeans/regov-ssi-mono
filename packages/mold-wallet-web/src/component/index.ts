@@ -1,6 +1,7 @@
 
 export * from './common'
 export * from './credential'
+export * from './main'
 
 import {
   ImplementationMap

@@ -38,6 +38,7 @@ export const NavigationRoot = () => {
       })}
       <Route path="credential">
         <Route path="list/:tab/:section" element={<WalletCredentialList />} />
+        <Route path="list/:tab/:section/:id" element={<WalletCredentialList />} />
         <Route path="create/:ext/:type" element={<CredentialCreation />} />
       </Route>
     </Route>

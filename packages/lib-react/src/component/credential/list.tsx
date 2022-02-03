@@ -21,12 +21,12 @@ import {
 export const CredentialList: FunctionComponent<CredentialListParams> = withRegov<
   CredentialListProps, CredentialListNavigator
 >('CredentialList',
-  ({ t, i18n, credentials, tab, section, tabs, navigator, renderer: Renderer }) => {
+  ({ t, i18n, credentials, tab, section, id, tabs, navigator, renderer: Renderer }) => {
     const currentTab = tab || tabs[0].registry.type || REGISTRY_TYPE_CREDENTIALS
     const currentSection = section || REGISTRY_SECTION_OWN
 
     const _props: CredentialListImplProps = {
-      t, i18n, tabs,
+      t, i18n, tabs, id,
       tab: currentTab,
       section: currentSection,
       credentials: credentials,
@@ -67,6 +67,7 @@ export type CredentialListParams = {
   tabs: CredentialListTab[]
   tab?: RegistryType
   section?: string
+  id?: string
 } & EmptyProps
 
 export type CredentialListTab = {
@@ -96,6 +97,7 @@ export type CredentialListImplParams = {
   tabs: CredentialListTab[]
   tab?: RegistryType
   section?: string
+  id?: string
   binarySectionSwitch: () => void
   switchTab: (tab: string) => void
 }
