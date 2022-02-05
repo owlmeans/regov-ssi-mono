@@ -22,7 +22,10 @@ export const defaultOfferingFactory: OfferingFactoryMethodBuilder = schema =>
 
     const signed = await wallet.ssi.signCredential(credential, issuerDid as DIDDocument)
 
-    const offer = await wallet.ssi.buildPresentation([signed], { holder: issuerDid })
+    const offer = await wallet.ssi.buildPresentation([signed], {
+      holder: issuerDid,
+      id: wallet.did.helper().makeDIDId(signingKey, { data: JSON.stringify([signed]), hash: true })
+    })
 
     return wallet.ssi.signPresentation(offer, issuerDid as DIDDocument)
   }

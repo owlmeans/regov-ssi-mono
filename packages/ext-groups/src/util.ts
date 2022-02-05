@@ -1,11 +1,11 @@
 import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-common"
 import { Presentation, Credential } from "@owlmeans/regov-ssi-core"
 import { DIDDocument } from "@owlmeans/regov-ssi-did"
-import { BASIC_IDENTITY_TYPE } from "."
 import {
   REGOV_CREDENTIAL_TYPE_GROUP,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
-  REGOV_CLAIM_TYPE
+  REGOV_CLAIM_TYPE,
+  BASIC_IDENTITY_TYPE
 } from "./types"
 
 

@@ -53,6 +53,8 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
       const subject = data.membership.offer as any
       delete subject.alert
 
+      console.log(subject)
+
       const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
       const offer = await factory.offeringFactory(handler.wallet, {
         claim: getMembershipClaim(presentation) as Credential,
@@ -74,14 +76,11 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
     }
   }
 
-  console.log('offer', offer?.id)
-
   useEffect(() => {
-    console.log('get name')
     if (!handler.wallet || !extensions || !offer) {
       return
     }
-    console.log('set name', EXTENSION_TRIGGER_RETRIEVE_NAME)
+    const credential = offer.verifiableCredential[0]
     extensions.triggerEvent<RetreiveNameEventParams<string>>(
       handler.wallet, EXTENSION_TRIGGER_RETRIEVE_NAME, {
       credential, setName: (name: string) => { setName(name) }
