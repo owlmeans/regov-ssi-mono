@@ -53,8 +53,6 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
       const subject = data.membership.offer as any
       delete subject.alert
 
-      console.log(subject)
-
       const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
       const offer = await factory.offeringFactory(handler.wallet, {
         claim: getMembershipClaim(presentation) as Credential,
