@@ -1,4 +1,4 @@
-import { BASE_CREDENTIAL_TYPE, BasicCredentialType } from "@owlmeans/regov-ssi-core";
+import { BASE_CREDENTIAL_TYPE } from "@owlmeans/regov-ssi-core";
 import { CredentialExtensionFactories } from ".";
 import {
   CredentialDescription,
@@ -6,6 +6,7 @@ import {
 } from "../schema";
 import { findAppropriateCredentialType } from "../util";
 import { defaultBuildingFactory, defaultClaimingFactory, defaultSigningFactory, defaultValidationFactory } from "./factory"
+import { defaultOfferingFactory } from "./factory/offering";
 import {
   Extension,
   ExtensionFactories,
@@ -28,6 +29,7 @@ export const buildExtension = <CredType extends string>(
             signingFactory: defaultSigningFactory(description as CredentialDescription),
             validationFactory: defaultValidationFactory(description as CredentialDescription),
             claimingFactory: defaultClaimingFactory(description as CredentialDescription),
+            offeringFactory: defaultOfferingFactory(description as CredentialDescription),
             ...(factories
               ? Object.entries(factories[key as CredType]).reduce((_facts, [method, builder]) => {
                 if (schema.credentials) {

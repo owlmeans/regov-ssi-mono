@@ -118,6 +118,22 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   }
 })
 
+groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
+  trigger: EXTENSION_TRIGGER_RETRIEVE_NAME,
+  filter: async (_, params: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
+    if (!params.credential.type || !Array.isArray(params.credential.type)) {
+      return false
+    }
+
+    return params.credential.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
+  },
+
+  method: async (_, { credential, setName }: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
+    const subject = getCompatibleSubject<MembershipSubject>(credential)
+    setName(`${subject.role} - ${subject.memberCode}`)
+  }
+})
+
 export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsExtensionSchema, {
   [REGOV_CREDENTIAL_TYPE_GROUP]: {
     buildingFactory: (credSchema) => async (wallet, params) => {

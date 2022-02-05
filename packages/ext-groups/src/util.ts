@@ -33,3 +33,17 @@ export const getGroupOwnerIdentity = (crednetial: Credential) => {
       && evidence.id === (crednetial.issuer as unknown as DIDDocument).id
   )
 }
+
+export const getMembershipClaimHolder = (presentation: Presentation) => {
+  const membership = presentation.verifiableCredential.find(
+    credential => credential.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
+  )
+
+  return membership?.issuer as unknown as DIDDocument
+}
+
+export const getMembershipClaim = (presentation: Presentation) => {
+  return presentation.verifiableCredential.find(
+    credential => credential.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
+  )
+}

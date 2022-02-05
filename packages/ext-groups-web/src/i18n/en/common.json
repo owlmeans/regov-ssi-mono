@@ -94,6 +94,30 @@
         "hint": "Role you claim"
       }
     }, 
+    "offer": {
+      "title": "Membership claim review",
+      "close": "Close",
+      "proceed": "Issue",
+      "groupId": {
+        "label": "Group ID",
+        "hint": "Membership is request from a group with ID"
+      },
+      "role": {
+        "label": "Member role",
+        "hint": "Put down a role description for a member"
+      },
+      "description": {
+        "label": "Member description",
+        "hint": "Short info about the member"
+      },
+      "memberCode": {
+        "label": "Member Code",
+        "hint": "Unique sequence that allows to identity the member"
+      },
+      "createdAt": {
+        "hint": "Creation date"
+      }
+    },
     "group": {
       "name": {
         "hint": "This is the group name you request a membership for"

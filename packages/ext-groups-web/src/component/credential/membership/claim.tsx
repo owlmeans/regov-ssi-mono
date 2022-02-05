@@ -52,9 +52,7 @@ import { useNavigate } from 'react-router-dom'
 
 export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withRegov<
   MembershipClaimProps, ListNavigator
->({
-  namespace: REGOV_EXT_GROUP_NAMESPACE
-}, (props) => {
+>({ namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
   const { group, t, i18n, ext } = props
   const { handler } = useRegov()
   const navigate = useNavigate()
@@ -158,7 +156,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
 
       if (props.finish && item.credential.id) {
         props.finish()
-        
+
         await (navigator as ListNavigator).item(REGISTRY_TYPE_CLAIMS, {
           section: REGISTRY_SECTION_OWN,
           id: item.credential.id
@@ -166,11 +164,11 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
       }
     } catch (error) {
       console.error(error)
+      loader?.error(error)
       if (error.message) {
         methods.setError('membership.claim.alert', { type: error.message })
         return
       }
-      loader?.error(error)
     } finally {
       loader?.finish()
     }

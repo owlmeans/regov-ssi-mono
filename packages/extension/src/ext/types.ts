@@ -42,6 +42,7 @@ export type CredentialExtensionFactoriesBuilder = {
   signingFactory?: SigningFactoryMethodBuilder
   validationFactory?: ValidationFactoryMethodBuilder
   claimingFactory?: ClaimingFactoryMethodBuilder
+  offeringFacotry?: OfferingFactoryMethodBuilder
 }
 
 export type CredentialExtensionFactories = {
@@ -49,10 +50,7 @@ export type CredentialExtensionFactories = {
   signingFactory: SigningFactoryMethod
   validationFactory: ValidationFactoryMethod
   claimingFactory: ClaimingFactoryMethod
-  offeringFactory?: <
-    Schema extends CredentialSchema = CredentialSchema,
-    >(schema: CredentialDescription<Schema>) =>
-    <Params>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+  offeringFactory: OfferingFactoryMethod
   issuingFactory?: <
     Schema extends CredentialSchema = CredentialSchema,
     >(schema: CredentialDescription<Schema>) =>
@@ -150,6 +148,20 @@ export type ClaimingFactoryParams = {
   claimType?: string
 }
 
+export type OfferingFactoryMethodBuilder = <
+  Schema extends CredentialSchema = CredentialSchema,
+  >(schema: CredentialDescription<Schema>) => OfferingFactoryMethod
+
+export type OfferingFactoryMethod = <
+  Params extends OfferingFactoryParams
+  >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+
+export type OfferingFactoryParams = {
+  claim: Credential
+  holder: DIDDocument
+  cryptoKey: CryptoKey
+  subject: Object
+}
 
 export type ExtensionLocalization = {
   ns: string,
