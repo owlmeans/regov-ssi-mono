@@ -5,6 +5,7 @@ export const REGOV_CREDENTIAL_TYPE_GROUP = 'OwlMeans:Regov:Group'
 export const REGOV_CREDENTIAL_TYPE_MEMBERSHIP = 'OwlMeans:Regov:Group:Membership'
 
 export const REGOV_CLAIM_TYPE = 'OwlMeans:Regov:Group:Claim'
+export const REGOV_OFFER_TYPE = 'OwlMeans:Regov:Group:Offer'
 
 export const BASIC_IDENTITY_TYPE = 'Identity'
 

@@ -21,6 +21,7 @@ import {
   RegovGroupExtensionTypes,
   REGOV_CLAIM_TYPE,
   REGOV_CREDENTIAL_TYPE_GROUP,
+  REGOV_OFFER_TYPE,
 } from '@owlmeans/regov-ext-groups'
 import {
   MENU_TAG_CRED_NEW
@@ -44,6 +45,7 @@ import { RegovGroupUIExtension } from './types'
 import {
   Credential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES
 } from '@owlmeans/regov-ssi-core'
+import { MembershipClaimOffer } from './component/credential/membership/claim-offer'
 
 
 if (groupsExtension.localization) {
@@ -56,10 +58,13 @@ if (groupsExtension.schema.events) {
   groupsExtension.getEvents(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
     wallet, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>
   ) => {
+    params.statusHandler.successful = false
+
     const close = () => {
       params.cleanUp()
       modalHandler.setOpen && modalHandler.setOpen(false)
     }
+
     if (modalHandler) {
       if (isPresentation(params.credential)) {
         if (params.credential.type.includes(REGOV_CLAIM_TYPE)) {
@@ -74,23 +79,33 @@ if (groupsExtension.schema.events) {
           if (isOwner) {
             modalHandler.getContent = () => <MembershipOffer ext={groupsExtension} close={close}
               credential={params.credential as Presentation} />
+
+            params.statusHandler.successful = true
           } else {
             modalHandler.getContent = () => <MembershipClaimView ext={groupsExtension} close={close}
               credential={params.credential as Presentation} />
+
+            params.statusHandler.successful = true
           }
+        } else if (params.credential.type.includes(REGOV_OFFER_TYPE)) {
+          modalHandler.getContent = () => <MembershipClaimOffer ext={groupsExtension} close={close}
+              credential={params.credential as Presentation} />
+
+          params.statusHandler.successful = true
         }
       } else {
         modalHandler.getContent = () => <GroupView ext={groupsExtension} close={close}
           credential={params.credential as Credential} />
+
+        params.statusHandler.successful = true
       }
-      if (modalHandler.setOpen) {
+
+      if (modalHandler.setOpen && params.statusHandler.successful) {
         modalHandler.setOpen(true)
       }
       /**
        * @TODO Clean up processor on reset
        */
-
-      params.statusHandler.successful = true
 
       return true
     }

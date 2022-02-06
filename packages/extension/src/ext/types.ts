@@ -161,6 +161,11 @@ export type OfferingFactoryParams = {
   holder: DIDDocument
   cryptoKey: CryptoKey
   subject: Object
+  claimType?: string
+  offerType?: string
+  id: string,
+  challenge: string
+  domain: string
 }
 
 export type ExtensionLocalization = {

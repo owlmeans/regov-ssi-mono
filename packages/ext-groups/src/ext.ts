@@ -24,7 +24,8 @@ import {
   REGOV_CLAIM_TYPE,
   REGOV_CREDENTIAL_TYPE_GROUP,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
-  REGOV_EXT_GROUP_NAMESPACE
+  REGOV_EXT_GROUP_NAMESPACE,
+  REGOV_OFFER_TYPE
 } from "./types"
 import { makeRandomUuid } from "@owlmeans/regov-ssi-common"
 
@@ -90,8 +91,10 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
 groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   filter: async (_, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>) => {
-    if (isPresentation(params.credential) && params.credential.type.includes(REGOV_CLAIM_TYPE)) {
-      return true
+    if (isPresentation(params.credential)) {
+      if ([REGOV_CLAIM_TYPE, REGOV_OFFER_TYPE].some(type => params.credential.type.includes(type))) {
+        return true
+      }
     }
 
     if (!params.credential.type || !Array.isArray(params.credential.type)) {

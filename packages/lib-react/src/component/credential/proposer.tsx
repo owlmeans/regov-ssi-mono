@@ -165,7 +165,7 @@ export const CredentialProposer: FunctionComponent<CredentialProposerParams> =
           })
 
           const offer = await ssi.signPresentation(unsignedOffer, issuer, {
-            challange: claim.proof.challenge
+            challenge: claim.proof.challenge
           })
 
           methods.setValue('output', JSON.stringify(offer, undefined, 2))

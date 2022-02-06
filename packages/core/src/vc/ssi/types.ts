@@ -136,7 +136,7 @@ export type SignPresentationMethod = <
 
 export type SignPresentationOptions = {
   buildProofPurposeOptions?: () => Promise<Object>
-  challange?: string
+  challenge?: string
   domain?: string
   keyId?: string
 }

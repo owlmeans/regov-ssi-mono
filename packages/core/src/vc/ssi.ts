@@ -286,7 +286,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             }),
             documentLoader,
             purpose: new jsigs.purposes.AuthenticationProofPurpose({
-              challenge: options?.challange || unsignedPresentation.id || makeRandomUuid(),
+              challenge: options?.challenge || unsignedPresentation.id || makeRandomUuid(),
               domain: options?.domain || holder.id
             }),
             compactProof: false,

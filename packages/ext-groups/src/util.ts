@@ -5,7 +5,8 @@ import {
   REGOV_CREDENTIAL_TYPE_GROUP,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
   REGOV_CLAIM_TYPE,
-  BASIC_IDENTITY_TYPE
+  BASIC_IDENTITY_TYPE,
+  REGOV_OFFER_TYPE
 } from "./types"
 
 
@@ -43,6 +44,26 @@ export const getMembershipClaimHolder = (presentation: Presentation) => {
 }
 
 export const getMembershipClaim = (presentation: Presentation) => {
+  return presentation.verifiableCredential.find(
+    credential => credential.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
+  )
+}
+
+export const getGroupFromMembershipOfferPresentation = (presentation: Presentation) => {
+  if (!presentation.type.includes(REGOV_OFFER_TYPE)) {
+    return undefined
+  }
+
+  const membershipClaim = presentation.verifiableCredential.find(
+    credential => credential.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
+  )
+
+  return normalizeValue(membershipClaim?.evidence).find(
+    evidence => evidence?.type.includes(REGOV_CREDENTIAL_TYPE_GROUP)
+  ) as Credential
+}
+
+export const getMembershipOffer = (presentation: Presentation) => {
   return presentation.verifiableCredential.find(
     credential => credential.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
   )
