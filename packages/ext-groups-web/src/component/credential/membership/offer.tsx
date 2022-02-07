@@ -1,12 +1,11 @@
 import {
   getGroupFromMembershipClaimPresentation, getMembershipClaim, getMembershipClaimHolder,
   GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
-  REGOV_EXT_GROUP_NAMESPACE,
-  REGOV_OFFER_TYPE
+  REGOV_EXT_GROUP_NAMESPACE, REGOV_OFFER_TYPE
 } from '@owlmeans/regov-ext-groups'
 import { EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
-import { getCompatibleSubject, Presentation, Credential, buildWalletLoader } from '@owlmeans/regov-ssi-core'
+import { getCompatibleSubject, Presentation, Credential } from '@owlmeans/regov-ssi-core'
 import { Button, DialogActions, DialogContent } from '@mui/material'
 import {
   AlertOutput, CredentialActionGroup, dateFormatter, LongTextInput, MainTextInput, MainTextOutput,
@@ -50,26 +49,13 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           throw ERROR_MEMBERSHIP_READYTO_CLAIM
         }
 
-        /**
-         * @TODO Move to a offering factory
-         */
-        const [isValid, result] = await handler.wallet.ssi.verifyPresentation(presentation, undefined, {
-          testEvidence: true,
-          nonStrictEvidence: true,
-          localLoader: handler.wallet ? buildWalletLoader(handler.wallet) : undefined
-        })
-
-        if (!isValid) {
-          console.log(result)
-          throw 'membership.claim.invalid'
-        }
-
         const subject = data.membership.offer as any
         delete subject.alert
 
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
         const offer = await factory.offeringFactory(handler.wallet, {
-          claim: getMembershipClaim(presentation) as Credential,
+          claim: presentation,
+          credential: getMembershipClaim(presentation) as Credential,
           holder: getMembershipClaimHolder(presentation),
           cryptoKey: await handler.wallet.keys.getCryptoKey(),
           claimType: REGOV_CLAIM_TYPE,

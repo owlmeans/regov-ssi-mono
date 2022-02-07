@@ -157,7 +157,8 @@ export type OfferingFactoryMethod = <
   >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
 export type OfferingFactoryParams = {
-  claim: Credential
+  claim: Presentation
+  credential: Credential
   holder: DIDDocument
   cryptoKey: CryptoKey
   subject: Object
