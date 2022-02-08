@@ -47,7 +47,8 @@ export const MembershipClaimView: FunctionComponent<ClaimViewParams> =
             {groupSubject && <MainTextOutput {..._props} field="membership.group.name" showHint />}
             <MainTextOutput {..._props} field="membership.claim.groupId" showHint />
             <MainTextOutput {..._props} field="membership.claimView.role" showHint />
-            <MainTextOutput {..._props} field="membership.claim.description" showHint />
+            {subject.description !== ''
+              && <MainTextOutput {..._props} field="membership.claim.description" showHint />}
             <MainTextOutput {..._props} field="membership.claim.createdAt" showHint formatter={dateFormatter} />
           </PrimaryForm>
         </WalletFormProvider>

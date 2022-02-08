@@ -35,7 +35,7 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
 
     const _props = {
       t, i18n, rules: {
-        'membership.offer.claim.title': generalNameVlidation()
+        'membership.title': generalNameVlidation()
       }
     }
 
@@ -136,7 +136,8 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
             {groupSubject && <MainTextOutput {..._props} field="membership.group.name" showHint />}
             <MainTextOutput {..._props} field="membership.offer.groupId" showHint />
             <MainTextOutput {..._props} field="membership.offer.role" showHint />
-            <MainTextOutput {..._props} field="membership.offer.description" showHint />
+            {subject.description !== '' &&
+              <MainTextOutput {..._props} field="membership.offer.description" showHint />}
             <MainTextOutput {..._props} field="membership.offer.memberCode" showHint />
             <MainTextOutput {..._props} field="membership.offer.createdAt" showHint formatter={dateFormatter} />
             <AlertOutput {..._props} field="membership.offer.alert" />

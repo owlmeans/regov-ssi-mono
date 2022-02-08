@@ -18,9 +18,9 @@ import { EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams } from '@owlme
 
 export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withRegov<MembershipOfferProps>(
   { namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
-    const { 
-      credential: presentation, navigator, ext, close, 
-      t, i18n 
+    const {
+      credential: presentation, navigator, ext, close,
+      t, i18n
     } = props
     const { handler, extensions } = useRegov()
 
@@ -94,7 +94,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
     }, [offer?.id])
 
     const _props = {
-      i18n, t, roles: {
+      i18n, t, rules: {
         "membership.offer.role": generalNameVlidation(),
         "membership.offer.memberCode": generalNameVlidation()
       }
@@ -127,7 +127,8 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
               {groupSubject && <MainTextOutput {...props} field="membership.group.name" showHint />}
               <MainTextOutput {...props} field="membership.offer.groupId" showHint />
               <MainTextOutput {...props} field="membership.offer.role" showHint />
-              <MainTextOutput {...props} field="membership.offer.description" showHint />
+              {subject.description !== ''
+                && <MainTextOutput {...props} field="membership.offer.description" showHint />}
               <MainTextOutput {...props} field="membership.offer.memberCode" showHint />
               <MainTextOutput {...props} field="membership.offer.createdAt" showHint formatter={dateFormatter} />
             </PrimaryForm>
