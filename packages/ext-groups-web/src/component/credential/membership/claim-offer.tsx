@@ -3,9 +3,9 @@ import {
   getGroupFromMembershipOfferPresentation, getMembershipOffer, GroupSubject, MembershipSubject,
   BASIC_IDENTITY_TYPE, RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE
 } from '@owlmeans/regov-ext-groups'
-import { EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, generalNameVlidation, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import {
-  AlertOutput, dateFormatter, MainTextOutput, PrimaryForm,
+  AlertOutput, dateFormatter, MainTextInput, MainTextOutput, PrimaryForm,
   WalletFormProvider
 } from '@owlmeans/regov-mold-wallet-web'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
@@ -22,19 +22,28 @@ import { OfferFields } from './offer'
 
 export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withRegov<ClaimOfferProps>(
   { namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
-    const { credential: presentation, navigator, close, t } = props
-    const { handler } = useRegov()
+    const {
+      credential: presentation, navigator,
+      close, t, i18n
+    } = props
+    const { handler, extensions } = useRegov()
     const [claim, setClaim] = useState<Presentation | undefined>(undefined)
     const group = getGroupFromMembershipOfferPresentation(presentation)
     const groupSubject = getCompatibleSubject<GroupSubject>(group as Credential)
     const membership = getMembershipOffer(presentation)
     const subject = getCompatibleSubject<MembershipSubject>(membership as Credential)
 
+    const _props = {
+      t, i18n, rules: {
+        'membership.offer.claim.title': generalNameVlidation()
+      }
+    }
+
     useEffect(() => {
       (async () => {
         const loader = await navigator?.invokeLoading()
         try {
-          if (!handler.wallet) {
+          if (!handler.wallet || !extensions) {
             return
           }
 
@@ -79,7 +88,7 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
       })()
     }, [claim?.id])
 
-    const save = async () => {
+    const save = async (data: ClaimOfferFields) => {
       const loader = await navigator?.invokeLoading()
       try {
         if (!handler.wallet || !claim) {
@@ -88,7 +97,18 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
 
         const wrapper = await registry.addCredential(claim?.verifiableCredential[0] as Credential<CredentialSubject>)
-        console.log(wrapper)
+        wrapper.meta.title = data.membership.title
+
+        handler.notify()
+
+        if (claim.id) {
+          handler.wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
+            .removeCredential(claim)
+        }
+
+        loader?.success(t('membership.message.claimed'))
+
+        close && close()
       } catch (error) {
         loader?.error(error)
       } finally {
@@ -96,11 +116,12 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
       }
     }
 
-    const methods = useForm<OfferFields>({
+    const methods = useForm<ClaimOfferFields>({
       mode: 'onChange',
       criteriaMode: 'all',
       defaultValues: {
         membership: {
+          title: '',
           group: groupSubject,
           offer: subject
         }
@@ -110,20 +131,21 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
     return <Fragment>
       <DialogContent>
         <WalletFormProvider {...methods}>
-          <PrimaryForm {...props} title="membership.offer.title">
-            {groupSubject && <MainTextOutput {...props} field="membership.group.name" showHint />}
-            <MainTextOutput {...props} field="membership.offer.groupId" showHint />
-            <MainTextOutput {...props} field="membership.offer.role" showHint />
-            <MainTextOutput {...props} field="membership.offer.description" showHint />
-            <MainTextOutput {...props} field="membership.offer.memberCode" showHint />
-            <MainTextOutput {...props} field="membership.offer.createdAt" showHint formatter={dateFormatter} />
-            <AlertOutput {...props} field="membership.offer.alert" />
+          <PrimaryForm {..._props} title="membership.offer.claim.title">
+            {claim && <MainTextInput {..._props} field="membership.title" />}
+            {groupSubject && <MainTextOutput {..._props} field="membership.group.name" showHint />}
+            <MainTextOutput {..._props} field="membership.offer.groupId" showHint />
+            <MainTextOutput {..._props} field="membership.offer.role" showHint />
+            <MainTextOutput {..._props} field="membership.offer.description" showHint />
+            <MainTextOutput {..._props} field="membership.offer.memberCode" showHint />
+            <MainTextOutput {..._props} field="membership.offer.createdAt" showHint formatter={dateFormatter} />
+            <AlertOutput {..._props} field="membership.offer.alert" />
           </PrimaryForm>
         </WalletFormProvider>
       </DialogContent>
       <DialogActions>
-        {claim && <Button onClick={save}>{t('membership.offer.save')}</Button>}
         <Button onClick={close}>{t('membership.offer.close')}</Button>
+        {claim && <Button onClick={methods.handleSubmit(save)}>{t('membership.offer.save')}</Button>}
       </DialogActions>
     </Fragment>
   })
@@ -135,3 +157,9 @@ export type ClaimOfferParams = EmptyProps & {
 }
 
 export type ClaimOfferProps = RegovComponetProps<ClaimOfferParams>
+
+export type ClaimOfferFields = OfferFields & {
+  membership: {
+    title: string
+  }
+}

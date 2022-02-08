@@ -28,8 +28,6 @@ export const MembershipClaimItem = (ext: Extension<RegovGroupClaim>): FunctionCo
       })
     })
 
-    console.log('TRIGGER', trigger)
-
     useEffect(() => { trigger && action && action() }, [trigger, wrapper.credential.id])
 
     return <ListItem>

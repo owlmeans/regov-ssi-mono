@@ -3,7 +3,7 @@ import {
   GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
   REGOV_EXT_GROUP_NAMESPACE, REGOV_OFFER_TYPE
 } from '@owlmeans/regov-ext-groups'
-import { EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, generalNameVlidation, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { getCompatibleSubject, Presentation, Credential } from '@owlmeans/regov-ssi-core'
 import { Button, DialogActions, DialogContent } from '@mui/material'
@@ -18,7 +18,10 @@ import { EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams } from '@owlme
 
 export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withRegov<MembershipOfferProps>(
   { namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
-    const { credential: presentation, navigator, ext, close, t } = props
+    const { 
+      credential: presentation, navigator, ext, close, 
+      t, i18n 
+    } = props
     const { handler, extensions } = useRegov()
 
     const group = getGroupFromMembershipClaimPresentation(presentation) as Credential
@@ -90,18 +93,25 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
       })
     }, [offer?.id])
 
+    const _props = {
+      i18n, t, roles: {
+        "membership.offer.role": generalNameVlidation(),
+        "membership.offer.memberCode": generalNameVlidation()
+      }
+    }
+
     return <Fragment>
       {!offer && <Fragment>
         <DialogContent>
           <WalletFormProvider {...methods}>
-            <PrimaryForm {...props} title="membership.offer.title">
-              {groupSubject && <MainTextOutput {...props} field="membership.group.name" showHint />}
-              <MainTextOutput {...props} field="membership.offer.groupId" showHint />
-              <MainTextInput {...props} field="membership.offer.role" />
-              <LongTextInput {...props} field="membership.offer.description" />
-              <MainTextInput {...props} field="membership.offer.memberCode" />
-              <MainTextOutput {...props} field="membership.offer.createdAt" showHint formatter={dateFormatter} />
-              <AlertOutput {...props} field="membership.offer.alert" />
+            <PrimaryForm {..._props} title="membership.offer.title">
+              {groupSubject && <MainTextOutput {..._props} field="membership.group.name" showHint />}
+              <MainTextOutput {..._props} field="membership.offer.groupId" showHint />
+              <MainTextInput {..._props} field="membership.offer.role" />
+              <LongTextInput {..._props} field="membership.offer.description" />
+              <MainTextInput {..._props} field="membership.offer.memberCode" />
+              <MainTextOutput {..._props} field="membership.offer.createdAt" showHint formatter={dateFormatter} />
+              <AlertOutput {..._props} field="membership.offer.alert" />
             </PrimaryForm>
           </WalletFormProvider>
         </DialogContent>

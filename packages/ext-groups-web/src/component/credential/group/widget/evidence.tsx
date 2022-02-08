@@ -28,7 +28,8 @@ export const EvidenceWidget = (ext: Extension<string>): FunctionComponent<Eviden
     return <Paper elevation={3}>
       <EntityRenderer t={t} entity="group" subject={subject}>
         <EntityTextRenderer field="name" showLabel netSize={6} />
-        {subject.description.trim() !== "" && <EntityTextRenderer field="description" showLabel />}
+        {subject.description.trim() !== ""
+          && <EntityTextRenderer field="description" showLabel />}
         <EntityTextRenderer field="createdAt" showLabel netSize={6} />
         <EntityTextRenderer field="uuid" showLabel netSize={6} />
       </EntityRenderer>

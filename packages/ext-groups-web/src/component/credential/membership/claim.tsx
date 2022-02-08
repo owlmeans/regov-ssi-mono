@@ -14,6 +14,7 @@ import {
 } from '@owlmeans/regov-ssi-core'
 import {
   EmptyProps,
+  generalNameVlidation,
   RegovComponetProps,
   useNavigator,
   useRegov,
@@ -107,7 +108,9 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
   }, [])
 
   const _props = {
-    t, i18n
+    t, i18n, rules: {
+      'membership.claim.role': generalNameVlidation()
+    }
   }
 
   const claim = async (data: MembershipClaimFields) => {

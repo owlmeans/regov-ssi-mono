@@ -35,9 +35,7 @@ export const MembershipClaimView: FunctionComponent<ClaimViewParams> =
       }
     })
 
-    const _props = {
-      t, i18n
-    }
+    const _props = { t, i18n }
 
     const wrapper = handler.wallet?.getRegistry(REGISTRY_TYPE_CLAIMS)
       .getCredential(presentation.id, REGISTRY_SECTION_OWN)

@@ -116,7 +116,18 @@
       },
       "createdAt": {
         "hint": "Creation date"
-      }
+      },
+      "claim": {
+        "title": "Offered membership"
+      },
+      "save": "Save"
+    },
+    "message": {
+      "claimed": "You claimed credential successfully."
+    },
+    "title": {
+      "label": "Credential name",
+      "hint": "Use a recongizable name to store the credential"
     },
     "group": {
       "name": {
