@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
 import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
-import { MembershipSubject, RegovGroupClaim } from '@owlmeans/regov-ext-groups'
+import { MembershipSubject } from '@owlmeans/regov-ext-groups'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-extension'
 import { Credential, CredentialSubject, CredentialWrapper, getCompatibleSubject, Presentation } from '@owlmeans/regov-ssi-core'
 import { EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
@@ -8,7 +8,7 @@ import { Person } from '@mui/icons-material'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-mold-wallet-web'
 
 
-export const MembershipClaimItem = (ext: Extension<RegovGroupClaim>): FunctionComponent<ClaimItemParams> =>
+export const MembershipClaimItem = (ext: Extension): FunctionComponent<ClaimItemParams> =>
   withRegov<ClaimItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, wrapper, trigger, action }) => {
     const { extensions, handler } = useRegov()
     const presentation = wrapper.credential as Presentation
@@ -21,7 +21,7 @@ export const MembershipClaimItem = (ext: Extension<RegovGroupClaim>): FunctionCo
         return
       }
 
-      await extensions.triggerEvent<IncommigDocumentEventParams<string>>(
+      await extensions.triggerEvent<IncommigDocumentEventParams>(
         handler.wallet, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, {
         credential: wrapper.credential, statusHandler: { successful: false },
         cleanUp: () => undefined

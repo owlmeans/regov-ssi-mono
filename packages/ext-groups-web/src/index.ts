@@ -1,6 +1,5 @@
 
 export * from './ext'
-export * from './types'
 
 export {
   RegovGroupExtensionTypes,
@@ -10,5 +9,3 @@ export {
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
   REGOV_CREDENTIAL_TYPE_GROUP
 } from '@owlmeans/regov-ext-groups' 
-
-export { groupsUIExtension as default } from './ext'

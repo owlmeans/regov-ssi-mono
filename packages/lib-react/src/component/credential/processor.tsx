@@ -57,7 +57,7 @@ export const CredentialProcessor: FunctionComponent<CredentialProcessorParams> =
         const statusHandler = {
           successful: false
         }
-        await extensions.triggerEvent<IncommigDocumentEventParams<string>>(
+        await extensions.triggerEvent<IncommigDocumentEventParams>(
           handler.wallet, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, {
           credential: JSON.parse(data.document), statusHandler,
           cleanUp: () => methods.setValue('document', '')

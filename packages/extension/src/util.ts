@@ -3,11 +3,11 @@ import { BasicCredentialType } from "@owlmeans/regov-ssi-core"
 import { Extension } from "./ext"
 
 
-export const findAppropriateCredentialType = <CredType extends string>(
-  ext: Extension<CredType>, types: BasicCredentialType, defaultType: string
-): CredType => {
+export const findAppropriateCredentialType = (
+  ext: Extension, types: BasicCredentialType, defaultType: string
+): string => {
   types = normalizeValue(types)
-  
+
   return (Object.entries(ext.factories).map(([type]) => type)
-    .find(type => types.includes(type)) || defaultType) as CredType
+    .find(type => types.includes(type)) || defaultType)
 }

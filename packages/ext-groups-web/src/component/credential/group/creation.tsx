@@ -1,46 +1,19 @@
-import React, {
-  FunctionComponent,
-  useEffect,
-  useState,
-} from 'react'
+import React, { FunctionComponent, useEffect, useState, } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
-import {
-  RegovGroupCredential,
-  REGOV_CREDENTIAL_TYPE_GROUP,
-  GroupSubject
-} from '@owlmeans/regov-ext-groups'
-import {
-  EmptyProps,
-  generalNameVlidation,
-  RegovComponetProps,
-  useRegov,
-  withRegov
-} from '@owlmeans/regov-lib-react'
+import { REGOV_CREDENTIAL_TYPE_GROUP, GroupSubject } from '@owlmeans/regov-ext-groups'
+import { EmptyProps, generalNameVlidation, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
 import {
-  AlertOutput,
-  dateFormatter,
-  FormMainAction,
-  LongTextInput,
-  MainTextInput,
-  MainTextOutput,
-  PrimaryForm,
-  WalletFormProvider
+  AlertOutput, dateFormatter, FormMainAction, LongTextInput, MainTextInput, MainTextOutput,
+  PrimaryForm, WalletFormProvider
 } from '@owlmeans/regov-mold-wallet-web'
 import {
-  ERROR_WIDGET_AUTHENTICATION,
-  ERROR_WIDGET_EXTENSION,
-  ERROR_CREATION_READYTO_SIGN
+  ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION, ERROR_CREATION_READYTO_SIGN
 } from '../../types'
-import {
-  CredentialSubject,
-  REGISTRY_TYPE_CREDENTIALS,
-  UnsignedCredential,
-  Credential
-} from '@owlmeans/regov-ssi-core'
+import { CredentialSubject, REGISTRY_TYPE_CREDENTIALS, UnsignedCredential, Credential } from '@owlmeans/regov-ssi-core'
 
 
-export const GroupCreation = (ext: Extension<RegovGroupCredential>): FunctionComponent<GroupCreationParams> =>
+export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationParams> =>
   withRegov<GroupCreationProps>({ namespace: ext.localization?.ns }, ({ t, i18n, navigator, next }) => {
     const { handler } = useRegov()
     const props = {
@@ -170,9 +143,7 @@ export const GroupCreation = (ext: Extension<RegovGroupCredential>): FunctionCom
     </WalletFormProvider>
   })
 
-export type GroupCreationParams = EmptyProps & {
-  next: () => void
-}
+export type GroupCreationParams = EmptyProps & { next: () => void }
 
 export type GroupCreationProps = RegovComponetProps<GroupCreationParams>
 

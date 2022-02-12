@@ -1,0 +1,59 @@
+{
+  "name": "@owlmeans/regov-ext-doc-signature",
+  "version": "0.1.0",
+  "description": "Regov extension to sign and check signatures of random documents.",
+  "keywords": [
+    "Regov",
+    "SSI",
+    "Document",
+    "Signature"
+  ],
+  "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
+  "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
+  "license": "> @TODO: license",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "module": "dist/index.modern.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "dist": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/owlmeans/regov-ssi-mono.git",
+    "directory": "packages/ext-groups"
+  },
+  "sources": "src/index.ts",
+  "scripts": {
+    "build": "microbundle-crl --no-compress --format modern,cjs",
+    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
+  }, 
+  "peerDependencies": {
+    "@owlmeans/regov-ssi-common": "^0.2.3",
+    "@owlmeans/regov-ssi-core": "^0.4.2",
+    "@owlmeans/regov-ssi-did": "^0.4.2",
+    "@owlmeans/regov-ssi-extension": "^0.1.1",
+    "@owlmeans/regov-lib-react": "^0.1.0",
+    "@owlmeans/regov-mold-wallet-web": "^0.1.0",
+    "react": "^17.0.0",
+    "i18next": "^21.4.2",
+    "react-hook-form": "^7.19.5",
+    "react-i18next": "^11.14.2"
+  },
+  "optionalDependencies": {
+    "react-dom": "^17.0.0",
+    "react-router-dom": "^6.0.2",
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.4",
+    "@mui/icons-material": "^5.2.5"
+  },
+  "devDependencies": {
+    "microbundle-crl": "^0.13.11",
+    "typescript": "^4.5.2"
+  }
+}

@@ -43,7 +43,7 @@ export const MainModal: FunctionComponent<MainModalParams> = withRegov<MainModal
   { namespace: 'regov-wallet-flow', transformer: (wallet) => ({ alias: wallet?.store.alias }) }
 )
 
-export type MainModalAuthenticatedEventParams = EventParams<string> & {
+export type MainModalAuthenticatedEventParams = EventParams & {
   handle: MainModalHandle
   config: Config
   handler: WalletHandler
@@ -72,7 +72,7 @@ export type MainModalHandle = {
 
 export type MainModalImplProps = WrappedComponentProps<MainModalImplParams, MainModalState>
 
-export type MainModalShareEventParams = EventParams<string> & {
+export type MainModalShareEventParams = EventParams & {
   handle: MainModalHandle
 }
 

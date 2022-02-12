@@ -1,19 +1,18 @@
 
-import { MaybeArray, normalizeValue } from '@owlmeans/regov-ssi-common'
+import { normalizeValue } from '@owlmeans/regov-ssi-common'
 import { ExtensionEvent } from '../schema'
 import { Extension } from '../ext'
 import { ERROR_NO_EXTENSION, ExtensionRegistry } from './types'
 
 export const buildExtensionRegistry = <
-  CredType extends string,
-  Ext extends Extension<CredType> = Extension<CredType>
->(): ExtensionRegistry<CredType, Ext> => {
+  CredType extends string
+>(): ExtensionRegistry => {
 
   const _typeToExtension: {
-    [type: string]: Ext[]
+    [type: string]: Extension[]
   } = {}
 
-  const _registry: ExtensionRegistry<CredType, Ext> = {
+  const _registry: ExtensionRegistry = {
     extensions: [],
 
     register: async (ext) => {
@@ -71,7 +70,7 @@ export const buildExtensionRegistry = <
           ) || []).map(observer => [observer, ext])
       )
 
-      return observers as [ExtensionEvent<CredType>, Ext][]
+      return observers as [ExtensionEvent, Extension][]
     }
   }
 

@@ -1,25 +1,13 @@
 import React, { FunctionComponent } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
-import {
-  EmptyProps,
-  PurposeEvidenceWidgetParams,
-  RegovComponetProps,
-  withRegov
-} from '@owlmeans/regov-lib-react'
-import {
-  Paper,
-} from '@mui/material'
-import {
-  getCompatibleSubject
-} from '@owlmeans/regov-ssi-core'
-import {
-  EntityRenderer,
-  EntityTextRenderer
-} from '@owlmeans/regov-mold-wallet-web'
+import { EmptyProps, PurposeEvidenceWidgetParams, RegovComponetProps, withRegov } from '@owlmeans/regov-lib-react'
+import { Paper } from '@mui/material'
+import { getCompatibleSubject } from '@owlmeans/regov-ssi-core'
+import { EntityRenderer, EntityTextRenderer } from '@owlmeans/regov-mold-wallet-web'
 import { GroupSubject } from '@owlmeans/regov-ext-groups'
 
 
-export const EvidenceWidget = (ext: Extension<string>): FunctionComponent<EvidenceWidgetParams> =>
+export const EvidenceWidget = (ext: Extension): FunctionComponent<EvidenceWidgetParams> =>
   withRegov<EvidenceWidgetProps>({ namespace: ext.localization?.ns }, (props: EvidenceWidgetProps) => {
     const { wrapper, t } = props
 

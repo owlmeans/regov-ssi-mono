@@ -1,36 +1,18 @@
 import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-common"
 import { WalletWrapper } from "@owlmeans/regov-ssi-core"
 import {
-  buildExtensionRegistry,
-  CredentialDescription,
-  Extension,
-  ExtensionRegistry,
-  EventParams
+  buildExtensionRegistry, CredentialDescription, ExtensionRegistry, EventParams
 } from "@owlmeans/regov-ssi-extension"
-import {
-  EmptyProps,
-} from "../common"
-import {
-  MENU_TAG_MAIN
-} from "../component"
-import {
-  UIExtension,
-  UIExtensionFactory,
-} from "./extension"
-import {
-  ManuItemParams
-} from './types'
+import { EmptyProps } from "../common"
+import { MENU_TAG_MAIN } from "../component"
+import { UIExtension, UIExtensionFactory } from "./extension"
+import { ManuItemParams } from './types'
 
 
-export const buildUIExtensionRegistry = <
-  CredType extends string,
-  Ext extends Extension<CredType> = Extension<CredType>
->(): UIExtensionRegistry<CredType, Ext> => {
-  type UIExt = UIExtension<CredType, Ext>
+export const buildUIExtensionRegistry = (): UIExtensionRegistry => {
+  const _typeToExtension: { [key: string]: UIExtension[] } = {}
 
-  const _typeToExtension: { [key: string]: UIExt[] } = {}
-
-  const _registry: UIExtensionRegistry<CredType, Ext> = {
+  const _registry: UIExtensionRegistry = {
     registry: buildExtensionRegistry(),
 
     uiExtensions: [],
@@ -66,28 +48,30 @@ export const buildUIExtensionRegistry = <
     },
 
     registerSync: ext => {
-      _registry.registry.registerSync(ext.extension as unknown as Ext)
-      _registry.uiExtensions.push(ext as unknown as UIExt)
+      _registry.registry.registerSync(ext.extension)
+      _registry.uiExtensions.push(ext)
       if (ext.extension.schema.credentials) {
         Object.entries(ext.extension.schema.credentials).forEach(
           ([_, cred]: [string, CredentialDescription]) => {
             _typeToExtension[cred.mainType] = [
               ...(_typeToExtension[cred.mainType] ? _typeToExtension[cred.mainType] : []),
-              ext as unknown as UIExt
+              ext
             ]
           }
         )
       }
     },
 
-    produceComponent: <Type extends EmptyProps = EmptyProps>(purpose: string, type?: MaybeArray<CredType>) => {
+    produceComponent: <Type extends EmptyProps = EmptyProps>(
+      purpose: string, type?: MaybeArray<string>
+    ) => {
       if (type && Array.isArray(type)) {
         const types = normalizeValue(type)
         type = types.find(type => {
           return !!_typeToExtension[type]
         })
       }
-      
+
       const wraps = type && _typeToExtension[type] ? _typeToExtension[type].flatMap(
         ext => ext.produceComponent<Type>(purpose, type as any)
       ) : _registry.uiExtensions.flatMap(
@@ -120,8 +104,8 @@ export const buildUIExtensionRegistry = <
     triggerEvent: async (wallet, event, params) => {
       const observers = _registry.registry.getObservers(event)
       await observers.reduce(
-        async (proceed, [event, ext]) => {
-          if (!proceed) {
+        async (proceed: Promise<boolean>, [event, ext]) => {
+          if (!await proceed) {
             return false
           }
           const _params = params || { ext }
@@ -165,36 +149,33 @@ export const buildUIExtensionRegistry = <
   return _registry
 }
 
-export type UIExtensionRegistry<
-  CredType extends string,
-  Ext extends Extension<CredType> = Extension<CredType>
-  > = {
-    registry: ExtensionRegistry<CredType, Ext>
+export type UIExtensionRegistry = {
+  registry: ExtensionRegistry
 
-    uiExtensions: UIExtension<CredType, Ext>[]
+  uiExtensions: UIExtension[]
 
-    getExtensions: (type: string) => UIExtension<CredType, Ext>[]
+  getExtensions: (type: string) => UIExtension[]
 
-    getExtension: (type: string, code?: string) => UIExtension<CredType, Ext>
+  getExtension: (type: string, code?: string) => UIExtension
 
-    getExtensionByCode: (ext: string) => UIExtension<CredType, Ext> | undefined
+  getExtensionByCode: (ext: string) => UIExtension | undefined
 
-    registerAll: (exts: UIExtension<CredType, Ext>[]) => Promise<void>
+  registerAll: (exts: UIExtension[]) => Promise<void>
 
-    register: (ext: UIExtension<CredType, Ext>) => Promise<void>
+  register: (ext: UIExtension) => Promise<void>
 
-    registerSync: <CT extends CredType, E extends Extension<CT> = Extension<CT>>(ext: UIExtension<CT, E>) => void
+  registerSync: (ext: UIExtension) => void
 
-    produceComponent: UIExtensionFactory<Ext extends Extension<infer CredType> ? CredType : never>
+  produceComponent: UIExtensionFactory
 
-    triggerEvent: <Params extends EventParams<CredType> = EventParams<CredType>>(
-      wallet: WalletWrapper, event: MaybeArray<string>, params?: Params
-    ) => Promise<void>
+  triggerEvent: <Params extends EventParams = EventParams>(
+    wallet: WalletWrapper, event: MaybeArray<string>, params?: Params
+  ) => Promise<void>
 
-    getMenuItems: (tag?: string) => ManuItemParams[]
+  getMenuItems: (tag?: string) => ManuItemParams[]
 
-    normalize: () => UIExtensionRegistry<string>
-  }
+  normalize: () => UIExtensionRegistry
+}
 
 
 export const ERROR_NO_UIEXTENSION = 'ERROR_NO_UIEXTENSION'

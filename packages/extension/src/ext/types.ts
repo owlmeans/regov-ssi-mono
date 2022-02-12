@@ -21,20 +21,20 @@ import {
 } from "../schema"
 
 
-export type Extension<CredType extends string> = {
-  schema: ExtensionSchema<CredType>
-  factories: ExtensionFactories<CredType>
+export type Extension = {
+  schema: ExtensionSchema
+  factories: ExtensionFactories
   localization?: ExtensionLocalization
   getFactory: (type: BasicCredentialType, defaultType?: string) => CredentialExtensionFactories
-  getEvents: (trigger: string, code?: string) => ExtensionEvent<CredType>[]
+  getEvents: (trigger: string, code?: string) => ExtensionEvent[]
 }
 
-export type ExtensionFactories<CredType extends string> = {
-  [key in CredType]: CredentialExtensionFactories
+export type ExtensionFactories = {
+  [key: string]: CredentialExtensionFactories
 }
 
-export type ExtensionFactoriesParam<CredType extends string> = {
-  [key in CredType]: CredentialExtensionFactoriesBuilder
+export type ExtensionFactoriesParam = {
+  [key: string]: CredentialExtensionFactoriesBuilder
 }
 
 export type CredentialExtensionFactoriesBuilder = {
@@ -110,7 +110,7 @@ export type ValidationFactoryMethod = <
 
 export type ValidationFactoryParams = {
   credential: Credential
-  extensions: ExtensionRegistry<string>
+  extensions: ExtensionRegistry
 }
 
 export interface ValidationResult {

@@ -3,8 +3,8 @@ import { CredentialDescription, ExtensionDetails, ExtensionEvent, ExtensionSchem
 
 export const buildExtensionSchema = <CredType extends string>(
   details: ExtensionDetails,
-  credentials: { [key in CredType]: CredentialDescription },
-): ExtensionSchema<CredType> => {
+  credentials: { [key: string]: CredentialDescription },
+): ExtensionSchema => {
   const _schema = {
     details,
     credentials: Object.entries<CredentialDescription>(credentials).reduce((creds, [key, cred]) => {
@@ -21,9 +21,9 @@ export const buildExtensionSchema = <CredType extends string>(
   return _schema
 }
 
-export const addObserverToSchema = <CredType extends string>(
-  schema: ExtensionSchema<CredType>,
-  event: MaybeArray<ExtensionEvent<CredType>>
-): ExtensionSchema<CredType> => ({
+export const addObserverToSchema = (
+  schema: ExtensionSchema,
+  event: MaybeArray<ExtensionEvent>
+): ExtensionSchema => ({
   ...schema, events: normalizeValue(addToValue(schema.events, event))
 })

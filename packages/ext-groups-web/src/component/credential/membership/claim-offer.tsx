@@ -91,12 +91,12 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
     const save = async (data: ClaimOfferFields) => {
       const loader = await navigator?.invokeLoading()
       try {
-        if (!handler.wallet || !claim) {
+        if (!handler.wallet || !membership || !claim) {
           return
         }
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
 
-        const wrapper = await registry.addCredential(claim?.verifiableCredential[0] as Credential<CredentialSubject>)
+        const wrapper = await registry.addCredential(membership as Credential<CredentialSubject>)
         wrapper.meta.title = data.membership.title
 
         handler.notify()

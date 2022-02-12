@@ -1,49 +1,16 @@
-import React, {
-  Fragment,
-  FunctionComponent,
-  useMemo
-} from 'react'
+import React, { Fragment, FunctionComponent, useMemo } from 'react'
+import { GroupSubject } from '@owlmeans/regov-ext-groups'
+import { EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import {
-  GroupSubject,
-  RegovGroupCredential
-} from '@owlmeans/regov-ext-groups'
-import {
-  EmptyProps,
-  RegovComponetProps,
-  useRegov,
-  withRegov
-} from '@owlmeans/regov-lib-react'
-import {
-  Extension,
-  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
-  IncommigDocumentEventParams
+  Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-extension'
-import {
-  CredentialWrapper,
-  Credential,
-  CredentialSubject,
-  getCompatibleSubject
-} from '@owlmeans/regov-ssi-core'
-import {
-  Avatar,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography
-} from '@mui/material'
-import {
-  Groups
-} from '@mui/icons-material'
-import {
-  ItemMenu,
-  ItemMenuHandle,
-  MenuIconButton
-} from '@owlmeans/regov-mold-wallet-web'
+import { CredentialWrapper, Credential, CredentialSubject, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
+import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
+import { Groups } from '@mui/icons-material'
+import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-mold-wallet-web'
 
 
-export const GroupItem = (ext: Extension<RegovGroupCredential>): FunctionComponent<GroupItemParams> =>
+export const GroupItem = (ext: Extension): FunctionComponent<GroupItemParams> =>
   withRegov<GroupItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, wrapper, action }) => {
     const subject = getCompatibleSubject<GroupSubject>(wrapper.credential)
     const { extensions, handler } = useRegov()
@@ -55,7 +22,7 @@ export const GroupItem = (ext: Extension<RegovGroupCredential>): FunctionCompone
         return
       }
 
-      await extensions.triggerEvent<IncommigDocumentEventParams<string>>(
+      await extensions.triggerEvent<IncommigDocumentEventParams>(
         handler.wallet, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, {
         credential: wrapper.credential, statusHandler: { successful: false },
         cleanUp: () => undefined

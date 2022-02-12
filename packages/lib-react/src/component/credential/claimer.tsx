@@ -103,7 +103,7 @@ export type CredentialClaimerParams = {
   ns?: string
   claimType?: string
   com?: FunctionComponent
-  ext: Extension<string>
+  ext: Extension
   defaultType: string
 }
 

@@ -87,7 +87,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
         return
       }
       const credential = offer.verifiableCredential[0]
-      extensions.triggerEvent<RetreiveNameEventParams<string>>(
+      extensions.triggerEvent<RetreiveNameEventParams>(
         handler.wallet, EXTENSION_TRIGGER_RETRIEVE_NAME, {
         credential, setName: (name: string) => { setName(name) }
       })
@@ -153,8 +153,6 @@ export type MembershipOfferProps = RegovComponetProps<MembershipOfferParams>
 export type OfferFields = {
   membership: {
     group: GroupSubject | undefined
-    offer: MembershipSubject & {
-      alert: string
-    }
+    offer: MembershipSubject & { alert: string }
   }
 }

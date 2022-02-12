@@ -166,7 +166,7 @@ export const credentialBuilderValidatorRules: RegovValidationRules = {
 export type CredentialBuilderParams = {
   ns?: string,
   com?: FunctionComponent,
-  ext: Extension<string>
+  ext: Extension
   defaultType: string
 }
 

@@ -1,49 +1,26 @@
 import React, { FunctionComponent } from 'react'
 
 import {
-  buildUIExtension,
-  ExtensionItemPurpose,
-  EXTENSION_ITEM_PURPOSE_CREATION,
-  EXTENSION_ITEM_PURPOSE_ITEM,
-  UIExtensionFactoryProduct,
-  PurposeListItemParams,
-  PurposeCredentialCreationParams,
-  MainModalHandle,
-  EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
-  MainModalShareEventParams,
-  EXTENSION_ITEM_PURPOSE_EVIDENCE,
+  buildUIExtension, ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_CREATION, EXTENSION_ITEM_PURPOSE_ITEM,
+  UIExtensionFactoryProduct, PurposeListItemParams, PurposeCredentialCreationParams, MainModalHandle,
+  EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, MainModalShareEventParams, EXTENSION_ITEM_PURPOSE_EVIDENCE,
   PurposeEvidenceWidgetParams,
 } from '@owlmeans/regov-lib-react'
 import {
-  getGroupFromMembershipClaimPresentation,
-  getGroupOwnerIdentity,
-  groupsExtension,
-  RegovGroupExtensionTypes,
-  REGOV_CLAIM_TYPE,
-  REGOV_CREDENTIAL_TYPE_GROUP,
-  REGOV_OFFER_TYPE,
+  getGroupFromMembershipClaimPresentation, getGroupOwnerIdentity, groupsExtension, RegovGroupExtensionTypes,
+  REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_OFFER_TYPE,
 } from '@owlmeans/regov-ext-groups'
-import {
-  MENU_TAG_CRED_NEW
-} from '@owlmeans/regov-mold-wallet-web'
+import { MENU_TAG_CRED_NEW } from '@owlmeans/regov-mold-wallet-web'
 import { commonEn } from './i18n'
 import {
-  GroupCreation,
-  GroupItem,
-  GroupView,
-  EvidenceWidget,
-  MembershipClaimView,
-  MembershipClaimItem,
+  GroupCreation, GroupItem, GroupView, EvidenceWidget, MembershipClaimView, MembershipClaimItem,
   MembershipOffer
 } from './component'
 import {
-  addObserverToSchema,
-  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
-  IncommigDocumentEventParams
+  addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-extension'
-import { RegovGroupUIExtension } from './types'
 import {
-  Credential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES
+  Credential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import { MembershipClaimOffer } from './component/credential/membership/claim-offer'
 
@@ -56,7 +33,7 @@ if (groupsExtension.schema.events) {
   let modalHandler: MainModalHandle
 
   groupsExtension.getEvents(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
-    wallet, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>
+    wallet: WalletWrapper, params: IncommigDocumentEventParams
   ) => {
     params.statusHandler.successful = false
 
@@ -89,7 +66,7 @@ if (groupsExtension.schema.events) {
           }
         } else if (params.credential.type.includes(REGOV_OFFER_TYPE)) {
           modalHandler.getContent = () => <MembershipClaimOffer ext={groupsExtension} close={close}
-              credential={params.credential as Presentation} />
+            credential={params.credential as Presentation} />
 
           params.statusHandler.successful = true
         }
@@ -123,7 +100,7 @@ if (groupsExtension.schema.events) {
   })
 }
 
-export const groupsUIExtension: RegovGroupUIExtension = buildUIExtension<RegovGroupExtensionTypes>(groupsExtension,
+export const groupsUIExtension = buildUIExtension(groupsExtension,
   (purpose: ExtensionItemPurpose, type?: RegovGroupExtensionTypes) => {
     switch (purpose) {
       case EXTENSION_ITEM_PURPOSE_CREATION:

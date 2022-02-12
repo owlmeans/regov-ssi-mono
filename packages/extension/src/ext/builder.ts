@@ -15,10 +15,10 @@ import {
 
 
 export const buildExtension = <CredType extends string>(
-  schema: ExtensionSchema<CredType>,
-  factories?: ExtensionFactoriesParam<CredType>
-): Extension<CredType> => {
-  const _extension: Extension<CredType> = {
+  schema: ExtensionSchema,
+  factories?: ExtensionFactoriesParam
+): Extension => {
+  const _extension: Extension = {
     schema,
     factories: schema.credentials ? Object.entries(schema.credentials).reduce(
       (_factories, [key, description]) => {
@@ -44,8 +44,8 @@ export const buildExtension = <CredType extends string>(
             )
           }
         }
-      }, {} as ExtensionFactories<CredType>
-    ) : {} as ExtensionFactories<CredType>,
+      }, {} as ExtensionFactories
+    ) : {} as ExtensionFactories,
 
     getFactory: (type, defaultType = BASE_CREDENTIAL_TYPE) => {
       type = findAppropriateCredentialType(_extension, type, defaultType)

@@ -1,25 +1,10 @@
-import React, {
-  Fragment,
-  FunctionComponent,
-  useEffect,
-  useState
-} from 'react'
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import {
-  EmptyImplProps,
-  EmptyProps,
-  RegovComponetProps,
-  useRegov,
-  withRegov,
-  WrappedComponentProps
+  EmptyImplProps, EmptyProps, RegovComponetProps, useRegov, withRegov, WrappedComponentProps
 } from '../../../common'
-import {
-  Credential
-} from '@owlmeans/regov-ssi-core'
+import { Credential } from '@owlmeans/regov-ssi-core'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
-import {
-  EXTENSION_TRIGGER_RETRIEVE_NAME,
-  RetreiveNameEventParams
-} from '@owlmeans/regov-ssi-extension'
+import { EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams } from '@owlmeans/regov-ssi-extension'
 
 
 export const CredentialEvidenceWidget: FunctionComponent<EvidenceWidgetParams> = withRegov<EvidenceWidgetProps>(
@@ -32,7 +17,7 @@ export const CredentialEvidenceWidget: FunctionComponent<EvidenceWidgetParams> =
         if (extensions) {
           const newNames = new Array(evidence.length).fill('')
           await Promise.all(evidence.map(
-            async (evidence, idx) => handler.wallet && extensions.triggerEvent<RetreiveNameEventParams<string>>(
+            async (evidence, idx) => handler.wallet && extensions.triggerEvent<RetreiveNameEventParams>(
               handler.wallet, EXTENSION_TRIGGER_RETRIEVE_NAME, {
               credential: evidence as Credential, setName: (name: string) => { newNames[idx] = name }
             })

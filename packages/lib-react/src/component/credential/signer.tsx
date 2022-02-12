@@ -100,7 +100,7 @@ export const credentialSignerValidatorRules: RegovValidationRules = {
 export type CredentialSignerParams = {
   ns?: string
   com?: FunctionComponent
-  ext: Extension<string>
+  ext: Extension
   defaultType: string
 }
 

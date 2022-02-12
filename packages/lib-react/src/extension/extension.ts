@@ -1,22 +1,14 @@
 import { FunctionComponent } from "react"
-
-import {
-  Extension
-} from "@owlmeans/regov-ssi-extension"
-import {
-  EmptyProps,
-} from "../common"
-import { 
-  ManuItemParams,
-  ExtensionItemPurpose 
-} from "./types"
+import { Extension } from "@owlmeans/regov-ssi-extension"
+import { EmptyProps } from "../common"
+import { ManuItemParams, ExtensionItemPurpose } from "./types"
 import { MaybeArray } from "@owlmeans/regov-ssi-common"
 
-export const buildUIExtension = <CredType extends string>(
-  extension: Extension<CredType>,
-  produceComponent: UIExtensionFactory<CredType>
+export const buildUIExtension = (
+  extension: Extension,
+  produceComponent: UIExtensionFactory
 ) => {
-  const _extension: UIExtension<CredType> = {
+  const _extension: UIExtension = {
     extension,
 
     produceComponent
@@ -25,22 +17,19 @@ export const buildUIExtension = <CredType extends string>(
   return _extension
 }
 
-export type UIExtension<
-  CredType extends string, 
-  Ext extends Extension<CredType> = Extension<CredType> 
-> = {
-    extension: Ext
+export type UIExtension = {
+  extension: Extension
 
-    produceComponent: UIExtensionFactory<CredType>
+  produceComponent: UIExtensionFactory
 
-    menuItems?: ManuItemParams[]
-  }
+  menuItems?: ManuItemParams[]
+}
 
-export type UIExtensionFactory<CredType extends string> = <
+export type UIExtensionFactory = <
   Type extends EmptyProps = EmptyProps
   >(
   purpose: ExtensionItemPurpose,
-  type?: MaybeArray<CredType>
+  type?: MaybeArray<string>
 ) => UIExtensionFactoryProduct<Type>[]
 
 export type UIExtensionFactoryProduct<

@@ -1,32 +1,19 @@
-import {
-  buildIdentityExtensionUI,
-  REGOV_IDENTITY_DEFAULT_TYPE
-} from '@owlmeans/regov-ext-identity-web'
-import {
-  buildUIExtensionRegistry,
-} from '@owlmeans/regov-lib-react'
-import {
-  WalletApp,
-  buildUniversalExtensionUI,
-} from '@owlmeans/regov-mold-wallet-web'
-import {
-  UniversalCredentialT
-} from '@owlmeans/regov-ssi-extension'
-import groupsExtension, { RegovGroupExtensionTypes } from '@owlmeans/regov-ext-groups-web'
+import { buildUIExtensionRegistry } from '@owlmeans/regov-lib-react'
+
+import { buildIdentityExtensionUI } from '@owlmeans/regov-ext-identity-web'
+import { signatureWebExtension } from '@owlmeans/regov-ext-doc-signature'
+import { groupsUIExtension } from '@owlmeans/regov-ext-groups-web'
+
+import { WalletApp, buildUniversalExtensionUI } from '@owlmeans/regov-mold-wallet-web'
 
 import { config } from './config'
 
 
 const EXAMPLE_IDENTITY_TYPE = 'ExampleIdentity'
-type IdentityType = typeof EXAMPLE_IDENTITY_TYPE | typeof REGOV_IDENTITY_DEFAULT_TYPE
 
-const registry = buildUIExtensionRegistry<
-  UniversalCredentialT
-  | IdentityType
-  | RegovGroupExtensionTypes
->()
+const registry = buildUIExtensionRegistry()
 
-registry.registerSync<UniversalCredentialT>(buildUniversalExtensionUI({
+registry.registerSync(buildUniversalExtensionUI({
   name: '',
   code: 'example-uvc',
   organization: 'Example Org.',
@@ -34,7 +21,7 @@ registry.registerSync<UniversalCredentialT>(buildUniversalExtensionUI({
   schemaBaseUrl: 'https://my-example.org/schemas/'
 }))
 
-registry.registerSync<IdentityType>(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName: config.name }, {
+registry.registerSync(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName: config.name }, {
   name: '',
   code: 'example-identity',
   organization: 'Example Org.',
@@ -42,7 +29,9 @@ registry.registerSync<IdentityType>(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TY
   schemaBaseUrl: 'https://my-example.org/schemas/'
 }))
 
-registry.registerSync<RegovGroupExtensionTypes>(groupsExtension)
+registry.registerSync(signatureWebExtension)
+
+registry.registerSync(groupsUIExtension)
 
 export const App = () => {
   return <WalletApp config={config} extensions={registry.normalize()} />
