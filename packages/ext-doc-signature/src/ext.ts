@@ -1,6 +1,7 @@
 import { buildExtension, buildExtensionSchema } from "@owlmeans/regov-ssi-extension"
 import { BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_EXT_SIGNATURE_NAMESPACE } from "./types"
 import { REGISTRY_TYPE_CREDENTIALS } from "@owlmeans/regov-ssi-core"
+import enCommon from './i18n/en/common.json'
 
 
 let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
@@ -46,5 +47,6 @@ export const signatureExtension = buildExtension<RegovSignatureCredential>(
 signatureExtension.localization = {
   ns: REGOV_EXT_SIGNATURE_NAMESPACE,
   translations: {
+    en: enCommon
   }
 }

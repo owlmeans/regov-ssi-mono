@@ -105,7 +105,7 @@ util.inspect.defaultOptions.depth = 8
           privateKey: options.privateKey,
           id: `${(options.controller as any).id}#${options.keyId}`,
           controller: options.controller
-        })
+        }) as any
       },
       documentLoader,
       getProofPurposeOptions: undefined

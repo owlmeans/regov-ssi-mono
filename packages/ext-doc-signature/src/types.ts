@@ -23,3 +23,7 @@ export type SignatureSubject = {
   authorId: string
   signedAt?: string
 }
+
+export const DOCUMENT_TYPE_JSON = 'JSON'
+export const DOCUMENT_TYPE_TEXT = 'Text'
+export const DOCUMENT_TYPE_BINARY = 'Binary'
