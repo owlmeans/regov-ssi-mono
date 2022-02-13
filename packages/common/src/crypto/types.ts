@@ -2,7 +2,9 @@
 export type CryptoHelper = {
   buildSignSuite: (keyOptions: BuildSignSignatureOptions) => Object
 
-  hash: (data: string) => string
+  hash: (data: Buffer | string) => string
+
+  hashBytes: (data: Buffer) => string
 
   sign: (data: string, key: string) => string
 

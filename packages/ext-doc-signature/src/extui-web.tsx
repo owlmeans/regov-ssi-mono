@@ -25,7 +25,7 @@ export const signatureWebExtension = buildUIExtension(signatureExtension, (
 
 signatureWebExtension.menuItems = [
   {
-    title: 'menu.new.group',
+    title: 'menu.new.signature',
     menuTag: MENU_TAG_CRED_NEW,
     ns: signatureExtension.localization?.ns,
     action: {

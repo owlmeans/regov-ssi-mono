@@ -13,7 +13,7 @@ const _keysCache: { [key: string]: BIP32Interface } = {}
 
 const _hashBytes = (bytes: Buffer | string) => Buffer.from(sha256().update(bytes).digest())
 
-const _hash = (data: string) => _base58().encode(_hashBytes(data))
+const _hash = (data: string | Buffer) => _base58().encode(_hashBytes(data))
 
 const _createCipher = (suite: string, key: unknown, iv: unknown, isDecipher = false) => {
   const aes = require('browserify-aes/browser')
@@ -87,6 +87,8 @@ export const nodeCryptoHelper: CryptoHelper = {
   }),
 
   hash: _hash,
+
+  hashBytes: data => _hashBytes(data).toString('base64'),
 
   sign: (data: string, key: string) => {
     // console.log({

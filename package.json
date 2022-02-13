@@ -10,7 +10,10 @@
     "start": "cd ./packages/mold-wallet-web/example/ && yarn start"
   },
   "devDependencies": {
-    "react-router-dom": "^6.0.2",
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.4",
+    "@mui/icons-material": "^5.2.5",
     "react-dropzone": "^11.4.2",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",

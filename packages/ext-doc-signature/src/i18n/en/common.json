@@ -1,0 +1,72 @@
+{
+  "menu": {
+    "new": {
+      "signature": "Document Signature"
+    }
+  },
+  "signature": {
+    "type": {
+      "binary": "Binary file",
+      "json": "JSON document",
+      "text": "Plain text document",
+      "unknown": "Unknown file type"
+    },
+    "creation": {
+      "title": "Document Signature Credential",
+      "file": {
+        "browse": "Browse",
+        "binary": "You uploaded a binary file. The system can't display it's content.",
+        "import": {
+          "here": "Drag & drop a file here or click for more options.",
+          "drop": "Drop file here...",
+          "loaded": "Document loaded."
+        },
+        "input": {
+          "label": "Text document content",
+          "hint": "One can set document as a text here. JSON can be used."
+        }
+      },
+      "name": {
+        "label": "Credential name",
+        "hint": "Will be seen as credential name by all parties"
+      },
+      "description": {
+        "label": "Document description",
+        "hint": "Usefull information about the document"
+      },
+      "url": {
+        "label": "Document URL",
+        "hint": "Location of the document in the internet"
+      },
+      "version": {
+        "label": "Version",
+        "hint": "Human and computer readable document version"
+      },
+      "author": {
+        "label": "Author",
+        "hint": "Name of the document author"
+      },
+      "authorId": {
+        "label": "Author ID",
+        "hint": "ID sequence of the author. Can be a DID of identity."
+      },
+      "documentHash": {
+        "label": "Contol sequence",
+        "hint": "Is used to verify the signature of the document"
+      },
+      "type": {
+        "label": "Document type",
+        "hint": "Type of the provided document"
+      },
+      "filename": {
+        "label": "File",
+        "hint": "Name of the document file"
+      },
+      "creationDate": {
+        "label": "Creation date",
+        "hint": "Date when the document was changed the last time"
+      },
+      "create": "Create credential"
+    }
+  }
+}
