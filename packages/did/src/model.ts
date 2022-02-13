@@ -333,21 +333,6 @@ export const buildDidHelper =
           didDocUnsigned.alsoKnownAs = options.alsoKnownAs
         }
 
-        didDocUnsigned['@context'] = [
-          ...Array.isArray(didDocUnsigned['@context']) ? didDocUnsigned['@context'] : [didDocUnsigned['@context']]
-        ].map((item) => {
-          if (typeof item === 'object') {
-            const cache = JSON.stringify({'@context': item})
-            const url = crypto.hash(cache)
-
-            documentWarmer(url, cache)
-
-            return url
-          }
-
-          return item
-        })
-
         return didDocUnsigned
       },
 
