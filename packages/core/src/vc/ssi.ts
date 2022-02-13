@@ -39,6 +39,7 @@ import {
 } from "@owlmeans/regov-ssi-common"
 import {
   DIDDocument,
+  documentWarmer,
   buildDocumentLoader,
   DID_REGISTRY_ERROR_NO_DID,
   DID_REGISTRY_ERROR_NO_KEY_BY_DID,
@@ -98,14 +99,27 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       S extends CredentialSubject<T> = CredentialSubject<T>,
       U extends UnsignedCredential<S> = UnsignedCredential<S>
     >(options: BuildCredentailOptions<T>) => {
+      const context = [
+        'https://www.w3.org/2018/credentials/v1',
+        ...(options.context
+          ? Array.isArray(options.context) ? options.context : [options.context]
+          : []
+        ),
+      ]
+
       const credential = {
-        '@context': [
-          'https://www.w3.org/2018/credentials/v1',
-          ...(options.context
-            ? Array.isArray(options.context) ? options.context : [options.context]
-            : []
-          ),
-        ],
+        '@context': context.map((item) => {
+          if (typeof item === 'object') {
+            const cache = JSON.stringify({'@context': item})
+            const url = crypto.hash(cache)
+
+            documentWarmer(url, cache)
+
+            return url
+          }
+
+          return item
+        }),
         ...(options.id ? { id: options.id } : {}),
         type: options.type,
         holder: options.holder,

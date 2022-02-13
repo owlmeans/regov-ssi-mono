@@ -40,6 +40,8 @@ import {
   DID_EXTRACTKEY_WRONG_DID,
 } from './types'
 
+import { documentWarmer } from './loader'
+
 const jldsign = require('jsonld-signatures')
 
 const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
@@ -287,6 +289,18 @@ export const buildDidHelper =
 
         const baseSchemaUrl = options.baseSchemaUrl || buildOptions.baseSchemaUrl || DEFAULT_APP_SCHEMA_URL
 
+        const context = JSON.stringify({
+          '@context': {
+            '@version': 1.1,
+            didx: `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`,
+            xsd: 'http://www.w3.org/2001/XMLSchema#',
+            nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
+            publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
+          }
+        })
+        const contextUrl = crypto.hash(context)
+        documentWarmer(contextUrl, context)
+
         let didDocUnsigned: DIDDocumentUnsinged = options.source
           ? {
             ..._cutProof(options.source),
@@ -294,13 +308,7 @@ export const buildDidHelper =
           : {
             '@context': [
               'https://w3id.org/did/v1',
-              {
-                '@version': 1.1,
-                didx: `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`,
-                xsd: 'http://www.w3.org/2001/XMLSchema#',
-                nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
-                publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
-              }
+              contextUrl
             ],
             id
           }
@@ -324,6 +332,21 @@ export const buildDidHelper =
         if (options.alsoKnownAs) {
           didDocUnsigned.alsoKnownAs = options.alsoKnownAs
         }
+
+        didDocUnsigned['@context'] = [
+          ...Array.isArray(didDocUnsigned['@context']) ? didDocUnsigned['@context'] : [didDocUnsigned['@context']]
+        ].map((item) => {
+          if (typeof item === 'object') {
+            const cache = JSON.stringify({'@context': item})
+            const url = crypto.hash(cache)
+
+            documentWarmer(url, cache)
+
+            return url
+          }
+
+          return item
+        })
 
         return didDocUnsigned
       },

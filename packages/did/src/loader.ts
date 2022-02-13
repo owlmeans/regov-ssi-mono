@@ -1,3 +1,4 @@
+import { DocumentWarmer } from "."
 import { BuildDocumentLoader, DIDDocument, DIDDocumentUnsinged } from "./types"
 import { DIDRegistryWrapper } from "./types/registry"
 
@@ -23,4 +24,13 @@ export const buildDocumentLoader = (did: DIDRegistryWrapper): BuildDocumentLoade
     }
 
     return documentCache[url] = await require('jsonld').documentLoader(url)
+  }
+
+export const documentWarmer: DocumentWarmer =
+  (url, docJson) => {
+    documentCache[url] = {
+      contextUrl: null,
+      document: docJson,
+      documentUrl: url,
+    }
   }
