@@ -1,32 +1,10 @@
-import React, {
-  useCallback,
-  useEffect,
-  useState
-} from 'react'
-import {
-  CredentialProcessorFields,
-  CredentialProcessorImplProps,
-} from '@owlmeans/regov-lib-react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { CredentialProcessorFields, CredentialProcessorImplProps } from '@owlmeans/regov-lib-react'
 import { useDropzone } from 'react-dropzone'
-import {
-  FormControl,
-  FormHelperText,
-  Grid,
-  IconButton,
-  Paper,
-  TextField,
-  Typography
-} from '@mui/material'
-import {
-  Controller,
-  useForm,
-  UseFormProps
-} from 'react-hook-form'
+import { FormControl, FormHelperText, Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
+import { Controller, useForm, UseFormProps } from 'react-hook-form'
 import { formatError } from '../common'
-import {
-  Close,
-  Delete
-} from '@mui/icons-material'
+import { Close, Delete } from '@mui/icons-material'
 
 
 export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialProcessorImplProps) => {

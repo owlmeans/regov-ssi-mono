@@ -55,14 +55,14 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
     }
   })
 
-  schema = addObserverToSchema<IdentityCredentials>(schema, {
+  schema = addObserverToSchema(schema, {
     filter: async wallet => !wallet.hasIdentity(),
     trigger: EXTENSION_TRIGGER_AUTHENTICATED
   })
 
   schema = addObserverToSchema(schema, {
     trigger: EXTENSION_TRIGGER_RETRIEVE_NAME,
-    filter: async (_, params: RetreiveNameEventParams<IdentityCredentials>) => {
+    filter: async (_, params: RetreiveNameEventParams) => {
       if (!params.credential.type || !Array.isArray(params.credential.type)) {
         return false
       }
@@ -70,7 +70,7 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
       return params.credential.type.includes(identityType)
     },
     
-    method: async (_, { credential, setName }: RetreiveNameEventParams<IdentityCredentials>) => {
+    method: async (_, { credential, setName }: RetreiveNameEventParams) => {
       const subject = getCompatibleSubject<IdentitySubject>(credential)
       setName(`ID: ${subject.identifier}`)
     }

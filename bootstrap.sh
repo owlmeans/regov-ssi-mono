@@ -24,6 +24,12 @@ lerna link
 cd ../../packages/ext-identity-web
 yarn build
 lerna link
+cd ../../packages/ext-groups
+yarn build
+lerna link
+cd ../../packages/ext-groups-web
+yarn build
+lerna link
 cd ../../packages/ext-doc-signature
 yarn build
 lerna link

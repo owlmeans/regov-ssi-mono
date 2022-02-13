@@ -1,37 +1,18 @@
 import React from 'react'
 
-import {
-  Box,
-  Divider,
-  Tab,
-  Tabs
-} from '@mui/material'
-import {
-  useNavigate,
-  useParams
-} from 'react-router-dom'
+import { Box, Divider, Tab, Tabs } from '@mui/material'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import {
-  withRegov
-} from '@owlmeans/regov-lib-react'
+import { withRegov } from '@owlmeans/regov-lib-react'
 
 import { UNIVERSAL_EXTENSION_SCREEN_PATH } from '../types'
-import { 
-  Extension, 
-  UniversalCredentialT 
-} from '@owlmeans/regov-ssi-extension'
+import { Extension } from '@owlmeans/regov-ssi-extension'
 import {
-  MainBuilder,
-  MainSigner,
-  MainClaimer,
-  MainProposer,
-  MainRequester,
-  MainResponder,
-  MainReader
+  MainBuilder, MainSigner, MainClaimer, MainProposer, MainRequester, MainResponder, MainReader
 } from './main/'
 
 
-export const Main = (ext: Extension<UniversalCredentialT>) => {
+export const Main = (ext: Extension) => {
 
   return withRegov({ namespace: ext.localization?.ns }, ({ t }) => {
     const { tab } = useParams()

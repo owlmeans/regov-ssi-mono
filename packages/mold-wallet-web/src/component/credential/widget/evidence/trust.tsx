@@ -114,7 +114,7 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
     const renderer = renderers && renderers[0]
     const Renderer = (renderer?.com || StandardEvidenceWidget) as FunctionComponent<PurposeEvidenceWidgetParams>
 
-    extensions.triggerEvent<RetreiveNameEventParams<string>>(
+    extensions.triggerEvent<RetreiveNameEventParams>(
       handler.wallet, EXTENSION_TRIGGER_RETRIEVE_NAME, {
       credential, setName: (name: string) => { setTitle(name) }
     })

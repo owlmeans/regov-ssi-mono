@@ -25,7 +25,7 @@ import {
 } from '@owlmeans/regov-mold-wallet-web'
 
 
-export const DashboardWidget = (ext: Extension<string>) =>
+export const DashboardWidget = (ext: Extension) =>
   withRegov<DashboardWidgetProps>({
     namespace: ext.localization?.ns,
     transformer: (wallet) => {

@@ -24,7 +24,7 @@ export type GroupSubject = {
   createdAt: string
 }
 
-export type RegovGroupExtension = Extension<RegovGroupExtensionTypes>
+export type RegovGroupExtension = Extension
 
 export type MembershipSubject = {
   groupId: string

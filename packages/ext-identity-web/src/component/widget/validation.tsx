@@ -1,32 +1,10 @@
-import React, {
-  Fragment,
-  FunctionComponent,
-  useState
-} from 'react'
-import {
-  Credential,
-  getCompatibleSubject
-} from '@owlmeans/regov-ssi-core'
-import {
-  Collapse,
-  List,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
-  Typography
-} from '@mui/material'
-import {
-  Done,
-  ExpandLess,
-  ExpandMore,
-  ErrorOutline
-} from '@mui/icons-material'
+import React, { Fragment, FunctionComponent, useState} from 'react'
+import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
+import { Collapse, List, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material'
+import { Done, ExpandLess, ExpandMore, ErrorOutline } from '@mui/icons-material'
 import { IdentitySubject } from '@owlmeans/regov-ext-identity'
 import {
-  EXTENSION_ITEM_PURPOSE_VALIDATION,
-  ResultWidgetParams,
-  useRegov,
-  ValidationResultWidget,
+  EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget,
   ResultWidgetParams as ResultItemWidgetParams
 } from '@owlmeans/regov-lib-react'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
@@ -35,7 +13,7 @@ import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
 import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-mold-wallet-web'
 
 
-export const ValidationWidget = (_: Extension<string>): FunctionComponent<ResultWidgetParams> =>
+export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetParams> =>
   (props: ResultWidgetParams) => <ValidationResultWidget ns={props.ns || REGOV_IDENTITY_DEFAULT_NAMESPACE}
     result={props.result} reload={props.reload} com={(props) => {
       const { result, reload, t } = props

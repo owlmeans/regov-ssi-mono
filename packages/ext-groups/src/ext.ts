@@ -90,7 +90,7 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
 
 groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
-  filter: async (_, params: IncommigDocumentEventParams<RegovGroupExtensionTypes>) => {
+  filter: async (_, params: IncommigDocumentEventParams) => {
     if (isPresentation(params.credential)) {
       if ([REGOV_CLAIM_TYPE, REGOV_OFFER_TYPE].some(type => params.credential.type.includes(type))) {
         return true
@@ -107,7 +107,7 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
 
 groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   trigger: EXTENSION_TRIGGER_RETRIEVE_NAME,
-  filter: async (_, params: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
+  filter: async (_, params: RetreiveNameEventParams) => {
     if (!params.credential.type || !Array.isArray(params.credential.type)) {
       return false
     }
@@ -115,7 +115,7 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
     return params.credential.type.includes(REGOV_CREDENTIAL_TYPE_GROUP)
   },
 
-  method: async (_, { credential, setName }: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
+  method: async (_, { credential, setName }: RetreiveNameEventParams) => {
     const subject = getCompatibleSubject<GroupSubject>(credential)
     setName(subject.name)
   }
@@ -123,7 +123,7 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
 
 groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   trigger: EXTENSION_TRIGGER_RETRIEVE_NAME,
-  filter: async (_, params: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
+  filter: async (_, params: RetreiveNameEventParams) => {
     if (!params.credential.type || !Array.isArray(params.credential.type)) {
       return false
     }
@@ -131,7 +131,7 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
     return params.credential.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
   },
 
-  method: async (_, { credential, setName }: RetreiveNameEventParams<RegovGroupExtensionTypes>) => {
+  method: async (_, { credential, setName }: RetreiveNameEventParams) => {
     const subject = getCompatibleSubject<MembershipSubject>(credential)
     setName(`${subject.role} - ${subject.memberCode}`)
   }

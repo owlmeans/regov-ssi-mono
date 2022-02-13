@@ -32,14 +32,15 @@ import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
 import {
   REGISTRY_TYPE_IDENTITIES,
   Credential,
-  CredentialSubject
+  CredentialSubject,
+  WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 
 
 export const REGOV_IDENTITY_DEFAULT_TYPE = 'OwlMeans:Regov:Identity'
 
-export const buildIdentityExtensionUI = <CredType extends string>(
-  type: CredType,
+export const buildIdentityExtensionUI = (
+  type: string,
   params: BuildExtensionParams,
   details: ExtensionDetails,
   ns = REGOV_IDENTITY_DEFAULT_NAMESPACE
@@ -59,7 +60,7 @@ export const buildIdentityExtensionUI = <CredType extends string>(
 
   if (extension.schema.events) {
     extension.getEvents(EXTENSION_TRIGGER_AUTHENTICATED)[0].method = async (
-      wallet, params: MainModalAuthenticatedEventParams
+      wallet: WalletWrapper, params: MainModalAuthenticatedEventParams
     ) => {
       if (params.config.development && extension.schema.details.defaultCredType) {
         const factory = extension.getFactory(extension.schema.details.defaultCredType)
@@ -95,7 +96,7 @@ export const buildIdentityExtensionUI = <CredType extends string>(
     }
   }
 
-  const uiExt = buildUIExtension<IdentityCredentials>(
+  const uiExt = buildUIExtension(
     extension,
     (purpose: ExtensionItemPurpose, type?: IdentityCredentials) => {
       switch (purpose) {

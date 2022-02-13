@@ -14,12 +14,11 @@ import {
 import en from './i18n/en.json'
 import { Main } from './component/main'
 import { 
-  UniversalCredentailExtensionUI, 
   UNIVERSAL_CREDENTAIL_I18N_NS, 
   UNIVERSAL_EXTENSION_SCREEN_PATH 
 } from './types'
 
-export { UniversalCredentailExtension } from '@owlmeans/regov-ssi-extension'
+export { Extension } from '@owlmeans/regov-ssi-extension'
 
 
 export const buildUniversalExtensionUI = (
@@ -37,7 +36,7 @@ export const buildUniversalExtensionUI = (
     ns, translations: { en }
   }
 
-  const uiExt = buildUIExtension<CredType>(
+  const uiExt = buildUIExtension(
     extension,
     (purpose: ExtensionItemPurpose, _?: CredType) => {
       switch (purpose) {
@@ -63,6 +62,6 @@ export const buildUniversalExtensionUI = (
     }
   ]
 
-  return uiExt as UniversalCredentailExtensionUI
+  return uiExt
 }
 

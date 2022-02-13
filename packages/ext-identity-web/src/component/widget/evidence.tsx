@@ -19,7 +19,7 @@ import { IdentitySubject } from '@owlmeans/regov-ext-identity'
 import { dateFormatter } from '@owlmeans/regov-mold-wallet-web'
 
 
-export const EvidenceWidget = (ext: Extension<string>): FunctionComponent<EvidenceWidgetParams> =>
+export const EvidenceWidget = (ext: Extension): FunctionComponent<EvidenceWidgetParams> =>
   withRegov<EvidenceWidgetProps>({ namespace: ext.localization?.ns }, (props: EvidenceWidgetProps) => {
     const { wrapper, t } = props
 

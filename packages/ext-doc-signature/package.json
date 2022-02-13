@@ -50,7 +50,9 @@
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@mui/material": "^5.2.4",
-    "@mui/icons-material": "^5.2.5"
+    "@mui/icons-material": "^5.2.5",
+    "file-saver": "^2.0.5",
+    "react-dropzone": "^11.4.2"
   },
   "devDependencies": {
     "microbundle-crl": "^0.13.11",
