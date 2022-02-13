@@ -184,6 +184,8 @@ export type BuildDocumentLoader<Type extends {} = {}> =
   (fallback?: () => DIDDocument | DIDDocumentUnsinged | undefined) =>
     (url: string) => Promise<LoadedDocument<Type>>
 
+export type DocumentWarmer = (url: string, docJson: string) => void
+
 export type LoadedDocument<Type extends {} = {}> = {
   contextUrl: string | null
   document: DIDDocument | Type,
