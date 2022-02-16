@@ -2,6 +2,9 @@
   "menu": {
     "new": {
       "signature": "Document Signature"
+    },
+    "request": {
+      "signature": "Document Signature Request"
     }
   },
   "dashboard": {
@@ -43,11 +46,17 @@
       },
       "url": {
         "label": "Document URL",
-        "hint": "Location of the document in the internet"
+        "hint": "Location of the document in the internet",
+        "error": {
+          "url": "Wrong URL format"
+        }
       },
       "version": {
         "label": "Version",
-        "hint": "Human and computer readable document version"
+        "hint": "Human and computer readable document version",
+        "error": {
+          "pattern": "Wrong version format use numbers, letters dots and minuses"
+        }
       },
       "author": {
         "label": "Author",
@@ -75,6 +84,36 @@
       },
       "create": "Create credential",
       "success": "Document signed successfully."
+    },
+    "view": {
+      "title": "Document Signature VC",
+      "signedAt": {
+        "hint": "Date of signing"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "documentHash": {
+        "label": "Contol sequence"
+      },
+      "filename": {
+        "label": "File name"
+      },
+      "url": {
+        "label": "URL"
+      },
+      "authorId": {
+        "label": "Author ID"
+      },
+      "creationDate": {
+        "hint": "Creation date"
+      },
+      "version": {
+        "hint": "Version"
+      },
+      "docType": {
+        "hint": "Document type"
+      }
     },
     "list": {
       "item": {

@@ -15,7 +15,7 @@ import {
   REGISTRY_TYPE_CLAIMS,
   REGISTRY_TYPE_CREDENTIALS,
   REGISTRY_TYPE_IDENTITIES,
-  REGISTRY_TYPE_UNSIGNEDS
+  REGISTRY_TYPE_REQUESTS,
 } from '@owlmeans/regov-ssi-core'
 import { useNavigate, useParams } from 'react-router-dom'
 import { CredentialHeader } from '../../component'
@@ -31,6 +31,10 @@ export const WalletCredentialList = () => {
     
     create: async (path: string) => {
       navigate(`/credential/create/${path}`)
+    },
+    
+    request: async (path: string) => {
+      navigate(`/credential/request/${path}`)
     }
   })
 
@@ -67,11 +71,19 @@ export const walletCredentialListTabs: CredentialListTab[] = [
     }
   },
   {
-    name: REGISTRY_TYPE_UNSIGNEDS,
+    name: REGISTRY_TYPE_REQUESTS,
     registry: {
-      type: REGISTRY_TYPE_UNSIGNEDS,
+      type: REGISTRY_TYPE_REQUESTS,
       defaultSection: REGISTRY_SECTION_OWN,
       allowPeer: false,
     }
   },
+  // {
+  //   name: REGISTRY_TYPE_UNSIGNEDS,
+  //   registry: {
+  //     type: REGISTRY_TYPE_UNSIGNEDS,
+  //     defaultSection: REGISTRY_SECTION_OWN,
+  //     allowPeer: false,
+  //   }
+  // },
 ]

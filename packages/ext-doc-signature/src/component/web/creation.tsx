@@ -58,9 +58,12 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
         )
 
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
-        const unsigned = await factory.buildingFactory(
-          handler.wallet, { subjectData: subject }
-        )
+        const unsigned = await factory.buildingFactory(handler.wallet, {
+          subjectData: {
+            ...subject,
+            signedAt: new Date().toISOString()
+          }
+        })
         const credential = await factory.signingFactory(handler.wallet, {
           unsigned,
           evidence: handler.wallet.getIdentity()?.credential
