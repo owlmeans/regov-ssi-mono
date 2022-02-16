@@ -1,19 +1,8 @@
 import {
-  addObserverToSchema,
-  buildExtension,
-  buildExtensionSchema,
-  ExtensionDetails,
-  defaultBuildingFactory,
-  EXTENSION_TRIGGER_AUTHENTICATED,
-  EXTENSION_TRIGGER_RETRIEVE_NAME,
-  RetreiveNameEventParams,
+  addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails, defaultBuildingFactory,
+  EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams,
 } from "@owlmeans/regov-ssi-extension"
-import {
-  CredentialSubject,
-  getCompatibleSubject,
-  REGISTRY_TYPE_IDENTITIES,
-  UnsignedCredential
-} from "@owlmeans/regov-ssi-core"
+import { CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential } from "@owlmeans/regov-ssi-core"
 import { IdentitySubject } from "./types"
 import { makeRandomUuid } from "@owlmeans/regov-ssi-common"
 import { credIdToIdentityId } from "./helper"

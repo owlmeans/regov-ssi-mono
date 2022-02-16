@@ -4,8 +4,15 @@
       "signature": "Document Signature"
     }
   },
+  "dashboard": {
+    "widget": {
+      "signature": {
+        "add": "Sign a document"
+      }
+    }
+  },
   "signature": {
-    "type": {
+    "docType": {
       "binary": "Binary file",
       "json": "JSON document",
       "text": "Plain text document",
@@ -54,7 +61,7 @@
         "label": "Contol sequence",
         "hint": "Is used to verify the signature of the document"
       },
-      "type": {
+      "docType": {
         "label": "Document type",
         "hint": "Type of the provided document"
       },
@@ -66,7 +73,14 @@
         "label": "Creation date",
         "hint": "Date when the document was changed the last time"
       },
-      "create": "Create credential"
+      "create": "Create credential",
+      "success": "Document signed successfully."
+    },
+    "list": {
+      "item": {
+        "unknown": "Unknown document signature",
+        "type": "Document signature VC"
+      }
     }
   }
 }

@@ -1,34 +1,10 @@
-import React, {
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
-
-import {
-  Backdrop,
-  CircularProgress,
-  Container
-} from '@mui/material'
-
-import {
-  i18nDefaultOptions,
-  i18nSetup,
-  createWalletHandler,
-} from '@owlmeans/regov-lib-react'
-
-import {
-  NavigationRoot,
-  createRootNavigator
-} from './router'
-import {
-  BrowserRouter,
-} from 'react-router-dom'
-
+import React, { useEffect, useMemo, useState } from 'react'
+import { Backdrop, CircularProgress, Container } from '@mui/material'
+import { i18nDefaultOptions, i18nSetup, createWalletHandler, } from '@owlmeans/regov-lib-react'
+import { NavigationRoot, createRootNavigator } from './router'
+import { BrowserRouter } from 'react-router-dom'
 import { buildStorageHelper } from './storage'
-import {
-  WalletAppParams,
-  AppProvider
-} from './app/'
+import { WalletAppParams, AppProvider } from './app/'
 
 
 const i18n = i18nSetup(i18nDefaultOptions)

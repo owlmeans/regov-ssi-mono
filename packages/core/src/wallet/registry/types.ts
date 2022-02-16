@@ -1,3 +1,4 @@
+import { MaybeArray } from "@owlmeans/regov-ssi-common"
 import {
   Credential,
   CredentialSubject,
@@ -34,7 +35,7 @@ export type RemoveCredentialMethod =
   ) => Promise<CredentialWrapper>
 
 export type AddCredentialMethod = <
-  Subject extends CredentialSubject = CredentialSubject,
+  Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>,
   Type extends RegistryItem<Subject> = Credential<Subject>
   >(
   credential: Type,
@@ -42,7 +43,7 @@ export type AddCredentialMethod = <
 ) => Promise<CredentialWrapper<Subject, Type>>
 
 export type RegistryItem<
-  Subject extends CredentialSubject = CredentialSubject,
+  Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>,
   PresentationT extends Presentation = Presentation
   > =
   Credential<Subject> | UnsignedCredential<Subject> | PresentationT
@@ -80,7 +81,7 @@ export const REGISTRY_SECTION_OWN = 'own'
 export const REGISTRY_SECTION_PEER = 'peer'
 
 export type CredentialWrapper<
-  Subject extends CredentialSubject = CredentialSubject,
+  Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>,
   Type extends RegistryItem<Subject> = Credential<Subject>
   > = {
     credential: Type

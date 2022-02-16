@@ -5,12 +5,12 @@ import { DOCUMENT_TYPE_BINARY, DOCUMENT_TYPE_JSON, DOCUMENT_TYPE_TEXT } from "..
 export const typeFormatterFacotry = (t: TFunction) => (value: string) => {
   switch (value) {
     case DOCUMENT_TYPE_BINARY:
-      return t('signature.type.binary')
+      return t('signature.docType.binary')
     case DOCUMENT_TYPE_JSON:
-      return t('signature.type.json')
+      return t('signature.docType.json')
     case DOCUMENT_TYPE_TEXT:
-      return t('signature.type.text')
+      return t('signature.docType.text')
     default:
-      return t('signature.type.unknown')
+      return t('signature.docType.unknown')
   }
 }

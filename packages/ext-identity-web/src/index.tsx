@@ -1,40 +1,15 @@
 export * from './types'
-
 import React from 'react'
-import {
-  ExtensionDetails,
-  EXTENSION_TRIGGER_AUTHENTICATED,
-} from '@owlmeans/regov-ssi-extension'
-
-import {
-  BASIC_IDENTITY_TYPE,
-  BuildExtensionParams,
-  buildIdentityExtension
-} from '@owlmeans/regov-ext-identity'
-
+import {ExtensionDetails, EXTENSION_TRIGGER_AUTHENTICATED } from '@owlmeans/regov-ssi-extension'
+import { BASIC_IDENTITY_TYPE, BuildExtensionParams, buildIdentityExtension } from '@owlmeans/regov-ext-identity'
 import en from './i18n/en.json'
-import {
-  buildUIExtension,
-  UIExtensionFactoryProduct,
-  MainModalAuthenticatedEventParams,
-  ExtensionItemPurpose,
-  EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
-  EXTENSION_ITEM_PURPOSE_EVIDENCE,
-  EXTENSION_ITEM_PURPOSE_VALIDATION,
+import { 
+  buildUIExtension, UIExtensionFactoryProduct, MainModalAuthenticatedEventParams, ExtensionItemPurpose,
+  EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET, EXTENSION_ITEM_PURPOSE_EVIDENCE, EXTENSION_ITEM_PURPOSE_VALIDATION,
 } from '@owlmeans/regov-lib-react'
-import {
-  DashboardWidget,
-  EvidenceWidget,
-  Onboarding,
-  ValidationWidget
-} from './component'
+import { DashboardWidget, EvidenceWidget, Onboarding, ValidationWidget } from './component'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
-import {
-  REGISTRY_TYPE_IDENTITIES,
-  Credential,
-  CredentialSubject,
-  WalletWrapper
-} from '@owlmeans/regov-ssi-core'
+import { REGISTRY_TYPE_IDENTITIES, Credential, CredentialSubject, WalletWrapper } from '@owlmeans/regov-ssi-core'
 
 
 export const REGOV_IDENTITY_DEFAULT_TYPE = 'OwlMeans:Regov:Identity'

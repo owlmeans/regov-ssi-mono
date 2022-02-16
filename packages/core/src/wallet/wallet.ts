@@ -69,7 +69,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
               _registry.credentials[section] = []
             }
             _registry.credentials[section || _registry.defaultSection].push(
-              wrappedCred as CredentialWrapper
+              wrappedCred as CredentialWrapper<CredentialSubject>
             )
 
             return wrappedCred
