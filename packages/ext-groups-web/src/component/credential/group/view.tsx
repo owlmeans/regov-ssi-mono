@@ -1,49 +1,15 @@
-import React, {
-  Fragment,
-  FunctionComponent,
-  useEffect,
-  useState
-} from 'react'
-import {
-  CredentialEvidenceWidget,
-  EmptyProps,
-  RegovComponetProps,
-  useRegov,
-  withRegov
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
+import { 
+  CredentialEvidenceWidget, EmptyProps, RegovComponetProps, useRegov, withRegov 
 } from '@owlmeans/regov-lib-react'
-import {
-  REGOV_EXT_GROUP_NAMESPACE,
-  RegovGroupExtension,
-  GroupSubject,
-  REGOV_CREDENTIAL_TYPE_GROUP
+import { 
+  REGOV_EXT_GROUP_NAMESPACE, RegovGroupExtension, GroupSubject, REGOV_CREDENTIAL_TYPE_GROUP 
 } from '@owlmeans/regov-ext-groups'
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  Paper,
-} from '@mui/material'
-import {
-  Credential,
-  getCompatibleSubject
-} from '@owlmeans/regov-ssi-core'
-import {
-  EntityRenderer,
-  EntityTextRenderer,
-  ValidationResultWidget
-} from '@owlmeans/regov-mold-wallet-web'
-import {
-  Close,
-  People
-} from '@mui/icons-material'
-import {
-  ValidationResult,
-  VALIDATION_FAILURE_CHECKING
-} from '@owlmeans/regov-ssi-extension'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, } from '@mui/material'
+import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
+import { EntityRenderer, EntityTextRenderer, ValidationResultWidget } from '@owlmeans/regov-mold-wallet-web'
+import { Close, People } from '@mui/icons-material'
+import { ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-extension'
 import { MembershipClaim } from '../membership'
 
 

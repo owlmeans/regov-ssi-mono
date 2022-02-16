@@ -1,7 +1,14 @@
-import { buildExtension, buildExtensionSchema } from "@owlmeans/regov-ssi-extension"
-import { BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_EXT_SIGNATURE_NAMESPACE } from "./types"
-import { REGISTRY_TYPE_CREDENTIALS } from "@owlmeans/regov-ssi-core"
+import {
+  addObserverToSchema, buildExtension, buildExtensionSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  IncommigDocumentEventParams
+} from "@owlmeans/regov-ssi-extension"
+import {
+  BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE,
+  REGOV_EXT_SIGNATURE_NAMESPACE
+} from "./types"
+import { isCredential, REGISTRY_TYPE_CREDENTIALS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'
+import { normalizeValue } from "@owlmeans/regov-ssi-common"
 
 
 let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
@@ -39,11 +46,21 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
   }
 })
 
+signatureExtensionSchema = addObserverToSchema(signatureExtensionSchema, {
+  trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  filter: async (_, params: IncommigDocumentEventParams) => {
+    if (!isCredential(params.credential)) {
+      return false
+    }
+
+    return normalizeValue(params.credential.type).includes(REGOV_CREDENTIAL_TYPE_SIGNATURE)
+  }
+})
+
 export const signatureExtension = buildExtension<RegovSignatureCredential>(
   signatureExtensionSchema, {
   [REGOV_CREDENTIAL_TYPE_SIGNATURE]: {}
 })
-
 signatureExtension.localization = {
   ns: REGOV_EXT_SIGNATURE_NAMESPACE,
   translations: {
