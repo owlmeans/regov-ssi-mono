@@ -33,6 +33,11 @@ export const passwordValidation = {
   maxLength: 64
 }
 
+export const humanReadableVersion = {
+  maxLength: 128,
+  pattern: /^[\w\d\s\._-]*$/
+}
+
 export const generalNameVlidation = (required: boolean = true) => ({
   required,
   maxLength: 32,
@@ -40,3 +45,22 @@ export const generalNameVlidation = (required: boolean = true) => ({
     pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
   }
 })
+
+export const urlVlidation = (required: boolean = false) => ({
+  validate: {
+    url: (v: string) => {
+      if (!required && v === '') {
+        return true
+      }
+      
+      try {
+        new URL(v)
+      } catch (e) {
+        return false
+      }
+
+      return true
+    }
+  }
+})
+

@@ -1,28 +1,11 @@
 import React, { Fragment, useMemo } from 'react'
 
-import {
-  CredentialWrapper,
-  getCompatibleSubject
-} from '@owlmeans/regov-ssi-core'
-import {
-  EmptyImplProps,
-  RegovComponetProps,
-  withRegov
-} from '@owlmeans/regov-lib-react'
-import {
-  Extension
-} from '@owlmeans/regov-ssi-extension'
-import {
-  Grid,
-  Typography
-} from '@mui/material'
+import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
+import { EmptyImplProps, RegovComponetProps, withRegov } from '@owlmeans/regov-lib-react'
+import { Extension } from '@owlmeans/regov-ssi-extension'
+import { Grid, Typography } from '@mui/material'
 import { IdentitySubject } from '@owlmeans/regov-ext-identity'
-import {
-  dateFormatter,
-  ItemMenuHandle,
-  MenuIconButton,
-  ItemMenu
-} from '@owlmeans/regov-mold-wallet-web'
+import { dateFormatter, ItemMenuHandle, MenuIconButton, ItemMenu } from '@owlmeans/regov-mold-wallet-web'
 
 
 export const DashboardWidget = (ext: Extension) =>

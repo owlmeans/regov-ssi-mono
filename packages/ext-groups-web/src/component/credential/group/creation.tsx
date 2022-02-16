@@ -10,7 +10,7 @@ import {
 import {
   ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION, ERROR_CREATION_READYTO_SIGN
 } from '../../types'
-import { CredentialSubject, REGISTRY_TYPE_CREDENTIALS, UnsignedCredential, Credential } from '@owlmeans/regov-ssi-core'
+import { REGISTRY_TYPE_CREDENTIALS, UnsignedCredential } from '@owlmeans/regov-ssi-core'
 
 
 export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationParams> =>
@@ -103,9 +103,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
 
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
 
-        const item = await registry.addCredential<CredentialSubject, Credential<CredentialSubject>>(
-          credential as Credential<CredentialSubject>
-        )
+        const item = await registry.addCredential(credential)
 
         item.meta.title = data.group.creation.credentialName
 

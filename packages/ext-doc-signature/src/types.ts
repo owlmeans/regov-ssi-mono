@@ -14,7 +14,7 @@ export type SignatureSubject = {
   name: string
   description: string
   documentHash: string
-  type: string
+  docType: string
   filename?: string
   url?: string
   creationDate: string
@@ -27,3 +27,5 @@ export type SignatureSubject = {
 export const DOCUMENT_TYPE_JSON = 'JSON'
 export const DOCUMENT_TYPE_TEXT = 'Text'
 export const DOCUMENT_TYPE_BINARY = 'Binary'
+
+export const ERROR_WIDGET_AUTHENTICATION = 'ERROR_WIDGET_AUTHENTICATION'

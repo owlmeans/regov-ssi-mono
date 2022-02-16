@@ -20,7 +20,7 @@ import {
   SimpleListItem
 } from '../common'
 import { CredentialListHeaderAction } from './list/header-action'
-import { Credential, CredentialSubject, CredentialWrapper, REGISTRY_SECTION_OWN } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, REGISTRY_SECTION_OWN } from '@owlmeans/regov-ssi-core'
 
 
 export const CredentialListWeb = (props: CredentialListImplProps) => {
@@ -74,6 +74,6 @@ const CredentialListItem = ({ wrapper, props }: CredentialListItemProps) => {
 }
 
 type CredentialListItemProps = {
-  wrapper: CredentialWrapper<CredentialSubject, Credential<CredentialSubject>>
+  wrapper: CredentialWrapper
   props: CredentialListImplProps
 }

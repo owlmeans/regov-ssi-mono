@@ -19,7 +19,7 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
       name: "http://www.w3.org/2001/XMLSchema#string",
       description: "http://www.w3.org/2001/XMLSchema#string",
       documentHash: "http://www.w3.org/2001/XMLSchema#string",
-      type: "http://www.w3.org/2001/XMLSchema#string",
+      docType: "http://www.w3.org/2001/XMLSchema#string",
       filename: "http://www.w3.org/2001/XMLSchema#string",
       url: "http://www.w3.org/2001/XMLSchema#string",
       creationDate: "http://www.w3.org/2001/XMLSchema#datetime",

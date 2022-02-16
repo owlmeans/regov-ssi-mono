@@ -42,7 +42,13 @@
     "i18next": "^21.4.2",
     "react": "^17.0.0",
     "react-hook-form": "^7.19.5",
-    "react-i18next": "^11.14.2"
+    "react-i18next": "^11.14.2",
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/material": "^5.2.4",
+    "react-dom": "^17.0.0",
+    "react-router-dom": "^6.0.2"
   },
   "optionalDependencies": {
     "@emotion/react": "^11.6.0",
