@@ -1,20 +1,14 @@
-import { BASE_CREDENTIAL_TYPE } from "@owlmeans/regov-ssi-core";
-import { CredentialExtensionFactories } from ".";
-import {
-  CredentialDescription,
-  ExtensionSchema
-} from "../schema";
-import { findAppropriateCredentialType } from "../util";
-import { defaultBuildingFactory, defaultClaimingFactory, defaultSigningFactory, defaultValidationFactory } from "./factory"
-import { defaultOfferingFactory } from "./factory/offering";
-import {
-  Extension,
-  ExtensionFactories,
-  ExtensionFactoriesParam
-} from "./types";
+import { BASE_CREDENTIAL_TYPE } from "@owlmeans/regov-ssi-core"
+import { CredentialExtensionFactories, Extension, ExtensionFactories, ExtensionFactoriesParam  } from "./types"
+import { ExtensionSchema } from "../schema"
+import { findAppropriateCredentialType } from "../util"
+import { 
+  defaultBuildingFactory, defaultClaimingFactory, defaultSigningFactory, defaultValidationFactory ,
+  defaultOfferingFactory, defaultRequestFactory
+} from "./factory"
 
 
-export const buildExtension = <CredType extends string>(
+export const buildExtension = (
   schema: ExtensionSchema,
   factories?: ExtensionFactoriesParam
 ): Extension => {
@@ -25,17 +19,18 @@ export const buildExtension = <CredType extends string>(
         return {
           ..._factories,
           [key]: {
-            buildingFactory: defaultBuildingFactory(description as CredentialDescription),
-            signingFactory: defaultSigningFactory(description as CredentialDescription),
-            validationFactory: defaultValidationFactory(description as CredentialDescription),
-            claimingFactory: defaultClaimingFactory(description as CredentialDescription),
-            offeringFactory: defaultOfferingFactory(description as CredentialDescription),
+            buildingFactory: defaultBuildingFactory(description),
+            signingFactory: defaultSigningFactory(description),
+            validationFactory: defaultValidationFactory(description),
+            claimingFactory: defaultClaimingFactory(description),
+            offeringFactory: defaultOfferingFactory(description),
+            requestFactory: defaultRequestFactory(description),
             ...(factories
-              ? Object.entries(factories[key as CredType]).reduce((_facts, [method, builder]) => {
+              ? Object.entries(factories[key]).reduce((_facts, [method, builder]) => {
                 if (schema.credentials) {
                   return {
                     ..._facts,
-                    [method]: builder(schema.credentials[key as CredType])
+                    [method]: builder(schema.credentials[key])
                   }
                 }
                 return _facts
@@ -50,7 +45,7 @@ export const buildExtension = <CredType extends string>(
     getFactory: (type, defaultType = BASE_CREDENTIAL_TYPE) => {
       type = findAppropriateCredentialType(_extension, type, defaultType)
 
-      return _extension.factories[type as CredType]
+      return _extension.factories[type]
     },
 
     getEvents: (trigger, code) => {

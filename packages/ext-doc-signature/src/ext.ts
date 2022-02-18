@@ -4,9 +4,10 @@ import {
 } from "@owlmeans/regov-ssi-extension"
 import {
   BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE,
-  REGOV_EXT_SIGNATURE_NAMESPACE
+  REGOV_EXT_SIGNATURE_NAMESPACE,
+  REGOV_SIGNATURE_REQUEST_TYPE
 } from "./types"
-import { isCredential, REGISTRY_TYPE_CREDENTIALS } from "@owlmeans/regov-ssi-core"
+import { isCredential, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'
 import { normalizeValue } from "@owlmeans/regov-ssi-common"
 
@@ -39,7 +40,26 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
       type: BASIC_IDENTITY_TYPE,
       signing: true,
     },
+    requestType: REGOV_SIGNATURE_REQUEST_TYPE,
     registryType: REGISTRY_TYPE_CREDENTIALS,
+    selfIssuing: true,
+    claimable: false,
+    listed: true,
+  },
+  [REGOV_SIGNATURE_REQUEST_TYPE]: {
+    mainType: REGOV_SIGNATURE_REQUEST_TYPE,
+    requestType: REGOV_SIGNATURE_REQUEST_TYPE,
+    mandatoryTypes: [REGOV_CREDENTIAL_TYPE_SIGNATURE],
+    defaultNameKey: 'request.signature.name',
+    credentialContext: {
+      '@version': 1.1,
+      description: "http://www.w3.org/2001/XMLSchema#string",
+      documentHash: "http://www.w3.org/2001/XMLSchema#string",
+      url: "http://www.w3.org/2001/XMLSchema#string",
+      version: "http://www.w3.org/2001/XMLSchema#string",
+      authorId: "http://www.w3.org/2001/XMLSchema#string",
+    },
+    registryType: REGISTRY_TYPE_REQUESTS,
     selfIssuing: true,
     claimable: false,
     listed: true,
@@ -57,9 +77,10 @@ signatureExtensionSchema = addObserverToSchema(signatureExtensionSchema, {
   }
 })
 
-export const signatureExtension = buildExtension<RegovSignatureCredential>(
+export const signatureExtension = buildExtension(
   signatureExtensionSchema, {
-  [REGOV_CREDENTIAL_TYPE_SIGNATURE]: {}
+  [REGOV_CREDENTIAL_TYPE_SIGNATURE]: {},
+  [REGOV_SIGNATURE_REQUEST_TYPE]: {},
 })
 signatureExtension.localization = {
   ns: REGOV_EXT_SIGNATURE_NAMESPACE,

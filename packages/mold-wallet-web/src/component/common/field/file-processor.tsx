@@ -8,7 +8,7 @@ import { useDropzone } from 'react-dropzone'
 
 
 export const FileProcessorWeb = (props: FileProcessorImplProps) => {
-  const { t, rules, field, process, onDrop, isCode } = props
+  const { t, rules, field, process, onDrop, isCode, handler } = props
   const methods = useFormContext()
 
   const onDropCallback = useCallback(onDrop, [])
@@ -21,6 +21,10 @@ export const FileProcessorWeb = (props: FileProcessorImplProps) => {
   const openInput = () => {
     setShowInput(true)
     methods.trigger(field)
+  }
+
+  if (handler) {
+    handler.setShowInput = setShowInput
   }
 
   const document = methods.watch(field)
@@ -100,6 +104,11 @@ export type FileProcessorParams = EmptyProps & {
   process: FileProcessorMethod
   onDrop: FileOnDrop
   isCode?: boolean
+  handler?: FileProcessorParamsHandler
+}
+
+export type FileProcessorParamsHandler = {
+  setShowInput?: (showInput: boolean) => void
 }
 
 export type FileProcessorImplProps = WrappedComponentProps<FileProcessorParams>

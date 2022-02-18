@@ -11,6 +11,11 @@
     "widget": {
       "signature": {
         "add": "Sign a document"
+      },
+      "menu": {
+        "title": "Document signature",
+        "request": "Request signature",
+        "create": "Create sisgnature"
       }
     }
   },
@@ -84,6 +89,60 @@
       },
       "create": "Create credential",
       "success": "Document signed successfully."
+    },
+    "request": {
+      "title": "Document Signature Request",
+      "file": {
+        "browse": "Browse",
+        "binary": "You uploaded a binary file. The system can't display it's content.",
+        "import": {
+          "here": "Drag & drop a file here or click for more options.",
+          "drop": "Drop file here...",
+          "loaded": "Document loaded."
+        },
+        "input": {
+          "label": "Text document content",
+          "hint": "One can set document as a text here. JSON can be used."
+        }
+      },
+      "name": {
+        "label": "Request name",
+        "hint": "Will be seen as request name only by you"
+      },
+      "description": {
+        "label": "Document description",
+        "hint": "Usefull information about the document you request"
+      },
+      "url": {
+        "label": "Document URL",
+        "hint": "Location of the document in the internet",
+        "error": {
+          "url": "Wrong URL format"
+        }
+      },
+      "version": {
+        "label": "Version",
+        "hint": "Human and computer readable document version",
+        "error": {
+          "pattern": "Wrong version format use numbers, letters, dots and minuses"
+        }
+      },
+      "authorId": {
+        "label": "Author ID",
+        "hint": "ID sequence of the author. Can be a DID of identity."
+      },
+      "documentHash": {
+        "label": "Contol sequence",
+        "hint": "Is used to verify the signature of the document"
+      },
+      "create": "Create request",
+      "success": "Request created successfully.",
+      "meta": {
+        "title": "Signature request for \"{{name}}\""
+      },
+      "item": {
+        "type": "Signature Request"
+      }
     },
     "view": {
       "title": "Document Signature VC",

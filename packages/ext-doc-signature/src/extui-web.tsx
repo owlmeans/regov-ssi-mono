@@ -1,7 +1,7 @@
 import {
   buildUIExtension, EXTENSION_ITEM_PURPOSE_CREATION, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
-  EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, MainModalHandle,
-  MainModalShareEventParams, PurposeListItemParams, UIExtensionFactoryProduct
+  EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_REQUEST, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, 
+  MainModalHandle, MainModalShareEventParams, PurposeListItemParams, UIExtensionFactoryProduct
 } from "@owlmeans/regov-lib-react"
 import { MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW } from "@owlmeans/regov-mold-wallet-web"
 import { WalletWrapper, Credential } from "@owlmeans/regov-ssi-core"
@@ -9,10 +9,12 @@ import {
   addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from "@owlmeans/regov-ssi-extension"
 import React from "react"
-import { SignatureCreationWeb, SignatureItemWeb, SignatureView } from "./component"
-import { DashboardWidgetWeb } from "./component/web/dashboard-widget"
+import { 
+  SignatureCreationWeb, SignatureItemWeb, SignatureView, SignatureRequestWeb, DashboardWidgetWeb,
+  SignatureRequestItemWeb
+} from "./component"
 import { signatureExtension } from "./ext"
-import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from "./types"
+import { REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_SIGNATURE_REQUEST_TYPE } from "./types"
 
 
 if (signatureExtension.schema.events) {
@@ -66,15 +68,32 @@ export const signatureWebExtension = buildUIExtension(signatureExtension, (purpo
             order: 0
           }]
       }
+    case EXTENSION_ITEM_PURPOSE_REQUEST:
+      switch (type) {
+        case REGOV_CREDENTIAL_TYPE_SIGNATURE:
+          return [{
+            com: SignatureRequestWeb(signatureExtension),
+            extensionCode: `${signatureExtension.schema.details.code}SignatureRequest`,
+            params: {},
+            order: 0
+          }]
+      }
     case EXTENSION_ITEM_PURPOSE_ITEM:
       switch (type) {
         case REGOV_CREDENTIAL_TYPE_SIGNATURE:
           return [{
             com: SignatureItemWeb(signatureExtension),
-            extensionCode: `${signatureExtension.schema.details.code}GroupItem`,
+            extensionCode: `${signatureExtension.schema.details.code}SignatureItem`,
             params: {},
             order: 0
           }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
+        case REGOV_SIGNATURE_REQUEST_TYPE:
+          return  [{
+            com: SignatureRequestItemWeb(signatureExtension),
+            extensionCode: `${signatureExtension.schema.details.code}SignatureRequestItem`,
+            params: {},
+            order: 0
+          }]
       }
     case EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET:
       return [{

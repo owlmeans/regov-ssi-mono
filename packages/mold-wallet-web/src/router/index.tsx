@@ -1,28 +1,13 @@
 import React from 'react'
+import { NavigateFunction, Route, Routes } from 'react-router-dom'
 
 import {
-  NavigateFunction,
-  Route,
-  Routes,
-} from 'react-router-dom'
-
-import {
-  basicNavigator,
-  extendNavigator,
-  MainAuthArea,
-  MainDashboard,
-  useRegov,
-  WalletHandler,
-  EXTENSION_ITEM_PURPOSE_ROUTE,
-  Config,
+  basicNavigator, extendNavigator, MainAuthArea, MainDashboard, useRegov, WalletHandler,
+  EXTENSION_ITEM_PURPOSE_ROUTE, Config,
 } from '@owlmeans/regov-lib-react'
 import {
-  WalletStoreCreation,
-  WalletStoreLogin,
-  WalletStoreList,
-  WalletCredentialList,
-  WalletMainMenu,
-  CredentialCreation,
+  WalletStoreCreation, WalletStoreLogin, WalletStoreList, WalletCredentialList, WalletMainMenu,
+  CredentialCreation, CredentialRequest
 } from '../screen'
 
 
@@ -40,6 +25,7 @@ export const NavigationRoot = () => {
         <Route path="list/:tab/:section" element={<WalletCredentialList />} />
         <Route path="list/:tab/:section/:id" element={<WalletCredentialList />} />
         <Route path="create/:ext/:type" element={<CredentialCreation />} />
+        <Route path="request/:ext/:type" element={<CredentialRequest />} />
       </Route>
     </Route>
 

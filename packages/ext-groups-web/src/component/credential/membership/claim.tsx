@@ -1,54 +1,24 @@
-import React, {
-  Fragment,
-  FunctionComponent,
-  useEffect,
-  useState
-} from 'react'
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 
 import {
-  Credential,
-  getCompatibleSubject,
-  REGISTRY_SECTION_OWN,
-  REGISTRY_TYPE_CLAIMS,
-  UnsignedCredential
+  Credential, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, UnsignedCredential
 } from '@owlmeans/regov-ssi-core'
-import {
-  EmptyProps,
-  generalNameVlidation,
-  RegovComponetProps,
-  useNavigator,
-  useRegov,
-  withRegov
+import { 
+  EmptyProps, generalNameVlidation, RegovComponetProps, useNavigator, useRegov, withRegov 
 } from '@owlmeans/regov-lib-react'
 import {
-  RegovGroupExtension,
-  REGOV_EXT_GROUP_NAMESPACE,
-  MembershipSubject,
-  GroupSubject,
+  RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE, MembershipSubject, GroupSubject, 
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP
 } from '@owlmeans/regov-ext-groups'
+import { DialogContent } from '@mui/material'
 import {
-  DialogContent
-} from '@mui/material'
-import {
-  AlertOutput,
-  dateFormatter,
-  FormMainAction,
-  MainTextInput,
-  MainTextOutput,
-  PrimaryForm,
-  WalletFormProvider,
-  ListNavigator,
-  partialListNavigator
+  AlertOutput, dateFormatter, FormMainAction, MainTextInput, MainTextOutput, PrimaryForm, WalletFormProvider, 
+  ListNavigator, partialListNavigator
 } from '@owlmeans/regov-mold-wallet-web'
 import { useForm } from 'react-hook-form'
-import {
-  ERROR_MEMBERSHIP_READYTO_CLAIM,
-  ERROR_NO_IDENTITY,
-  ERROR_WIDGET_AUTHENTICATION,
-  ERROR_WIDGET_EXTENSION
-} from '../../types'
+import { ERROR_MEMBERSHIP_READYTO_CLAIM, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION } from '../../types'
 import { useNavigate } from 'react-router-dom'
+import { addToValue } from '@owlmeans/regov-ssi-common'
 
 
 export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withRegov<
@@ -134,13 +104,8 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
         ...extendSubject
       }
 
-      const identity = handler.wallet.getIdentity()?.credential
-      if (!identity) {
-        throw ERROR_NO_IDENTITY
-      }
-      unsignedMemberhip.evidence = [identity]
       if (group) {
-        unsignedMemberhip.evidence.push(group)
+        unsignedMemberhip.evidence = addToValue(unsignedMemberhip.evidence ,group)
       }
       const factory = ext.getFactory(unsignedMemberhip.type)
       const claim = await factory.claimingFactory(handler.wallet, { unsignedClaim: unsignedMemberhip })

@@ -10,6 +10,7 @@ import { REGISTRY_TYPE_CREDENTIALS } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import React, { Fragment, FunctionComponent, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { SignatureSubject } from '../..'
 import { DOCUMENT_TYPE_JSON, DOCUMENT_TYPE_TEXT, DOCUMENT_TYPE_BINARY, REGOV_CREDENTIAL_TYPE_SIGNATURE, ERROR_WIDGET_AUTHENTICATION } from '../../types'
 import { typeFormatterFacotry } from '../formatter'
 const isUtf8 = require('is-utf8') as (arg: any) => boolean
@@ -219,18 +220,8 @@ export type SignatureCreationProps = RegovComponetProps<SignatureCreationParams>
 
 export type SignatureCreationFields = {
   signature: {
-    creation: {
-      name: string
-      description: string
-      url: string
-      version: string
-      author: string
-      authorId: string
+    creation: SignatureSubject & {
       file: string
-      filename: string
-      creationDate: string
-      documentHash: string
-      docType: string
       alert: string
     }
   }
