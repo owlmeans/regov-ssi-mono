@@ -49,6 +49,7 @@ export type CredentialDescription<
     selfIssuing?: boolean
     trustable?: boolean
     claimType?: string
+    requestType?: string
     defaultSubject?: Subject
   }
 

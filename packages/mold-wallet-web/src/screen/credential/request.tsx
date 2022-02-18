@@ -1,10 +1,10 @@
 import React, { Fragment, FunctionComponent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useRegov, withRegov, EXTENSION_ITEM_PURPOSE_CREATION, PurposeCredentialCreationParams } from '@owlmeans/regov-lib-react'
+import { useRegov, withRegov, PurposeCredentialCreationParams, EXTENSION_ITEM_PURPOSE_REQUEST } from '@owlmeans/regov-lib-react'
 import { CREDENTIAL_LIST_ROUTE } from '../../component'
 
 
-export const CredentialCreation = withRegov({ namespace: 'regov-wallet-credential' }, () => {
+export const CredentialRequest = withRegov({ namespace: 'regov-wallet-credential' }, () => {
   const { ext, type } = useParams<{ ext: string, type: string }>()
   const { extensions } = useRegov()
   const navigate = useNavigate()
@@ -19,7 +19,7 @@ export const CredentialCreation = withRegov({ namespace: 'regov-wallet-credentia
     return <Fragment />
   }
 
-  const renderers = uiExt.produceComponent(EXTENSION_ITEM_PURPOSE_CREATION, type)
+  const renderers = uiExt.produceComponent(EXTENSION_ITEM_PURPOSE_REQUEST, type)
 
   if (!renderers[0]) {
     return <Fragment />

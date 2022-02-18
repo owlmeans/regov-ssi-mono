@@ -4,7 +4,7 @@ import { REGISTRY_TYPE_CREDENTIALS } from "@owlmeans/regov-ssi-core"
 
 
 export const buildUniversalExtension = (details: ExtensionDetails) =>
-  buildExtension<UniversalCredentialT>(buildExtensionSchema(
+  buildExtension(buildExtensionSchema(
     { 
       ...details,
       types: {

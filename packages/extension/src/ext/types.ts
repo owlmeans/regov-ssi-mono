@@ -43,6 +43,7 @@ export type CredentialExtensionFactoriesBuilder = {
   validationFactory?: ValidationFactoryMethodBuilder
   claimingFactory?: ClaimingFactoryMethodBuilder
   offeringFacotry?: OfferingFactoryMethodBuilder
+  requestFactory?: RequestFactoryMethodBuilder
 }
 
 export type CredentialExtensionFactories = {
@@ -51,14 +52,11 @@ export type CredentialExtensionFactories = {
   validationFactory: ValidationFactoryMethod
   claimingFactory: ClaimingFactoryMethod
   offeringFactory: OfferingFactoryMethod
+  requestFactory: RequestFactoryMethod
   issuingFactory?: <
     Schema extends CredentialSchema = CredentialSchema,
     >(schema: CredentialDescription<Schema>) =>
     <Params>(wallet: WalletWrapper, params: Params) => Promise<Credential>
-  requestFactory?: <
-    Schema extends CredentialSchema = CredentialSchema,
-    >(schema: CredentialDescription<Schema>) =>
-    <Params>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
   responseFactory?: <
     Schema extends CredentialSchema = CredentialSchema,
     >(schema: CredentialDescription<Schema>) =>
@@ -146,6 +144,22 @@ export type ClaimingFactoryParams = {
   unsignedClaim: UnsignedCredential
   holder?: DIDDocument
   claimType?: string
+  identity?: Credential 
+}
+
+export type RequestFactoryMethodBuilder = <
+  Schema extends CredentialSchema = CredentialSchema
+  >(schema: CredentialDescription<Schema>) => RequestFactoryMethod
+
+export type RequestFactoryMethod = <
+  Params extends RequestFactoryParams
+  >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+
+export type RequestFactoryParams = {
+  unsignedRequest: UnsignedCredential
+  holder?: DIDDocument
+  requestType?: string
+  identity?: Credential
 }
 
 export type OfferingFactoryMethodBuilder = <
