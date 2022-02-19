@@ -19,7 +19,7 @@ import {
   EXTENSION_ITEM_PURPOSE_EVIDENCE,
   generalNameVlidation,
   PurposeEvidenceWidgetParams,
-  RegovComponetProps,
+  RegovComponentProps,
   useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
@@ -179,7 +179,7 @@ export type EvidenceTrustHandle = {
   reload?: () => void
 }
 
-export type EvidenceTrustProps = RegovComponetProps<EvidenceTrustParams>
+export type EvidenceTrustProps = RegovComponentProps<EvidenceTrustParams>
 
 export type EvidenceTrustFields = {
   trust: {

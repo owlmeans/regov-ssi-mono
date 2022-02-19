@@ -5,7 +5,7 @@ import {
   BasicNavigator,
   EmptyProps,
   EmptyState,
-  RegovComponetProps,
+  RegovComponentProps,
   useRegov,
   WalletNavigatorMenuMethod,
   withRegov,
@@ -40,7 +40,7 @@ export type MainMenuParams = {
   defaultItems?: ManuItemParams[]
 } & EmptyProps
 
-export type MainMenuProps = RegovComponetProps<
+export type MainMenuProps = RegovComponentProps<
   MainMenuParams, MainMenuImplParams, EmptyState, MainMenuNavigation
 >
 

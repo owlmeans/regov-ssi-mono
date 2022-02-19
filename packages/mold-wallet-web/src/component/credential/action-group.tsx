@@ -1,5 +1,5 @@
 import { Button } from '@mui/material'
-import { EmptyProps, RegovComponetProps, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import copy from 'copy-to-clipboard'
 import saveAs from 'file-saver'
 import React, { Fragment, FunctionComponent } from 'react'
@@ -31,4 +31,4 @@ export type CredentialActionGroupParams = EmptyProps & {
   exportTitle?: string
 }
 
-export type CredentialActionGroupProps = RegovComponetProps<CredentialActionGroupParams>
+export type CredentialActionGroupProps = RegovComponentProps<CredentialActionGroupParams>

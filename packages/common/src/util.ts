@@ -1,17 +1,20 @@
-import { 
-  MaybeArray,
-  Idish
- } from "./types"
+import { MaybeArray, Idish } from "./types"
 
 export const normalizeValue = <Type>(value: MaybeArray<Type>): Type[] => {
   return Array.isArray(value)
-    ? value 
+    ? value
     : value ? [value] : []
 }
 
 export const simplifyValue = <Type>(value: MaybeArray<Type>) => {
-  return Array.isArray(value) && value.length < 2 
+  return Array.isArray(value) && value.length < 2
     ? value.length === 0 ? undefined : value[0]
+    : value
+}
+
+export const singleValue = <Type>(value: MaybeArray<Type>): Type | undefined => {
+  return Array.isArray(value)
+    ? value.length > 0 ? value[0] : undefined
     : value
 }
 

@@ -1,25 +1,30 @@
 import {
-  EmptyProps, generalNameVlidation, RegovComponetProps, urlVlidation, useRegov, withRegov,
-  humanReadableVersion
+  EmptyProps, generalNameVlidation, RegovComponentProps, urlVlidation, useRegov, withRegov,
+  humanReadableVersion, useNavigator
 } from '@owlmeans/regov-lib-react'
 import {
   AlertOutput, dateFormatter, FileProcessorWeb, FormMainAction, LongTextInput, MainTextInput,
-  MainTextOutput, PrimaryForm, WalletFormProvider
+  MainTextOutput, PrimaryForm, WalletFormProvider, partialListNavigator, ListNavigator
 } from '@owlmeans/regov-mold-wallet-web'
-import { REGISTRY_TYPE_CREDENTIALS } from '@owlmeans/regov-ssi-core'
+import { REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import React, { Fragment, FunctionComponent, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { SignatureSubject } from '../..'
-import { DOCUMENT_TYPE_JSON, DOCUMENT_TYPE_TEXT, DOCUMENT_TYPE_BINARY, REGOV_CREDENTIAL_TYPE_SIGNATURE, ERROR_WIDGET_AUTHENTICATION } from '../../types'
+import { useNavigate } from 'react-router-dom'
+import { 
+  DOCUMENT_TYPE_JSON, DOCUMENT_TYPE_TEXT, DOCUMENT_TYPE_BINARY, REGOV_CREDENTIAL_TYPE_SIGNATURE, 
+  ERROR_WIDGET_AUTHENTICATION, SignatureSubject
+} from '../../types'
 import { typeFormatterFacotry } from '../formatter'
 const isUtf8 = require('is-utf8') as (arg: any) => boolean
 
 
 export const SignatureCreationWeb = (ext: Extension): FunctionComponent<SignatureCreationParams> =>
   withRegov<SignatureCreationProps>({ namespace: ext.localization?.ns }, (props) => {
-    const { navigator, next, t } = props
+    const { next, t } = props
     const { handler } = useRegov()
+    const navigate = useNavigate()
+    const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
 
     const methods = useForm<SignatureCreationFields>({
       mode: 'onChange',
@@ -78,7 +83,14 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
 
         handler.notify()
 
-        next()
+        if (item.credential.id) {
+          await navigator.item(REGISTRY_TYPE_CREDENTIALS, {
+            section: REGISTRY_SECTION_OWN,
+            id: item.credential.id
+          })
+        } else {
+          next()
+        }
       } catch (error) {
         loader?.error(error.message)
         methods.setError('signature.creation.alert', { type: error.message })
@@ -216,7 +228,7 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
 
 export type SignatureCreationParams = EmptyProps & { next: () => void }
 
-export type SignatureCreationProps = RegovComponetProps<SignatureCreationParams>
+export type SignatureCreationProps = RegovComponentProps<SignatureCreationParams>
 
 export type SignatureCreationFields = {
   signature: {

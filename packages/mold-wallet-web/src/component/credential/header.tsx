@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useState } from 'react'
 import {
-  castMenuItemParams, CredentialListNavigator, EmptyProps, ManuItemParams, MenuActionResult, RegovComponetProps,
+  castMenuItemParams, CredentialListNavigator, EmptyProps, ManuItemParams, MenuActionResult, RegovComponentProps,
   useNavigator, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
@@ -92,4 +92,4 @@ type HeaderMenuProps = {
 }
 
 
-export type CredentialHeaderProps = RegovComponetProps<EmptyProps>
+export type CredentialHeaderProps = RegovComponentProps<EmptyProps>

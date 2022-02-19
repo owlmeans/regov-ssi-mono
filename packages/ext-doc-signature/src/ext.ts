@@ -7,7 +7,7 @@ import {
   REGOV_EXT_SIGNATURE_NAMESPACE,
   REGOV_SIGNATURE_REQUEST_TYPE
 } from "./types"
-import { isCredential, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
+import { isCredential, isPresentation, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'
 import { normalizeValue } from "@owlmeans/regov-ssi-common"
 
@@ -69,11 +69,15 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
 signatureExtensionSchema = addObserverToSchema(signatureExtensionSchema, {
   trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   filter: async (_, params: IncommigDocumentEventParams) => {
-    if (!isCredential(params.credential)) {
-      return false
+    if (isCredential(params.credential)) {
+      return normalizeValue(params.credential.type).includes(REGOV_CREDENTIAL_TYPE_SIGNATURE)
     }
 
-    return normalizeValue(params.credential.type).includes(REGOV_CREDENTIAL_TYPE_SIGNATURE)
+    if (isPresentation(params.credential)) {
+      return normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_REQUEST_TYPE)
+    }
+
+    return false
   }
 })
 

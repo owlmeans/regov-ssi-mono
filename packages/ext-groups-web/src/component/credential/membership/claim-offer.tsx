@@ -3,7 +3,7 @@ import {
   getGroupFromMembershipOfferPresentation, getMembershipOffer, GroupSubject, MembershipSubject,
   BASIC_IDENTITY_TYPE, RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE
 } from '@owlmeans/regov-ext-groups'
-import { EmptyProps, generalNameVlidation, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import {
   AlertOutput, dateFormatter, MainTextInput, MainTextOutput, PrimaryForm,
   WalletFormProvider
@@ -157,7 +157,7 @@ export type ClaimOfferParams = EmptyProps & {
   close?: () => void
 }
 
-export type ClaimOfferProps = RegovComponetProps<ClaimOfferParams>
+export type ClaimOfferProps = RegovComponentProps<ClaimOfferParams>
 
 export type ClaimOfferFields = OfferFields & {
   membership: {

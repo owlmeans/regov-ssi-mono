@@ -3,7 +3,7 @@ import {
   GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
   REGOV_EXT_GROUP_NAMESPACE, REGOV_OFFER_TYPE
 } from '@owlmeans/regov-ext-groups'
-import { EmptyProps, generalNameVlidation, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { getCompatibleSubject, Presentation, Credential } from '@owlmeans/regov-ssi-core'
 import { Button, DialogActions, DialogContent } from '@mui/material'
@@ -148,7 +148,7 @@ export type MembershipOfferParams = EmptyProps & {
   close?: () => void
 }
 
-export type MembershipOfferProps = RegovComponetProps<MembershipOfferParams>
+export type MembershipOfferProps = RegovComponentProps<MembershipOfferParams>
 
 export type OfferFields = {
   membership: {

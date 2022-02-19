@@ -142,7 +142,9 @@
       },
       "item": {
         "type": "Signature Request"
-      }
+      },
+      "view": "Signature Request",
+      "close": "Close"
     },
     "view": {
       "title": "Document Signature VC",

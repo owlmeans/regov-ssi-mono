@@ -1,20 +1,23 @@
 import {
   buildUIExtension, EXTENSION_ITEM_PURPOSE_CREATION, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
-  EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_REQUEST, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, 
+  EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_REQUEST, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
   MainModalHandle, MainModalShareEventParams, PurposeListItemParams, UIExtensionFactoryProduct
 } from "@owlmeans/regov-lib-react"
 import { MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW } from "@owlmeans/regov-mold-wallet-web"
-import { WalletWrapper, Credential } from "@owlmeans/regov-ssi-core"
+import { normalizeValue } from "@owlmeans/regov-ssi-common"
+import { WalletWrapper, Credential, isCredential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES } from "@owlmeans/regov-ssi-core"
 import {
   addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from "@owlmeans/regov-ssi-extension"
 import React from "react"
-import { 
+import {
   SignatureCreationWeb, SignatureItemWeb, SignatureView, SignatureRequestWeb, DashboardWidgetWeb,
-  SignatureRequestItemWeb
+  SignatureRequestItemWeb,
+  SignatureRequestViewWeb
 } from "./component"
 import { signatureExtension } from "./ext"
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_SIGNATURE_REQUEST_TYPE } from "./types"
+import { getSignatureRequestFromPresentation, getSignatureRequestOwner } from "./util"
 
 
 if (signatureExtension.schema.events) {
@@ -29,8 +32,8 @@ if (signatureExtension.schema.events) {
     }
   })
 
-  signatureExtension.getEvents(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
-    _: WalletWrapper, params: IncommigDocumentEventParams
+  signatureExtension.modifyEvent(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, 'method', async (
+    wallet: WalletWrapper, params: IncommigDocumentEventParams
   ) => {
     params.statusHandler.successful = false
 
@@ -40,20 +43,38 @@ if (signatureExtension.schema.events) {
     }
 
     if (modalHandler) {
-      modalHandler.getContent = () => <SignatureView ext={signatureExtension} close={close}
-        credential={params.credential as Credential} />
+      if (isCredential(params.credential)) {
+        modalHandler.getContent = () => <SignatureView ext={signatureExtension} close={close}
+          credential={params.credential as Credential} />
 
-      params.statusHandler.successful = true
+        params.statusHandler.successful = true
+      } else if (isPresentation(params.credential)) {
+        if (normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_REQUEST_TYPE)) {
+          let isOwner = false
+          const request = getSignatureRequestFromPresentation(params.credential)
+          if (request) {
+            const owner = getSignatureRequestOwner(request)
+            const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+            isOwner = !!registry.getCredential(owner?.id)
+          }
+          if (isOwner) {
+            modalHandler.getContent = () => <SignatureRequestViewWeb ext={signatureExtension} close={close}
+              credential={params.credential as Presentation} />
 
-      if (modalHandler.setOpen && params.statusHandler.successful) {
-        modalHandler.setOpen(true)
+            params.statusHandler.successful = true
+          }
+        }
       }
 
-      return true
+      if (params.statusHandler.successful && modalHandler.setOpen) {
+        modalHandler.setOpen(true)
+
+        return true
+      }
     }
 
     return false
-  }
+  })
 }
 
 export const signatureWebExtension = buildUIExtension(signatureExtension, (purpose, type?) => {
@@ -88,7 +109,7 @@ export const signatureWebExtension = buildUIExtension(signatureExtension, (purpo
             order: 0
           }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
         case REGOV_SIGNATURE_REQUEST_TYPE:
-          return  [{
+          return [{
             com: SignatureRequestItemWeb(signatureExtension),
             extensionCode: `${signatureExtension.schema.details.code}SignatureRequestItem`,
             params: {},

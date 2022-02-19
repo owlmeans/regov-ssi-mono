@@ -1,12 +1,10 @@
 import { Button, DialogActions, DialogContent } from '@mui/material'
 import { GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_EXT_GROUP_NAMESPACE } from '@owlmeans/regov-ext-groups'
-import { EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { dateFormatter, MainTextOutput, PrimaryForm, WalletFormProvider, CredentialActionGroup } from '@owlmeans/regov-mold-wallet-web'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
 import { getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CLAIMS, REGISTRY_SECTION_OWN } from '@owlmeans/regov-ssi-core'
-import React, {
-  Fragment, FunctionComponent
-} from 'react'
+import React, { Fragment, FunctionComponent } from 'react'
 import { useForm } from 'react-hook-form'
 
 
@@ -55,7 +53,7 @@ export const MembershipClaimView: FunctionComponent<ClaimViewParams> =
       </DialogContent>
       <DialogActions>
         <CredentialActionGroup content={presentation} prettyOutput
-          exportTitle={wrapper?.meta.title || subject.role} />
+          exportTitle={`${wrapper?.meta.title || subject.role}.claim`} />
         <Button onClick={close}>{t('membership.claimView.close')}</Button>
       </DialogActions>
     </Fragment>
@@ -67,8 +65,7 @@ export type ClaimViewParams = EmptyProps & {
   close?: () => void
 }
 
-export type ClaimViewProps = RegovComponetProps<ClaimViewParams>
-
+export type ClaimViewProps = RegovComponentProps<ClaimViewParams>
 
 export type ClaimViewFields = {
   membership: {

@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import {
-  EmptyImplProps, EmptyProps, RegovComponetProps, useRegov, withRegov, WrappedComponentProps
+  EmptyImplProps, EmptyProps, RegovComponentProps, useRegov, withRegov, WrappedComponentProps
 } from '../../../common'
 import { Credential } from '@owlmeans/regov-ssi-core'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
@@ -49,7 +49,7 @@ export type EvidenceWidgetParams = EmptyProps & {
   isChild?: boolean
 }
 
-export type EvidenceWidgetProps = RegovComponetProps<EvidenceWidgetParams, EvidenceWidgetImplParams>
+export type EvidenceWidgetProps = RegovComponentProps<EvidenceWidgetParams, EvidenceWidgetImplParams>
 
 export type EvidenceWidgetImplParams = EmptyImplProps & {
   tabs: EvidenceTab[]

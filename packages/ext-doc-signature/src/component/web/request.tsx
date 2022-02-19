@@ -1,5 +1,5 @@
 import {
-  EmptyProps, generalNameVlidation, humanReadableVersion, RegovComponetProps, urlVlidation, useNavigator, 
+  EmptyProps, generalNameVlidation, humanReadableVersion, RegovComponentProps, urlVlidation, useNavigator, 
   useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
@@ -195,7 +195,7 @@ export const SignatureRequestWeb = (ext: Extension): FunctionComponent<Signature
 
 export type SignatureRequestParams = EmptyProps
 
-export type SignatureRequestProps = RegovComponetProps<SignatureRequestParams>
+export type SignatureRequestProps = RegovComponentProps<SignatureRequestParams>
 
 export type SignatureReuqestFields = {
   signature: {

@@ -27,6 +27,10 @@ export type Extension = {
   localization?: ExtensionLocalization
   getFactory: (type: BasicCredentialType, defaultType?: string) => CredentialExtensionFactories
   getEvents: (trigger: string, code?: string) => ExtensionEvent[]
+  getEvent: (trigger: string, code?: string) => undefined | ExtensionEvent
+  modifyEvent: (
+    triggr: string, param: keyof ExtensionEvent, value: ExtensionEvent[typeof param], code?: string
+  ) => void
 }
 
 export type ExtensionFactories = {
@@ -144,7 +148,7 @@ export type ClaimingFactoryParams = {
   unsignedClaim: UnsignedCredential
   holder?: DIDDocument
   claimType?: string
-  identity?: Credential 
+  identity?: Credential
 }
 
 export type RequestFactoryMethodBuilder = <

@@ -16,7 +16,7 @@ import {
 import {
   EmptyProps,
   MainModalAuthenticatedEventParams,
-  RegovComponetProps,
+  RegovComponentProps,
   useRegov,
   withRegov
 } from '@owlmeans/regov-lib-react'
@@ -94,4 +94,4 @@ export const Onboarding: FunctionComponent<OnboardingParams> =
 
 export type OnboardingParams = MainModalAuthenticatedEventParams & EmptyProps
 
-export type OnboardingProps = RegovComponetProps<OnboardingParams>
+export type OnboardingProps = RegovComponentProps<OnboardingParams>

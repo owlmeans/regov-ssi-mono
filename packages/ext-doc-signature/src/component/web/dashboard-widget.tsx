@@ -1,4 +1,4 @@
-import { RegovComponetProps, withRegov } from '@owlmeans/regov-lib-react'
+import { RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import React, { Fragment, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, Grid, ListItemIcon, ListItemText, MenuItem, MenuList, Typography } from '@mui/material'
@@ -53,4 +53,4 @@ export const DashboardWidgetWeb = (ext: Extension) => withRegov<DashboardWidgetP
 type DashboardWidgetParams = {
 }
 
-type DashboardWidgetProps = RegovComponetProps<DashboardWidgetParams>
+type DashboardWidgetProps = RegovComponentProps<DashboardWidgetParams>

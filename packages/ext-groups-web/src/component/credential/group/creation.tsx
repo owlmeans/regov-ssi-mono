@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState, } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import { REGOV_CREDENTIAL_TYPE_GROUP, GroupSubject } from '@owlmeans/regov-ext-groups'
-import { EmptyProps, generalNameVlidation, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
 import {
   AlertOutput, dateFormatter, FormMainAction, LongTextInput, MainTextInput, MainTextOutput,
@@ -143,7 +143,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
 
 export type GroupCreationParams = EmptyProps & { next: () => void }
 
-export type GroupCreationProps = RegovComponetProps<GroupCreationParams>
+export type GroupCreationProps = RegovComponentProps<GroupCreationParams>
 
 export type GroupCreationFields = {
   group: {

@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useMemo } from 'react'
 import { GroupSubject } from '@owlmeans/regov-ext-groups'
-import { EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import {
   Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-extension'
@@ -58,5 +58,5 @@ export type GroupItemParams = EmptyProps & {
   action?: () => void
 }
 
-export type GroupItemProps = RegovComponetProps<GroupItemParams>
+export type GroupItemProps = RegovComponentProps<GroupItemParams>
 

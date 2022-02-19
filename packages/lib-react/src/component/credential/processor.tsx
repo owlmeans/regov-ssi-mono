@@ -4,7 +4,7 @@ import React, {
 import { UseFormReturn } from 'react-hook-form'
 import {
   EmptyProps,
-  RegovComponetProps,
+  RegovComponentProps,
   useRegov,
   withRegov,
   WrappedComponentProps
@@ -82,7 +82,7 @@ export const CredentialProcessor: FunctionComponent<CredentialProcessorParams> =
 export type CredentialProcessorParams = EmptyProps & {
 }
 
-export type CredentialProcessorProps = RegovComponetProps<
+export type CredentialProcessorProps = RegovComponentProps<
   CredentialProcessorParams, CredentialProcessorImplParams
 >
 

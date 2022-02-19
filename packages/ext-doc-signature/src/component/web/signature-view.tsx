@@ -3,7 +3,7 @@ import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { DialogContent, DialogTitle, Grid, IconButton, Paper } from '@mui/material'
 import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from '../../types'
-import { CredentialEvidenceWidget, EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { BorderColor, Close } from '@mui/icons-material'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'
 import { dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidget } from '@owlmeans/regov-mold-wallet-web'
@@ -13,7 +13,7 @@ import { typeFormatterFacotry } from '../formatter'
 export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<SignatureViewProps>({
   namespace: REGOV_EXT_SIGNATURE_NAMESPACE
 }, ({ t, credential, close, ext }) => {
-  const {handler, extensions} = useRegov()
+  const { handler, extensions } = useRegov()
   const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
   const subject = getCompatibleSubject<SignatureSubject>(credential)
 
@@ -52,8 +52,8 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
         </Grid>
       </Grid>
     </DialogTitle>
-    <DialogContent>
-    <Grid container direction="column" justifyContent="flex-start" alignItems="stretch">
+    <DialogContent dividers={true}>
+      <Grid container direction="column" justifyContent="flex-start" alignItems="stretch">
         <Grid item container direction="row" justifyContent="space-between" alignItems="stretch">
           <Grid item xs={12} sm={6} md={7} px={1}>
             <Paper elevation={3}>
@@ -74,11 +74,11 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
                 {subject.authorId?.trim() !== "" && <EntityTextRenderer field="authorId" showLabel />}
                 <Grid item container direction="row" justifyContent="space-between" alignItems="flex-start">
                   <EntityTextRenderer field="signedAt" showHint small netSize={6} formatter={dateFormatter} />
-                  <EntityTextRenderer field="docType" showHint small netSize={6} formatter={typeFormatterFacotry(t)}/>
+                  <EntityTextRenderer field="docType" showHint small netSize={6} formatter={typeFormatterFacotry(t)} />
                 </Grid>
                 <Grid item container direction="row" justifyContent="space-between" alignItems="flex-start">
                   <EntityTextRenderer field="creationDate" showHint small netSize={6} formatter={dateFormatter} />
-                  {subject.version?.trim() !== "" && <EntityTextRenderer field="version" showHint small netSize={6}/>}
+                  {subject.version?.trim() !== "" && <EntityTextRenderer field="version" showHint small netSize={6} />}
                 </Grid>
               </EntityRenderer>
             </Paper>
@@ -103,4 +103,4 @@ export type SignatureViewParams = EmptyProps & {
   credential: Credential
 }
 
-export type SignatureViewProps = RegovComponetProps<SignatureViewParams>
+export type SignatureViewProps = RegovComponentProps<SignatureViewParams>

@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
 
 import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
-import { EmptyImplProps, RegovComponetProps, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyImplProps, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import { Grid, Typography } from '@mui/material'
 import { IdentitySubject } from '@owlmeans/regov-ext-identity'
@@ -64,6 +64,6 @@ type DashboardWidgetState = {
   identityWrap: CredentialWrapper
 }
 
-type DashboardWidgetProps = RegovComponetProps<
+type DashboardWidgetProps = RegovComponentProps<
   DashboardWidgetParams, EmptyImplProps, DashboardWidgetState
 >
