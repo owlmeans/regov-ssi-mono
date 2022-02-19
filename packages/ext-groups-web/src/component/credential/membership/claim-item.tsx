@@ -3,7 +3,7 @@ import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListIte
 import { MembershipSubject } from '@owlmeans/regov-ext-groups'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-extension'
 import { Credential, CredentialSubject, CredentialWrapper, getCompatibleSubject, Presentation } from '@owlmeans/regov-ssi-core'
-import { EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { Person } from '@mui/icons-material'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-mold-wallet-web'
 
@@ -60,4 +60,4 @@ export type ClaimItemParams = EmptyProps & {
   trigger?: boolean
 }
 
-export type ClaimItemProps = RegovComponetProps<ClaimItemParams>
+export type ClaimItemProps = RegovComponentProps<ClaimItemParams>

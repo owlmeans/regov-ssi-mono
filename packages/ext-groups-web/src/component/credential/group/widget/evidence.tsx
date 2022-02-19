@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
-import { EmptyProps, PurposeEvidenceWidgetParams, RegovComponetProps, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, PurposeEvidenceWidgetParams, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Paper } from '@mui/material'
 import { getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { EntityRenderer, EntityTextRenderer } from '@owlmeans/regov-mold-wallet-web'
@@ -26,4 +26,4 @@ export const EvidenceWidget = (ext: Extension): FunctionComponent<EvidenceWidget
 
 export type EvidenceWidgetParams = EmptyProps & PurposeEvidenceWidgetParams
 
-export type EvidenceWidgetProps = RegovComponetProps<EvidenceWidgetParams>
+export type EvidenceWidgetProps = RegovComponentProps<EvidenceWidgetParams>

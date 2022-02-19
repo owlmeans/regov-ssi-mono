@@ -2,16 +2,18 @@ import { BorderColor } from '@mui/icons-material'
 import {
   Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
 } from '@mui/material'
-import { EmptyProps, RegovComponetProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-mold-wallet-web'
 import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-extension'
-import React, { Fragment, FunctionComponent, useMemo } from 'react'
+import React, { Fragment, FunctionComponent, useMemo, useEffect } from 'react'
 import { SignatureSubject } from '../../types'
 
 
 export const SignatureItemWeb = (ext: Extension): FunctionComponent<SignatureItemParams> =>
-  withRegov<SignatureItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, wrapper, action }) => {
+  withRegov<SignatureItemProps>({ namespace: ext.localization?.ns }, ({
+    t, i18n, wrapper, action, trigger
+  }) => {
     const { handler, extensions } = useRegov()
     const subject = getCompatibleSubject<SignatureSubject>(wrapper.credential)
     const handle: ItemMenuHandle = useMemo(() => ({ handler: undefined }), [wrapper.credential.id])
@@ -27,6 +29,8 @@ export const SignatureItemWeb = (ext: Extension): FunctionComponent<SignatureIte
         cleanUp: () => undefined
       })
     })
+
+    useEffect(() => { trigger && action && action() }, [trigger, wrapper.credential.id])
 
     return <ListItem onClick={action}>
       <ListItemButton>
@@ -55,6 +59,7 @@ export const SignatureItemWeb = (ext: Extension): FunctionComponent<SignatureIte
 export type SignatureItemParams = EmptyProps & {
   wrapper: CredentialWrapper
   action?: () => void
+  trigger?: boolean
 }
 
-export type SignatureItemProps = RegovComponetProps<SignatureItemParams>
+export type SignatureItemProps = RegovComponentProps<SignatureItemParams>

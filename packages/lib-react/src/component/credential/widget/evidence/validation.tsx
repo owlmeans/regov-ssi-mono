@@ -1,7 +1,7 @@
 import React, { Fragment, FunctionComponent } from 'react'
 import { 
   EmptyProps,
-  RegovComponetProps,
+  RegovComponentProps,
   withRegov, 
   WrappedComponentProps
 } from '../../../../common'
@@ -27,7 +27,7 @@ export type ResultWidgetParams = EmptyProps & {
   com?: FunctionComponent<ResultWidgetImplProps>
 }
 
-export type ResultWidgetProps = RegovComponetProps<ResultWidgetParams, ResultWidgetImplParams>
+export type ResultWidgetProps = RegovComponentProps<ResultWidgetParams, ResultWidgetImplParams>
 
 export type ResultWidgetImplParams = {
   reload?: () => void

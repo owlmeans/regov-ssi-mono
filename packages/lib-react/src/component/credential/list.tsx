@@ -11,7 +11,7 @@ import React, {
 import {
   BasicNavigator,
   EmptyProps,
-  RegovComponetProps,
+  RegovComponentProps,
   WalletNavigatorMenuMethod,
   withRegov,
   WrappedComponentProps
@@ -85,7 +85,7 @@ export type CredentialListState = {
   credentials: CredentialWrapper[]
 }
 
-export type CredentialListProps = RegovComponetProps<
+export type CredentialListProps = RegovComponentProps<
   CredentialListParams, CredentialListImplProps, CredentialListState, CredentialListNavigator
 >
 

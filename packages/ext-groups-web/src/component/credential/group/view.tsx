@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { 
-  CredentialEvidenceWidget, EmptyProps, RegovComponetProps, useRegov, withRegov 
+  CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov 
 } from '@owlmeans/regov-lib-react'
 import { 
   REGOV_EXT_GROUP_NAMESPACE, RegovGroupExtension, GroupSubject, REGOV_CREDENTIAL_TYPE_GROUP 
@@ -109,5 +109,5 @@ export type GroupViewParams = EmptyProps & {
   close?: () => void
 }
 
-export type GroupViewProps = RegovComponetProps<GroupViewParams>
+export type GroupViewProps = RegovComponentProps<GroupViewParams>
 

@@ -4,7 +4,7 @@ import React, {
 } from 'react'
 import {
   EmptyProps,
-  RegovComponetProps,
+  RegovComponentProps,
   useRegov,
   withRegov,
   EXTENSION_ITEM_PURPOSE_VALIDATION,
@@ -86,4 +86,4 @@ export type ResultWidgetParams = EmptyProps & {
   reload?: () => void
 }
 
-export type ResultWidgetProps = RegovComponetProps<ResultWidgetParams>
+export type ResultWidgetProps = RegovComponentProps<ResultWidgetParams>

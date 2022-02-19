@@ -4,7 +4,7 @@ import {
   Credential, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, UnsignedCredential
 } from '@owlmeans/regov-ssi-core'
 import { 
-  EmptyProps, generalNameVlidation, RegovComponetProps, useNavigator, useRegov, withRegov 
+  EmptyProps, generalNameVlidation, RegovComponentProps, useNavigator, useRegov, withRegov 
 } from '@owlmeans/regov-lib-react'
 import {
   RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE, MembershipSubject, GroupSubject, 
@@ -166,7 +166,7 @@ export type MembershipClaimParams = EmptyProps & {
   finish?: () => void
 }
 
-export type MembershipClaimProps = RegovComponetProps<MembershipClaimParams>
+export type MembershipClaimProps = RegovComponentProps<MembershipClaimParams>
 
 export type MembershipClaimFields = {
   membership: {

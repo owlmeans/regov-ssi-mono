@@ -7,7 +7,7 @@ import React, {
 import { UseFormReturn } from 'react-hook-form'
 import {
   BasicNavigator,
-  RegovComponetProps,
+  RegovComponentProps,
   RegovValidationRules,
   withRegov,
   WrappedComponentProps
@@ -89,7 +89,7 @@ export type CredentialRequesterFields = {
   output: string | undefined
 }
 
-export type CredentialRequesterProps = RegovComponetProps<
+export type CredentialRequesterProps = RegovComponentProps<
   CredentialRequesterParams, CredentialRequesterImplParams, CredentialRequesterState
 >
 

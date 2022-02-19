@@ -6,6 +6,7 @@ import {
   defaultBuildingFactory, defaultClaimingFactory, defaultSigningFactory, defaultValidationFactory ,
   defaultOfferingFactory, defaultRequestFactory
 } from "./factory"
+import { simplifyValue, singleValue } from "@owlmeans/regov-ssi-common"
 
 
 export const buildExtension = (
@@ -56,6 +57,17 @@ export const buildExtension = (
       return _extension.schema.events.filter(event =>
         event.trigger === trigger && (!code || event.code === code)
       )
+    },
+
+    getEvent: (trigger, code) => {
+      return singleValue(_extension.getEvents(trigger, code))
+    },
+
+    modifyEvent: (trigger, param, value, code) => {
+      const event = _extension.getEvent(trigger, code)
+      if (event) {
+        event[param] = value as any
+      }
     }
   }
 
