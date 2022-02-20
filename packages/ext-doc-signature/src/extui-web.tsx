@@ -5,18 +5,19 @@ import {
 } from "@owlmeans/regov-lib-react"
 import { MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW } from "@owlmeans/regov-mold-wallet-web"
 import { normalizeValue } from "@owlmeans/regov-ssi-common"
-import { WalletWrapper, Credential, isCredential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES } from "@owlmeans/regov-ssi-core"
+import {
+  WalletWrapper, Credential, isCredential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES
+} from "@owlmeans/regov-ssi-core"
 import {
   addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from "@owlmeans/regov-ssi-extension"
 import React from "react"
 import {
   SignatureCreationWeb, SignatureItemWeb, SignatureView, SignatureRequestWeb, DashboardWidgetWeb,
-  SignatureRequestItemWeb,
-  SignatureRequestViewWeb
+  SignatureRequestItemWeb, SignatureRequestViewWeb, SignatureResponseWeb, SignatureRequestResponseWeb
 } from "./component"
 import { signatureExtension } from "./ext"
-import { REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_SIGNATURE_REQUEST_TYPE } from "./types"
+import { REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE } from "./types"
 import { getSignatureRequestFromPresentation, getSignatureRequestOwner } from "./util"
 
 
@@ -62,7 +63,17 @@ if (signatureExtension.schema.events) {
               credential={params.credential as Presentation} />
 
             params.statusHandler.successful = true
+          } else {
+            modalHandler.getContent = () => <SignatureResponseWeb ext={signatureExtension} close={close}
+              credential={params.credential as Presentation} />
+
+            params.statusHandler.successful = true
           }
+        } else if (normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_RESPONSE_TYPE)) {
+          modalHandler.getContent = () => <SignatureRequestResponseWeb ext={signatureExtension} close={close}
+            credential={params.credential as Presentation} />
+
+          params.statusHandler.successful = true
         }
       }
 

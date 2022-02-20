@@ -1,20 +1,14 @@
 import React from 'react'
-import {
-  Grid,
-  Typography
-} from '@mui/material'
+import { FormControl, FormHelperText, Grid, Typography } from '@mui/material'
 import { WrappedComponentProps } from '@owlmeans/regov-lib-react'
-import {
-  useFormContext,
-  Controller
-} from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import { ButtonParams, FormMainButton } from '../button'
 import { saveAs } from 'file-saver'
 import copy from 'copy-to-clipboard'
 
 
 export const LongOutput = (props: LongOutputProps) => {
-  const { field, rules, t, i18n, file, actions } = props
+  const { field, rules, t, i18n, file, actions, longRead } = props
   const { control } = useFormContext()
   const valueHolder = { value: '' }
 
@@ -25,7 +19,7 @@ export const LongOutput = (props: LongOutputProps) => {
       {actions?.map(
         action => <Grid item key={action.title}><FormMainButton {...props} {...action} /></Grid>
       )}
-      {file
+      {!longRead && file
         ? <Grid item>
           <FormMainButton t={t} i18n={i18n} title={`${field}.export`} action={
             () => saveAs(new Blob(
@@ -35,14 +29,15 @@ export const LongOutput = (props: LongOutputProps) => {
           } />
         </Grid>
         : undefined}
-      <Grid item>
-        <FormMainButton t={t} i18n={i18n} title={`${field}.copy`} action={
-          () => copy(valueHolder.value, {
-            message: t([`${field}.clipboard.copyhint`, 'clipboard.copyhint']),
-            format: 'text/plain'
-          })
-        } />
-      </Grid>
+      {!longRead
+        && <Grid item>
+          <FormMainButton t={t} i18n={i18n} title={`${field}.copy`} action={
+            () => copy(valueHolder.value, {
+              message: t([`${field}.clipboard.copyhint`, 'clipboard.copyhint']),
+              format: 'text/plain'
+            })
+          } />
+        </Grid>}
     </Grid>
     <Grid item>
       <Controller name={field} control={control} rules={rules && rules[field]}
@@ -51,14 +46,20 @@ export const LongOutput = (props: LongOutputProps) => {
             ? _field.value
             : JSON.stringify(_field.value, undefined, 2)
 
-          return <Typography variant="caption"><pre>{valueHolder.value}</pre></Typography>
+          return <FormControl focused fullWidth margin="normal" variant="standard">
+            {longRead
+              ? <Typography variant="body1">{valueHolder.value}</Typography>
+              : <Typography variant="caption"><pre>{valueHolder.value}</pre></Typography>}
+            <FormHelperText>{t(`${field}.hint`)}</FormHelperText>
+          </FormControl>
         }} />
     </Grid>
   </Grid>
 }
 
 export type LongOutputProps = WrappedComponentProps<{
-  field: string,
-  file?: string,
+  field: string
+  file?: string
+  longRead?: boolean
   actions?: ButtonParams[]
 }>

@@ -1,5 +1,5 @@
 import {
-  EmptyProps, generalNameVlidation, humanReadableVersion, RegovComponentProps, urlVlidation, useNavigator, 
+  EmptyProps, generalIdVlidation, generalNameVlidation, humanReadableVersion, RegovComponentProps, urlVlidation, useNavigator, 
   useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
@@ -50,7 +50,7 @@ export const SignatureRequestWeb = (ext: Extension): FunctionComponent<Signature
       ...props,
       rules: {
         'signature.request.name': generalNameVlidation(true),
-        'signature.request.authorId': generalNameVlidation(false),
+        'signature.request.authorId': generalIdVlidation(false),
         'signature.request.url': urlVlidation(),
         'signature.request.version': humanReadableVersion
       }

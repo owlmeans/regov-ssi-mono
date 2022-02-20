@@ -1,6 +1,6 @@
 import {
   EmptyProps, generalNameVlidation, RegovComponentProps, urlVlidation, useRegov, withRegov,
-  humanReadableVersion, useNavigator
+  humanReadableVersion, useNavigator, generalIdVlidation
 } from '@owlmeans/regov-lib-react'
 import {
   AlertOutput, dateFormatter, FileProcessorWeb, FormMainAction, LongTextInput, MainTextInput,
@@ -185,7 +185,7 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
       rules: {
         'signature.creation.name': generalNameVlidation(true),
         'signature.creation.author': generalNameVlidation(false),
-        'signature.creation.authorId': generalNameVlidation(false),
+        'signature.creation.authorId': generalIdVlidation(false),
         'signature.creation.url': urlVlidation(),
         'signature.creation.version': humanReadableVersion
       }

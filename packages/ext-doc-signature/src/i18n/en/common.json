@@ -146,6 +146,34 @@
       "view": "Signature Request",
       "close": "Close"
     },
+    "response": {
+      "title": "Provide requested document signature",
+      "vc": {
+        "hint": "Click to select a siganture credential to response",
+        "noItems": "There is no signature credentials to respond with",
+        "pleaseSelect": "No credentials selected, click to select one"
+      },
+      "description": {
+        "label": "Proposed document description",
+        "hint": "Usefull information about the document you provide"
+      },
+      "url": {
+        "label": "Document URL",
+        "hint": "Location of the document in the internet"
+      },
+      "version": {
+        "label": "Version",
+        "hint": "Human and computer readable document version"
+      },
+      "authorId": {
+        "label": "Author ID",
+        "hint": "ID sequence of the author."
+      },
+      "documentHash": {
+        "label": "Contol sequence",
+        "hint": "Is used to verify the signature of the document"
+      }
+    },
     "view": {
       "title": "Document Signature VC",
       "signedAt": {

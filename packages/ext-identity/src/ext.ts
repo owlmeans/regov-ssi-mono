@@ -65,7 +65,7 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
     }
   })
 
-  const extension = buildExtension<IdentityCredentials>(schema, {
+  const extension = buildExtension(schema, {
     [identityType]: {
       buildingFactory: (credSchema) => async (wallet, params) => {
         const inputData = params.subjectData as IdentitySubject
