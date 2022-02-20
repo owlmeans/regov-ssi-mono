@@ -66,6 +66,20 @@ export const buildDidHelper =
       return __buildDocumentLoader && __buildDocumentLoader(() => didDoc)
     }
 
+    const baseSchemaUrl = /* options.baseSchemaUrl ||*/ buildOptions.baseSchemaUrl || DEFAULT_APP_SCHEMA_URL
+    const contextUrl = `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`
+    const context = JSON.stringify({
+      '@context': {
+        '@version': 1.1,
+        didx: contextUrl,
+        xsd: 'http://www.w3.org/2001/XMLSchema#',
+        nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
+        publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
+      }
+    })
+
+    documentWarmer(contextUrl, context)
+
     const _makeDIDId = (key: CryptoKey, options: MakeDIDIdOptions = {}) => {
       if (!key.id) {
         throw new Error(COMMON_CRYPTO_ERROR_NOID)
@@ -286,20 +300,6 @@ export const buildDidHelper =
 
         const holder = _makeDIDId(key)
         const keyId = options.keyId || VERIFICATION_KEY_HOLDER
-
-        const baseSchemaUrl = options.baseSchemaUrl || buildOptions.baseSchemaUrl || DEFAULT_APP_SCHEMA_URL
-
-        const context = JSON.stringify({
-          '@context': {
-            '@version': 1.1,
-            didx: `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`,
-            xsd: 'http://www.w3.org/2001/XMLSchema#',
-            nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
-            publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
-          }
-        })
-        const contextUrl = crypto.hash(context)
-        documentWarmer(contextUrl, context)
 
         let didDocUnsigned: DIDDocumentUnsinged = options.source
           ? {
