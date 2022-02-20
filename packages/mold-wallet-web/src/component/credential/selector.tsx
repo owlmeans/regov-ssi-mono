@@ -25,16 +25,18 @@ export const CredentialSelector = (
     }
   }, [selectedId, currentValue, defaultId])
 
+  // 
 
   return credentials.length > 0
     ? <Fragment>
-      <Grid item onClick={() => setOpen(true)} style={{ cursor: "pointer" }}>
+      <Grid item onClick={() => setOpen(true)} style={{ cursor: "pointer" }}
+        border={1} borderColor="info.dark" borderRadius={2} px={2}>
         <Controller name={field} control={control} render={() => {
           return selected && selectedId
             ? Renderer
               ? <Renderer t={t} credential={selected} selectedId={selectedId} />
-              : <FormControl focused fullWidth margin="normal" variant="standard">
-                <Typography>{`${selected.meta.title}`}</Typography>
+              : <FormControl focused fullWidth margin="normal" variant="filled">
+                <Typography color="info.dark">{`${selected.meta.title}`}</Typography>
                 <Typography>{selected.credential.id}</Typography>
                 <FormHelperText>{t(`${field}.hint`)}</FormHelperText>
               </FormControl>

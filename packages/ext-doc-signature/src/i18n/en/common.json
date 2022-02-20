@@ -149,7 +149,7 @@
     "response": {
       "title": "Provide requested document signature",
       "vc": {
-        "hint": "Click to select a siganture credential to response",
+        "hint": "Click to select a siganture credential for response",
         "noItems": "There is no signature credentials to respond with",
         "pleaseSelect": "No credentials selected, click to select one"
       },
