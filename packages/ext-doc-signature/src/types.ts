@@ -15,7 +15,7 @@ export type RegovSignatureCredential = typeof REGOV_CREDENTIAL_TYPE_SIGNATURE
 
 export type SignatureSubject = {
   name: string
-  description: string
+  description?: string
   documentHash: string
   docType: string
   filename?: string
@@ -28,8 +28,8 @@ export type SignatureSubject = {
 }
 
 export type SignatureRequestSubject = {
-  description: string
-  documentHash: string
+  description?: string
+  documentHash?: string
   url?: string
   authorId?: string
   version?: string

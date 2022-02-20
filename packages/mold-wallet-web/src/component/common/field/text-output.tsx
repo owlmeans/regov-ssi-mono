@@ -1,17 +1,7 @@
 import React from 'react'
-import {
-  FormControl,
-  FormHelperText,
-  Grid,
-  Input,
-  InputLabel,
-  Typography,
-} from '@mui/material'
+import { FormControl, FormHelperText, Grid, Input, InputLabel, Typography } from '@mui/material'
 import { WrappedComponentProps } from '@owlmeans/regov-lib-react'
-import {
-  Controller,
-  useFormContext,
-} from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 import { formatError } from '../error'
 import { OutputFieldFormatter } from './formatter'
 

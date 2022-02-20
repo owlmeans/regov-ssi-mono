@@ -1,6 +1,5 @@
 import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-common"
 import { Presentation, Credential } from "@owlmeans/regov-ssi-core"
-import { DIDDocument } from "@owlmeans/regov-ssi-did"
 import { BASIC_IDENTITY_TYPE, REGOV_SIGNATURE_REQUEST_TYPE } from "./types"
 
 
@@ -21,6 +20,5 @@ export const getSignatureRequestOwner = (crednetial: Credential) => {
 
   return normalizeValue<Credential>(crednetial.evidence as MaybeArray<Credential>).find(
     evidence => evidence?.type.includes(BASIC_IDENTITY_TYPE)
-      && evidence.id === (crednetial.issuer as unknown as DIDDocument).id
   )
 }
