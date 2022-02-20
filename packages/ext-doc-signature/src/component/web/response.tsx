@@ -110,6 +110,13 @@ export const SignatureResponseWeb: FunctionComponent<SignatureResponseParams> =
               {currentSubject?.version && currentSubject.version !== ''
                 && <MainTextOutput {...props} field="signature.response.version" showHint />}
 
+              {/**
+               * @TODO 
+               * 1. Show allert if the hashes don't match
+               * 2. Show active button to produce response if hashes matches or no hashes to compare
+               * 3. Allow to export generated response
+               */}
+
             </PrimaryForm>
           </WalletFormProvider>
         </DialogContent>
