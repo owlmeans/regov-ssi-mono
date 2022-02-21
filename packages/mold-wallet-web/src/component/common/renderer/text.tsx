@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import {
   EntityItemProps,
   EntityContextConsumer
@@ -23,7 +23,7 @@ export const EntityTextRenderer = ({
   const showIntroLabel = !inlineLabel && showLabel
   const useInlinedLabel = inlineLabel || (!showIntroLabel && showLabel)
 
-  return <Grid item xs={netSize || 12}>
+  return value && value !== '' ?<Grid item xs={netSize || 12}>
     <EntityContextConsumer>
       {({ subject, entity: _entity, t: _t }) => {
         value = value || getDeepValue(subject || {}, field) || ''
@@ -45,7 +45,7 @@ export const EntityTextRenderer = ({
         </FormControl>
       }}
     </EntityContextConsumer>
-  </Grid>
+  </Grid> : <Fragment />
 }
 
 export type EntityTextParams = {

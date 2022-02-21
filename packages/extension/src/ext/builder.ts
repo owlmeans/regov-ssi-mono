@@ -6,7 +6,8 @@ import {
   defaultBuildingFactory, defaultClaimingFactory, defaultSigningFactory, defaultValidationFactory ,
   defaultOfferingFactory, defaultRequestFactory
 } from "./factory"
-import { simplifyValue, singleValue } from "@owlmeans/regov-ssi-common"
+import { singleValue } from "@owlmeans/regov-ssi-common"
+import { defaultResponseFactory } from "./factory/response"
 
 
 export const buildExtension = (
@@ -26,6 +27,7 @@ export const buildExtension = (
             claimingFactory: defaultClaimingFactory(description),
             offeringFactory: defaultOfferingFactory(description),
             requestFactory: defaultRequestFactory(description),
+            responseFactory: defaultResponseFactory(description),
             ...(factories
               ? Object.entries(factories[key]).reduce((_facts, [method, builder]) => {
                 if (schema.credentials) {

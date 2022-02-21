@@ -163,7 +163,7 @@ export const SignatureRequestWeb = (ext: Extension): FunctionComponent<Signature
         }
       } catch (error) {
         console.error(error)
-        loader?.error(error)
+        loader?.error(error.message)
         if (error.message) {
           methods.setError('signature.request.alert', { type: error.message })
           return

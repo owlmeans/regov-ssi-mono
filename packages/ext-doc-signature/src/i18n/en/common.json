@@ -172,7 +172,14 @@
       "documentHash": {
         "label": "Contol sequence",
         "hint": "Is used to verify the signature of the document"
-      }
+      },
+      "alert": {
+        "error": {
+          "wrongHash": "Selected signature belongs to another document"
+        }
+      },
+      "produce": "Produce Response",
+      "close": "Close"
     },
     "view": {
       "title": "Document Signature VC",

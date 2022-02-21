@@ -5,7 +5,8 @@ import {
 import {
   BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE,
   REGOV_EXT_SIGNATURE_NAMESPACE,
-  REGOV_SIGNATURE_REQUEST_TYPE
+  REGOV_SIGNATURE_REQUEST_TYPE,
+  REGOV_SIGNATURE_RESPONSE_TYPE
 } from "./types"
 import { isCredential, isPresentation, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'
@@ -63,6 +64,11 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
     selfIssuing: true,
     claimable: false,
     listed: true,
+  },
+  [REGOV_SIGNATURE_RESPONSE_TYPE]: {
+    mainType: REGOV_SIGNATURE_RESPONSE_TYPE,
+    responseType: REGOV_SIGNATURE_RESPONSE_TYPE,
+    credentialContext: {}
   }
 })
 
@@ -85,6 +91,7 @@ export const signatureExtension = buildExtension(
   signatureExtensionSchema, {
   [REGOV_CREDENTIAL_TYPE_SIGNATURE]: {},
   [REGOV_SIGNATURE_REQUEST_TYPE]: {},
+  [REGOV_SIGNATURE_RESPONSE_TYPE]: {}
 })
 signatureExtension.localization = {
   ns: REGOV_EXT_SIGNATURE_NAMESPACE,
