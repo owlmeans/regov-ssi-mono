@@ -67,7 +67,7 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
                   </Grid>
                 </Fragment>
               } subject={subject}>
-                {subject.description.trim() !== "" && <EntityTextRenderer field="description" showLabel />}
+                {subject.description?.trim() !== "" && <EntityTextRenderer field="description" showLabel />}
                 <EntityTextRenderer field="documentHash" small showLabel />
                 {subject.filename?.trim() !== "" && <EntityTextRenderer field="filename" showLabel />}
                 {subject.url?.trim() !== "" && <EntityTextRenderer field="url" showLabel />}

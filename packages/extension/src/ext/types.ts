@@ -48,6 +48,7 @@ export type CredentialExtensionFactoriesBuilder = {
   claimingFactory?: ClaimingFactoryMethodBuilder
   offeringFacotry?: OfferingFactoryMethodBuilder
   requestFactory?: RequestFactoryMethodBuilder
+  responseFactory?: ResponseFactoryMethodBuilder
 }
 
 export type CredentialExtensionFactories = {
@@ -57,18 +58,7 @@ export type CredentialExtensionFactories = {
   claimingFactory: ClaimingFactoryMethod
   offeringFactory: OfferingFactoryMethod
   requestFactory: RequestFactoryMethod
-  issuingFactory?: <
-    Schema extends CredentialSchema = CredentialSchema,
-    >(schema: CredentialDescription<Schema>) =>
-    <Params>(wallet: WalletWrapper, params: Params) => Promise<Credential>
-  responseFactory?: <
-    Schema extends CredentialSchema = CredentialSchema,
-    >(schema: CredentialDescription<Schema>) =>
-    <Params>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
-  holdingFactory?: <
-    Schema extends CredentialSchema = CredentialSchema,
-    >(schema: CredentialDescription<Schema>) =>
-    <Params>(wallet: WalletWrapper, params: Params) => Promise<boolean>
+  responseFactory: ResponseFactoryMethod
 }
 
 export type BuildingFactoryMethodBuilder = <
@@ -185,6 +175,20 @@ export type OfferingFactoryParams = {
   id: string,
   challenge: string
   domain: string
+}
+
+export type ResponseFactoryMethodBuilder = <
+  Schema extends CredentialSchema = CredentialSchema,
+  >(schema: CredentialDescription<Schema>) => ResponseFactoryMethod
+
+export type ResponseFactoryMethod = <
+  Params extends ResponseFactoryParams
+  >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+
+export type ResponseFactoryParams = {
+  request: Presentation
+  credential: Credential
+  identity?: Credential
 }
 
 export type ExtensionLocalization = {

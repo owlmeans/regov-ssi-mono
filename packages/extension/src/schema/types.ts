@@ -50,6 +50,7 @@ export type CredentialDescription<
     trustable?: boolean
     claimType?: string
     requestType?: string
+    responseType?: string
     defaultSubject?: Subject
   }
 
