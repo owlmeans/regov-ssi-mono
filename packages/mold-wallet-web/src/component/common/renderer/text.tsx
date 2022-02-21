@@ -23,13 +23,13 @@ export const EntityTextRenderer = ({
   const showIntroLabel = !inlineLabel && showLabel
   const useInlinedLabel = inlineLabel || (!showIntroLabel && showLabel)
 
-  return value && value !== '' ?<Grid item xs={netSize || 12}>
+  return <Grid item xs={netSize || 12}>
     <EntityContextConsumer>
       {({ subject, entity: _entity, t: _t }) => {
         value = value || getDeepValue(subject || {}, field) || ''
         t = t || _t as TFunction
         entity = entity || _entity
-        return <FormControl focused fullWidth margin="normal" variant="standard" size={small ? "small" : "medium"}>
+        return value && value !== '' ? <FormControl focused fullWidth margin="normal" variant="standard" size={small ? "small" : "medium"}>
           {(showIntro || showIntroLabel) && <InputLabel htmlFor={`${entity}.${field}.output`}>
             {showIntro ? t(`${entity}.${field}.intro`) : showIntroLabel ? t(`${entity}.${field}.label`) : ''}
           </InputLabel>}
@@ -42,10 +42,10 @@ export const EntityTextRenderer = ({
               </Typography>
             } value={formatter ? formatter(value, formatTemplate) : value} />
           {showHint && <FormHelperText>{t(`${entity}.${field}.hint`)}</FormHelperText>}
-        </FormControl>
+        </FormControl> : <Fragment />
       }}
     </EntityContextConsumer>
-  </Grid> : <Fragment />
+  </Grid>
 }
 
 export type EntityTextParams = {
