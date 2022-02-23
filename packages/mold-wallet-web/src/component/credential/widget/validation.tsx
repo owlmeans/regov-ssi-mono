@@ -1,35 +1,14 @@
-import React, {
-  Fragment,
-  FunctionComponent
-} from 'react'
+import React, { Fragment, FunctionComponent } from 'react'
 import {
-  EmptyProps,
-  RegovComponentProps,
-  useRegov,
-  withRegov,
-  EXTENSION_ITEM_PURPOSE_VALIDATION,
+  EmptyProps, RegovComponentProps, useRegov, withRegov, EXTENSION_ITEM_PURPOSE_VALIDATION,
   ResultWidgetParams as ResultItemWidgetParams
 } from '@owlmeans/regov-lib-react'
+import { ValidationResult } from '@owlmeans/regov-ssi-extension'
 import {
-  ValidationResult
-} from '@owlmeans/regov-ssi-extension'
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Avatar,
-  List,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
-  ListSubheader,
-  Typography
+  Accordion, AccordionDetails, AccordionSummary, Avatar, List, ListItemAvatar, ListItemButton,
+  ListItemText, ListSubheader, Typography
 } from '@mui/material'
-import {
-  Done,
-  ErrorOutline,
-  ExpandMore
-} from '@mui/icons-material'
+import { Done, ErrorOutline, ExpandMore } from '@mui/icons-material'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
 import { EvidenceTrust, EvidenceTrustHandle } from './evidence/'
 

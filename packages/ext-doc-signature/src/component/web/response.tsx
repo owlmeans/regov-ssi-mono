@@ -1,12 +1,16 @@
 import { Button, DialogActions, DialogContent } from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
-import { AlertOutput, CredentialActionGroup, CredentialSelector, dateFormatter, EntityRenderer, EntityTextRenderer, LongOutput, MainTextOutput, PrimaryForm, WalletFormProvider } from '@owlmeans/regov-mold-wallet-web'
+import {
+  AlertOutput, CredentialActionGroup, CredentialSelector, dateFormatter, EntityRenderer,
+  EntityTextRenderer, LongOutput, MainTextOutput, PrimaryForm, WalletFormProvider
+} from '@owlmeans/regov-mold-wallet-web'
 import { getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CREDENTIALS, CredentialWrapper } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
-  REGOV_EXT_SIGNATURE_NAMESPACE, SignatureRequestSubject, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION, REGOV_SIGNATURE_RESPONSE_TYPE
+  REGOV_EXT_SIGNATURE_NAMESPACE, SignatureRequestSubject, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject,
+  ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION, REGOV_SIGNATURE_RESPONSE_TYPE
 } from '../../types'
 import { getSignatureRequestFromPresentation } from '../../util'
 import { typeFormatterFacotry } from '../formatter'
@@ -111,7 +115,7 @@ export const SignatureResponseWeb: FunctionComponent<SignatureResponseParams> =
           })
 
           setResponse(response)
-          loader?.success('signature.response.produced')
+          loader?.success(t('signature.response.produced'))
         } catch (error) {
           console.error(error)
           loader?.error(error.message)

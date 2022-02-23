@@ -111,7 +111,8 @@
       },
       "description": {
         "label": "Document description",
-        "hint": "Usefull information about the document you request"
+        "hint": "Usefull information about the document you request",
+        "copy": "Copy"
       },
       "url": {
         "label": "Document URL",
@@ -175,16 +176,20 @@
       },
       "alert": {
         "error": {
-          "wrongHash": "Selected signature belongs to another document"
+          "wrongHash": "Selected signature belongs to another document",
+          "noRequest": "Provided response isn't requested",
+          "wrongDocument": "Provided signature belongs to another document"
         }
       },
       "produce": "Produce Response",
+      "produced": "Signature response generated successfully",
       "close": "Close"
     },
     "view": {
       "title": "Document Signature VC",
       "signedAt": {
-        "hint": "Date of signing"
+        "hint": "Date of signing",
+        "label": "Date of signature"
       },
       "description": {
         "label": "Description"
@@ -201,14 +206,20 @@
       "authorId": {
         "label": "Author ID"
       },
+      "author": {
+        "label": "Author"
+      },
       "creationDate": {
-        "hint": "Creation date"
+        "hint": "Creation date",
+        "label": "Creation date"
       },
       "version": {
-        "hint": "Version"
+        "hint": "Version",
+        "label": "Version"
       },
       "docType": {
-        "hint": "Document type"
+        "hint": "Document type",
+        "label": "Document type"
       }
     },
     "list": {

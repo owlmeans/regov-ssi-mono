@@ -1,11 +1,7 @@
 import { normalizeValue } from "@owlmeans/regov-ssi-common"
 import {
-  buildWalletLoader,
-  Credential,
-  REGISTRY_SECTION_PEER,
-  REGISTRY_TYPE_IDENTITIES
+  buildWalletLoader, Credential, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES
 } from "@owlmeans/regov-ssi-core"
-import { DIDDocument } from "@owlmeans/regov-ssi-did"
 import { ERROR_CANT_IDENTIFY_CREDENTIAL } from "./types"
 import { EvidenceValidationResult, ValidationFactoryMethodBuilder } from "../types"
 import { CredentialDescription } from "../../schema"

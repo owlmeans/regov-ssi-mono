@@ -26,6 +26,7 @@ export const defaultResponseFactory: ResponseFactoryMethodBuilder = schema =>
     const did = await wallet.did.helper().signDID(key, unsignedDid)
 
     const presentation = await wallet.ssi.buildPresentation([params.credential], {
+      id: params.request.id,
       holder: did,
       type: schema.responseType
     })
