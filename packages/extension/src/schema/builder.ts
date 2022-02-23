@@ -1,4 +1,5 @@
 import { addToValue, MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-common";
+import { documentWarmer } from "@owlmeans/regov-ssi-did"
 import { CredentialDescription, ExtensionDetails, ExtensionEvent, ExtensionSchema } from "./types";
 
 export const buildExtensionSchema = <CredType extends string>(
@@ -8,6 +9,15 @@ export const buildExtensionSchema = <CredType extends string>(
   const _schema = {
     details,
     credentials: Object.entries<CredentialDescription>(credentials).reduce((creds, [key, cred]) => {
+      if (cred.contextUrl) {
+        documentWarmer(
+          cred.contextUrl,
+          JSON.stringify({
+            '@context': cred.credentialContext
+          })
+        )
+      }
+
       return {
         ...creds,
         [key]: {

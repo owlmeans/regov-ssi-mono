@@ -40,6 +40,8 @@ import {
   DID_EXTRACTKEY_WRONG_DID,
 } from './types'
 
+import { documentWarmer } from './loader'
+
 const jldsign = require('jsonld-signatures')
 
 const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
@@ -63,6 +65,20 @@ export const buildDidHelper =
     const _buildDocumentLoader = (didDoc: DIDDocument | DIDDocumentUnsinged) => {
       return __buildDocumentLoader && __buildDocumentLoader(() => didDoc)
     }
+
+    const baseSchemaUrl = /* options.baseSchemaUrl ||*/ buildOptions.baseSchemaUrl || DEFAULT_APP_SCHEMA_URL
+    const contextUrl = `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`
+    const context = JSON.stringify({
+      '@context': {
+        '@version': 1.1,
+        didx: contextUrl,
+        xsd: 'http://www.w3.org/2001/XMLSchema#',
+        nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
+        publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
+      }
+    })
+
+    documentWarmer(contextUrl, context)
 
     const _makeDIDId = (key: CryptoKey, options: MakeDIDIdOptions = {}) => {
       if (!key.id) {
@@ -285,8 +301,6 @@ export const buildDidHelper =
         const holder = _makeDIDId(key)
         const keyId = options.keyId || VERIFICATION_KEY_HOLDER
 
-        const baseSchemaUrl = options.baseSchemaUrl || buildOptions.baseSchemaUrl || DEFAULT_APP_SCHEMA_URL
-
         let didDocUnsigned: DIDDocumentUnsinged = options.source
           ? {
             ..._cutProof(options.source),
@@ -294,13 +308,7 @@ export const buildDidHelper =
           : {
             '@context': [
               'https://w3id.org/did/v1',
-              {
-                '@version': 1.1,
-                didx: `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`,
-                xsd: 'http://www.w3.org/2001/XMLSchema#',
-                nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
-                publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
-              }
+              contextUrl
             ],
             id
           }
