@@ -1,7 +1,7 @@
 import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-extension'
 import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
-import { DialogContent, DialogTitle, Grid, IconButton, Paper } from '@mui/material'
+import { Button, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper } from '@mui/material'
 import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from '../../types'
 import { CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { BorderColor, Close } from '@mui/icons-material'
@@ -94,6 +94,9 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
         </Grid>
       </Grid>
     </DialogContent>
+    <DialogActions>
+      <Button onClick={close}>{t('signature.response.close')}</Button>
+    </DialogActions>
   </Fragment>
 })
 

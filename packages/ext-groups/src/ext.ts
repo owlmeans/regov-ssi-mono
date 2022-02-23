@@ -137,7 +137,7 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   }
 })
 
-export const groupsExtension = buildExtension<RegovGroupExtensionTypes>(groupsExtensionSchema, {
+export const groupsExtension = buildExtension(groupsExtensionSchema, {
   [REGOV_CREDENTIAL_TYPE_GROUP]: {
     buildingFactory: (credSchema) => async (wallet, params) => {
       const inputData = params.subjectData as GroupSubject

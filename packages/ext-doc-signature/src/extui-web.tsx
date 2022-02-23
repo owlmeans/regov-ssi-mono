@@ -1,6 +1,6 @@
 import {
   buildUIExtension, EXTENSION_ITEM_PURPOSE_CREATION, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
-  EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_REQUEST, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
+  EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_REQUEST, EXTENSION_ITEM_PURPOSE_VALIDATION, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
   MainModalHandle, MainModalShareEventParams, PurposeListItemParams, UIExtensionFactoryProduct
 } from "@owlmeans/regov-lib-react"
 import { MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW } from "@owlmeans/regov-mold-wallet-web"
@@ -14,7 +14,7 @@ import {
 import React from "react"
 import {
   SignatureCreationWeb, SignatureItemWeb, SignatureView, SignatureRequestWeb, DashboardWidgetWeb,
-  SignatureRequestItemWeb, SignatureRequestViewWeb, SignatureResponseWeb, SignatureRequestResponseWeb
+  SignatureRequestItemWeb, SignatureRequestViewWeb, SignatureResponseWeb, SignatureRequestResponseWeb, ValidationWidget
 } from "./component"
 import { signatureExtension } from "./ext"
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE } from "./types"
@@ -89,6 +89,7 @@ if (signatureExtension.schema.events) {
 }
 
 export const signatureWebExtension = buildUIExtension(signatureExtension, (purpose, type?) => {
+  console.log(purpose, type)
   switch (purpose) {
     case EXTENSION_ITEM_PURPOSE_CREATION:
       switch (type) {
@@ -134,6 +135,16 @@ export const signatureWebExtension = buildUIExtension(signatureExtension, (purpo
         params: {},
         order: 0
       }]
+    case EXTENSION_ITEM_PURPOSE_VALIDATION:
+      switch (type) {
+        case REGOV_CREDENTIAL_TYPE_SIGNATURE:
+          return [{
+            com: ValidationWidget(signatureExtension),
+            extensionCode: `${signatureExtension.schema.details.code}ValidationWidget`,
+            params: {},
+            order: 0
+          }]
+      }
   }
 
   return [] as UIExtensionFactoryProduct<{}>[]

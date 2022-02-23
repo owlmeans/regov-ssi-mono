@@ -1,28 +1,29 @@
-import React, { Fragment, FunctionComponent, useState} from 'react'
-import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
+import React, { Fragment, useState } from 'react'
+import { 
+  EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget 
+} from "@owlmeans/regov-lib-react"
+import { Extension } from "@owlmeans/regov-ssi-extension"
+import { FunctionComponent } from "react"
+import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from "../../../types"
 import { Collapse, List, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material'
-import { Done, ExpandLess, ExpandMore, ErrorOutline } from '@mui/icons-material'
-import { IdentitySubject } from '@owlmeans/regov-ext-identity'
-import {
-  EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget
-} from '@owlmeans/regov-lib-react'
+import { getCompatibleSubject, Credential } from '@owlmeans/regov-ssi-core'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
-import { Extension } from '@owlmeans/regov-ssi-extension'
-import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
 import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-mold-wallet-web'
+import { Done, ErrorOutline, ExpandLess, ExpandMore } from '@mui/icons-material'
 
 
 export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetParams> =>
-  (props: ResultWidgetParams) => <ValidationResultWidget ns={props.ns || REGOV_IDENTITY_DEFAULT_NAMESPACE}
+  (props: ResultWidgetParams) => <ValidationResultWidget ns={props.ns || REGOV_EXT_SIGNATURE_NAMESPACE}
     result={props.result} reload={props.reload} com={(props) => {
       const { result, reload, t } = props
-      const subject = getCompatibleSubject<IdentitySubject>(result.instance as Credential)
+      const subject = getCompatibleSubject<SignatureSubject>(result.instance as Credential)
       const [opened, setOpened] = useState<boolean>(false)
       const { extensions } = useRegov()
 
       const evidence = normalizeValue(result.result.evidence)
 
       const handle: EvidenceTrustHandle = { reload }
+
 
       return <Fragment>
         <ListItemButton onClick={() => {
@@ -37,7 +38,7 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
               ? <Done fontSize="small" color="success" />
               : <ErrorOutline fontSize="small" color="error" />}
           </ListItemAvatar>
-          <ListItemText primary={<Typography variant="body2">{`ID: ${subject.identifier}`}</Typography>}
+          <ListItemText primary={<Typography variant="body2">{`ID: ${subject.name}`}</Typography>}
             secondary={<Fragment>
               <Typography variant='caption'>{
                 t(`widget.validation.main.${result.result.trusted ? 'trusted' : 'untrusted'}`)

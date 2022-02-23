@@ -81,6 +81,7 @@ signatureExtensionSchema = addObserverToSchema(signatureExtensionSchema, {
 
     if (isPresentation(params.credential)) {
       return normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_REQUEST_TYPE)
+        || normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_RESPONSE_TYPE)
     }
 
     return false
