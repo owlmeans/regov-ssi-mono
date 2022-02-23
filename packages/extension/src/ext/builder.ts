@@ -1,9 +1,11 @@
 import { BASE_CREDENTIAL_TYPE } from "@owlmeans/regov-ssi-core"
-import { CredentialExtensionFactories, Extension, ExtensionFactories, ExtensionFactoriesParam  } from "./types"
+import { 
+  CredentialExtensionFactories, Extension, ExtensionFactories, ExtensionFactoriesParam 
+} from "./types"
 import { ExtensionSchema } from "../schema"
 import { findAppropriateCredentialType } from "../util"
 import { 
-  defaultBuildingFactory, defaultClaimingFactory, defaultSigningFactory, defaultValidationFactory ,
+  defaultBuildingFactory, defaultClaimingFactory, defaultSigningFactory, defaultValidationFactory,
   defaultOfferingFactory, defaultRequestFactory
 } from "./factory"
 import { singleValue } from "@owlmeans/regov-ssi-common"

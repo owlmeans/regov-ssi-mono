@@ -21,6 +21,7 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
       mainType: identityType,
       mandatoryTypes: [BASIC_IDENTITY_TYPE],
       defaultNameKey: 'cred.type.identity.name',
+      contextUrl: 'https://owlmeans.com/schema/identity',
       credentialContext: {
         '@version': 1.1,
         identifier: "http://www.w3.org/2001/XMLSchema#string",

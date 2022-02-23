@@ -45,11 +45,23 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
           }
         }
 
+        /**
+         * @PROCEED We take a factory from Identity module for Membership Identity,
+         * but we should take the factory from Group module for Membership Identity.
+         * 
+         * It happens, because we prefer to use schema suggestions instead of actual
+         * evidence data.
+         * 
+         * The problem is that the the credential is now signed by both Identity
+         * and Membership ID.
+         */
         const ext = extensions.getExtension(evidenceSchema.type)
         if (!ext.schema.credentials) {
           throw ERROR_CANT_IDENTIFY_CREDENTIAL
         }
         let credInfo: CredentialDescription | undefined = ext.schema.credentials[evidenceSchema.type]
+        console.log('try to find cred info', evidenceSchema.type, ext.schema.credentials)
+        console.log('we found', credInfo)
         if (!credInfo) {
           credInfo = Object.entries(ext.schema.credentials).map(([, info]) => info).find(info => {
             return info.mandatoryTypes?.includes(evidenceSchema.type)
@@ -59,6 +71,7 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
           throw ERROR_CANT_IDENTIFY_CREDENTIAL
         }
 
+        console.log('try to find factory', credInfo.mainType)
         const factory = ext.getFactory(credInfo.mainType)
         const result = await factory.validationFactory(wallet, {
           credential: evidence[index] as Credential, extensions

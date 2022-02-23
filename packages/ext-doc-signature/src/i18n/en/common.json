@@ -83,6 +83,11 @@
         "label": "File",
         "hint": "Name of the document file"
       },
+      "identity": {
+        "hint": "Click here to choose identity to sign the document",
+        "noItems": "There is no identity to sign documents",
+        "pleaseSelect": "No identity selected, click to select one"
+      },
       "creationDate": {
         "label": "Creation date",
         "hint": "Date when the document was changed the last time"
@@ -178,7 +183,8 @@
         "error": {
           "wrongHash": "Selected signature belongs to another document",
           "noRequest": "Provided response isn't requested",
-          "wrongDocument": "Provided signature belongs to another document"
+          "wrongDocument": "Provided signature belongs to another document",
+          "noIdentity": "No identity to sign the document with"
         }
       },
       "credential": {

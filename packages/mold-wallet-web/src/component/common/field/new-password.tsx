@@ -20,7 +20,7 @@ export const NewPasswordInput = ({ t, field, rules }: NewPasswordInputProps) => 
             label={t(`${field}.input.label`)} error={fieldState.invalid}
             helperText={
               fieldState.invalid
-                ? formatError(t, field, fieldState) // t(`${field}.input.error.${fieldState.error?.message || fieldState.error?.type || ''}`)
+                ? formatError(t, `${field}.input`, fieldState) // t(`${field}.input.error.${fieldState.error?.message || fieldState.error?.type || ''}`)
                 : t(`${field}.input.hint`)
             }
           />
@@ -34,7 +34,7 @@ export const NewPasswordInput = ({ t, field, rules }: NewPasswordInputProps) => 
             label={t(`${field}.confirm.label`)} error={fieldState.invalid}
             helperText={
               fieldState.invalid
-                ? formatError(t, field, fieldState) // t(`${field}.confirm.error.${fieldState.error?.message || fieldState.error?.type || ''}`)
+                ? formatError(t, `${field}.confirm`, fieldState) // t(`${field}.confirm.error.${fieldState.error?.message || fieldState.error?.type || ''}`)
                 : t(`${field}.confirm.hint`)
             }
           />

@@ -5,16 +5,19 @@ import {
   UIExtensionFactoryProduct, PurposeListItemParams, PurposeCredentialCreationParams, MainModalHandle,
   EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, MainModalShareEventParams, EXTENSION_ITEM_PURPOSE_EVIDENCE,
   PurposeEvidenceWidgetParams,
+  EXTENSION_ITEM_PURPOSE_VALIDATION,
 } from '@owlmeans/regov-lib-react'
 import {
   getGroupFromMembershipClaimPresentation, getGroupOwnerIdentity, groupsExtension, RegovGroupExtensionTypes,
-  REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_OFFER_TYPE,
+  REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_OFFER_TYPE,
 } from '@owlmeans/regov-ext-groups'
 import { MENU_TAG_CRED_NEW } from '@owlmeans/regov-mold-wallet-web'
 import { commonEn } from './i18n'
 import {
   GroupCreation, GroupItem, GroupView, EvidenceWidget, MembershipClaimView, MembershipClaimItem,
-  MembershipOffer
+  MembershipOffer,
+  MembershipValidationWidget,
+  MembershipEvidenceWidget
 } from './component'
 import {
   addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
@@ -102,6 +105,7 @@ if (groupsExtension.schema.events) {
 
 export const groupsUIExtension = buildUIExtension(groupsExtension,
   (purpose: ExtensionItemPurpose, type?: RegovGroupExtensionTypes) => {
+    console.log(purpose, type)
     switch (purpose) {
       case EXTENSION_ITEM_PURPOSE_CREATION:
         switch (type) {
@@ -139,6 +143,23 @@ export const groupsUIExtension = buildUIExtension(groupsExtension,
               params: {},
               order: 0
             }] as UIExtensionFactoryProduct<PurposeEvidenceWidgetParams>[]
+          case REGOV_CREDENTIAL_TYPE_MEMBERSHIP:
+            return [{
+              com: MembershipEvidenceWidget(groupsExtension),
+              extensionCode: `${groupsExtension.schema.details.code}MembershipEvidenceWidget`,
+              params: {},
+              order: 0
+            }] as UIExtensionFactoryProduct<PurposeEvidenceWidgetParams>[]
+        }
+      case EXTENSION_ITEM_PURPOSE_VALIDATION:
+        switch (type) {
+          case REGOV_CREDENTIAL_TYPE_MEMBERSHIP:
+            return [{
+              com: MembershipValidationWidget(groupsExtension),
+              extensionCode: `${groupsExtension.schema.details.code}MembershipValidationWidget`,
+              params: {},
+              order: 0
+            }]
         }
     }
     return [] as UIExtensionFactoryProduct<{}>[]

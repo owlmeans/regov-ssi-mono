@@ -40,6 +40,7 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
   [REGOV_CREDENTIAL_TYPE_GROUP]: {
     mainType: REGOV_CREDENTIAL_TYPE_GROUP,
     defaultNameKey: 'cred.group.name',
+    contextUrl: 'https://owlmeans.com/schema/group',
     credentialContext: {
       '@version': 1.1,
       uuid: "http://www.w3.org/2001/XMLSchema#string",
@@ -60,6 +61,7 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
     mainType: REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
     mandatoryTypes: [BASIC_IDENTITY_TYPE],
     defaultNameKey: 'cred.membership.name',
+    contextUrl: 'https://owlmeans.com/schema/group-membership',
     credentialContext: {
       '@version': 1.1,
       groupId: "http://www.w3.org/2001/XMLSchema#string",

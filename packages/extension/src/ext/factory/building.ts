@@ -1,13 +1,6 @@
-import {
-  WalletWrapper,
-  CredentialSchema,
-  BASE_CREDENTIAL_TYPE
-} from "@owlmeans/regov-ssi-core"
-import {
-  DIDPURPOSE_ASSERTION,
-  DIDPURPOSE_AUTHENTICATION,
-  DIDPURPOSE_VERIFICATION
-} from "@owlmeans/regov-ssi-did"
+import { addToValue, normalizeValue } from "@owlmeans/regov-ssi-common"
+import { WalletWrapper, CredentialSchema, BASE_CREDENTIAL_TYPE, Credential } from "@owlmeans/regov-ssi-core"
+import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION } from "@owlmeans/regov-ssi-did"
 import { CredentialDescription } from "../../schema"
 import { BuildingFactoryParams } from "../types"
 
@@ -19,7 +12,21 @@ export const defaultBuildingFactory = <
 
     const subject = params.subjectData as any
 
-    const key = params.key || await wallet.ssi.keys.getCryptoKey()
+    if (params.identity) {
+      if (!normalizeValue(params.evidence).find(evidence => evidence?.id === params.identity?.id)) {
+        params.evidence = addToValue(params.evidence, params.identity)
+      }
+    }
+    
+    const identityKey = params.identity && await wallet.ssi.did.extractKey(
+      params.identity.holder.hasOwnProperty('@context')
+        ? params.identity.holder as DIDDocument
+        : params.identity.issuer as unknown as DIDDocument
+    )
+
+    identityKey && await wallet.ssi.keys.expandKey(identityKey)
+
+    const key = params.key || identityKey || await wallet.ssi.keys.getCryptoKey()
     const didUnsigned = params.didUnsigned || await wallet.ssi.did.helper().createDID(
       key,
       {

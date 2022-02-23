@@ -74,6 +74,7 @@ export type BuildingFactoryParams = {
   subjectData: Object
   key?: CryptoKey
   evidence?: MaybeArray<Evidence>
+  identity?: Credential
   type?: CredentialType
   schema?: MaybeArray<CredentialSchema>
   context?: MultiSchema

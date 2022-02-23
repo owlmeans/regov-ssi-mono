@@ -1,20 +1,8 @@
-import React, { 
-  FunctionComponent 
-} from 'react'
+import React, { FunctionComponent } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
-import {
-  EmptyProps,
-  PurposeEvidenceWidgetParams,
-  RegovComponentProps,
-  withRegov
-} from '@owlmeans/regov-lib-react'
-import {
-  Grid,
-  Typography
-} from '@mui/material'
-import {
-  getCompatibleSubject
-} from '@owlmeans/regov-ssi-core'
+import { EmptyProps, PurposeEvidenceWidgetParams, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
+import { Grid, Typography } from '@mui/material'
+import { getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { IdentitySubject } from '@owlmeans/regov-ext-identity'
 import { dateFormatter } from '@owlmeans/regov-mold-wallet-web'
 

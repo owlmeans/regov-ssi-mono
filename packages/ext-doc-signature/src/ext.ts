@@ -23,6 +23,7 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
   [REGOV_CREDENTIAL_TYPE_SIGNATURE]: {
     mainType: REGOV_CREDENTIAL_TYPE_SIGNATURE,
     defaultNameKey: 'cred.signature.name',
+    contextUrl: 'https://owlmeans.com/schema/doc-signature',
     credentialContext: {
       '@version': 1.1,
       name: "http://www.w3.org/2001/XMLSchema#string",
@@ -52,6 +53,7 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
     requestType: REGOV_SIGNATURE_REQUEST_TYPE,
     mandatoryTypes: [REGOV_CREDENTIAL_TYPE_SIGNATURE],
     defaultNameKey: 'request.signature.name',
+    contextUrl: 'https://owlmeans.com/schema/doc-signature-request',
     credentialContext: {
       '@version': 1.1,
       description: "http://www.w3.org/2001/XMLSchema#string",

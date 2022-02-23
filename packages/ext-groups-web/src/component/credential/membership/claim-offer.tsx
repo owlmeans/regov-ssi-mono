@@ -11,9 +11,7 @@ import {
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
 import {
   getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CLAIMS, REGISTRY_TYPE_IDENTITIES,
-  buildWalletLoader,
-  REGISTRY_TYPE_CREDENTIALS,
-  CredentialSubject
+  buildWalletLoader, CredentialSubject
 } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -94,9 +92,11 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
         if (!handler.wallet || !membership || !claim) {
           return
         }
-        const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
+        const registry = handler.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
 
-        const wrapper = await registry.addCredential(membership as Credential<CredentialSubject>)
+        const wrapper = await registry.addCredential(
+          membership as Credential<CredentialSubject>
+        )
         wrapper.meta.title = data.membership.title
 
         handler.notify()

@@ -55,6 +55,20 @@
     }
   },
   "membership": {
+    "widget": {
+      "validation": {
+        "trusted": "Trusted membership identity ✅", 
+        "untrusted": "Untrusted membership identity ⛔️", 
+        "valid": "Valid membership identity ✅", 
+        "invalid": "Invalid membership identity ⛔️"
+      },
+      "evidence": {
+        "groupId": "Group ID",
+        "role": "Role",
+        "memberCode": "Member code",
+        "issuedAt": "Issuence date"
+      }
+    },
     "claim": {
       "title": "Create a claim for the group membership",
       "create": "Create claim",

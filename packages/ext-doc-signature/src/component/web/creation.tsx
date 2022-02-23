@@ -4,15 +4,15 @@ import {
 } from '@owlmeans/regov-lib-react'
 import {
   AlertOutput, dateFormatter, FileProcessorWeb, FormMainAction, LongTextInput, MainTextInput,
-  MainTextOutput, PrimaryForm, WalletFormProvider, partialListNavigator, ListNavigator
+  MainTextOutput, PrimaryForm, WalletFormProvider, partialListNavigator, ListNavigator, CredentialSelector
 } from '@owlmeans/regov-mold-wallet-web'
-import { REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS } from '@owlmeans/regov-ssi-core'
+import { CredentialsRegistryWrapper, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-extension'
-import React, { Fragment, FunctionComponent, useState } from 'react'
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { 
-  DOCUMENT_TYPE_JSON, DOCUMENT_TYPE_TEXT, DOCUMENT_TYPE_BINARY, REGOV_CREDENTIAL_TYPE_SIGNATURE, 
+import {
+  DOCUMENT_TYPE_JSON, DOCUMENT_TYPE_TEXT, DOCUMENT_TYPE_BINARY, REGOV_CREDENTIAL_TYPE_SIGNATURE,
   ERROR_WIDGET_AUTHENTICATION, SignatureSubject
 } from '../../types'
 import { typeFormatterFacotry } from '../formatter'
@@ -42,7 +42,9 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
             filename: '',
             creationDate: '',
             documentHash: '',
-            docType: ''
+            docType: '',
+            alert: '',
+            identity: ''
           }
         }
       }
@@ -50,33 +52,48 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
 
     const [fileContent, setFileContent] = useState<ArrayBuffer | undefined>(undefined)
     const [isCode, setIsCode] = useState<boolean>(false)
+    const [defaultId, setDefaultId] = useState<string | undefined>(undefined)
+
+    const registry = handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES) as CredentialsRegistryWrapper
+    const identities = registry?.registry.credentials[REGISTRY_SECTION_OWN] || []
+    useEffect(() => {
+      const id = handler.wallet?.getIdentity()?.credential.id
+      if (id) {
+        setDefaultId(id)
+      } else {
+        methods.setError('signature.creation.alert', { type: 'noIdentity' })
+      }
+    }, [registry?.registry.credentials[REGISTRY_SECTION_OWN].length])
 
     const create = async (data: SignatureCreationFields) => {
       const loader = await navigator?.invokeLoading()
-      console.log(data)
       try {
         if (!handler.wallet) {
           throw ERROR_WIDGET_AUTHENTICATION
         }
 
         const subject = Object.fromEntries(
-          Object.entries(data.signature.creation).filter(([key]) => !['alert', 'file'].includes(key))
+          Object.entries(data.signature.creation).filter(([key]) => ![
+            'alert', 'file', 'identity'
+          ].includes(key))
         )
+
+        const identity = registry.getCredential(data.signature.creation.identity)?.credential
 
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
         const unsigned = await factory.buildingFactory(handler.wallet, {
-          subjectData: {
+          identity, subjectData: {
             ...subject,
             signedAt: new Date().toISOString()
           }
         })
         const credential = await factory.signingFactory(handler.wallet, {
           unsigned,
-          evidence: handler.wallet.getIdentity()?.credential
+          evidence: identity
         })
 
-        const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
-        const item = await registry.addCredential(credential)
+        const credRegistry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
+        const item = await credRegistry.addCredential(credential)
         item.meta.title = data.signature.creation.name
 
         loader?.success(t('signature.creation.success'))
@@ -219,6 +236,9 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
 
             <AlertOutput {..._props} field="signature.creation.alert" />
 
+            <CredentialSelector {...props} field="signature.creation.identity"
+              credentials={identities} defaultId={defaultId} />
+
             <FormMainAction {..._props} title="signature.creation.create" action={methods.handleSubmit(create)} />
           </PrimaryForm>
         }
@@ -235,6 +255,7 @@ export type SignatureCreationFields = {
     creation: SignatureSubject & {
       file: string
       alert: string
+      identity: string
     }
   }
 }

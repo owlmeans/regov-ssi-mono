@@ -38,7 +38,9 @@ export const defaultSigningFactory: SigningFactoryMethodBuilder = schema =>
           return
         }
 
-        unsigned.evidence = addToValue(unsigned.evidence, evidence)
+        if (!normalizeValue(unsigned.evidence).find(evidence => evidence?.id === evidence?.id)) {
+          unsigned.evidence = addToValue(unsigned.evidence, evidence)
+        }
 
         const evidenceInfo = normalizeValue(schema.evidence).find(
           _evidence => _evidence && evidence.type.includes(_evidence.type)

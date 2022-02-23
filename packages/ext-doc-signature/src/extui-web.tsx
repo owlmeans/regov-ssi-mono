@@ -89,7 +89,6 @@ if (signatureExtension.schema.events) {
 }
 
 export const signatureWebExtension = buildUIExtension(signatureExtension, (purpose, type?) => {
-  console.log(purpose, type)
   switch (purpose) {
     case EXTENSION_ITEM_PURPOSE_CREATION:
       switch (type) {
