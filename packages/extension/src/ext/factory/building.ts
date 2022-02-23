@@ -37,7 +37,7 @@ export const defaultBuildingFactory = <
         ...(Array.isArray(schema.mandatoryTypes) ? schema.mandatoryTypes : [])
       ],
       holder: didUnsigned,
-      context: schema.credentialContext,
+      context: schema.contextUrl || schema.credentialContext,
       subject
     })
 
