@@ -6,12 +6,12 @@ import {
 import {
   AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidget, WalletFormProvider
 } from '@owlmeans/regov-mold-wallet-web'
-import { CredentialSubject, getCompatibleSubject, Presentation, REGISTRY_TYPE_REQUESTS } from '@owlmeans/regov-ssi-core'
+import { CredentialSubject, getCompatibleSubject, Presentation, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from '@owlmeans/regov-ssi-core'
 import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-extension'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
-  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject, SignatureRequestSubject
+  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject, SignatureRequestSubject, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION
 } from '../../types'
 import { getSignatureResponseFromPresentation, getSignatureRequestFromPresentation } from '../../util'
 import { typeFormatterFacotry } from '../formatter'
@@ -19,7 +19,7 @@ import { typeFormatterFacotry } from '../formatter'
 
 export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResponseParams> =
   withRegov<SignatureRequestResponseProps>({ namespace: REGOV_EXT_SIGNATURE_NAMESPACE }, ({
-    t, i18n, close, ext, credential: presentation
+    t, i18n, close, ext, navigator, credential: presentation
   }) => {
     const { handler, extensions } = useRegov()
     const request = handler.wallet && handler.wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
@@ -79,6 +79,47 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
       })()
     }, [signature?.id, counter])
 
+    const state = methods.getFieldState('signature.response.alert')
+
+    const accept = async () => {
+      const loader = await navigator?.invokeLoading()
+      try {
+        if (!handler.wallet) {
+          throw ERROR_WIDGET_AUTHENTICATION
+        }
+        if (!ext) {
+          throw ERROR_WIDGET_EXTENSION
+        }
+        if (!request) {
+          methods.setError('signature.response.alert', { type: 'noRequest' })
+          return
+        }
+        if (!signature) {
+          methods.setError('signature.response.alert', { type: 'wrongDocument' })
+          return
+        }
+
+        await handler.wallet.getRegistry(REGISTRY_TYPE_REQUESTS).removeCredential(request.credential)
+        const item = await handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
+          .addCredential(signature, REGISTRY_SECTION_PEER)
+
+        item.meta.title = subject?.name || t('signature.response.credential.title', {
+          type: subject?.docType || 'unknown',
+          hash: subject?.documentHash || 'unhashed'
+        })
+
+        handler.notify()
+
+        loader?.success(t('signature.response.credential.added'))
+
+        close && close()
+      } catch (error) {
+        console.error(error)
+        loader?.error(error.message)
+      } finally {
+        loader?.finish()
+      }
+    }
 
     return <Fragment>
       <DialogTitle>
@@ -144,6 +185,11 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
           </Fragment>}
       </DialogContent>
       <DialogActions>
+        {
+          state.invalid
+            ? null
+            : <Button onClick={accept}>{t('signature.response.accept')}</Button>
+        }
         <Button onClick={close}>{t('signature.response.close')}</Button>
       </DialogActions>
     </Fragment>

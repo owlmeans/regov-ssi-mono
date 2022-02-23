@@ -181,8 +181,13 @@
           "wrongDocument": "Provided signature belongs to another document"
         }
       },
+      "credential": {
+        "title": "Document {{type}} {{hash}}",
+        "added": "Credential successfully added to wallet."
+      },
       "produce": "Produce Response",
       "produced": "Signature response generated successfully",
+      "accept": "Accept",
       "close": "Close"
     },
     "view": {

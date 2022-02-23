@@ -1,6 +1,6 @@
 import { normalizeValue } from "@owlmeans/regov-ssi-common"
 import {
-  buildWalletLoader, Credential, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES
+  buildWalletLoader, Credential, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES
 } from "@owlmeans/regov-ssi-core"
 import { ERROR_CANT_IDENTIFY_CREDENTIAL } from "./types"
 import { EvidenceValidationResult, ValidationFactoryMethodBuilder } from "../types"
@@ -79,6 +79,8 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
     if (result) { // && schema.trustable) {
       const identity = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
         credential.id, REGISTRY_SECTION_PEER
+      ) || wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
+        credential.id, REGISTRY_SECTION_OWN
       )
 
       if (identity) {
