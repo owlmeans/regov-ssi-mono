@@ -74,7 +74,7 @@ export type BuildCredentailOptions<
     holder: DIDDocument | DIDDocumentUnsinged,
     subject: Subject,
     issueanceDate?: string
-    context: CredentialContextType | string
+    context: CredentialContextType
   }
 
 export type SignCredentialMethod = <
