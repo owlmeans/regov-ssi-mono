@@ -56,13 +56,13 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
           }
         </ListItemButton>
         <EvidenceTrust handle={handle} />
-        {evidence.map((evidence) => {
+        {evidence.map((evidence, level) => {
           const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, evidence.type) || []
-          return <Collapse in={opened} unmountOnExit>
+          return <Collapse key={`collapse${level}`} in={opened} unmountOnExit>
             <List>
               {coms.map((com, idx) => {
                 const Renderer = com.com as FunctionComponent<ResultWidgetParams>
-                return <Renderer key={idx} reload={reload} result={evidence} />
+                return <Renderer key={`key${level}_${idx}`} reload={reload} result={evidence} />
               })}
             </List>
           </Collapse>

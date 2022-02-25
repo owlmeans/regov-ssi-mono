@@ -19,8 +19,6 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
   const { extensions } = useRegov()
   const handle: EvidenceTrustHandle = { reload }
 
-  console.log(result)
-
   return <Fragment>
     <List subheader={<ListSubheader>
       <Typography variant="subtitle1">{t('widget.validation.header.title')}</Typography>
@@ -48,12 +46,13 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
         </AccordionSummary>
         <AccordionDetails>
           {normalizeValue(result.evidence).flatMap(
-            result => {
-              console.log('evidence', result)
-              const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, result.instance?.type) || []
+            (result, level) => {
+              const coms = extensions?.produceComponent(
+                EXTENSION_ITEM_PURPOSE_VALIDATION, result.instance?.type
+              ) || []
               return coms.map((com, idx) => {
                 const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
-                return <Renderer key={idx} reload={reload} result={result} />
+                return <Renderer key={`key${level}_${idx}`} reload={reload} result={result} />
               })
             }
           )}

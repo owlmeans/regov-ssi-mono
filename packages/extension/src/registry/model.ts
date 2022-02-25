@@ -44,6 +44,36 @@ export const buildExtensionRegistry = <
     },
 
     getExtension: (type, code?) => {
+      if (Array.isArray(type)) {
+        const exts = Object.entries(_typeToExtension).map(([_type, extensions]) => {
+          if (type.includes(_type)) {
+            const exts: [Extension, number][] = extensions.map(ext => {
+              const description = ext.schema?.credentials && ext.schema.credentials[_type]
+              if (description) {
+                return [
+                  ext,
+                  normalizeValue(description.mandatoryTypes)
+                    .reduce(
+                      (accum, descType) => accum + (descType && type.includes(descType) ? 1 : 0), 1
+                    )
+                ]
+              }
+
+              return [ext, 0]
+            })
+            return exts.sort((a, b) => b[1] - a[1]).shift()
+          }
+        })
+        const ext = exts.filter(ext => ext).sort((a, b) => a && b ? (b[1] - a[1]) : 0)
+          .map(bundle => bundle && bundle[0]).shift()
+
+        if (!ext) {
+          throw ERROR_NO_EXTENSION
+        }
+
+        return ext
+      }
+
       if (!_typeToExtension[type]) {
         throw ERROR_NO_EXTENSION
       }

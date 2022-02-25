@@ -5,5 +5,5 @@ export const config = {
   code: process.env.REACT_APP_BUNDLE_CODE || 'excode',
   baseSchemaUrl: process.env.REACT_APP_SCHEMA_URL || undefined,
   name: process.env.REACT_APP_NAME || 'Noname app',
-  development: true
+  development: false
 }
