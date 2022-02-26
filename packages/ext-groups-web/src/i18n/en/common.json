@@ -52,6 +52,21 @@
           "pattern": "Credential name contains prohibited symbols"
         }
       }
+    },
+    "widget": {
+      "validation": {
+        "trusted": "Trusted group identity ✅", 
+        "untrusted": "Untrusted group identity ⛔️", 
+        "valid": "Valid group identity ✅", 
+        "invalid": "Invalid group identity ⛔️"
+      }
+    }
+  },
+  "widget": {
+    "validation": {
+      "header": {
+        "parent": "Parent evidence"
+      }
     }
   },
   "membership": {

@@ -120,7 +120,7 @@ export type ValidationErrorCause = {
 }
 
 export interface EvidenceValidationResult {
-  type: string
+  type: MaybeArray<string>
   result: ValidationResult
   instance?: Credential
   schema?: CredentialEvidenceDesctiption

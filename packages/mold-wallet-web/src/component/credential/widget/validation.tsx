@@ -5,7 +5,7 @@ import {
 } from '@owlmeans/regov-lib-react'
 import { ValidationResult } from '@owlmeans/regov-ssi-extension'
 import {
-  Accordion, AccordionDetails, AccordionSummary, Avatar, List, ListItemAvatar, ListItemButton,
+  Accordion, AccordionDetails, AccordionSummary, Avatar, List, ListItem, ListItemAvatar, ListItemButton,
   ListItemText, ListSubheader, Typography
 } from '@mui/material'
 import { Done, ErrorOutline, ExpandMore } from '@mui/icons-material'
@@ -40,24 +40,24 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
           secondary={t(`widget.validation.main.${result.valid ? 'valid' : 'invalid'}`)} />
       </ListItemButton>
       <EvidenceTrust handle={handle} />
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {normalizeValue(result.evidence).flatMap(
-            (result, level) => {
-              const coms = extensions?.produceComponent(
-                EXTENSION_ITEM_PURPOSE_VALIDATION, result.instance?.type
-              ) || []
-              return coms.map((com, idx) => {
-                const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
-                return <Renderer key={`key${level}_${idx}`} reload={reload} result={result} />
-              })
-            }
-          )}
-        </AccordionDetails>
-      </Accordion>
+      <ListItem sx={{ px: 0, mx: 0 }}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ px: 0, mx: 0 }}>
+            <List>
+              {normalizeValue(result.evidence).flatMap((result, level) => {
+                const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, result.instance?.type) || []
+                return coms.map((com, idx) => {
+                  const Renderer = com.com as FunctionComponent<ResultItemWidgetParams>
+                  return <Renderer key={`key${level}_${idx}`} reload={reload} result={result} />
+                })
+              })}
+            </List>
+          </AccordionDetails>
+        </Accordion>
+      </ListItem>
     </List>
   </Fragment>
 })

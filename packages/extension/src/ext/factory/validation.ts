@@ -16,10 +16,10 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
       verifySchema: true
     })
 
-    const evidence = normalizeValue(credential.evidence)
+    const evidence = normalizeValue(credential.evidence) as Credential[]
     const evidenceValidation = schema.evidence ? await Promise.all(normalizeValue(schema.evidence).map(
-      async (evidenceSchema, index): Promise<EvidenceValidationResult> => {
-        const currentEvidence = evidence[index] as Credential
+      async (evidenceSchema): Promise<EvidenceValidationResult> => {
+        const currentEvidence = evidence.find(evidence => evidence.type.includes(evidenceSchema.type))
         if (!currentEvidence) {
           return {
             type: evidenceSchema.type,

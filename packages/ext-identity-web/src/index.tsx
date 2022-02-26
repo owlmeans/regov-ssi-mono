@@ -95,6 +95,7 @@ export const buildIdentityExtensionUI = (
           ]
         case EXTENSION_ITEM_PURPOSE_VALIDATION:
           switch (type) {
+            case identityType:
             case BASIC_IDENTITY_TYPE:
               return [{
                 com: ValidationWidget(extension),

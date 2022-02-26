@@ -1,15 +1,18 @@
-import React, { Fragment, useState } from 'react'
-import { 
-  EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget 
+import React, { Fragment } from 'react'
+import {
+  EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget
 } from "@owlmeans/regov-lib-react"
 import { Extension } from "@owlmeans/regov-ssi-extension"
 import { FunctionComponent } from "react"
 import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from "../../../types"
-import { Collapse, List, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material'
+import {
+  Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemAvatar, ListItemButton, ListItemText,
+  Typography
+} from '@mui/material'
 import { getCompatibleSubject, Credential } from '@owlmeans/regov-ssi-core'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
 import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-mold-wallet-web'
-import { Done, ErrorOutline, ExpandLess, ExpandMore } from '@mui/icons-material'
+import { Done, ErrorOutline, ExpandMore } from '@mui/icons-material'
 
 
 export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetParams> =>
@@ -17,7 +20,6 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
     result={props.result} reload={props.reload} com={(props) => {
       const { result, reload, t } = props
       const subject = getCompatibleSubject<SignatureSubject>(result.instance as Credential)
-      const [opened, setOpened] = useState<boolean>(false)
       const { extensions } = useRegov()
 
       const evidence = normalizeValue(result.result.evidence)
@@ -47,25 +49,25 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
                 t(`widget.validation.main.${result.result.valid ? 'valid' : 'invalid'}`)
               }</Typography>
             </Fragment>} />
-          {
-            evidence.length > 0
-              ? opened
-                ? <ExpandLess onClick={() => setOpened(false)} />
-                : <ExpandMore onClick={() => setOpened(true)} />
-              : undefined
-          }
         </ListItemButton>
         <EvidenceTrust handle={handle} />
-        {evidence.map((evidence, level) => {
-          const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, evidence.type) || []
-          return <Collapse key={`collapse${level}`} in={opened} unmountOnExit>
-            <List>
-              {coms.map((com, idx) => {
-                const Renderer = com.com as FunctionComponent<ResultWidgetParams>
-                return <Renderer key={`key${level}_${idx}`} reload={reload} result={evidence} />
-              })}
-            </List>
-          </Collapse>
-        })}
+        {evidence.length > 0 && <ListItem sx={{ px: 0, mx: 0 }}>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ px: 0, mx: 0 }}>
+              <List>
+                {evidence.flatMap((evidence, level) => {
+                  const coms = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_VALIDATION, evidence.type) || []
+                  return coms.map((com, idx) => {
+                    const Renderer = com.com as FunctionComponent<ResultWidgetParams>
+                    return <Renderer key={`key${level}_${idx}`} reload={reload} result={evidence} />
+                  })
+                })}
+              </List>
+            </AccordionDetails>
+          </Accordion>
+        </ListItem>}
       </Fragment>
     }} />

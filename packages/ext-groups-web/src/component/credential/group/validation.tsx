@@ -5,25 +5,23 @@ import {
   ListItemText, Typography
 } from '@mui/material'
 import { Done, ExpandMore, ErrorOutline } from '@mui/icons-material'
-import { IdentitySubject } from '@owlmeans/regov-ext-identity'
 import {
   EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget
 } from '@owlmeans/regov-lib-react'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
 import { Extension } from '@owlmeans/regov-ssi-extension'
-import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
 import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-mold-wallet-web'
+import { GroupSubject, REGOV_EXT_GROUP_NAMESPACE } from '@owlmeans/regov-ext-groups'
 
 
-export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetParams> =>
-  (props: ResultWidgetParams) => <ValidationResultWidget ns={props.ns || REGOV_IDENTITY_DEFAULT_NAMESPACE}
+export const GroupValidationWidget = (_: Extension): FunctionComponent<ResultWidgetParams> =>
+  (props: ResultWidgetParams) => <ValidationResultWidget ns={props.ns || REGOV_EXT_GROUP_NAMESPACE}
     result={props.result} reload={props.reload} com={(props) => {
       const { result, reload, t } = props
-      const subject = getCompatibleSubject<IdentitySubject>(result.instance as Credential)
+      const subject = getCompatibleSubject<GroupSubject>(result.instance as Credential)
       const { extensions } = useRegov()
 
       const evidence = normalizeValue(result.result.evidence)
-
       const handle: EvidenceTrustHandle = { reload }
 
       return <Fragment>
@@ -39,13 +37,14 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
               ? <Done fontSize="small" color="success" />
               : <ErrorOutline fontSize="small" color="error" />}
           </ListItemAvatar>
-          <ListItemText primary={<Typography variant="body2">{`ID: ${subject.identifier}`}</Typography>}
+          <ListItemText primary={<Typography variant="body2">{`Group ID: ${subject.uuid}`}</Typography>}
             secondary={<Fragment>
               <Typography variant='caption'>{
-                t(`widget.validation.main.${result.result.trusted ? 'trusted' : 'untrusted'}`)
+                t(`group.widget.validation.${result.result.trusted ? 'trusted' : 'untrusted'}`)
               }</Typography>
+              <br />
               <Typography variant='caption'>{
-                t(`widget.validation.main.${result.result.valid ? 'valid' : 'invalid'}`)
+                t(`group.widget.validation.${result.result.valid ? 'valid' : 'invalid'}`)
               }</Typography>
             </Fragment>} />
         </ListItemButton>

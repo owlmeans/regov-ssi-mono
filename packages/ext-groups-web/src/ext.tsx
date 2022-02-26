@@ -17,7 +17,8 @@ import {
   GroupCreation, GroupItem, GroupView, EvidenceWidget, MembershipClaimView, MembershipClaimItem,
   MembershipOffer,
   MembershipValidationWidget,
-  MembershipEvidenceWidget
+  MembershipEvidenceWidget,
+  GroupValidationWidget
 } from './component'
 import {
   addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
@@ -105,7 +106,6 @@ if (groupsExtension.schema.events) {
 
 export const groupsUIExtension = buildUIExtension(groupsExtension,
   (purpose: ExtensionItemPurpose, type?: RegovGroupExtensionTypes) => {
-    console.log(purpose, type)
     switch (purpose) {
       case EXTENSION_ITEM_PURPOSE_CREATION:
         switch (type) {
@@ -153,6 +153,13 @@ export const groupsUIExtension = buildUIExtension(groupsExtension,
         }
       case EXTENSION_ITEM_PURPOSE_VALIDATION:
         switch (type) {
+          case REGOV_CREDENTIAL_TYPE_GROUP:
+            return [{
+              com: GroupValidationWidget(groupsExtension),
+              extensionCode: `${groupsExtension.schema.details.code}GroupValidationWidget`,
+              params: {},
+              order: 0
+            }]
           case REGOV_CREDENTIAL_TYPE_MEMBERSHIP:
             return [{
               com: MembershipValidationWidget(groupsExtension),
