@@ -28,7 +28,7 @@ import {
   REGOV_EXT_GROUP_NAMESPACE,
   REGOV_OFFER_TYPE
 } from "./types"
-import { makeRandomUuid } from "@owlmeans/regov-ssi-common"
+import { makeRandomUuid, normalizeValue } from "@owlmeans/regov-ssi-common"
 
 
 let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
@@ -203,12 +203,29 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
       return unsigned as unknown as UnsignedCredential
     },
     validationFactory: credSchema => async (wallet, params) => {
-      /** 
-       * @PROCEED
-       * Implement custom validation pecularities to make 
-       * the membership trusted if the group is tructed
-       */
-      return defaultValidationFactory(credSchema)(wallet, params)
+      const result = await defaultValidationFactory(credSchema)(wallet, params)
+
+      const groupEvidence = normalizeValue(result.evidence).find(
+        evidence => evidence.instance?.type.includes(REGOV_CREDENTIAL_TYPE_GROUP)
+      )
+
+      const identityEvidence = normalizeValue(result.evidence).find(
+        evidence => evidence.instance?.type.includes(BASIC_IDENTITY_TYPE)
+      )
+
+      if (identityEvidence?.result.valid
+        && groupEvidence?.result.trusted
+        && groupEvidence?.result.valid) {
+        const sameIdentity = normalizeValue(groupEvidence.result.evidence).find(
+          evidence => evidence.instance?.id === identityEvidence.instance?.id
+        )
+        if (sameIdentity) {
+          identityEvidence.result.trusted = true
+          result.trusted = true
+        }
+      }
+
+      return result
     }
   },
   [REGOV_CLAIM_TYPE]: {}
