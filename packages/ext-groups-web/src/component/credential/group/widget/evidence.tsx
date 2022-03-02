@@ -1,27 +1,35 @@
 import React, { FunctionComponent } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import { EmptyProps, PurposeEvidenceWidgetParams, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
-import { Paper } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import { getCompatibleSubject } from '@owlmeans/regov-ssi-core'
-import { EntityRenderer, EntityTextRenderer } from '@owlmeans/regov-mold-wallet-web'
+import { dateFormatter } from '@owlmeans/regov-mold-wallet-web'
 import { GroupSubject } from '@owlmeans/regov-ext-groups'
 
 
 export const EvidenceWidget = (ext: Extension): FunctionComponent<EvidenceWidgetParams> =>
   withRegov<EvidenceWidgetProps>({ namespace: ext.localization?.ns }, (props: EvidenceWidgetProps) => {
     const { wrapper, t } = props
-
     const subject = getCompatibleSubject<GroupSubject>(wrapper.credential)
 
-    return <Paper elevation={3}>
-      <EntityRenderer t={t} entity="group" subject={subject}>
-        <EntityTextRenderer field="name" showLabel netSize={6} />
-        {subject.description.trim() !== ""
-          && <EntityTextRenderer field="description" showLabel />}
-        <EntityTextRenderer field="createdAt" showLabel netSize={6} />
-        <EntityTextRenderer field="uuid" showLabel netSize={6} />
-      </EntityRenderer>
-    </Paper>
+    return <Grid container direction="column" justifyContent="space-between" alignItems="space-between">
+      <Grid item container px={1} direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Grid item container xs={10} pt={1} direction="column" justifyContent="space-between" alignItems="stretch">
+          <Grid item>
+            <Typography variant='overline'>{t('group.widget.evidence.name')}: {subject.name}</Typography>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item px={1}>
+        <Typography variant='overline'>{t('group.widget.evidence.uuid')}: {subject.uuid}</Typography>
+      </Grid>
+      <Grid item px={1}>
+        <Typography variant='overline'>{t('group.widget.evidence.createdAt')}: {dateFormatter(subject.createdAt)}</Typography>
+      </Grid>
+      {subject.description && subject.description !== '' && <Grid item px={1}>
+        <Typography variant='overline'>{subject.description}</Typography>
+      </Grid>}
+    </Grid>
   })
 
 export type EvidenceWidgetParams = EmptyProps & PurposeEvidenceWidgetParams

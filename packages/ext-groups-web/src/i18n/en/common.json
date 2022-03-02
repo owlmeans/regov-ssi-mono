@@ -59,6 +59,11 @@
         "untrusted": "Untrusted group identity ⛔️", 
         "valid": "Valid group identity ✅", 
         "invalid": "Invalid group identity ⛔️"
+      },
+      "evidence": {
+        "name": "Group name",
+        "uuid": "Group ID",
+        "createdAt": "Creation date:"
       }
     }
   },

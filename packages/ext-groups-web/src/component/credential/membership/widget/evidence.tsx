@@ -37,9 +37,6 @@ export const MembershipEvidenceWidget = (ext: Extension): FunctionComponent<Memb
         <Typography variant='overline'>{t('membership.widget.evidence.role')}: {subject.role}</Typography>
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('membership.widget.evidence.memberCode')}: {subject.memberCode}</Typography>
-      </Grid>
-      <Grid item px={1}>
         <Typography variant='overline'>{t('membership.widget.evidence.issuedAt')}: {dateFormatter(subject.createdAt)}</Typography>
       </Grid>
     </Grid>

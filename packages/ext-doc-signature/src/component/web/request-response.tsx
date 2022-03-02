@@ -186,9 +186,9 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
       </DialogContent>
       <DialogActions>
         {
-          state.invalid
-            ? null
-            : <Button onClick={accept}>{t('signature.response.accept')}</Button>
+          !state.invalid && result.valid && result.trusted
+            ? <Button onClick={accept}>{t('signature.response.accept')}</Button>
+            : null
         }
         <Button onClick={close}>{t('signature.response.close')}</Button>
       </DialogActions>

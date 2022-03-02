@@ -4,6 +4,7 @@ import {
   buildExtensionSchema,
   defaultBuildingFactory,
   defaultSigningFactory,
+  defaultValidationFactory,
   EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   EXTENSION_TRIGGER_RETRIEVE_NAME,
   IncommigDocumentEventParams,
@@ -201,6 +202,14 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
 
       return unsigned as unknown as UnsignedCredential
     },
+    validationFactory: credSchema => async (wallet, params) => {
+      /** 
+       * @PROCEED
+       * Implement custom validation pecularities to make 
+       * the membership trusted if the group is tructed
+       */
+      return defaultValidationFactory(credSchema)(wallet, params)
+    }
   },
   [REGOV_CLAIM_TYPE]: {}
 })

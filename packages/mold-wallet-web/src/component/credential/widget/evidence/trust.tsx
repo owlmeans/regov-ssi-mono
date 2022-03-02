@@ -1,45 +1,22 @@
 
-import React, {
-  Fragment,
-  FunctionComponent,
-  useState
-} from 'react'
+import React, { Fragment, FunctionComponent, useState } from 'react'
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
+  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid,
   Typography
 } from '@mui/material'
 import {
-  EmptyProps,
-  EXTENSION_ITEM_PURPOSE_EVIDENCE,
-  generalNameVlidation,
-  PurposeEvidenceWidgetParams,
-  RegovComponentProps,
-  useRegov,
-  withRegov
+  EmptyProps, EXTENSION_ITEM_PURPOSE_EVIDENCE, generalNameVlidation, PurposeEvidenceWidgetParams,
+  RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  Credential,
-  CredentialSubject,
-  REGISTRY_SECTION_PEER,
-  REGISTRY_TYPE_IDENTITIES
+  Credential, CredentialSubject, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES
 } from '@owlmeans/regov-ssi-core'
 import {
-  EvidenceValidationResult,
-  EXTENSION_TRIGGER_RETRIEVE_NAME,
-  RetreiveNameEventParams,
+  EvidenceValidationResult, EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams,
   ValidationResult
 } from '@owlmeans/regov-ssi-extension'
 import { StandardEvidenceWidget } from './standard'
-import {
-  MainTextInput,
-  WalletFormProvider
-} from '../../../common'
+import { MainTextInput, WalletFormProvider } from '../../../common'
 import { useForm } from 'react-hook-form'
 import { Report, Warning } from '@mui/icons-material'
 

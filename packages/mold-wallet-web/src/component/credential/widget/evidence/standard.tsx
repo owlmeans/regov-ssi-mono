@@ -1,19 +1,13 @@
-import React, {
-  FunctionComponent
-} from 'react'
-import {
-  PurposeEvidenceWidgetParams
-} from '@owlmeans/regov-lib-react'
-import {
-  Paper,
-  Grid,
-  Typography
-} from '@mui/material'
+import React, { FunctionComponent } from 'react'
+import { PurposeEvidenceWidgetParams } from '@owlmeans/regov-lib-react'
+import { Paper, Grid, Typography } from '@mui/material'
 import { normalizeValue } from '@owlmeans/regov-ssi-common'
 
 
 export const StandardEvidenceWidget: FunctionComponent<PurposeEvidenceWidgetParams> =
   ({ wrapper }: PurposeEvidenceWidgetParams) => {
+
+    console.log(wrapper)
 
     return <Grid container direction="column" justifyContent="flex-start" alignItems="stretch">
       <Grid item>
