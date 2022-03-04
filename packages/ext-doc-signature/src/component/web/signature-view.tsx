@@ -6,13 +6,17 @@ import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from '../../types'
 import { CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { BorderColor, Close } from '@mui/icons-material'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'
-import { dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidget } from '@owlmeans/regov-mold-wallet-web'
+import {
+  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, FileProcessorWeb, PrimaryForm,
+  ValidationResultWidget, WalletFormProvider
+} from '@owlmeans/regov-mold-wallet-web'
+import { useForm } from 'react-hook-form'
 import { typeFormatterFacotry } from '../formatter'
 
 
 export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<SignatureViewProps>({
   namespace: REGOV_EXT_SIGNATURE_NAMESPACE
-}, ({ t, credential, close, ext }) => {
+}, ({ t, i18n, credential, navigator, close, ext }) => {
   const { handler, extensions } = useRegov()
   const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
   const subject = getCompatibleSubject<SignatureSubject>(credential)
@@ -38,6 +42,82 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
       setValidationResult(res)
     })()
   }, [credential.id, counter])
+
+  const methods = useForm<SignatureViewFields>({
+    mode: 'onChange',
+    criteriaMode: 'all',
+    defaultValues: {
+      signature: {
+        view: {
+          file: '',
+          alert: ''
+        }
+      }
+    }
+  })
+
+  const props = { t, i18n }
+
+  const processFile = async () => {
+    const loader = await navigator?.invokeLoading()
+    try {
+      const content = methods.getValues('signature.view.file')
+      if (content !== '' && handler && handler.wallet) {
+        const hash = handler.wallet.ssi.crypto.hash(content)
+
+        if (hash === subject.documentHash) {
+          methods.setError('signature.view.alert', { type: 'success', message: 'matches' })
+        } else {
+          methods.setError('signature.view.alert', { type: 'error', message: 'notmatch' })
+        }
+      }
+    } catch (error) {
+      loader?.error(error.message)
+      console.error(error)
+    } finally {
+      loader?.finish()
+    }
+  }
+
+  const onDrop = async (files: File[]) => {
+    const loader = await navigator?.invokeLoading()
+    if (files.length) {
+      const reader = new FileReader()
+
+      reader.onabort = () => {
+        methods.setError('signature.view.file', { type: 'file.aborted' })
+        loader?.finish()
+      }
+
+      reader.onerror = () => {
+        methods.setError('signature.view.file', { type: 'file.error' })
+        loader?.finish()
+      }
+
+      reader.onload = () => {
+        try {
+          const data = reader.result as ArrayBuffer
+
+          if (handler && handler.wallet) {
+            const hash = handler.wallet.ssi.crypto.hash(Buffer.from(data))
+
+            if (hash === subject.documentHash) {
+              methods.setError('signature.view.alert', { type: 'success', message: 'matches' })
+            } else {
+              methods.setError('signature.view.alert', { type: 'error', message: 'notmatch' })
+            }
+          }
+        } catch (error) {
+          loader?.error(error.message)
+          console.error(error)
+        } finally {
+          loader?.finish()
+        }
+      }
+
+      reader.readAsArrayBuffer(files[0])
+    }
+  }
 
   return <Fragment>
     <DialogTitle>
@@ -81,6 +161,14 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
                   {subject.version?.trim() !== "" && <EntityTextRenderer field="version" showHint small netSize={6} />}
                 </Grid>
               </EntityRenderer>
+              <WalletFormProvider {...methods}>
+                <PrimaryForm {...props} title="signature.view.upload">
+                  <AlertOutput {...props} field="signature.view.alert" />
+
+                  <FileProcessorWeb {...props} field="signature.view.file"
+                    onDrop={onDrop} process={processFile} square={true} />
+                </PrimaryForm>
+              </WalletFormProvider>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={5} px={1}>
@@ -107,3 +195,12 @@ export type SignatureViewParams = EmptyProps & {
 }
 
 export type SignatureViewProps = RegovComponentProps<SignatureViewParams>
+
+export type SignatureViewFields = {
+  signature: {
+    view: {
+      file: string
+      alert: string
+    }
+  }
+}

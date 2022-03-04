@@ -118,17 +118,15 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
 
     const processFile = async () => {
       const loader = await navigator?.invokeLoading()
-      const content = methods.getValues('signature.creation.file')
-      const encoder = new TextEncoder()
-      methods.setValue('signature.creation.creationDate', new Date().toISOString())
-      setFileContent(encoder.encode(content))
-      if (handler && handler.wallet) {
-        methods.setValue(
-          'signature.creation.documentHash',
-          handler.wallet.ssi.crypto.hash(content)
-        )
-      }
       try {
+        const content = methods.getValues('signature.creation.file')
+        const encoder = new TextEncoder()
+        methods.setValue('signature.creation.creationDate', new Date().toISOString())
+        setFileContent(encoder.encode(content))
+        if (handler && handler.wallet) {
+          methods.setValue('signature.creation.documentHash', handler.wallet.ssi.crypto.hash(content))
+        }
+
         const obj = JSON.parse(content)
         if (obj) {
           setIsCode(true)
@@ -150,18 +148,19 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
 
         reader.onabort = () => {
           methods.setError('signature.creation.file', { type: 'file.aborted' })
+          loader?.finish()
         }
 
         reader.onerror = () => {
           methods.setError('signature.creation.file', { type: 'file.error' })
+          loader?.finish()
         }
 
         reader.onload = () => {
           const data = reader.result as ArrayBuffer
-          setFileContent(data)
-
-          const decoder = new TextDecoder("utf-8")
           try {
+            setFileContent(data)
+            const decoder = new TextDecoder("utf-8")
             const text = decoder.decode(data)
 
             try {

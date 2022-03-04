@@ -231,6 +231,33 @@
       "docType": {
         "hint": "Document type",
         "label": "Document type"
+      },
+      "upload": "Upload file",
+      "file": {
+        "browse": "Browse",
+        "input": {
+          "hint": "Document text or JSON content to be verfied.",
+          "label": "Document text"
+        },
+        "import": {
+          "here": "Drag & drop a file here to check if it's signed by this signature.",
+          "drop": "Drop file here...",
+          "loaded": "Document loaded."
+        }
+      },
+      "alert": {
+        "error": {
+          "matches": "The document you provided is signed with this signature.",
+          "notmatch": "The document you provided isn't signed with this singature.",
+          "severity": {
+            "error": "error",
+            "success": "success"
+          },
+          "title": {
+            "error": "Error",
+            "success": "Correct"
+          }
+        }
       }
     },
     "list": {
