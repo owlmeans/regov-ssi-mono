@@ -1,18 +1,18 @@
 import { Button, DialogActions, DialogContent } from '@mui/material'
 import {
   getGroupFromMembershipOfferPresentation, getMembershipOffer, GroupSubject, MembershipSubject,
-  BASIC_IDENTITY_TYPE, RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE
+  BASIC_IDENTITY_TYPE, RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE, REGOV_CREDENTIAL_TYPE_MEMBERSHIP
 } from '@owlmeans/regov-ext-groups'
 import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import {
-  AlertOutput, dateFormatter, MainTextInput, MainTextOutput, PrimaryForm,
-  WalletFormProvider
+  AlertOutput, dateFormatter, MainTextInput, MainTextOutput, PrimaryForm, WalletFormProvider
 } from '@owlmeans/regov-mold-wallet-web'
-import { normalizeValue } from '@owlmeans/regov-ssi-common'
+import { normalizeValue, singleValue } from '@owlmeans/regov-ssi-common'
 import {
   getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CLAIMS, REGISTRY_TYPE_IDENTITIES,
-  buildWalletLoader, CredentialSubject
+  CredentialSubject
 } from '@owlmeans/regov-ssi-core'
+import { VALIDATION_KIND_OFFER } from '@owlmeans/regov-ssi-extension'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { OfferFields } from './offer'
@@ -20,10 +20,7 @@ import { OfferFields } from './offer'
 
 export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withRegov<ClaimOfferProps>(
   { namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
-    const {
-      credential: presentation, navigator,
-      close, t, i18n
-    } = props
+    const { credential: presentation, navigator, close, t, ext, i18n } = props
     const { handler, extensions } = useRegov()
     const [claim, setClaim] = useState<Presentation | undefined>(undefined)
     const group = getGroupFromMembershipOfferPresentation(presentation)
@@ -38,22 +35,28 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
     }
 
     useEffect(() => {
-      (async () => {
+      setTimeout(async () => {
         const loader = await navigator?.invokeLoading()
         try {
-          if (!handler.wallet || !extensions) {
+          if (!handler.wallet || !extensions || !membership) {
             return
           }
 
-          const [isValid, result] = await handler.wallet.ssi.verifyPresentation(presentation, undefined, {
-            testEvidence: true,
-            nonStrictEvidence: true,
-            localLoader: handler.wallet ? buildWalletLoader(handler.wallet) : undefined
+          const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
+          const result = await factory.validationFactory(handler.wallet, {
+            presentation, credential: membership, extensions: extensions.registry,
+            kind: VALIDATION_KIND_OFFER
           })
 
-          if (!isValid && result.kind === 'invalid') {
-            result.errors.forEach(console.error)
-            throw result.errors[0].kind
+          if (!result.valid) {
+            const cause = singleValue(result.cause)
+            if (!cause) {
+              throw 'unknwonValidationError'
+            } else if (typeof cause === 'string') {
+              throw cause
+            } else {
+              throw cause.kind
+            }
           }
 
           const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
@@ -71,20 +74,20 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
               return false
             })
             if (!hasIdentity) {
-              throw 'identity.alien'
+              throw 'identityAlien'
             }
             setClaim(claim)
           } else {
-            throw 'claim.alien'
+            throw 'claimAlien'
           }
         } catch (error) {
           console.error(error)
-          loader?.error(error.message)
+          loader?.error(error.message || t(`membership.offer.alert.error.${error}`))
         } finally {
           loader?.finish()
         }
-      })()
-    }, [claim?.id])
+      }, 250)
+    }, [presentation.id])
 
     const save = async (data: ClaimOfferFields) => {
       const loader = await navigator?.invokeLoading()
