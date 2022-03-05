@@ -15,10 +15,8 @@ import { MENU_TAG_CRED_NEW } from '@owlmeans/regov-mold-wallet-web'
 import { commonEn } from './i18n'
 import {
   GroupCreation, GroupItem, GroupView, EvidenceWidget, MembershipClaimView, MembershipClaimItem,
-  MembershipOffer,
-  MembershipValidationWidget,
-  MembershipEvidenceWidget,
-  GroupValidationWidget
+  MembershipOffer, MembershipValidationWidget, MembershipEvidenceWidget, GroupValidationWidget,
+  MembershipItem
 } from './component'
 import {
   addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
@@ -130,6 +128,13 @@ export const groupsUIExtension = buildUIExtension(groupsExtension,
             return [{
               com: MembershipClaimItem(groupsExtension) as unknown as FunctionComponent<PurposeListItemParams>,
               extensionCode: `${groupsExtension.schema.details.code}MembershipClaimItem`,
+              params: {},
+              order: 0
+            }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
+          case REGOV_CREDENTIAL_TYPE_MEMBERSHIP:
+            return [{
+              com: MembershipItem(groupsExtension) as unknown as FunctionComponent<PurposeListItemParams>,
+              extensionCode: `${groupsExtension.schema.details.code}MembershipItem`,
               params: {},
               order: 0
             }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
