@@ -4,6 +4,7 @@ import {
   AlertOutput, CredentialActionGroup, CredentialSelector, dateFormatter, EntityRenderer,
   EntityTextRenderer, LongOutput, MainTextOutput, PrimaryForm, WalletFormProvider
 } from '@owlmeans/regov-mold-wallet-web'
+import { singleValue } from '@owlmeans/regov-ssi-common'
 import { getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CREDENTIALS, CredentialWrapper } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-extension'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
@@ -19,7 +20,7 @@ import { typeFormatterFacotry } from '../formatter'
 export const SignatureResponseWeb: FunctionComponent<SignatureResponseParams> =
   withRegov<SignatureResponseProps>({ namespace: REGOV_EXT_SIGNATURE_NAMESPACE },
     ({ t, i18n, ext, navigator, close, credential: presentation }) => {
-      const { handler } = useRegov()
+      const { handler, extensions } = useRegov()
       const credential = getSignatureRequestFromPresentation(presentation) as Credential
       const subject = getCompatibleSubject<SignatureRequestSubject>(credential)
 
@@ -50,7 +51,31 @@ export const SignatureResponseWeb: FunctionComponent<SignatureResponseParams> =
 
       useEffect(() => {
         (async () => {
-          const signatures = await handler.wallet?.getRegistry(REGISTRY_TYPE_CREDENTIALS)
+          if (!extensions || !handler.wallet) {
+            methods.setError('signature.response.alert', { type: 'notAuthenticated' })
+            return
+          }
+
+          const factory = ext.getFactory(credential.type)
+          const requestValidation = await factory.validationFactory(handler.wallet, {
+            presentation, credential, extensions: extensions.registry
+          })
+
+          if (!requestValidation.valid) {
+            const cause = singleValue(requestValidation.cause)
+            if (!cause) {
+              methods.setError('signature.response.alert', { type: 'unknwonValidationError' })
+            } else if (typeof cause === 'string') {
+              methods.setError('signature.response.alert', { type: cause })
+            } else {
+              methods.setError('signature.response.alert', {
+                type: cause.kind, message: cause.message
+              })
+            }
+            return
+          }
+
+          const signatures = await handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
             .lookupCredentials(REGOV_CREDENTIAL_TYPE_SIGNATURE)
           setSignatures(signatures || [])
           const signatureAlike = signatures?.find(wrapper => {

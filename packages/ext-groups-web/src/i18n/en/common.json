@@ -154,6 +154,13 @@
       "claim": {
         "title": "Offered membership"
       },
+      "alert": {
+        "error": {
+          "unknwonValidationError": "Provided document isn't a valid credential claim. Reason is unknown.",
+          "identityAlien": "Provided membership isn't for you",
+          "claimAlien": "Unknown memberhship claim. You haven't requested this document."
+        }
+      },
       "save": "Save"
     },
     "message": {

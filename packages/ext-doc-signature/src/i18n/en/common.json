@@ -184,7 +184,8 @@
           "wrongHash": "Selected signature belongs to another document",
           "noRequest": "Provided response isn't requested",
           "wrongDocument": "Provided signature belongs to another document",
-          "noIdentity": "No identity to sign the document with"
+          "noIdentity": "No identity to sign the document with",
+          "unknwonValidationError": "Provided document isn't a valid credential request. Reason is unknown."
         }
       },
       "credential": {
