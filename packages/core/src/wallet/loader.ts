@@ -23,24 +23,14 @@ export const buildWalletLoader: (wallet: WalletWrapper) => LocalDocumentLoader
           return cred
         }
 
-        console.log('try peer', urlId)
-
         const iden = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
           .getCredential(urlId, REGISTRY_SECTION_PEER)
-
-        console.log('try peer', iden)
-
         if (iden && iden.credential) {
           return iden.credential
         }
 
-        console.log('try own', urlId)
-
         const me = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
           .getCredential(urlId, REGISTRY_SECTION_OWN)
-
-        console.log('try own', me)
-
         if (me && me.credential) {
           return me.credential
         }

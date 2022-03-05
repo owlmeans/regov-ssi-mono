@@ -4,9 +4,7 @@ import {
 } from "@owlmeans/regov-ssi-extension"
 import {
   BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE,
-  REGOV_EXT_SIGNATURE_NAMESPACE,
-  REGOV_SIGNATURE_REQUEST_TYPE,
-  REGOV_SIGNATURE_RESPONSE_TYPE
+  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE
 } from "./types"
 import { isCredential, isPresentation, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'

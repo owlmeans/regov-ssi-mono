@@ -1,8 +1,8 @@
-import { DocumentWarmer } from "."
-import { BuildDocumentLoader, DIDDocument, DIDDocumentUnsinged } from "./types"
+import { BuildDocumentLoader, DocumentWarmer } from "./types"
 import { DIDRegistryWrapper } from "./types/registry"
 
-const documentCache: {[key: string]: any} = {}
+
+const documentCache: { [key: string]: any } = {}
 
 export const buildDocumentLoader = (did: DIDRegistryWrapper): BuildDocumentLoader =>
   (fallback?) => async (url) => {
@@ -11,9 +11,7 @@ export const buildDocumentLoader = (did: DIDRegistryWrapper): BuildDocumentLoade
         contextUrl: null,
         document: (
           did =>
-            JSON.parse(JSON.stringify(
-              did || (fallback ? fallback() : {})
-            ))
+            JSON.parse(JSON.stringify(did || (fallback ? fallback() : {})))
         )(await did.lookUpDid(url)),
         documentUrl: url,
       }

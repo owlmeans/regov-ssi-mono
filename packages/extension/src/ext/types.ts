@@ -61,6 +61,7 @@ export type CredentialExtensionFactories = {
   responseFactory: ResponseFactoryMethod
 }
 
+
 export type BuildingFactoryMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
   >(schema: CredentialDescription<Schema>) => BuildingFactoryMethod
@@ -102,9 +103,18 @@ export type ValidationFactoryMethod = <
   >(wallet: WalletWrapper, params: Params) => Promise<ValidationResult>
 
 export type ValidationFactoryParams = {
+  presentation?: Presentation
   credential: Credential
   extensions: ExtensionRegistry
+  kind?: ValidationKind
 }
+
+export type ValidationKind = undefined
+  | typeof VALIDATION_KIND_RESPONSE
+  | typeof VALIDATION_KIND_OFFER
+
+export const VALIDATION_KIND_RESPONSE = 'response'
+export const VALIDATION_KIND_OFFER = 'offer'
 
 export interface ValidationResult {
   valid: boolean

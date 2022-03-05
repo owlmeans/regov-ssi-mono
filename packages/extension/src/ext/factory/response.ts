@@ -1,4 +1,4 @@
-import { DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION } from "@owlmeans/regov-ssi-did"
+import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION } from "@owlmeans/regov-ssi-did"
 import { ResponseFactoryMethodBuilder } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
 
@@ -10,20 +10,30 @@ export const defaultResponseFactory: ResponseFactoryMethodBuilder = schema =>
       throw ERROR_FACTORY_NO_IDENTITY
     }
 
-    const key = await wallet.did.extractKey(identity.issuer)
+    let did = params.identity
+      ? wallet.did.helper().isDIDDocument(params.identity.holder)
+        ? params.identity.holder
+        : params.identity.issuer as unknown as DIDDocument
+      : wallet.did.helper().isDIDDocument(params.credential.holder)
+        ? params.credential.holder
+        : params.credential.issuer as unknown as DIDDocument
 
-    if (!key) {
-      throw new Error('response.signing.key')
+    if (!did.authentication) {
+      const key = await wallet.did.extractKey(identity.issuer)
+
+      if (!key) {
+        throw new Error('response.signing.key')
+      }
+
+      await wallet.keys.expandKey(key)
+
+      const unsignedDid = await wallet.did.helper().createDID(key, {
+        id: params.request.id,
+        purpose: [DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION]
+      })
+
+      did = await wallet.did.helper().signDID(key, unsignedDid)
     }
-
-    await wallet.keys.expandKey(key)
-
-    const unsignedDid = await wallet.did.helper().createDID(key, {
-      id: params.request.id,
-      purpose: [DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION]
-    })
-
-    const did = await wallet.did.helper().signDID(key, unsignedDid)
 
     const presentation = await wallet.ssi.buildPresentation([params.credential], {
       id: params.request.id,

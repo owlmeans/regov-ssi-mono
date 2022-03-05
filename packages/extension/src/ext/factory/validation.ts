@@ -1,14 +1,54 @@
-import { normalizeValue } from "@owlmeans/regov-ssi-common"
+import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-common"
 import {
-  buildWalletLoader, Credential, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES
+  buildWalletLoader, Credential, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CLAIMS,
+  REGISTRY_TYPE_IDENTITIES, REGISTRY_TYPE_REQUESTS
 } from "@owlmeans/regov-ssi-core"
 import { ERROR_CANT_IDENTIFY_CREDENTIAL } from "./types"
-import { EvidenceValidationResult, ValidationFactoryMethodBuilder } from "../types"
+import {
+  EvidenceValidationResult, ValidationErrorCause, ValidationFactoryMethodBuilder,
+  VALIDATION_KIND_OFFER, VALIDATION_KIND_RESPONSE
+} from "../types"
 import { CredentialDescription } from "../../schema"
 
 
 export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =>
-  async (wallet, { credential, extensions }) => {
+  async (wallet, { credential, presentation, extensions, kind }) => {
+    let presentationResult: boolean = true
+    let presentationCause: undefined | MaybeArray<string | ValidationErrorCause> = undefined
+    if (presentation) {
+      const [result, info] = await wallet.ssi.verifyPresentation(presentation, undefined, {
+        localLoader: buildWalletLoader(wallet),
+        testEvidence: true,
+        nonStrictEvidence: true
+      })
+
+      if (!result) {
+        presentationResult = false
+        presentationCause = info.kind === 'invalid' ? info.errors : undefined
+      } else {
+        switch (kind) {
+          case VALIDATION_KIND_RESPONSE:
+            const request = await wallet.getRegistry(REGISTRY_TYPE_REQUESTS).getCredential(
+              presentation.id
+            )
+            if (!request) {
+              presentationResult = false
+              presentationCause = 'noRequest'
+            }
+            break
+          case VALIDATION_KIND_OFFER:
+            const claim = await wallet.getRegistry(REGISTRY_TYPE_CLAIMS).getCredential(
+              presentation.id
+            )
+            if (!claim) {
+              presentationResult = false
+              presentationCause = 'noClaim'
+            }
+            break
+        }
+      }
+    }
+
     const [result, info] = await wallet.ssi.verifyCredential(credential, undefined, {
       localLoader: buildWalletLoader(wallet),
       nonStrictEvidence: true,
@@ -79,7 +119,7 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
       })) : []
 
 
-    if (result) { // && schema.trustable) {
+    if (result && presentationResult) { // && schema.trustable) {
       const identity = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
         credential.id, REGISTRY_SECTION_PEER
       ) || wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
@@ -97,8 +137,10 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
     }
 
     return {
-      valid: result,
-      cause: info.kind === 'invalid' ? info.errors : undefined,
+      valid: result && presentationResult,
+      cause: presentationResult
+        ? info.kind === 'invalid' ? info.errors : undefined
+        : presentationCause,
       trusted: evidenceValidation.length === 0 ? false : evidenceValidation.reduce(
         (trusted, result) => {
           if (trusted) {

@@ -397,55 +397,18 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           if (!await _result) {
             return false
           }
-          const credResult = await jsigs.verify(
-            credential,
-            {
-              suite: await _getVerifySuite({
-                verificationMethod: credential.proof.verificationMethod
-              }),
-              documentLoader: _documentLoader,
-              purpose: new jsigs.purposes.AssertionProofPurpose(
-                await _getProofPurposeOptions({
-                  controller: credential.issuer || credential.holder
-                })
-              ),
-              compactProof: false,
-            }
-          )
 
-          if (testEvidence && credResult.verified && credential.evidence) {
-            const [evidenceResult, evidenceErrors] = await _core.verifyEvidence(
-              credential, presentation, { localLoader, nonStrictEvidence }
-            )
-            credResult.verified = evidenceResult
-            if (!evidenceResult) {
-              credResult.error = { errors: evidenceErrors }
-            }
+          const [res, credResult] = await _core.verifyCredential(credential, undefined, {
+            localLoader,
+            nonStrictEvidence,
+            verifyEvidence: testEvidence
+          })
+
+          if (!res && credResult.kind === 'invalid') {
+            result = credResult
           }
 
-          if (credResult.verified && credential.credentialSchema) {
-            const [schemaResult, schemaErrors] = await _core.verifySchema(
-              credential, presentation, { localLoader, nonStrictEvidence }
-            )
-            credResult.verified = schemaResult
-            if (!schemaResult) {
-              credResult.error = { errors: schemaErrors }
-            }
-          }
-
-          if (credResult.verified) {
-            return true
-          }
-
-          result = {
-            kind: 'invalid',
-            errors: [
-              ...result.kind === 'invalid' ? result.errors : [],
-              ...credResult.error.errors
-            ]
-          }
-
-          return false
+          return res
         },
         Promise.resolve(true)
       )

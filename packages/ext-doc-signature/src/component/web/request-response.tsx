@@ -4,14 +4,17 @@ import {
   CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidget, WalletFormProvider
+  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidget, 
+  WalletFormProvider
 } from '@owlmeans/regov-mold-wallet-web'
-import { CredentialSubject, getCompatibleSubject, Presentation, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from '@owlmeans/regov-ssi-core'
-import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-extension'
+import { CredentialSubject, getCompatibleSubject, Presentation, REGISTRY_SECTION_PEER, 
+  REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from '@owlmeans/regov-ssi-core'
+import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING, VALIDATION_KIND_RESPONSE } from '@owlmeans/regov-ssi-extension'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
-  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject, SignatureRequestSubject, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION
+  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject, 
+  SignatureRequestSubject, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION
 } from '../../types'
 import { getSignatureResponseFromPresentation, getSignatureRequestFromPresentation } from '../../util'
 import { typeFormatterFacotry } from '../formatter'
@@ -73,7 +76,8 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
           return
         }
         const res = await factory.validationFactory(handler.wallet, {
-          credential: signature, extensions: extensions.registry
+          presentation, credential: signature, extensions: extensions.registry,
+          kind: VALIDATION_KIND_RESPONSE
         })
         setValidationResult(res)
       })()

@@ -148,8 +148,8 @@ export type VerifyPresentationMethod = (
 ) => Promise<[boolean, VerifyPresentationResult]>
 
 export type VerifyPresentationOptions = {
-  localLoader?: LocalDocumentLoader,
-  testEvidence?: boolean,
+  localLoader?: LocalDocumentLoader
+  testEvidence?: boolean
   nonStrictEvidence?: boolean 
 }
 
