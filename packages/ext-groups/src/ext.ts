@@ -213,9 +213,12 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
         evidence => evidence.instance?.type.includes(BASIC_IDENTITY_TYPE)
       )
 
-      if (identityEvidence?.result.valid
-        && groupEvidence?.result.trusted
-        && groupEvidence?.result.valid) {
+      console.log(
+        groupEvidence,
+        identityEvidence
+      )
+
+      if (identityEvidence?.result.valid && groupEvidence?.result.trusted && groupEvidence?.result.valid) {
         const sameIdentity = normalizeValue(groupEvidence.result.evidence).find(
           evidence => evidence.instance?.id === identityEvidence.instance?.id
         )
