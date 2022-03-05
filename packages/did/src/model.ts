@@ -17,7 +17,6 @@ import {
   VERIFICATION_KEY_HOLDER,
   DIDDocumentSimplePurpose,
 } from './types'
-
 import {
   DIDDocument,
   DIDPURPOSE_VERIFICATION,
@@ -39,7 +38,7 @@ import {
   ExtractKeyMethod,
   DID_EXTRACTKEY_WRONG_DID,
 } from './types'
-
+import didContext from './docs/did.context.json'
 import { documentWarmer } from './loader'
 
 const jldsign = require('jsonld-signatures')
@@ -78,6 +77,7 @@ export const buildDidHelper =
       }
     })
 
+    documentWarmer('https://w3id.org/did/v1', JSON.stringify({ '@context': didContext }))
     documentWarmer(contextUrl, context)
 
     const _makeDIDId = (key: CryptoKey, options: MakeDIDIdOptions = {}) => {

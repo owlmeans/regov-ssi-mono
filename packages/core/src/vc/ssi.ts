@@ -36,21 +36,23 @@ import {
   convertToSchema,
   CREDENTIAL_SCHEMA_TYPE_2020,
   validateSchema
-} from "@owlmeans/regov-ssi-common"
+} from '@owlmeans/regov-ssi-common'
 import {
   DIDDocument,
   buildDocumentLoader,
+  documentWarmer,
   DID_REGISTRY_ERROR_NO_DID,
   DID_REGISTRY_ERROR_NO_KEY_BY_DID,
   VERIFICATION_KEY_HOLDER,
   VERIFICATION_KEY_CONTROLLER,
   BuildDocumentLoader,
-} from "@owlmeans/regov-ssi-did"
+} from '@owlmeans/regov-ssi-did'
 import {
   isCredential,
   isFullEvidence,
   isFullCredentialSchema
-} from "./util"
+} from './util'
+import vcContext from '../docs/vc.context.json'
 
 const jsigs = require('jsonld-signatures')
 
@@ -66,6 +68,8 @@ export const buildSSICore: BuildSSICoreMethod = async ({
   defaultSchema
 }) => {
   const documentLoader = buildDocumentLoader(did)(() => undefined)
+
+  documentWarmer('https://www.w3.org/2018/credentials/v1', JSON.stringify({ '@context': vcContext }))
 
   const _core: SSICore = {
     keys,
