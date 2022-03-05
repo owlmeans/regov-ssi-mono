@@ -41,7 +41,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
             throw ERROR_WIDGET_EXTENSION
           }
           const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
-          const unsginedGroup = await factory.buildingFactory(handler.wallet, { subjectData: {} })
+          const unsginedGroup = await factory.build(handler.wallet, { subjectData: {} })
           setUnsignedGroup(unsginedGroup)
 
           methods.setValue('group', {
@@ -99,7 +99,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
           ...unsginedGroup.credentialSubject,
           ...extendSubject
         }
-        const credential = await factory.signingFactory(handler.wallet, { unsigned: unsginedGroup })
+        const credential = await factory.sign(handler.wallet, { unsigned: unsginedGroup })
 
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
 

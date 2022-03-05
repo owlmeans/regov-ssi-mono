@@ -59,7 +59,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
           throw ERROR_WIDGET_EXTENSION
         }
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
-        const unsignedMemberhips = await factory.buildingFactory(handler.wallet, {
+        const unsignedMemberhips = await factory.build(handler.wallet, {
           subjectData: {
             groupId: group ? group.id : ''
           }
@@ -108,7 +108,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
         unsignedMemberhip.evidence = addToValue(unsignedMemberhip.evidence ,group)
       }
       const factory = ext.getFactory(unsignedMemberhip.type)
-      const claim = await factory.claimingFactory(handler.wallet, { unsignedClaim: unsignedMemberhip })
+      const claim = await factory.claim(handler.wallet, { unsignedClaim: unsignedMemberhip })
 
       const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
       const item = await registry.addCredential(claim)

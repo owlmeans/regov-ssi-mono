@@ -1,11 +1,11 @@
 import { addToValue } from "@owlmeans/regov-ssi-common"
 import { isCredential } from "@owlmeans/regov-ssi-core"
 import { DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_HOLDER } from "@owlmeans/regov-ssi-did"
-import { ClaimingFactoryMethodBuilder } from "../types"
+import { ClaimMethodBuilder } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
 
 
-export const defaultClaimingFactory: ClaimingFactoryMethodBuilder = schema =>
+export const defaultClaimMethod: ClaimMethodBuilder = schema =>
   async (wallet, params) => {
     const unsigned = params.unsignedClaim
     const identity = params.identity || wallet.getIdentity()?.credential

@@ -1,9 +1,12 @@
-import { DIDDocument, DIDDocumentUnsinged, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, VERIFICATION_KEY_CONTROLLER } from "@owlmeans/regov-ssi-did"
+import {
+  DIDDocument, DIDDocumentUnsinged, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION,
+  VERIFICATION_KEY_CONTROLLER
+} from "@owlmeans/regov-ssi-did"
 import { buildWalletLoader, Credential } from '@owlmeans/regov-ssi-core'
-import { OfferingFactoryMethodBuilder } from "../types"
+import { OfferMethodBuilder } from "../types"
 
 
-export const defaultOfferingFactory: OfferingFactoryMethodBuilder = schema => async (wallet, params) => {
+export const defaultOfferMethod: OfferMethodBuilder = schema => async (wallet, params) => {
   const {
     claim, credential, holder, subject, cryptoKey, claimType, offerType, id, challenge, domain
   } = params
@@ -37,7 +40,7 @@ export const defaultOfferingFactory: OfferingFactoryMethodBuilder = schema => as
   const offer = await wallet.ssi.buildPresentation([signed], {
     holder: issuerDid, type: offerType, id
   })
-  
+
   return wallet.ssi.signPresentation(offer, issuerDid as DIDDocument, { challenge, domain })
 }
 

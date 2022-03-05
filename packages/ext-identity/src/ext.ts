@@ -1,5 +1,5 @@
 import {
-  addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails, defaultBuildingFactory,
+  addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails, defaultbuild,
   EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams,
 } from "@owlmeans/regov-ssi-extension"
 import { CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential } from "@owlmeans/regov-ssi-core"
@@ -68,7 +68,7 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
 
   const extension = buildExtension(schema, {
     [identityType]: {
-      buildingFactory: (credSchema) => async (wallet, params) => {
+      produceBuildMethod: (credSchema) => async (wallet, params) => {
         const inputData = params.subjectData as IdentitySubject
         const updatedSubjectData = {
           ...credSchema.defaultSubject,
@@ -78,7 +78,7 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
           uuid: makeRandomUuid()
         }
         
-        const unsigned = await defaultBuildingFactory(credSchema)(wallet, {
+        const unsigned = await defaultbuild(credSchema)(wallet, {
           ...params, subjectData: updatedSubjectData
         })
 

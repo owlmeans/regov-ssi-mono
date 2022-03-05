@@ -5,13 +5,13 @@ import {
 } from "@owlmeans/regov-ssi-core"
 import { ERROR_CANT_IDENTIFY_CREDENTIAL } from "./types"
 import {
-  EvidenceValidationResult, ValidationErrorCause, ValidationFactoryMethodBuilder,
+  EvidenceValidationResult, ValidationErrorCause, ValidateMethodBuilder,
   VALIDATION_KIND_OFFER, VALIDATION_KIND_RESPONSE
 } from "../types"
 import { CredentialDescription } from "../../schema"
 
 
-export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =>
+export const defaultValidateMethod: ValidateMethodBuilder = schema =>
   async (wallet, { credential, presentation, extensions, kind }) => {
     let presentationResult: boolean = true
     let presentationCause: undefined | MaybeArray<string | ValidationErrorCause> = undefined
@@ -103,7 +103,7 @@ export const defaultValidationFactory: ValidationFactoryMethodBuilder = schema =
         }
 
         const factory = ext.getFactory(credInfo.mainType)
-        const result = await factory.validationFactory(wallet, {
+        const result = await factory.validate(wallet, {
           credential: currentEvidence, extensions
         })
 

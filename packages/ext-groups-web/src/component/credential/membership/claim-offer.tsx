@@ -43,7 +43,7 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
           }
 
           const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
-          const result = await factory.validationFactory(handler.wallet, {
+          const result = await factory.validate(handler.wallet, {
             presentation, credential: membership, extensions: extensions.registry,
             kind: VALIDATION_KIND_OFFER
           })

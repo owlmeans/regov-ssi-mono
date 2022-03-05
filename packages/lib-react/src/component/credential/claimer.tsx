@@ -1,19 +1,9 @@
-import {
-  SSICore,
-  UnsignedCredential
-} from '@owlmeans/regov-ssi-core'
+import { SSICore, UnsignedCredential } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-extension'
-import React, {
-  FunctionComponent
-} from 'react'
+import React, { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import {
-  BasicNavigator,
-  RegovComponentProps,
-  RegovValidationRules,
-  useRegov,
-  withRegov,
-  WrappedComponentProps
+  BasicNavigator, RegovComponentProps, RegovValidationRules, useRegov, withRegov, WrappedComponentProps
 } from '../../common'
 import { validateJson } from '../../util'
 
@@ -63,7 +53,7 @@ export const CredentialClaimer: FunctionComponent<CredentialClaimerParams> =
           const factory = ext.getFactory(unsignedClaim.type, defaultType)
 
           try {
-            const claim = await factory.claimingFactory(handler.wallet, { unsignedClaim, claimType })
+            const claim = await factory.claim(handler.wallet, { unsignedClaim, claimType })
             methods.setValue('output', JSON.stringify(claim, undefined, 2))
           } catch (error) {
             console.error(error)

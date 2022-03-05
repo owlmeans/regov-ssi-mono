@@ -1,31 +1,21 @@
 import { CryptoKey, MaybeArray } from '@owlmeans/regov-ssi-common'
 import {
-  Presentation,
-  Credential,
-  UnsignedCredential,
-  WalletWrapper,
-  Evidence,
-  CredentialSchema,
-  CredentialType,
-  MultiSchema,
-  BasicCredentialType,
+  Presentation, Credential, UnsignedCredential, WalletWrapper, Evidence, CredentialSchema,
+  CredentialType, MultiSchema, BasicCredentialType
 } from '@owlmeans/regov-ssi-core'
 import { DIDDocument, DIDDocumentUnsinged } from '@owlmeans/regov-ssi-did'
 import { ExtensionRegistry } from '../registry'
 
 import {
-  CredentialDescription,
-  CredentialEvidenceDesctiption,
-  ExtensionEvent,
-  ExtensionSchema
+  CredentialDescription, CredentialEvidenceDesctiption, ExtensionEvent, ExtensionSchema
 } from "../schema"
 
 
 export type Extension = {
   schema: ExtensionSchema
-  factories: ExtensionFactories
+  factories: ExtensionService
   localization?: ExtensionLocalization
-  getFactory: (type: BasicCredentialType, defaultType?: string) => CredentialExtensionFactories
+  getFactory: (type: BasicCredentialType, defaultType?: string) => CredentialService
   getEvents: (trigger: string, code?: string) => ExtensionEvent[]
   getEvent: (trigger: string, code?: string) => undefined | ExtensionEvent
   modifyEvent: (
@@ -33,44 +23,44 @@ export type Extension = {
   ) => void
 }
 
-export type ExtensionFactories = {
-  [key: string]: CredentialExtensionFactories
+export type ExtensionService = {
+  [key: string]: CredentialService
 }
 
-export type ExtensionFactoriesParam = {
-  [key: string]: CredentialExtensionFactoriesBuilder
+export type ExtensionServiceBuilder = {
+  [key: string]: CredentialServiceBuilder
 }
 
-export type CredentialExtensionFactoriesBuilder = {
-  buildingFactory?: BuildingFactoryMethodBuilder
-  signingFactory?: SigningFactoryMethodBuilder
-  validationFactory?: ValidationFactoryMethodBuilder
-  claimingFactory?: ClaimingFactoryMethodBuilder
-  offeringFacotry?: OfferingFactoryMethodBuilder
-  requestFactory?: RequestFactoryMethodBuilder
-  responseFactory?: ResponseFactoryMethodBuilder
+export type CredentialServiceBuilder = {
+  produceBuildMethod?: BuildMethodBuilder
+  produceSignMethod?: SignMethodBuilder
+  produceValidateMethod?: ValidateMethodBuilder
+  produceClaimMethod?: ClaimMethodBuilder
+  produceOfferMethod?: OfferMethodBuilder
+  produceRequestMethod?: RequestMethodBuilder
+  produceRespondMethod?: RespondMethodBuilder
 }
 
-export type CredentialExtensionFactories = {
-  buildingFactory: BuildingFactoryMethod
-  signingFactory: SigningFactoryMethod
-  validationFactory: ValidationFactoryMethod
-  claimingFactory: ClaimingFactoryMethod
-  offeringFactory: OfferingFactoryMethod
-  requestFactory: RequestFactoryMethod
-  responseFactory: ResponseFactoryMethod
+export type CredentialService = {
+  build: BuildMethod
+  sign: SignMethod
+  validate: ValidateMethod
+  claim: ClaimMethod
+  offer: OfferMethod
+  request: RequestMethod
+  respond: RespondMethod
 }
 
 
-export type BuildingFactoryMethodBuilder = <
+export type BuildMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) => BuildingFactoryMethod
+  >(schema: CredentialDescription<Schema>) => BuildMethod
 
-export type BuildingFactoryMethod = <
-  Params extends BuildingFactoryParams
+export type BuildMethod = <
+  Params extends BuildMethodParams
   >(wallet: WalletWrapper, params: Params) => Promise<UnsignedCredential>
 
-export type BuildingFactoryParams = {
+export type BuildMethodParams = {
   didUnsigned?: DIDDocumentUnsinged
   subjectData: Object
   key?: CryptoKey
@@ -81,28 +71,28 @@ export type BuildingFactoryParams = {
   context?: MultiSchema
 }
 
-export type SigningFactoryMethodBuilder = <
+export type SignMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) => SigningFactoryMethod
+  >(schema: CredentialDescription<Schema>) => SignMethod
 
-export type SigningFactoryMethod = <
-  Params extends SigningFactoryParams
+export type SignMethod = <
+  Params extends SignMethodParams
   >(wallet: WalletWrapper, params: Params) => Promise<Credential>
 
-export type SigningFactoryParams = {
+export type SignMethodParams = {
   unsigned: UnsignedCredential,
   evidence?: MaybeArray<Evidence>
 }
 
-export type ValidationFactoryMethodBuilder = <
+export type ValidateMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema
-  >(schema: CredentialDescription<Schema>) => ValidationFactoryMethod
+  >(schema: CredentialDescription<Schema>) => ValidateMethod
 
-export type ValidationFactoryMethod = <
-  Params extends ValidationFactoryParams
+export type ValidateMethod = <
+  Params extends ValidateMethodParams
   >(wallet: WalletWrapper, params: Params) => Promise<ValidationResult>
 
-export type ValidationFactoryParams = {
+export type ValidateMethodParams = {
   presentation?: Presentation
   credential: Credential
   extensions: ExtensionRegistry
@@ -137,45 +127,45 @@ export interface EvidenceValidationResult {
   trustCredential?: Credential[]
 }
 
-export type ClaimingFactoryMethodBuilder = <
+export type ClaimMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema
-  >(schema: CredentialDescription<Schema>) => ClaimingFactoryMethod
+  >(schema: CredentialDescription<Schema>) => ClaimMethod
 
-export type ClaimingFactoryMethod = <
-  Params extends ClaimingFactoryParams
+export type ClaimMethod = <
+  Params extends ClaimMethodParams
   >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
-export type ClaimingFactoryParams = {
+export type ClaimMethodParams = {
   unsignedClaim: UnsignedCredential
   holder?: DIDDocument
   claimType?: string
   identity?: Credential
 }
 
-export type RequestFactoryMethodBuilder = <
+export type RequestMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema
-  >(schema: CredentialDescription<Schema>) => RequestFactoryMethod
+  >(schema: CredentialDescription<Schema>) => RequestMethod
 
-export type RequestFactoryMethod = <
-  Params extends RequestFactoryParams
+export type RequestMethod = <
+  Params extends RequestMethodParams
   >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
-export type RequestFactoryParams = {
+export type RequestMethodParams = {
   unsignedRequest: UnsignedCredential
   holder?: DIDDocument
   requestType?: string
   identity?: Credential
 }
 
-export type OfferingFactoryMethodBuilder = <
+export type OfferMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) => OfferingFactoryMethod
+  >(schema: CredentialDescription<Schema>) => OfferMethod
 
-export type OfferingFactoryMethod = <
-  Params extends OfferingFactoryParams
+export type OfferMethod = <
+  Params extends OfferMethodParams
   >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
-export type OfferingFactoryParams = {
+export type OfferMethodParams = {
   claim: Presentation
   credential: Credential
   holder: DIDDocument
@@ -188,15 +178,15 @@ export type OfferingFactoryParams = {
   domain: string
 }
 
-export type ResponseFactoryMethodBuilder = <
+export type RespondMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) => ResponseFactoryMethod
+  >(schema: CredentialDescription<Schema>) => RespondMethod
 
-export type ResponseFactoryMethod = <
-  Params extends ResponseFactoryParams
+export type RespondMethod = <
+  Params extends RespondMethodParams
   >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
-export type ResponseFactoryParams = {
+export type RespondMethodParams = {
   request: Presentation
   credential: Credential
   identity?: Credential

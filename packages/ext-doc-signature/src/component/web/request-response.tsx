@@ -75,7 +75,7 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
         if (!handler.wallet || !extensions || !signature) {
           return
         }
-        const res = await factory.validationFactory(handler.wallet, {
+        const res = await factory.validate(handler.wallet, {
           presentation, credential: signature, extensions: extensions.registry,
           kind: VALIDATION_KIND_RESPONSE
         })

@@ -1,31 +1,15 @@
 import {
-  addObserverToSchema,
-  buildExtension,
-  buildExtensionSchema,
-  defaultBuildingFactory,
-  defaultSigningFactory,
-  defaultValidationFactory,
-  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
-  EXTENSION_TRIGGER_RETRIEVE_NAME,
-  IncommigDocumentEventParams,
-  RetreiveNameEventParams
+  addObserverToSchema, buildExtension, buildExtensionSchema, defaultBuildMethod, defaultSignMethod,
+  defaultValidateMethod, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, EXTENSION_TRIGGER_RETRIEVE_NAME,
+  IncommigDocumentEventParams, RetreiveNameEventParams
 } from "@owlmeans/regov-ssi-extension"
 import {
-  REGISTRY_TYPE_IDENTITIES,
-  REGISTRY_TYPE_CREDENTIALS,
-  UnsignedCredential,
-  getCompatibleSubject,
+  REGISTRY_TYPE_IDENTITIES, REGISTRY_TYPE_CREDENTIALS, UnsignedCredential, getCompatibleSubject,
   isPresentation
 } from '@owlmeans/regov-ssi-core'
 import {
-  BASIC_IDENTITY_TYPE,
-  GroupSubject,
-  MembershipSubject,
-  RegovGroupExtensionTypes,
-  REGOV_CLAIM_TYPE,
-  REGOV_CREDENTIAL_TYPE_GROUP,
-  REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
-  REGOV_EXT_GROUP_NAMESPACE,
+  BASIC_IDENTITY_TYPE, GroupSubject, MembershipSubject, RegovGroupExtensionTypes, REGOV_CLAIM_TYPE,
+  REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE,
   REGOV_OFFER_TYPE
 } from "./types"
 import { makeRandomUuid, normalizeValue } from "@owlmeans/regov-ssi-common"
@@ -142,7 +126,7 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
 
 export const groupsExtension = buildExtension(groupsExtensionSchema, {
   [REGOV_CREDENTIAL_TYPE_GROUP]: {
-    buildingFactory: (credSchema) => async (wallet, params) => {
+    produceBuildMethod: (credSchema) => async (wallet, params) => {
       const inputData = params.subjectData as GroupSubject
       const updatedSubjectData = {
         ...credSchema.defaultSubject,
@@ -157,14 +141,13 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
         updatedSubjectData.description = ''
       }
 
-      const unsigned = await defaultBuildingFactory(credSchema)(wallet, {
+      const unsigned = await defaultBuildMethod(credSchema)(wallet, {
         ...params, subjectData: updatedSubjectData
       })
 
       return unsigned as unknown as UnsignedCredential
     },
-
-    signingFactory: (credSchema) => async (wallet, params) => {
+    produceSignMethod: (credSchema) => async (wallet, params) => {
       if (!params.evidence) {
         const identity = wallet.getIdentity()
         if (identity) {
@@ -172,11 +155,11 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
         }
       }
 
-      return defaultSigningFactory(credSchema)(wallet, params)
+      return defaultSignMethod(credSchema)(wallet, params)
     }
   },
   [REGOV_CREDENTIAL_TYPE_MEMBERSHIP]: {
-    buildingFactory: (credSchema) => async (wallet, params) => {
+    produceBuildMethod: (credSchema) => async (wallet, params) => {
       const inputData = params.subjectData as MembershipSubject
       const updatedSubjectData = {
         ...credSchema.defaultSubject,
@@ -196,14 +179,14 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
         updatedSubjectData.memberCode = ''
       }
 
-      const unsigned = await defaultBuildingFactory(credSchema)(wallet, {
+      const unsigned = await defaultBuildMethod(credSchema)(wallet, {
         ...params, subjectData: updatedSubjectData
       })
 
       return unsigned as unknown as UnsignedCredential
     },
-    validationFactory: credSchema => async (wallet, params) => {
-      const result = await defaultValidationFactory(credSchema)(wallet, params)
+    produceValidateMethod: credSchema => async (wallet, params) => {
+      const result = await defaultValidateMethod(credSchema)(wallet, params)
 
       const groupEvidence = normalizeValue(result.evidence).find(
         evidence => evidence.instance?.type.includes(REGOV_CREDENTIAL_TYPE_GROUP)

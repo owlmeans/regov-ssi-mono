@@ -135,14 +135,14 @@ export const SignatureRequestWeb = (ext: Extension): FunctionComponent<Signature
           throw ERROR_WIDGET_EXTENSION
         }
         const factory = ext.getFactory(REGOV_SIGNATURE_REQUEST_TYPE)
-        const unsignedRequest = await factory.buildingFactory(handler.wallet, {
+        const unsignedRequest = await factory.build(handler.wallet, {
           subjectData: Object.fromEntries(
             Object.entries(data.signature.request)
               .filter(([key]) => !['alert', 'name', 'file'].includes(key))
           )
         })
 
-        const request = await factory.requestFactory(handler.wallet, { unsignedRequest })
+        const request = await factory.request(handler.wallet, { unsignedRequest })
 
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
         const item = await registry.addCredential(request)

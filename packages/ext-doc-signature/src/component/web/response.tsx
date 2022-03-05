@@ -57,7 +57,7 @@ export const SignatureResponseWeb: FunctionComponent<SignatureResponseParams> =
           }
 
           const factory = ext.getFactory(credential.type)
-          const requestValidation = await factory.validationFactory(handler.wallet, {
+          const requestValidation = await factory.validate(handler.wallet, {
             presentation, credential, extensions: extensions.registry
           })
 
@@ -134,7 +134,7 @@ export const SignatureResponseWeb: FunctionComponent<SignatureResponseParams> =
           }
 
           const factory = ext.getFactory(REGOV_SIGNATURE_RESPONSE_TYPE)
-          const response = await factory.responseFactory(handler.wallet, {
+          const response = await factory.respond(handler.wallet, {
             request: presentation,
             credential: currentSignature.credential
           })

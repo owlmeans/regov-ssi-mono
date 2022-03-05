@@ -1,11 +1,11 @@
 import { addToValue } from "@owlmeans/regov-ssi-common"
 import { isCredential } from "@owlmeans/regov-ssi-core"
 import { DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_HOLDER } from "@owlmeans/regov-ssi-did"
-import { RequestFactoryMethodBuilder } from "../types"
+import { RequestMethodBuilder } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
 
 
-export const defaultRequestFactory: RequestFactoryMethodBuilder = schema =>
+export const defaultRequestMethod: RequestMethodBuilder = schema =>
   async (wallet, params) => {
     const unsigned = params.unsignedRequest
 

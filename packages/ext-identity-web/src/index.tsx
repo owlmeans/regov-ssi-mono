@@ -39,8 +39,8 @@ export const buildIdentityExtensionUI = (
     ) => {
       if (params.config.development && extension.schema.details.defaultCredType) {
         const factory = extension.getFactory(extension.schema.details.defaultCredType)
-        const unsigned = await factory.buildingFactory(wallet, { subjectData: {} })
-        const identity = await factory.signingFactory(wallet, { unsigned })
+        const unsigned = await factory.build(wallet, { subjectData: {} })
+        const identity = await factory.sign(wallet, { unsigned })
 
         const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
 

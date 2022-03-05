@@ -1,20 +1,20 @@
 import { BASE_CREDENTIAL_TYPE } from "@owlmeans/regov-ssi-core"
 import { 
-  CredentialExtensionFactories, Extension, ExtensionFactories, ExtensionFactoriesParam 
+  CredentialService, Extension, ExtensionService, ExtensionServiceBuilder 
 } from "./types"
 import { ExtensionSchema } from "../schema"
 import { findAppropriateCredentialType } from "../util"
 import { 
-  defaultBuildingFactory, defaultClaimingFactory, defaultSigningFactory, defaultValidationFactory,
-  defaultOfferingFactory, defaultRequestFactory
+  defaultBuildMethod, defaultClaimMethod, defaultSignMethod, defaultValidateMethod,
+  defaultOfferMethod, defaultRequestMethod
 } from "./factory"
 import { singleValue } from "@owlmeans/regov-ssi-common"
-import { defaultResponseFactory } from "./factory/response"
+import { defaultRespondMethod } from "./factory/response"
 
 
 export const buildExtension = (
   schema: ExtensionSchema,
-  factories?: ExtensionFactoriesParam
+  factories?: ExtensionServiceBuilder
 ): Extension => {
   const _extension: Extension = {
     schema,
@@ -23,13 +23,13 @@ export const buildExtension = (
         return {
           ..._factories,
           [key]: {
-            buildingFactory: defaultBuildingFactory(description),
-            signingFactory: defaultSigningFactory(description),
-            validationFactory: defaultValidationFactory(description),
-            claimingFactory: defaultClaimingFactory(description),
-            offeringFactory: defaultOfferingFactory(description),
-            requestFactory: defaultRequestFactory(description),
-            responseFactory: defaultResponseFactory(description),
+            build: defaultBuildMethod(description),
+            sign: defaultSignMethod(description),
+            validate: defaultValidateMethod(description),
+            claim: defaultClaimMethod(description),
+            offer: defaultOfferMethod(description),
+            request: defaultRequestMethod(description),
+            respond: defaultRespondMethod(description),
             ...(factories
               ? Object.entries(factories[key]).reduce((_facts, [method, builder]) => {
                 if (schema.credentials) {
@@ -39,13 +39,13 @@ export const buildExtension = (
                   }
                 }
                 return _facts
-              }, {} as CredentialExtensionFactories)
+              }, {} as CredentialService)
               : {}
             )
           }
         }
-      }, {} as ExtensionFactories
-    ) : {} as ExtensionFactories,
+      }, {} as ExtensionService
+    ) : {} as ExtensionService,
 
     getFactory: (type, defaultType = BASE_CREDENTIAL_TYPE) => {
       type = findAppropriateCredentialType(_extension, type, defaultType)

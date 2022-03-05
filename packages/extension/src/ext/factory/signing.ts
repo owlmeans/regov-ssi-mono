@@ -1,23 +1,13 @@
-import {
-  addToValue,
-  CryptoKey,
-  normalizeValue
-} from "@owlmeans/regov-ssi-common"
-import {
-  isCredential
-} from "@owlmeans/regov-ssi-core"
-import {
-  DIDDocument,
-  DIDDocumentUnsinged, ExtractKeyMethod, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER
+import { addToValue, CryptoKey, normalizeValue } from "@owlmeans/regov-ssi-common"
+import { isCredential } from "@owlmeans/regov-ssi-core"
+import { 
+  DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER
 } from "@owlmeans/regov-ssi-did"
-import { SigningFactoryMethodBuilder } from "../types"
-import {
-  ERROR_FACTORY_EVIDENCE_HOLDER_FORMAT,
-  ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED
-} from "./types"
+import { SignMethodBuilder } from "../types"
+import { ERROR_FACTORY_EVIDENCE_HOLDER_FORMAT, ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED } from "./types"
 
 
-export const defaultSigningFactory: SigningFactoryMethodBuilder = schema =>
+export const defaultSignMethod: SignMethodBuilder = schema =>
   async (wallet, params) => {
     const unsigned = params.unsigned
     const unsignedDid = unsigned.holder as DIDDocumentUnsinged

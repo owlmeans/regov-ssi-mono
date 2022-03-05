@@ -81,13 +81,13 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
         const identity = registry.getCredential(data.signature.creation.identity)?.credential
 
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
-        const unsigned = await factory.buildingFactory(handler.wallet, {
+        const unsigned = await factory.build(handler.wallet, {
           identity, subjectData: {
             ...subject,
             signedAt: new Date().toISOString()
           }
         })
-        const credential = await factory.signingFactory(handler.wallet, {
+        const credential = await factory.sign(handler.wallet, {
           unsigned,
           evidence: identity
         })

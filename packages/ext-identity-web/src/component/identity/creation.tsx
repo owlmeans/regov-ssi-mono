@@ -64,7 +64,7 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
             throw ERROR_CREATION_EXTENSION
           }
           const factory = ext.getFactory(ext.schema.details.defaultCredType || BASIC_IDENTITY_TYPE)
-          const unsignedIdentity = await factory.buildingFactory(handler.wallet, { subjectData: {} })
+          const unsignedIdentity = await factory.build(handler.wallet, { subjectData: {} })
           setUnsignedIdentity(unsignedIdentity)
 
           methods.setValue('creation', {
@@ -94,7 +94,7 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
           throw ERROR_CREATION_READYTO_SIGN
         }
         const factory = ext.getFactory(unsignedIdentity.type)
-        const identity = await factory.signingFactory(handler.wallet, { unsigned: unsignedIdentity })
+        const identity = await factory.sign(handler.wallet, { unsigned: unsignedIdentity })
 
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
 

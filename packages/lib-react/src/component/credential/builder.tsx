@@ -1,30 +1,14 @@
 import {
-  BASE_CREDENTIAL_TYPE,
-  CredentialsRegistryWrapper,
-  CredentialType,
-  REGISTRY_SECTION_OWN,
-  REGISTRY_TYPE_UNSIGNEDS,
-  SSICore,
-  WalletWrapper
+  BASE_CREDENTIAL_TYPE, CredentialsRegistryWrapper, CredentialType, REGISTRY_SECTION_OWN,
+  REGISTRY_TYPE_UNSIGNEDS, SSICore, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
-import React, {
-  Fragment,
-  FunctionComponent
-} from 'react'
+import React, { Fragment, FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import {
-  BasicNavigator,
-  RegovComponentProps,
-  RegovValidationRules,
-  useRegov,
-  withRegov,
-  WrappedComponentProps
+  BasicNavigator, RegovComponentProps, RegovValidationRules, useRegov, withRegov, WrappedComponentProps
 } from '../../common'
 import { generalNameVlidation, validateJson } from '../../util'
-import {
-  Extension,
-  findAppropriateCredentialType
-} from '@owlmeans/regov-ssi-extension'
+import { Extension, findAppropriateCredentialType } from '@owlmeans/regov-ssi-extension'
 
 
 export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
@@ -78,7 +62,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
           const types = JSON.parse(data.builder.type) as CredentialType
           const type = findAppropriateCredentialType(ext, types, defaultType)
           const factory = ext.getFactory(type, defaultType)
-          const unsigned = await factory.buildingFactory(wallet, {
+          const unsigned = await factory.build(wallet, {
             type: types,
             subjectData: JSON.parse(data.builder.subject),
             context: JSON.parse(data.builder.context),

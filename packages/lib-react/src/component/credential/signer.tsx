@@ -1,19 +1,9 @@
-import {
-  SSICore,
-  UnsignedCredential,
-} from '@owlmeans/regov-ssi-core'
+import { SSICore, UnsignedCredential } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-extension'
-import React, {
-  FunctionComponent
-} from 'react'
+import React, { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import {
-  BasicNavigator,
-  RegovComponentProps,
-  RegovValidationRules,
-  useRegov,
-  withRegov,
-  WrappedComponentProps
+  BasicNavigator, RegovComponentProps, RegovValidationRules, useRegov, withRegov, WrappedComponentProps
 } from '../../common'
 import { validateJson } from '../../util'
 
@@ -61,7 +51,7 @@ export const CredentialSigner: FunctionComponent<CredentialSignerParams> =
           const unsigned = JSON.parse(data.signer.unsigned) as UnsignedCredential
           const factory = ext.getFactory(unsigned.type, defaultType)
           try {
-            const cred = await factory.signingFactory(handler.wallet, { unsigned })
+            const cred = await factory.sign(handler.wallet, { unsigned })
             methods.setValue('output', JSON.stringify(cred, undefined, 2))
           } catch (error) {
             console.error(error)

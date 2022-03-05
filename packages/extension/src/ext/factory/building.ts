@@ -2,13 +2,13 @@ import { addToValue, normalizeValue } from "@owlmeans/regov-ssi-common"
 import { WalletWrapper, CredentialSchema, BASE_CREDENTIAL_TYPE, Credential } from "@owlmeans/regov-ssi-core"
 import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION } from "@owlmeans/regov-ssi-did"
 import { CredentialDescription } from "../../schema"
-import { BuildingFactoryParams } from "../types"
+import { BuildMethodParams } from "../types"
 
 
-export const defaultBuildingFactory = <
+export const defaultBuildMethod = <
   Schema extends CredentialSchema = CredentialSchema,
   >(schema: CredentialDescription<Schema>) =>
-  async (wallet: WalletWrapper, params: BuildingFactoryParams) => {
+  async (wallet: WalletWrapper, params: BuildMethodParams) => {
 
     const subject = params.subjectData as any
 

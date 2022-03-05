@@ -36,7 +36,7 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
       if (!handler.wallet || !extensions) {
         return
       }
-      const res = await factory.validationFactory(handler.wallet, {
+      const res = await factory.validate(handler.wallet, {
         credential, extensions: extensions.registry
       })
       setValidationResult(res)

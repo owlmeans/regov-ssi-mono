@@ -1,9 +1,11 @@
-import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION } from "@owlmeans/regov-ssi-did"
-import { ResponseFactoryMethodBuilder } from "../types"
+import { 
+  DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION 
+} from "@owlmeans/regov-ssi-did"
+import { RespondMethodBuilder } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
 
 
-export const defaultResponseFactory: ResponseFactoryMethodBuilder = schema =>
+export const defaultRespondMethod: RespondMethodBuilder = schema =>
   async (wallet, params) => {
     const identity = params.identity || wallet.getIdentity()?.credential
     if (!identity) {

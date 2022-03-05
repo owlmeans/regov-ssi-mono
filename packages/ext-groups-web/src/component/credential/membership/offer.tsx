@@ -54,7 +54,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
         delete subject.alert
 
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
-        const offer = await factory.offeringFactory(handler.wallet, {
+        const offer = await factory.offer(handler.wallet, {
           claim: presentation,
           credential: getMembershipClaim(presentation) as Credential,
           holder: getMembershipClaimHolder(presentation),
@@ -86,7 +86,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           return
         }
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
-        const result = await factory.validationFactory(handler.wallet, {
+        const result = await factory.validate(handler.wallet, {
           presentation, credential, extensions: extensions.registry
         })
         if (!result.valid) {
