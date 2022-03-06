@@ -1,9 +1,11 @@
-import { DIDRegistryBundle, DIDRegistryWrapper } from "@owlmeans/regov-ssi-did"
-import { CryptoHelper } from "@owlmeans/regov-ssi-common"
+import { DIDRegistryBundle, DIDRegistryWrapper } from "../did"
+import { CryptoHelper } from "../common"
 import { SSICore, Credential, CredentialSubject } from "../vc"
 import { CreateKeyOptions, KeyChain, KeyChainWrapper } from "../keys/types"
 import { BasicStore, EncryptedStore, SecureStore } from "../store/types"
-import { CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryType } from './registry/types'
+import {
+  CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryType
+} from './registry/types'
 
 
 export type Wallet = {

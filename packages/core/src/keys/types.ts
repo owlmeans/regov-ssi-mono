@@ -1,4 +1,5 @@
-import { CryptoKey, CryptoHelper } from "@owlmeans/regov-ssi-common"
+import { CryptoKey, CryptoHelper } from "../common"
+
 
 export type KeyChain = {
   defaultKey: string

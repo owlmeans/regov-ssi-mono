@@ -1,14 +1,7 @@
-import React, {
-  FunctionComponent
-} from 'react'
-import {
-  BasicNavigator,
-  EmptyProps,
-  NavigatorLoading,
-  RegovComponentProps,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
+import React, { FunctionComponent } from 'react'
+import { 
+  BasicNavigator, EmptyProps, NavigatorLoading, RegovComponentProps, withRegov, WrappedComponentProps
+} from '../../common/'
 
 
 export const MainLoading: FunctionComponent<MainLoadingParams> = withRegov<MainLoadingProps>(

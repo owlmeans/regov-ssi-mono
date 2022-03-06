@@ -1,61 +1,29 @@
 
 import {
-  BuildSSICoreMethod,
-  BuildCredentailOptions,
-  SignCredentialOptions,
-  BuildPresentationOptions,
-  SignPresentationOptions,
-  ERROR_NO_PRESENTATION_SIGNING_KEY,
-  ERROR_NO_CREDENTIAL_SIGNING_KEY,
-  VerifyPresentationResult,
-  SSICore,
+  BuildSSICoreMethod, BuildCredentailOptions, SignCredentialOptions, BuildPresentationOptions,
+  SignPresentationOptions, ERROR_NO_PRESENTATION_SIGNING_KEY, ERROR_NO_CREDENTIAL_SIGNING_KEY,
+  VerifyPresentationResult, SSICore
 } from "./ssi/types"
 import {
-  Credential,
-  CredentialSubject,
-  WrappedDocument,
-  UnsignedCredential,
-  Presentation,
-  PresentationHolder,
-  UnsignedPresentation,
-  BASE_CREDENTIAL_TYPE,
-  ERROR_EVIDENCE_ISNT_TRUSTED,
-  ERROR_EVIDENCE_ISNT_CREDENTIAL,
-  ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED,
-  SUBJECT_ONLY_CREDENTIAL_SCHEMA_TYPE,
+  Credential, CredentialSubject, WrappedDocument, UnsignedCredential, Presentation,
+  PresentationHolder, UnsignedPresentation, BASE_CREDENTIAL_TYPE, ERROR_EVIDENCE_ISNT_TRUSTED,
+  ERROR_EVIDENCE_ISNT_CREDENTIAL, ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED, SUBJECT_ONLY_CREDENTIAL_SCHEMA_TYPE,
   ERROR_CREDENTAILSCHEMA_UNKNOWN_ERROR
 } from './types'
 import {
-  COMMON_CRYPTO_ERROR_NOID,
-  COMMON_CRYPTO_ERROR_NOPK,
-  COMMON_CRYPTO_ERROR_NOPUBKEY,
-  makeRandomUuid,
-  mapValue,
-  MaybeArray,
-  addToValue,
-  convertToSchema,
-  CREDENTIAL_SCHEMA_TYPE_2020,
-  validateSchema
-} from '@owlmeans/regov-ssi-common'
+  COMMON_CRYPTO_ERROR_NOID, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY, makeRandomUuid,
+  mapValue, MaybeArray, addToValue, convertToSchema, CREDENTIAL_SCHEMA_TYPE_2020, validateSchema
+} from '../common'
 import {
-  DIDDocument,
-  buildDocumentLoader,
-  documentWarmer,
-  DID_REGISTRY_ERROR_NO_DID,
-  DID_REGISTRY_ERROR_NO_KEY_BY_DID,
-  VERIFICATION_KEY_HOLDER,
-  VERIFICATION_KEY_CONTROLLER,
+  DIDDocument, buildDocumentLoader, documentWarmer, DID_REGISTRY_ERROR_NO_DID,
+  DID_REGISTRY_ERROR_NO_KEY_BY_DID, VERIFICATION_KEY_HOLDER, VERIFICATION_KEY_CONTROLLER,
   BuildDocumentLoader,
-} from '@owlmeans/regov-ssi-did'
-import {
-  isCredential,
-  isFullEvidence,
-  isFullCredentialSchema
-} from './util'
+} from '../did'
+import { isCredential, isFullEvidence, isFullCredentialSchema } from './util'
 import vcContext from '../docs/vc.context.json'
 
-const jsigs = require('jsonld-signatures')
 
+const jsigs = require('jsonld-signatures')
 
 /**
  * @TODO Sign and verify VC with nonce from did.

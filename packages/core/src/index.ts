@@ -1,9 +1,15 @@
 require('dotenv').config()
 
-export * from './vc/index'
+export * from './vc'
 
-export * from './store/index'
+export * from './store'
 
-export * from './keys/index'
+export * from './keys'
 
-export * from './wallet/index'
+export * from './wallet'
+
+export * from './common'
+
+export * from './did'
+
+export * from './extension'

@@ -1,26 +1,16 @@
-import { addToValue, normalizeValue } from '@owlmeans/regov-ssi-common'
+import { addToValue, normalizeValue } from '@owlmeans/regov-ssi-core'
 import {
-  isPresentation,
-  Presentation,
-  Credential,
-  SSICore,
-  isCredential,
-  UnsignedCredential,
-  buildWalletLoader,
-  WalletWrapper
+  isPresentation, Presentation, Credential, SSICore, isCredential, UnsignedCredential,
+  buildWalletLoader, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
-import { DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER } from '@owlmeans/regov-ssi-did'
-import React, {
-  FunctionComponent
-} from 'react'
+import { 
+  DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER 
+} from '@owlmeans/regov-ssi-core'
+import React, { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import {
-  BasicNavigator,
-  RegovComponentProps,
-  RegovValidationRules,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
+import { 
+  BasicNavigator, RegovComponentProps, RegovValidationRules, withRegov, WrappedComponentProps
+} from '../../common/'
 import { validateJson } from '../../util'
 import { LIBREACT_HOLDER_ISNT_UNSIGNEDID } from './types'
 

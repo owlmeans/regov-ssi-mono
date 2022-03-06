@@ -1,10 +1,10 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import {
   EmptyImplProps, EmptyProps, RegovComponentProps, useRegov, withRegov, WrappedComponentProps
-} from '../../../common'
+} from '../../../common/'
 import { Credential } from '@owlmeans/regov-ssi-core'
-import { normalizeValue } from '@owlmeans/regov-ssi-common'
-import { EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams } from '@owlmeans/regov-ssi-extension'
+import { normalizeValue } from '@owlmeans/regov-ssi-core'
+import { EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams } from '@owlmeans/regov-ssi-core'
 
 
 export const CredentialEvidenceWidget: FunctionComponent<EvidenceWidgetParams> = withRegov<EvidenceWidgetProps>(

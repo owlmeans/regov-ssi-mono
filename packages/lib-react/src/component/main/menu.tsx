@@ -1,16 +1,8 @@
-import React, {
-  FunctionComponent
-} from 'react'
+import React, { FunctionComponent } from 'react'
 import {
-  BasicNavigator,
-  EmptyProps,
-  EmptyState,
-  RegovComponentProps,
-  useRegov,
-  WalletNavigatorMenuMethod,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
+  BasicNavigator, EmptyProps, EmptyState, RegovComponentProps, useRegov,
+  WalletNavigatorMenuMethod, withRegov, WrappedComponentProps
+} from '../../common/'
 import { castMenuItemParams } from '../../extension/helper'
 import { ManuItemParams } from '../../extension/types'
 

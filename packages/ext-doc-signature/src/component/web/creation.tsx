@@ -5,9 +5,9 @@ import {
 import {
   AlertOutput, dateFormatter, FileProcessorWeb, FormMainAction, LongTextInput, MainTextInput,
   MainTextOutput, PrimaryForm, WalletFormProvider, partialListNavigator, ListNavigator, CredentialSelector
-} from '@owlmeans/regov-mold-wallet-web'
+} from '@owlmeans/regov-lib-react'
 import { CredentialsRegistryWrapper, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
-import { Extension } from '@owlmeans/regov-ssi-extension'
+import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'

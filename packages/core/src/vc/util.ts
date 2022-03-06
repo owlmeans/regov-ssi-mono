@@ -1,16 +1,7 @@
 
-import { MaybeArray } from "@owlmeans/regov-ssi-common"
-import { 
-  CredentialSchema, 
-  FullCredentialSchema, 
-  FullCrednetialEvidnce, 
-  UnsignedCredential 
-} from "./types"
-import {
-  Presentation,
-  Credential,
-  Evidence
-} from "./types"
+import { MaybeArray } from "../common"
+import { CredentialSchema, FullCredentialSchema, FullCrednetialEvidnce, UnsignedCredential } from "./types"
+import { Presentation, Credential, Evidence } from "./types"
 
 
 export const isPresentation = (obj: Object): obj is Presentation => {
@@ -44,6 +35,6 @@ export const isFullCredentialSchema = (obj: CredentialSchema): obj is FullCreden
   return obj.hasOwnProperty('credentialSubject')
 }
 
-export const getCompatibleSubject = <Type extends MaybeArray<{}>>(cred: UnsignedCredential): Type  => {
+export const getCompatibleSubject = <Type extends MaybeArray<{}>>(cred: UnsignedCredential): Type => {
   return cred.credentialSubject as unknown as Type
 }

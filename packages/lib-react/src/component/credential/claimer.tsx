@@ -1,10 +1,10 @@
 import { SSICore, UnsignedCredential } from '@owlmeans/regov-ssi-core'
-import { Extension } from '@owlmeans/regov-ssi-extension'
+import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import {
   BasicNavigator, RegovComponentProps, RegovValidationRules, useRegov, withRegov, WrappedComponentProps
-} from '../../common'
+} from '../../common/'
 import { validateJson } from '../../util'
 
 

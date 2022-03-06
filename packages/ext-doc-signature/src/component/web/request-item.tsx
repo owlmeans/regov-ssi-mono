@@ -3,10 +3,10 @@ import {
   Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
 } from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
-import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-mold-wallet-web'
-import { MaybeArray } from '@owlmeans/regov-ssi-common'
+import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
+import { MaybeArray } from '@owlmeans/regov-ssi-core'
 import { CredentialWrapper, getCompatibleSubject, Credential, Presentation, CredentialSubject } from '@owlmeans/regov-ssi-core'
-import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-extension'
+import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
 import { SignatureRequestSubject } from '../../types'
 import { getSignatureRequestFromPresentation } from '../../util'

@@ -1,24 +1,13 @@
 require('dotenv').config()
 
-import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
+import { nodeCryptoHelper } from "../common"
 import {
-  buildDidHelper,
-  buildDidRegistryWarpper,
-  DIDDocument,
-  DIDPURPOSE_ASSERTION,
-  DIDPURPOSE_AUTHENTICATION,
+  buildDidHelper, buildDidRegistryWarpper, DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION,
   DIDPURPOSE_VERIFICATION
-} from "@owlmeans/regov-ssi-did"
-
-import { 
-  Presentation, 
-  UnsignedPresentation, 
-  buildSSICore,
-  CredentialSubject,
-  SSICore,
-  Credential, 
-  UnsignedCredential,
-  buildKeyChain,
+} from "../did"
+import {
+  Presentation, UnsignedPresentation, buildSSICore, CredentialSubject, SSICore, Credential,
+  UnsignedCredential, buildKeyChain
 } from "../index"
 
 import util from 'util'
@@ -111,7 +100,7 @@ describe('SSI Verifiable Credential', () => {
 
     const did = <DIDDocument>await test.ssi.did.lookUpDid(test.unsigned.id)
     const credentail = await test.ssi.signCredential(
-      test.unsigned, 
+      test.unsigned,
       did
     )
 
@@ -252,7 +241,7 @@ describe('SSI Verifiable Credential', () => {
       proof: {
         jws: expect.any(String),
         verificationMethod: expect.any(String),
-        challenge: expect.any(String) ,
+        challenge: expect.any(String),
         domain: expect.any(String),
         created: expect.any(String)
       }

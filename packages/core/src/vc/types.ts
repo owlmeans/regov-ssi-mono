@@ -1,21 +1,11 @@
 import {
-  SimpleThing,
-  TContext,
-  VCV1,
-  VCV1Subject,
-  VCV1Type,
-  VCV1Unsigned,
-  VPV1,
-  VPV1Holder,
-  VPV1Type,
-  VPV1Unsigned,
-  ContextObj,
-  VCV1Holder
-} from "@affinidi/vc-common";
-
+  SimpleThing, TContext, VCV1, VCV1Subject, VCV1Type, VCV1Unsigned, VPV1, VPV1Holder, VPV1Type,
+  VPV1Unsigned, ContextObj, VCV1Holder
+} from "@affinidi/vc-common"
 import { Validatied as AffinidiValidatied } from "@affinidi/vc-common/dist/verifier/util"
-import { MaybeArray } from "@owlmeans/regov-ssi-common";
-import { DIDDocument, DIDDocumentUnsinged } from "@owlmeans/regov-ssi-did";
+import { MaybeArray } from "../common"
+import { DIDDocument, DIDDocumentUnsinged } from "../did"
+
 
 export type Validated<T> = AffinidiValidatied<T>
 

@@ -1,4 +1,4 @@
-import { Extension } from "@owlmeans/regov-ssi-extension"
+import { Extension } from "@owlmeans/regov-ssi-core"
 
 export const REGOV_CREDENTIAL_TYPE_GROUP = 'OwlMeans:Regov:Group'
 

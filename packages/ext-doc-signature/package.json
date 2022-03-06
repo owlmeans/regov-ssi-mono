@@ -34,11 +34,7 @@
   },
   "peerDependencies": {
     "@owlmeans/regov-lib-react": "^0.1.0",
-    "@owlmeans/regov-mold-wallet-web": "^0.1.0",
-    "@owlmeans/regov-ssi-common": "^0.2.3",
     "@owlmeans/regov-ssi-core": "^0.4.2",
-    "@owlmeans/regov-ssi-did": "^0.4.2",
-    "@owlmeans/regov-ssi-extension": "^0.1.1",
     "i18next": "^21.4.2",
     "react": "^17.0.0",
     "react-hook-form": "^7.19.5",

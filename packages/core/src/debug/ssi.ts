@@ -1,19 +1,11 @@
 
 require('dotenv').config()
 
-import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
+import {nodeCryptoHelper, buildDidHelper, buildDidRegistryWarpper, DIDPURPOSE_ASSERTION,
+  DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_CONTROLLER, 
+  VERIFICATION_KEY_HOLDER, buildKeyChain, buildSSICore
+} from "../index"
 
-import {
-  buildDidHelper,
-  buildDidRegistryWarpper,
-  DIDPURPOSE_ASSERTION,
-  DIDPURPOSE_AUTHENTICATION,
-  DIDPURPOSE_VERIFICATION,
-  VERIFICATION_KEY_CONTROLLER,
-  VERIFICATION_KEY_HOLDER
-} from "@owlmeans/regov-ssi-did"
-
-import { buildKeyChain, buildSSICore } from "../index"
 
 import util from 'util'
 util.inspect.defaultOptions.depth = 8

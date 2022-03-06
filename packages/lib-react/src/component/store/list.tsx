@@ -1,17 +1,9 @@
 import { EncryptedStore } from '@owlmeans/regov-ssi-core'
-import React, {
-  FunctionComponent
-} from 'react'
-
+import React, { FunctionComponent } from 'react'
 import {
-  BasicNavigator,
-  EmptyProps,
-  RegovComponentProps,
-  useRegov,
-  WalletNavigatorMethod,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
+  BasicNavigator, EmptyProps, RegovComponentProps, useRegov, WalletNavigatorMethod,
+  withRegov, WrappedComponentProps
+} from '../../common/'
 
 
 export const StoreList: FunctionComponent<StoreListParams> =
@@ -56,9 +48,9 @@ export const StoreList: FunctionComponent<StoreListParams> =
 
       return <Renderer {..._props} />
     }, {
-      namespace: 'regov-wallet-store', transformer: (_, __, handler) => {
-        return { counter: Object.entries(handler?.stores || {}).length }
-      }
+    namespace: 'regov-wallet-store', transformer: (_, __, handler) => {
+      return { counter: Object.entries(handler?.stores || {}).length }
+    }
   })
 
 export type StoreListProps = RegovComponentProps<StoreListParams, StoreListImplParams, StoreListState, StoreListNavigator>

@@ -1,21 +1,11 @@
 import {
-  CredentialWrapper,
-  RegistryType,
-  REGISTRY_SECTION_OWN,
-  REGISTRY_SECTION_PEER,
-  REGISTRY_TYPE_CREDENTIALS
+  CredentialWrapper, RegistryType, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CREDENTIALS
 } from '@owlmeans/regov-ssi-core'
-import React, {
-  FunctionComponent
-} from 'react'
+import React, { FunctionComponent } from 'react'
 import {
-  BasicNavigator,
-  EmptyProps,
-  RegovComponentProps,
-  WalletNavigatorMenuMethod,
-  withRegov,
+  BasicNavigator, EmptyProps, RegovComponentProps, WalletNavigatorMenuMethod, withRegov,
   WrappedComponentProps
-} from '../../common'
+} from '../../common/'
 
 
 export const CredentialList: FunctionComponent<CredentialListParams> = withRegov<

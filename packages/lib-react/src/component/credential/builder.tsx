@@ -6,9 +6,9 @@ import React, { Fragment, FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import {
   BasicNavigator, RegovComponentProps, RegovValidationRules, useRegov, withRegov, WrappedComponentProps
-} from '../../common'
+} from '../../common/'
 import { generalNameVlidation, validateJson } from '../../util'
-import { Extension, findAppropriateCredentialType } from '@owlmeans/regov-ssi-extension'
+import { Extension, findAppropriateCredentialType } from '@owlmeans/regov-ssi-core'
 
 
 export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =

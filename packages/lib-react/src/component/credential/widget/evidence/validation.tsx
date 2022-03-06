@@ -1,23 +1,16 @@
 import React, { Fragment, FunctionComponent } from 'react'
-import { 
-  EmptyProps,
-  RegovComponentProps,
-  withRegov, 
-  WrappedComponentProps
-} from '../../../../common'
-import { 
-  EvidenceValidationResult 
-} from '@owlmeans/regov-ssi-extension'
+import { EmptyProps, RegovComponentProps, withRegov, WrappedComponentProps } from '../../../../common/'
+import { EvidenceValidationResult } from '@owlmeans/regov-ssi-core'
 
 
 export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = withRegov<ResultWidgetProps>(
-  {namespace: 'regov-wallet-credential'},
-  ({t, i18n, result, reload, com: Renderer}) => {
+  { namespace: 'regov-wallet-credential' },
+  ({ t, i18n, result, reload, com: Renderer }) => {
     const props = {
       t, i18n, result, reload
     }
 
-    return Renderer ? <Renderer {...props}/> : <Fragment />
+    return Renderer ? <Renderer {...props} /> : <Fragment />
   }
 )
 

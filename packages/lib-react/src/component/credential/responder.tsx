@@ -1,17 +1,9 @@
-import {
-  SSICore
-} from '@owlmeans/regov-ssi-core'
-import React, {
-  FunctionComponent
-} from 'react'
+import { SSICore } from '@owlmeans/regov-ssi-core'
+import React, { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import {
-  BasicNavigator,
-  RegovComponentProps,
-  RegovValidationRules,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
+  BasicNavigator, RegovComponentProps, RegovValidationRules, withRegov, WrappedComponentProps
+} from '../../common/'
 import { validateJson } from '../../util'
 
 

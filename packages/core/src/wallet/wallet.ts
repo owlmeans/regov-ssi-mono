@@ -1,18 +1,13 @@
-import { buildDidHelper, buildDidRegistryWarpper } from "@owlmeans/regov-ssi-did";
-import { buildSSICore, Credential, CredentialSubject } from "../vc";
-import { buildKeyChain } from "../keys";
-import { buildStore } from "../store/store";
-import { SecureStore } from "../store/types";
+import { buildDidHelper, buildDidRegistryWarpper } from "../did"
+import { buildSSICore, Credential, CredentialSubject } from "../vc"
+import { buildKeyChain } from "../keys"
+import { buildStore } from "../store/store"
+import { SecureStore } from "../store/types"
 import {
-  CredentialsRegistry,
-  CredentialsRegistryWrapper,
-  CredentialWrapper,
-  RegistryItem,
-  REGISTRY_SECTION_OWN,
-  REGISTRY_TYPE_CREDENTIALS,
-  REGISTRY_TYPE_IDENTITIES
-} from "./registry";
-import { GetRegistryMethod, WalletWrapperBuilder } from "./types";
+  CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryItem,
+  REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES
+} from "./registry"
+import { GetRegistryMethod, WalletWrapperBuilder } from "./types"
 
 
 export const buildWalletWrapper: WalletWrapperBuilder =

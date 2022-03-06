@@ -3,21 +3,16 @@ require('dotenv').config()
 import { buildSSICore } from "../vc/ssi"
 import { SSICore } from "../vc/ssi/types"
 import { Credential } from "../vc/types"
-import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
+import { nodeCryptoHelper } from "../common"
 import {
-  buildDidHelper,
-  buildDidRegistryWarpper,
-  DIDDocument,
-  DIDPURPOSE_ASSERTION,
-  DIDPURPOSE_AUTHENTICATION,
-  DIDPURPOSE_VERIFICATION,
-  VERIFICATION_KEY_CONTROLLER,
-  VERIFICATION_KEY_HOLDER
-} from "@owlmeans/regov-ssi-did"
+  buildDidHelper, buildDidRegistryWarpper, DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION,
+  DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER
+} from "../did"
 import { buildKeyChain } from "../keys/model"
 
 import util from 'util'
 util.inspect.defaultOptions.depth = 8
+
 
 const test: {
   ssiAlice?: SSICore

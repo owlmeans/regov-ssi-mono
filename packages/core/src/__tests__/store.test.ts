@@ -1,10 +1,5 @@
-import { nodeCryptoHelper } from "@owlmeans/regov-ssi-common"
-import { EncryptedStore } from "../store"
-import { WalletWrapper } from "../wallet/types"
-import { buildWalletWrapper } from "../wallet/wallet"
-
+import { nodeCryptoHelper,EncryptedStore, WalletWrapper, buildWalletWrapper, KEYCHAIN_DEFAULT_KEY } from "../index"
 import util from 'util'
-import { KEYCHAIN_DEFAULT_KEY } from "../keys/types"
 util.inspect.defaultOptions.depth = 6
 
 

@@ -1,6 +1,7 @@
-import { CryptoHelper } from "@owlmeans/regov-ssi-common";
-import { DEFAULT_WALLET_ALIAS } from "../wallet/types";
-import { BasicStore, EncryptedStore, ERROR_STORE_CANT_DECRYPT, SecureStore } from "./types";
+import { CryptoHelper } from "../common"
+import { DEFAULT_WALLET_ALIAS } from "../wallet/types"
+import { BasicStore, EncryptedStore, ERROR_STORE_CANT_DECRYPT, SecureStore } from "./types"
+
 
 export const buildStore = async (crypto: CryptoHelper, password: string, store?: BasicStore | string): Promise<SecureStore> => {
   let _store: SecureStore

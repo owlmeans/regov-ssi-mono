@@ -1,10 +1,5 @@
-import { MaybeArray } from "@owlmeans/regov-ssi-common"
-import {
-  Credential,
-  CredentialSubject,
-  Presentation,
-  UnsignedCredential,
-} from "../../vc/types"
+import { MaybeArray } from "../../common"
+import { Credential, CredentialSubject, Presentation, UnsignedCredential, } from "../../vc/types"
 
 
 export type CredentialsRegistry<

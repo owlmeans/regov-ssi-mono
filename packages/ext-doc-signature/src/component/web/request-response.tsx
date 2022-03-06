@@ -4,12 +4,12 @@ import {
   CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidget, 
+  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, WebValidationResultWidget, 
   WalletFormProvider
-} from '@owlmeans/regov-mold-wallet-web'
+} from '@owlmeans/regov-lib-react'
 import { CredentialSubject, getCompatibleSubject, Presentation, REGISTRY_SECTION_PEER, 
   REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from '@owlmeans/regov-ssi-core'
-import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING, VALIDATION_KIND_RESPONSE } from '@owlmeans/regov-ssi-extension'
+import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING, VALIDATION_KIND_RESPONSE } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
@@ -176,7 +176,7 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
                 </Grid>
                 <Grid item xs={12} sm={6} md={5} px={1}>
                   <Paper elevation={3}>
-                    <ValidationResultWidget result={result} reload={reload} />
+                    <WebValidationResultWidget result={result} reload={reload} />
                   </Paper>
                 </Grid>
               </Grid>

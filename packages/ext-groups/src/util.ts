@@ -1,6 +1,6 @@
-import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-common"
+import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-core"
 import { Presentation, Credential } from "@owlmeans/regov-ssi-core"
-import { DIDDocument } from "@owlmeans/regov-ssi-did"
+import { DIDDocument } from "@owlmeans/regov-ssi-core"
 import {
   REGOV_CREDENTIAL_TYPE_GROUP,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP,

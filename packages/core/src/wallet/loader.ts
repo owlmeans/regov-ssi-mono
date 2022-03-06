@@ -1,14 +1,6 @@
-import {
-  LocalDocumentLoader
-} from "../vc/ssi/types";
-import {
-  REGISTRY_SECTION_OWN,
-  REGISTRY_SECTION_PEER,
-  REGISTRY_TYPE_IDENTITIES
-} from "./registry/types";
-import {
-  WalletWrapper
-} from "./types";
+import { LocalDocumentLoader } from "../vc/ssi/types"
+import { REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from "./registry/types"
+import { WalletWrapper } from "./types"
 
 
 export const buildWalletLoader: (wallet: WalletWrapper) => LocalDocumentLoader

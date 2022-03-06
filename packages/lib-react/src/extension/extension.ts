@@ -1,8 +1,8 @@
 import { FunctionComponent } from "react"
-import { Extension } from "@owlmeans/regov-ssi-extension"
+import { Extension } from "@owlmeans/regov-ssi-core"
 import { EmptyProps } from "../common"
 import { ManuItemParams, ExtensionItemPurpose } from "./types"
-import { MaybeArray } from "@owlmeans/regov-ssi-common"
+import { MaybeArray } from "@owlmeans/regov-ssi-core"
 
 export const buildUIExtension = (
   extension: Extension,

@@ -3,10 +3,12 @@ import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/
 import {
   AlertOutput, CredentialActionGroup, CredentialSelector, dateFormatter, EntityRenderer,
   EntityTextRenderer, LongOutput, MainTextOutput, PrimaryForm, WalletFormProvider
-} from '@owlmeans/regov-mold-wallet-web'
-import { singleValue } from '@owlmeans/regov-ssi-common'
-import { getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CREDENTIALS, CredentialWrapper } from '@owlmeans/regov-ssi-core'
-import { Extension } from '@owlmeans/regov-ssi-extension'
+} from '@owlmeans/regov-lib-react'
+import { singleValue } from '@owlmeans/regov-ssi-core'
+import {
+  getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CREDENTIALS, CredentialWrapper
+} from '@owlmeans/regov-ssi-core'
+import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {

@@ -1,25 +1,14 @@
-import { normalizeValue } from '@owlmeans/regov-ssi-common'
+import { normalizeValue } from '@owlmeans/regov-ssi-core'
 import {
-  BASE_CREDENTIAL_TYPE,
-  BASE_PRESENTATION_TYPE,
-  buildWalletLoader,
-  isCredential,
-  isPresentation,
-  SSICore,
-  WalletWrapper
+  BASE_CREDENTIAL_TYPE, BASE_PRESENTATION_TYPE, buildWalletLoader, isCredential, isPresentation,
+  SSICore, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
-import { VERIFICATION_KEY_HOLDER } from '@owlmeans/regov-ssi-did'
-import React, {
-  FunctionComponent
-} from 'react'
+import { VERIFICATION_KEY_HOLDER } from '@owlmeans/regov-ssi-core'
+import React, { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import {
-  BasicNavigator,
-  RegovComponentProps,
-  RegovValidationRules,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
+  BasicNavigator, RegovComponentProps, RegovValidationRules, withRegov, WrappedComponentProps
+} from '../../common/'
 import { validateJson } from '../../util'
 import { VerificationResult } from './types'
 

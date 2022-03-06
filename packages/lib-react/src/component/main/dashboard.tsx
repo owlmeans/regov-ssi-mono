@@ -1,11 +1,5 @@
-import React, {
-  FunctionComponent
-} from 'react'
-import {
-  RegovComponentProps,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
+import React, { FunctionComponent } from 'react'
+import { RegovComponentProps, withRegov, WrappedComponentProps } from '../../common/'
 
 
 export const MainDashboard: FunctionComponent<MainDashboardParams> = withRegov<

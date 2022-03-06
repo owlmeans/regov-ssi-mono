@@ -1,10 +1,10 @@
 import { Button, DialogActions, DialogContent } from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
-import { CredentialActionGroup, LongOutput, MainTextOutput, PrimaryForm, WalletFormProvider } from '@owlmeans/regov-mold-wallet-web'
+import { CredentialActionGroup, LongOutput, MainTextOutput, PrimaryForm, WalletFormProvider } from '@owlmeans/regov-lib-react'
 import {
   getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_REQUESTS, REGISTRY_SECTION_OWN
 } from '@owlmeans/regov-ssi-core'
-import { Extension } from '@owlmeans/regov-ssi-extension'
+import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent } from 'react'
 import { useForm } from 'react-hook-form'
 import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureRequestSubject } from '../../types'

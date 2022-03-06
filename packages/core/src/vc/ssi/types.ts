@@ -1,30 +1,14 @@
-import {
-  CryptoHelper,
-  MaybeArray
-} from "@owlmeans/regov-ssi-common"
+import { CryptoHelper, MaybeArray } from "../../common"
 import { KeyChainWrapper } from "../../keys/types"
-
 import {
-  LoadedDocument,
-  BuildDocumentLoader,
-  DIDDocument,
-  DIDHelper,
-  DIDRegistryWrapper,
-  DIDDocumentUnsinged
-} from '@owlmeans/regov-ssi-did'
+  LoadedDocument, BuildDocumentLoader, DIDDocument, DIDHelper, DIDRegistryWrapper, DIDDocumentUnsinged
+} from '../../did'
 import {
-  Credential,
-  CredentialContextType,
-  CredentialSubject,
-  WrappedDocument,
-  CredentialType,
-  Presentation,
-  PresentationHolder,
-  UnsignedCredential,
-  UnsignedPresentation,
-  ContextSchema,
+  Credential, CredentialContextType, CredentialSubject, WrappedDocument, CredentialType,
+  Presentation, PresentationHolder, UnsignedCredential, UnsignedPresentation, ContextSchema,
   Validated,
 } from "../types"
+
 
 export type BuildSSICoreMethod = (options: {
   keys: KeyChainWrapper

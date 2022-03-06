@@ -1,8 +1,0 @@
-{
-  "@version": 1.1,
-  "xsd": "http://www.w3.org/2001/XMLSchema#",
-  "oregovcert": "https://owlmeans.com/ssi/schema/certificate/general",
-  "name": { "@id": "oregovcert:name", "@type": "xsd:string" },
-  "description": { "@id": "oregovcert:description", "@type": "xsd:string" },
-  "uuid": { "@id": "oregovcert:description", "@type": "xsd:string" }
-}

@@ -3,9 +3,9 @@ import {
   Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
 } from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
-import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-mold-wallet-web'
+import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
 import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
-import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-extension'
+import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useMemo, useEffect } from 'react'
 import { SignatureSubject } from '../../types'
 

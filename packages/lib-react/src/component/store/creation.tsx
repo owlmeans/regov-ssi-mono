@@ -2,27 +2,13 @@ import React, {
   FunctionComponent,
 } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { CryptoHelper } from '@owlmeans/regov-ssi-common'
+import { CryptoHelper } from '@owlmeans/regov-ssi-core'
+import { buildWalletWrapper } from '@owlmeans/regov-ssi-core'
 import {
-  buildWalletWrapper
-} from '@owlmeans/regov-ssi-core'
-
-import {
-  BasicNavigator,
-  EmptyProps,
-  RegovComponentProps,
-  RegovValidationRules,
-  useRegov,
-  WalletNavigatorMenuMethod,
-  WalletNavigatorMethod,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
-import { 
-  generalNameVlidation,
-  loginAliasValidation, 
-  passwordValidation 
-} from '../../util'
+  BasicNavigator, EmptyProps, RegovComponentProps, RegovValidationRules, useRegov,
+  WalletNavigatorMenuMethod, WalletNavigatorMethod, withRegov, WrappedComponentProps
+} from '../../common/'
+import { generalNameVlidation, loginAliasValidation,  passwordValidation  } from '../../util'
 
 
 export const StoreCreation: FunctionComponent<StoreCreationParams> =

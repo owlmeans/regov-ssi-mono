@@ -1,22 +1,12 @@
-import React, {
-  FunctionComponent,
-  useEffect
-} from 'react'
+import React, { FunctionComponent, useEffect } from 'react'
 
-import { CryptoHelper } from '@owlmeans/regov-ssi-common'
+import { CryptoHelper } from '@owlmeans/regov-ssi-core'
 import { buildWalletWrapper } from '@owlmeans/regov-ssi-core'
 import { UseFormReturn } from 'react-hook-form'
 import {
-  withRegov,
-  BasicNavigator,
-  WalletNavigatorMethod,
-  RegovValidationRules,
-  WrappedComponentProps,
-  RegovComponentProps,
-  useRegov,
-  EmptyProps,
-  EmptyState
-} from '../../common'
+  withRegov, BasicNavigator, WalletNavigatorMethod, RegovValidationRules, WrappedComponentProps,
+  RegovComponentProps, useRegov, EmptyProps, EmptyState
+} from '../../common/'
 import { passwordValidation } from '../../util'
 
 

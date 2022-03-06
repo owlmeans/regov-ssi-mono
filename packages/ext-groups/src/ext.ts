@@ -2,7 +2,7 @@ import {
   addObserverToSchema, buildExtension, buildExtensionSchema, defaultBuildMethod, defaultSignMethod,
   defaultValidateMethod, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, EXTENSION_TRIGGER_RETRIEVE_NAME,
   IncommigDocumentEventParams, RetreiveNameEventParams
-} from "@owlmeans/regov-ssi-extension"
+} from "@owlmeans/regov-ssi-core"
 import {
   REGISTRY_TYPE_IDENTITIES, REGISTRY_TYPE_CREDENTIALS, UnsignedCredential, getCompatibleSubject,
   isPresentation
@@ -12,7 +12,7 @@ import {
   REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE,
   REGOV_OFFER_TYPE
 } from "./types"
-import { makeRandomUuid, normalizeValue } from "@owlmeans/regov-ssi-common"
+import { makeRandomUuid, normalizeValue } from "@owlmeans/regov-ssi-core"
 
 
 let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({

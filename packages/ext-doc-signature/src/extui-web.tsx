@@ -3,14 +3,14 @@ import {
   EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_REQUEST, EXTENSION_ITEM_PURPOSE_VALIDATION, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
   MainModalHandle, MainModalShareEventParams, PurposeListItemParams, UIExtensionFactoryProduct
 } from "@owlmeans/regov-lib-react"
-import { MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW } from "@owlmeans/regov-mold-wallet-web"
-import { normalizeValue } from "@owlmeans/regov-ssi-common"
+import { MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW } from "@owlmeans/regov-lib-react"
+import { normalizeValue } from "@owlmeans/regov-ssi-core"
 import {
   WalletWrapper, Credential, isCredential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES
 } from "@owlmeans/regov-ssi-core"
 import {
   addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
-} from "@owlmeans/regov-ssi-extension"
+} from "@owlmeans/regov-ssi-core"
 import React from "react"
 import {
   SignatureCreationWeb, SignatureItemWeb, SignatureView, SignatureRequestWeb, DashboardWidgetWeb,

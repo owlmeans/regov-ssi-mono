@@ -1,21 +1,12 @@
-import React, {
-  FunctionComponent
-} from 'react'
+import React, { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import {
-  EmptyProps,
-  RegovComponentProps,
-  useRegov,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
+  EmptyProps, RegovComponentProps, useRegov, withRegov, WrappedComponentProps
+} from '../../common/'
 import {
-  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
-  IncommigDocumentEventParams
-} from '@owlmeans/regov-ssi-extension'
-import {
-  validateJsonOrEmpty
-} from '../../util'
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
+} from '@owlmeans/regov-ssi-core'
+import { validateJsonOrEmpty } from '../../util'
 
 
 export const CredentialProcessor: FunctionComponent<CredentialProcessorParams> = withRegov<

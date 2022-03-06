@@ -1,14 +1,14 @@
 import {
   addObserverToSchema, buildExtension, buildExtensionSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   IncommigDocumentEventParams
-} from "@owlmeans/regov-ssi-extension"
+} from "@owlmeans/regov-ssi-core"
 import {
   BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE,
   REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE
 } from "./types"
 import { isCredential, isPresentation, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'
-import { normalizeValue } from "@owlmeans/regov-ssi-common"
+import { normalizeValue } from "@owlmeans/regov-ssi-core"
 
 
 let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({

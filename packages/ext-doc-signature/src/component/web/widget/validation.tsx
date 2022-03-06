@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import {
   EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget
 } from "@owlmeans/regov-lib-react"
-import { Extension } from "@owlmeans/regov-ssi-extension"
+import { Extension } from "@owlmeans/regov-ssi-core"
 import { FunctionComponent } from "react"
 import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from "../../../types"
 import {
@@ -10,8 +10,8 @@ import {
   Typography
 } from '@mui/material'
 import { getCompatibleSubject, Credential } from '@owlmeans/regov-ssi-core'
-import { normalizeValue } from '@owlmeans/regov-ssi-common'
-import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-mold-wallet-web'
+import { normalizeValue } from '@owlmeans/regov-ssi-core'
+import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-lib-react'
 import { Done, ErrorOutline, ExpandMore } from '@mui/icons-material'
 
 

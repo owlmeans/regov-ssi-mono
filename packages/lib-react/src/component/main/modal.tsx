@@ -1,21 +1,8 @@
-import React, {
-  FunctionComponent,
-  ReactNode,
-  useEffect,
-  useMemo,
-} from 'react'
+import React, { FunctionComponent, ReactNode, useEffect, useMemo } from 'react'
+import { EventParams, EXTENSION_TRIGGER_AUTHENTICATED } from '@owlmeans/regov-ssi-core'
 import {
-  EventParams,
-  EXTENSION_TRIGGER_AUTHENTICATED
-} from '@owlmeans/regov-ssi-extension'
-import {
-  RegovComponentProps,
-  useRegov,
-  withRegov,
-  WrappedComponentProps,
-  Config,
-  WalletHandler
-} from '../../common'
+  RegovComponentProps, useRegov, withRegov, WrappedComponentProps, Config, WalletHandler
+} from '../../common/'
 
 
 export const MainModal: FunctionComponent<MainModalParams> = withRegov<MainModalProps>(

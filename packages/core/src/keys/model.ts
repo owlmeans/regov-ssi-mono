@@ -1,16 +1,9 @@
 import {
-  BuildKeyChainWrapperMethod,
-  CreateKeyOptions,
-  DPArgs,
-  KeyChain,
-  KEYCHAIN_DEFAULT_KEY,
-  KEYCHAIN_ERROR_NO_KEY,
-  KEYCHAIN_ERROR_WRONG_DP,
-  KeyPair,
-  KeyPairToCryptoKeyOptions,
+  BuildKeyChainWrapperMethod, CreateKeyOptions, DPArgs, KeyChain, KEYCHAIN_DEFAULT_KEY,
+  KEYCHAIN_ERROR_NO_KEY, KEYCHAIN_ERROR_WRONG_DP, KeyPair, KeyPairToCryptoKeyOptions,
   KeyRotation
 } from "./types"
-import { CryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from '@owlmeans/regov-ssi-common'
+import { CryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from '../common'
 
 
 export const buildKeyChain: BuildKeyChainWrapperMethod =

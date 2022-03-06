@@ -1,4 +1,4 @@
-import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-common"
+import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-core"
 import { Presentation, Credential } from "@owlmeans/regov-ssi-core"
 import {
   BASIC_IDENTITY_TYPE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE,

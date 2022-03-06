@@ -1,15 +1,15 @@
-import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-extension'
+import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-core'
 import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { Button, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper } from '@mui/material'
 import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from '../../types'
-import { CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { BorderColor, Close } from '@mui/icons-material'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'
 import {
+  CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, WebValidationResultWidget, 
   AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, FileProcessorWeb, PrimaryForm,
-  ValidationResultWidget, WalletFormProvider
-} from '@owlmeans/regov-mold-wallet-web'
+  WalletFormProvider, withRegov
+} from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
 import { typeFormatterFacotry } from '../formatter'
 
@@ -173,7 +173,7 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
           </Grid>
           <Grid item xs={12} sm={6} md={5} px={1}>
             <Paper elevation={3}>
-              <ValidationResultWidget result={result} reload={reload} />
+              <WebValidationResultWidget result={result} reload={reload} />
             </Paper>
           </Grid>
         </Grid>

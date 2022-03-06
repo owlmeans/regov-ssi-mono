@@ -1,16 +1,5 @@
-import React, {
-  useEffect,
-  FunctionComponent,
-  Fragment,
-  ReactNode
-} from 'react'
-import {
-  EmptyProps,
-  RegovComponentProps,
-  useRegov,
-  withRegov,
-  WrappedComponentProps
-} from '../../common'
+import React, { useEffect, FunctionComponent, Fragment, ReactNode } from 'react'
+import { EmptyProps, RegovComponentProps, useRegov, withRegov, WrappedComponentProps } from '../../common/'
 
 
 export const MainAuthArea: FunctionComponent<MainAuthAreaParams> = withRegov<MainAuthAreaProps>(

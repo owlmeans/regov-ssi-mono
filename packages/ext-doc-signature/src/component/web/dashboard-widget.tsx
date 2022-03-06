@@ -1,5 +1,5 @@
 import { RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
-import { Extension } from '@owlmeans/regov-ssi-extension'
+import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, Grid, ListItemIcon, ListItemText, MenuItem, MenuList, Typography } from '@mui/material'
 import { Add, AddCircleOutline, Drafts } from '@mui/icons-material'

@@ -1,8 +1,8 @@
-import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-common"
+import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-core"
 import { WalletWrapper } from "@owlmeans/regov-ssi-core"
 import {
   buildExtensionRegistry, CredentialDescription, ExtensionRegistry, EventParams
-} from "@owlmeans/regov-ssi-extension"
+} from "@owlmeans/regov-ssi-core"
 import { EmptyProps } from "../common"
 import { MENU_TAG_MAIN } from "../component"
 import { UIExtension, UIExtensionFactory } from "./extension"

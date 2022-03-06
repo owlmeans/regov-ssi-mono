@@ -30,20 +30,35 @@
     "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
   },
   "peerDependencies": {
-    "react": "^17.0.0",
-    "@owlmeans/regov-ssi-did": "^0.4.2",
-    "@owlmeans/regov-ssi-common": "^0.2.3",
     "@owlmeans/regov-ssi-core": "^0.4.2",
-    "@owlmeans/regov-ssi-extension": "^0.1.1",
     "@reduxjs/toolkit": "^1.6.2",
     "i18next": "^21.4.2",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
     "react-hook-form": "^7.19.5",
     "react-i18next": "^11.14.2",
-    "react-redux": "^7.2.6"
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^6.0.2"
+  },
+  "optionalDependencies": {
+    "react-dom": "^17.0.0",
+    "react-router-dom": "^6.0.2"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.5",
     "@types/node": "^16.11.10",
     "microbundle-crl": "^0.13.11",
     "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/material": "^5.2.4",
+    "copy-to-clipboard": "^3.3.1",
+    "file-saver": "^2.0.5",
+    "localforage": "^1.10.0",
+    "moment": "^2.29.1",
+    "react-dropzone": "^11.4.2"
   }
 }
