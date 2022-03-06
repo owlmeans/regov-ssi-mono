@@ -7,7 +7,7 @@ import {
 } from '../../../../types'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, } from '@mui/material'
 import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
-import { EntityRenderer, EntityTextRenderer, WebValidationResultWidget } from '@owlmeans/regov-lib-react'
+import { EntityRenderer, EntityTextRenderer, ValidationResultWidgetWeb } from '@owlmeans/regov-lib-react'
 import { Close, People } from '@mui/icons-material'
 import { ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-core'
 import { MembershipClaim } from '../membership'
@@ -82,7 +82,7 @@ export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupView
           </Grid>
           <Grid item xs={12} sm={6} md={5} px={1}>
             <Paper elevation={3}>
-              <WebValidationResultWidget result={result} reload={reload} />
+              <ValidationResultWidgetWeb result={result} reload={reload} />
             </Paper>
           </Grid>
         </Grid>

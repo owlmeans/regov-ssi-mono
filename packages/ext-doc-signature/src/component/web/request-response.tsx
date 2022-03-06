@@ -4,7 +4,7 @@ import {
   CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, WebValidationResultWidget, 
+  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidgetWeb, 
   WalletFormProvider
 } from '@owlmeans/regov-lib-react'
 import { CredentialSubject, getCompatibleSubject, Presentation, REGISTRY_SECTION_PEER, 
@@ -176,7 +176,7 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
                 </Grid>
                 <Grid item xs={12} sm={6} md={5} px={1}>
                   <Paper elevation={3}>
-                    <WebValidationResultWidget result={result} reload={reload} />
+                    <ValidationResultWidgetWeb result={result} reload={reload} />
                   </Paper>
                 </Grid>
               </Grid>

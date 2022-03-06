@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useMemo } from 'react'
 import { GroupSubject } from '../../../../types'
-import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
 import {
   Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-core'
@@ -11,7 +11,7 @@ import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-re
 
 
 export const GroupItem = (ext: Extension): FunctionComponent<GroupItemParams> =>
-  withRegov<GroupItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, wrapper, action }) => {
+  withRegov<GroupItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, action }) => {
     const subject = getCompatibleSubject<GroupSubject>(wrapper.credential)
     const { extensions, handler } = useRegov()
 
@@ -48,7 +48,7 @@ export const GroupItem = (ext: Extension): FunctionComponent<GroupItemParams> =>
       <ListItemIcon>
         <MenuIconButton handle={handle} />
         <ItemMenu handle={handle} content={wrapper.credential} i18n={i18n} prettyOutput
-          exportTitle={`${wrapper.meta.title}.group`} />
+          exportTitle={`${wrapper.meta.title}.group`} meta={meta} />
       </ListItemIcon>
     </ListItem>
   })
@@ -56,6 +56,7 @@ export const GroupItem = (ext: Extension): FunctionComponent<GroupItemParams> =>
 export type GroupItemParams = EmptyProps & {
   wrapper: CredentialWrapper<CredentialSubject, Credential<CredentialSubject>>
   action?: () => void
+  meta?: ListItemMeta
 }
 
 export type GroupItemProps = RegovComponentProps<GroupItemParams>

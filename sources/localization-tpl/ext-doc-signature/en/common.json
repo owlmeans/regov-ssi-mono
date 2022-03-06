@@ -1,0 +1,271 @@
+{
+  "menu": {
+    "new": {
+      "signature": "Document Signature"
+    },
+    "request": {
+      "signature": "Document Signature Request"
+    }
+  },
+  "dashboard": {
+    "widget": {
+      "signature": {
+        "add": "Sign a document"
+      },
+      "menu": {
+        "title": "Document signature",
+        "request": "Request signature",
+        "create": "Create sisgnature"
+      }
+    }
+  },
+  "signature": {
+    "docType": {
+      "binary": "Binary file",
+      "json": "JSON document",
+      "text": "Plain text document",
+      "unknown": "Unknown file type"
+    },
+    "creation": {
+      "title": "Document Signature Credential",
+      "file": {
+        "browse": "Browse",
+        "binary": "You uploaded a binary file. The system can't display it's content.",
+        "import": {
+          "here": "Drag & drop a file here or click for more options.",
+          "drop": "Drop file here...",
+          "loaded": "Document loaded."
+        },
+        "input": {
+          "label": "Text document content",
+          "hint": "One can set document as a text here. JSON can be used."
+        }
+      },
+      "name": {
+        "label": "Credential name",
+        "hint": "Will be seen as credential name by all parties"
+      },
+      "description": {
+        "label": "Document description",
+        "hint": "Usefull information about the document"
+      },
+      "url": {
+        "label": "Document URL",
+        "hint": "Location of the document in the internet",
+        "error": {
+          "url": "Wrong URL format"
+        }
+      },
+      "version": {
+        "label": "Version",
+        "hint": "Human and computer readable document version",
+        "error": {
+          "pattern": "Wrong version format use numbers, letters dots and minuses"
+        }
+      },
+      "author": {
+        "label": "Author",
+        "hint": "Name of the document author"
+      },
+      "authorId": {
+        "label": "Author ID",
+        "hint": "ID sequence of the author. Can be a DID of identity."
+      },
+      "documentHash": {
+        "label": "Contol sequence",
+        "hint": "Is used to verify the signature of the document"
+      },
+      "docType": {
+        "label": "Document type",
+        "hint": "Type of the provided document"
+      },
+      "filename": {
+        "label": "File",
+        "hint": "Name of the document file"
+      },
+      "identity": {
+        "hint": "Click here to choose identity to sign the document",
+        "noItems": "There is no identity to sign documents",
+        "pleaseSelect": "No identity selected, click to select one"
+      },
+      "creationDate": {
+        "label": "Creation date",
+        "hint": "Date when the document was changed the last time"
+      },
+      "create": "Create credential",
+      "success": "Document signed successfully."
+    },
+    "request": {
+      "title": "Document Signature Request",
+      "file": {
+        "browse": "Browse",
+        "binary": "You uploaded a binary file. The system can't display it's content.",
+        "import": {
+          "here": "Drag & drop a file here or click for more options.",
+          "drop": "Drop file here...",
+          "loaded": "Document loaded."
+        },
+        "input": {
+          "label": "Text document content",
+          "hint": "One can set document as a text here. JSON can be used."
+        }
+      },
+      "name": {
+        "label": "Request name",
+        "hint": "Will be seen as request name only by you"
+      },
+      "description": {
+        "label": "Document description",
+        "hint": "Usefull information about the document you request",
+        "copy": "Copy"
+      },
+      "url": {
+        "label": "Document URL",
+        "hint": "Location of the document in the internet",
+        "error": {
+          "url": "Wrong URL format"
+        }
+      },
+      "version": {
+        "label": "Version",
+        "hint": "Human and computer readable document version",
+        "error": {
+          "pattern": "Wrong version format use numbers, letters, dots and minuses"
+        }
+      },
+      "authorId": {
+        "label": "Author ID",
+        "hint": "ID sequence of the author. Can be a DID of identity."
+      },
+      "documentHash": {
+        "label": "Contol sequence",
+        "hint": "Is used to verify the signature of the document"
+      },
+      "create": "Create request",
+      "success": "Request created successfully.",
+      "meta": {
+        "title": "Signature request for \"{{name}}\""
+      },
+      "item": {
+        "type": "Signature Request"
+      },
+      "view": "Signature Request",
+      "close": "Close"
+    },
+    "response": {
+      "title": "Provide requested document signature",
+      "vc": {
+        "hint": "Click to select a siganture credential for response",
+        "noItems": "There is no signature credentials to respond with",
+        "pleaseSelect": "No credentials selected, click to select one"
+      },
+      "description": {
+        "label": "Proposed document description",
+        "hint": "Usefull information about the document you provide"
+      },
+      "url": {
+        "label": "Document URL",
+        "hint": "Location of the document in the internet"
+      },
+      "version": {
+        "label": "Version",
+        "hint": "Human and computer readable document version"
+      },
+      "authorId": {
+        "label": "Author ID",
+        "hint": "ID sequence of the author."
+      },
+      "documentHash": {
+        "label": "Contol sequence",
+        "hint": "Is used to verify the signature of the document"
+      },
+      "alert": {
+        "error": {
+          "wrongHash": "Selected signature belongs to another document",
+          "noRequest": "Provided response isn't requested",
+          "wrongDocument": "Provided signature belongs to another document",
+          "noIdentity": "No identity to sign the document with",
+          "unknwonValidationError": "Provided document isn't a valid credential request. Reason is unknown."
+        }
+      },
+      "credential": {
+        "title": "Document {{type}} {{hash}}",
+        "added": "Credential successfully added to wallet."
+      },
+      "produce": "Produce Response",
+      "produced": "Signature response generated successfully",
+      "accept": "Accept",
+      "close": "Close"
+    },
+    "view": {
+      "title": "Document Signature VC",
+      "signedAt": {
+        "hint": "Date of signing",
+        "label": "Date of signature"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "documentHash": {
+        "label": "Contol sequence"
+      },
+      "filename": {
+        "label": "File name"
+      },
+      "url": {
+        "label": "URL"
+      },
+      "authorId": {
+        "label": "Author ID"
+      },
+      "author": {
+        "label": "Author"
+      },
+      "creationDate": {
+        "hint": "Creation date",
+        "label": "Creation date"
+      },
+      "version": {
+        "hint": "Version",
+        "label": "Version"
+      },
+      "docType": {
+        "hint": "Document type",
+        "label": "Document type"
+      },
+      "upload": "Upload file",
+      "file": {
+        "browse": "Browse",
+        "input": {
+          "hint": "Document text or JSON content to be verfied.",
+          "label": "Document text"
+        },
+        "import": {
+          "here": "Drag & drop a file here to check if it's signed by this signature.",
+          "drop": "Drop file here...",
+          "loaded": "Document loaded."
+        }
+      },
+      "alert": {
+        "error": {
+          "matches": "The document you provided is signed with this signature.",
+          "notmatch": "The document you provided isn't signed with this singature.",
+          "severity": {
+            "error": "error",
+            "success": "success"
+          },
+          "title": {
+            "error": "Error",
+            "success": "Correct"
+          }
+        }
+      }
+    },
+    "list": {
+      "item": {
+        "unknown": "Unknown document signature",
+        "type": "Document signature VC"
+      }
+    }
+  }
+}

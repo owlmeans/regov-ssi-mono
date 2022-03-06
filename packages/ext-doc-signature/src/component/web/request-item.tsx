@@ -3,7 +3,7 @@ import {
   Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
 } from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
-import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
+import { ItemMenu, ItemMenuHandle, MenuIconButton, ListItemMeta } from '@owlmeans/regov-lib-react'
 import { MaybeArray } from '@owlmeans/regov-ssi-core'
 import { CredentialWrapper, getCompatibleSubject, Credential, Presentation, CredentialSubject } from '@owlmeans/regov-ssi-core'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
@@ -14,7 +14,7 @@ import { getSignatureRequestFromPresentation } from '../../util'
 
 export const SignatureRequestItemWeb = (ext: Extension): FunctionComponent<SignatureRequestItemParams> =>
   withRegov<SignatureRequestItemProps>({ namespace: ext.localization?.ns },
-    ({ t, i18n, wrapper, action, trigger }) => {
+    ({ t, i18n, meta, wrapper, action, trigger }) => {
       const { handler, extensions } = useRegov()
       const subject = getCompatibleSubject<SignatureRequestSubject>(
         getSignatureRequestFromPresentation(wrapper.credential) as Credential
@@ -54,7 +54,7 @@ export const SignatureRequestItemWeb = (ext: Extension): FunctionComponent<Signa
         <ListItemIcon>
           <MenuIconButton handle={handle} />
           <ItemMenu handle={handle} content={wrapper.credential} i18n={i18n} prettyOutput
-            exportTitle={`${wrapper.meta.title}.signature`} />
+            exportTitle={`${wrapper.meta.title}.signature`} meta={meta} />
         </ListItemIcon>
       </ListItem>
     })
@@ -63,6 +63,7 @@ export type SignatureRequestItemParams = EmptyProps & {
   wrapper: CredentialWrapper<MaybeArray<CredentialSubject>, Presentation>
   action?: () => void
   trigger?: boolean
+  meta?: ListItemMeta
 }
 
 export type SignatureRequestItemProps = RegovComponentProps<SignatureRequestItemParams>

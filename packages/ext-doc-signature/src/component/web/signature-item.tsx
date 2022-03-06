@@ -3,7 +3,7 @@ import {
   Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
 } from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
-import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
+import { ItemMenu, ItemMenuHandle, MenuIconButton, ListItemMeta } from '@owlmeans/regov-lib-react'
 import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useMemo, useEffect } from 'react'
@@ -12,7 +12,7 @@ import { SignatureSubject } from '../../types'
 
 export const SignatureItemWeb = (ext: Extension): FunctionComponent<SignatureItemParams> =>
   withRegov<SignatureItemProps>({ namespace: ext.localization?.ns }, ({
-    t, i18n, wrapper, action, trigger
+    t, i18n, meta, wrapper, action, trigger
   }) => {
     const { handler, extensions } = useRegov()
     const subject = getCompatibleSubject<SignatureSubject>(wrapper.credential)
@@ -51,7 +51,7 @@ export const SignatureItemWeb = (ext: Extension): FunctionComponent<SignatureIte
       <ListItemIcon>
         <MenuIconButton handle={handle} />
         <ItemMenu handle={handle} content={wrapper.credential} i18n={i18n} prettyOutput
-          exportTitle={`${wrapper.meta.title}.signature`} />
+          exportTitle={`${wrapper.meta.title}.signature`} meta={meta}/>
       </ListItemIcon>
     </ListItem>
   })
@@ -60,6 +60,7 @@ export type SignatureItemParams = EmptyProps & {
   wrapper: CredentialWrapper
   action?: () => void
   trigger?: boolean
+  meta?: ListItemMeta
 }
 
 export type SignatureItemProps = RegovComponentProps<SignatureItemParams>

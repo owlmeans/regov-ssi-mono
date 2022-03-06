@@ -5,8 +5,7 @@
     "wallet": "Credentials Wallet",
     "action": {
       "copy": { "title": "Copy" },
-      "export": { "title": "Export" },
-      "delete": {"title": "Delete"}
+      "export": { "title": "Export" }
     }
   }
 }

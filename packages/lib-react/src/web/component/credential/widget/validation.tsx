@@ -13,7 +13,7 @@ import { normalizeValue } from '@owlmeans/regov-ssi-core'
 import { EvidenceTrust, EvidenceTrustHandle } from './evidence/'
 
 
-export const WebValidationResultWidget: FunctionComponent<WebResultWidgetParams> = withRegov<WebResultWidgetProps>({
+export const ValidationResultWidgetWeb: FunctionComponent<ResultWidgetParamsWeb> = withRegov<ResultWidgetPropsWeb>({
   namespace: 'regov-wallet-credential'
 }, ({ t, reload, result }) => {
   const { extensions } = useRegov()
@@ -60,9 +60,9 @@ export const WebValidationResultWidget: FunctionComponent<WebResultWidgetParams>
   </Fragment>
 })
 
-export type WebResultWidgetParams = EmptyProps & {
+export type ResultWidgetParamsWeb = EmptyProps & {
   result: ValidationResult
   reload?: () => void
 }
 
-export type WebResultWidgetProps = RegovComponentProps<WebResultWidgetParams>
+export type ResultWidgetPropsWeb = RegovComponentProps<ResultWidgetParamsWeb>

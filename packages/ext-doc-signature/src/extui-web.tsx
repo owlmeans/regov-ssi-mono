@@ -125,7 +125,7 @@ export const signatureWebExtension = buildUIExtension(signatureExtension, (purpo
             extensionCode: `${signatureExtension.schema.details.code}SignatureRequestItem`,
             params: {},
             order: 0
-          }]
+          }] 
       }
     case EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET:
       return [{

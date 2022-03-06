@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useMemo } from 'react'
 import { GroupSubject, MembershipSubject, REGOV_CREDENTIAL_TYPE_GROUP } from '../../../../types'
-import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
 import {
   Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-core'
@@ -12,7 +12,7 @@ import { normalizeValue } from '@owlmeans/regov-ssi-core'
 
 
 export const MembershipItem = (ext: Extension): FunctionComponent<MembershipItemParams> =>
-  withRegov<MembershipItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, wrapper, action }) => {
+  withRegov<MembershipItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, action }) => {
     const subject = getCompatibleSubject<MembershipSubject>(wrapper.credential)
     const { extensions, handler } = useRegov()
 
@@ -56,7 +56,7 @@ export const MembershipItem = (ext: Extension): FunctionComponent<MembershipItem
       <ListItemIcon>
         <MenuIconButton handle={handle} />
         <ItemMenu handle={handle} content={wrapper.credential} i18n={i18n} prettyOutput
-          exportTitle={`${wrapper.meta.title}.membership`} />
+          exportTitle={`${wrapper.meta.title}.membership`} meta={meta} />
       </ListItemIcon>
     </ListItem>
   })
@@ -64,6 +64,7 @@ export const MembershipItem = (ext: Extension): FunctionComponent<MembershipItem
 export type MembershipItemParams = EmptyProps & {
   wrapper: CredentialWrapper<CredentialSubject, Credential<CredentialSubject>>
   action?: () => void
+  meta?: ListItemMeta
 }
 
 export type MembershipItemProps = RegovComponentProps<MembershipItemParams>

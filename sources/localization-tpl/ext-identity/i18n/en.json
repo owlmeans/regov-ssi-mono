@@ -1,0 +1,78 @@
+{
+  "extension": {
+    "details": {
+      "name": "Basic Identity",
+      "cred": {
+        "identity": {
+          "name": "Basic Identity"
+        }
+      }
+    }
+  },
+  "identityName": {
+    "label": "Identity Name",
+    "hint": "It will be used only to list the Identity into your wallet. Nobody else will see it."
+  },
+  "step": {
+    "welcom": {
+      "label": "Welcome!",
+      "title": "Issue your Digital ID!",
+      "why": "There is no any digital ID in your wallet. Let's issue one to make you able to issue and sign other documents (credentials).",
+      "note": "The ID is just an identification sequence that you create for yourself. It allows to prove your ownership of a document (credential), but not to trace you back.",
+      "oppotunities": {
+        "title": "Capabilities of Digital ID:",
+        "op1": "You issue it secretly for yourself — so it's absulutely private.",
+        "op2": "The use of digital ID doesn't allow to trace back your identity until you want to.",
+        "op3": "It doesn't require any of your pivate data, but it's based on your private key from this wallet.",
+        "op4": "It allows to prove ownership of different documents (credentials).",
+        "op5": "You can create and use multiple IDs for different purposes."
+      }
+    },
+    "initialize": {
+      "label": "Create your Identity"
+    },
+    "finish": {
+      "label": "Congratulations!",
+      "title": "You have a Digital Identity",
+      "congratulation": "Now you can create and sign credentials via your wallet!",
+      "finish": "Ok"
+    },
+    "general": {
+      "next": "Next"
+    }
+  },
+  "widget": {
+    "dashboard": {
+      "issuedAt": "Issued"
+    },
+    "evidence": {
+      "issuedAt": "Issuance date",
+      "uuid": "Unique Sequence",
+      "sourceApp": "Issuing App"
+    },
+    "validation": {
+      "main": {
+        "valid": "Credential is valid ✅",
+        "invalid": "Credential is invalid ❌",
+        "trusted": "Credential is trusted ✅",
+        "untrusted": "Credential is untrusted ⛔️"
+      }
+    }
+  },
+  "creation": {
+    "title": "ID — Verifiable Credential for Identity",
+    "defaultIdentityTitle": "My Identity",
+    "identifier": {
+      "hint": "ID"
+    },
+    "sourceApp": {
+      "hint": "Issuing App"
+    },
+    "uuid": {
+      "hint": "Unique Sequence"
+    },
+    "createdAt": {
+      "hint": "Creation Date"
+    }
+  }
+}

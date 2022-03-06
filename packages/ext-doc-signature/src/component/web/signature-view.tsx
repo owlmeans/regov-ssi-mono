@@ -6,7 +6,7 @@ import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from '../../types'
 import { BorderColor, Close } from '@mui/icons-material'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'
 import {
-  CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, WebValidationResultWidget, 
+  CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, ValidationResultWidgetWeb, 
   AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, FileProcessorWeb, PrimaryForm,
   WalletFormProvider, withRegov
 } from '@owlmeans/regov-lib-react'
@@ -173,7 +173,7 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
           </Grid>
           <Grid item xs={12} sm={6} md={5} px={1}>
             <Paper elevation={3}>
-              <WebValidationResultWidget result={result} reload={reload} />
+              <ValidationResultWidgetWeb result={result} reload={reload} />
             </Paper>
           </Grid>
         </Grid>

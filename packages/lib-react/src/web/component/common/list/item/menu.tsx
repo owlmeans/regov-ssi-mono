@@ -3,13 +3,16 @@ import { ClickAwayListener, IconButton, ListItemIcon, ListItemText, Menu, MenuIt
 import { useTranslation } from 'react-i18next'
 import saveAs from 'file-saver'
 import copy from 'copy-to-clipboard'
-import { ContentCopy, FileDownload, MenuOpen } from '@mui/icons-material'
+import { ContentCopy, Delete, FileDownload, MenuOpen } from '@mui/icons-material'
 import { i18n } from 'i18next'
+import { useRegov } from '../../../../../common/'
+import { RegistryType } from '@owlmeans/regov-ssi-core'
 
 
-export const ItemMenu = ({ i18n, handle, content, prettyOutput, exportTitle, children }: ItemMenuParams) => {
+export const ItemMenu = ({ i18n, meta, handle, content, prettyOutput, exportTitle, children }: ItemMenuParams) => {
   const { t } = useTranslation('regov-wallet-main', { i18n })
   const [anchor, setAnchor] = useState<HTMLElement | undefined>(undefined)
+  const { handler } = useRegov()
   if (typeof content === 'object') {
     content = JSON.stringify(content, undefined, prettyOutput ? 2 : undefined)
   }
@@ -17,6 +20,17 @@ export const ItemMenu = ({ i18n, handle, content, prettyOutput, exportTitle, chi
   handle.handler = {
     setAnchor, close: () => { setAnchor(undefined) }
   }
+
+  const remove = meta && (async () => {
+    const registry = handler.wallet?.getRegistry(meta.registry)
+    const idx = registry?.registry.credentials[meta.section].findIndex(
+      cred => cred.credential.id === meta.id
+    )
+    if (idx !== undefined && idx > -1) {
+      registry?.registry.credentials[meta.section].splice(idx, 1)
+      handler.notify()
+    }
+  })
 
   if (!anchor) {
     return <Fragment />
@@ -27,6 +41,12 @@ export const ItemMenu = ({ i18n, handle, content, prettyOutput, exportTitle, chi
     handle.handler?.close()
   }}>
     <Menu open={!!anchor} anchorEl={anchor} onClose={handle.handler.close}>
+      {remove && <MenuItem onClick={remove}>
+        <ListItemIcon>
+          <Delete fontSize="medium" />
+        </ListItemIcon>
+        <ListItemText primary={t('menu.action.delete.title')} />
+      </MenuItem>}
       <MenuItem onClick={() => {
         copy(_content, {
           message: t([`widget.dashboard.clipboard.copyhint`, 'clipboard.copyhint']),
@@ -60,8 +80,15 @@ export type ItemMenuParams = PropsWithChildren<{
   content: string | Object
   prettyOutput?: boolean
   exportTitle?: string
+  meta?: ItemMenuMeta
   i18n: i18n
 }>
+
+export type ItemMenuMeta = {
+  id: string
+  registry: RegistryType
+  section: string
+}
 
 export type ItemMenuHandle = {
   handler: undefined | {

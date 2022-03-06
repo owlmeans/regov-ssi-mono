@@ -4,9 +4,9 @@ import { Box, Divider, Tab, Tabs } from '@mui/material'
 import {
   CredentialListImplProps, useRegov, EXTENSION_ITEM_PURPOSE_ITEM, PurposeListItemParams
 } from '../../../common'
-import { ItemMenu, ItemMenuHandle, MenuIconButton, SimpleList, SimpleListItem } from '../common'
+import { ItemMenu, ItemMenuHandle, ItemMenuMeta, MenuIconButton, SimpleList, SimpleListItem } from '../common'
 import { CredentialListHeaderAction } from './list/header-action'
-import { CredentialWrapper, REGISTRY_SECTION_OWN } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
 
 
 export const CredentialListWeb = (props: CredentialListImplProps) => {
@@ -29,13 +29,14 @@ export const CredentialListWeb = (props: CredentialListImplProps) => {
         action={props.binarySectionSwitch} />
     }>
       {credentials.map(
-        wrapper => <CredentialListItem key={wrapper.credential.id} wrapper={wrapper} props={props} />
+        wrapper => <CredentialListItem key={wrapper.credential.id} wrapper={wrapper} props={props}
+          meta={{ registry: tab, section: section }} />
       )}
     </SimpleList>
   </Box>
 }
 
-const CredentialListItem = ({ wrapper, props }: CredentialListItemProps) => {
+const CredentialListItem = ({ wrapper, props, meta }: CredentialListItemProps) => {
   const { t, i18n } = props
   const { extensions } = useRegov()
 
@@ -44,22 +45,30 @@ const CredentialListItem = ({ wrapper, props }: CredentialListItemProps) => {
   const handle: ItemMenuHandle = useMemo(() => ({ handler: undefined }), [wrapper.credential.id])
 
   const renderers = extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_ITEM, wrapper.credential.type)
+
+  const metaItem = {
+    id: wrapper.credential.id,
+    registry: meta?.registry || REGISTRY_TYPE_IDENTITIES,
+    section: meta?.section || REGISTRY_SECTION_PEER
+  }
+
   if (renderers && renderers.length > 0) {
     const renderer = renderers[0]
     const Renderer = renderer.com as FunctionComponent<PurposeListItemParams>
 
-    return <Renderer wrapper={wrapper} trigger={wrapper.credential.id === props.id} />
+    return <Renderer wrapper={wrapper} trigger={wrapper.credential.id === props.id} meta={metaItem} />
   }
 
   return <SimpleListItem {...props} noTranslation label={wrapper.meta.title || t('list.item.unknown')}
     hint={`${credHint} - ${t(signStatus)}`}>
     <MenuIconButton handle={handle} />
     <ItemMenu handle={handle} content={wrapper.credential} i18n={i18n} prettyOutput
-      exportTitle={`${wrapper.meta.title}.group`} />
+      exportTitle={`${wrapper.meta.title}.group`} meta={metaItem} />
   </SimpleListItem>
 }
 
 type CredentialListItemProps = {
   wrapper: CredentialWrapper
+  meta?: Partial<ItemMenuMeta>
   props: CredentialListImplProps
 }
