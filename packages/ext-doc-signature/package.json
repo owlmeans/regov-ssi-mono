@@ -10,7 +10,7 @@
   ],
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
-  "license": "> @TODO: license",
+  "license": "Apache-2.0",
   "type": "commonjs",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
