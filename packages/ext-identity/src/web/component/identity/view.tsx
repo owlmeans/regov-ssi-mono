@@ -16,10 +16,16 @@
 
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { 
-  CredentialEvidenceWidget, EmptyProps, EntityRenderer, RegovComponentProps, useRegov, ValidationResultWidgetWeb, withRegov 
+  CredentialEvidenceWidget, EmptyProps, EntityRenderer, RegovComponentProps, useRegov,
+  ValidationResultWidgetWeb, withRegov 
 } from '@owlmeans/regov-lib-react'
-import { Button, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, Typography } from '@mui/material'
-import { Credential, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
+import {
+  Button, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, Typography
+} from '@mui/material'
+import {
+  Credential, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER,
+  REGISTRY_TYPE_IDENTITIES
+} from '@owlmeans/regov-ssi-core'
 import { Close } from '@mui/icons-material'
 import { ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-core'
 import { RegovIdentityExtension, IdentitySubject } from '../../../types'

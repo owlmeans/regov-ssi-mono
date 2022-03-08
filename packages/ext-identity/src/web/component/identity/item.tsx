@@ -15,19 +15,27 @@
  */
 
 import React, { Fragment, FunctionComponent, useMemo } from 'react'
-import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
+import {
+  EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta
+} from '@owlmeans/regov-lib-react'
 import {
   Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-core'
-import { CredentialWrapper, Credential, CredentialSubject, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
-import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
+import {
+  CredentialWrapper, Credential, CredentialSubject, getCompatibleSubject
+} from '@owlmeans/regov-ssi-core'
+import {
+  Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
+} from '@mui/material'
 import { DocumentScanner } from '@mui/icons-material'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
 import { IdentitySubject } from '../../../types'
 
 
 export const IdentityItem = (ext: Extension): FunctionComponent<IdentityItemParams> =>
-  withRegov<IdentityItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, action }) => {
+  withRegov<IdentityItemProps>(
+    { namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, action }
+  ) => {
     const subject = getCompatibleSubject<IdentitySubject>(wrapper.credential)
     const { extensions, handler } = useRegov()
 

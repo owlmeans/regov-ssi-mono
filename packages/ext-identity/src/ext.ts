@@ -15,10 +15,14 @@
  */
 
 import {
-  addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails, defaultBuildMethod,
-  EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams, isCredential, IncommigDocumentEventParams, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
+  addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails,
+  defaultBuildMethod, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME, 
+  RetreiveNameEventParams, isCredential, IncommigDocumentEventParams, 
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED
 } from "@owlmeans/regov-ssi-core"
-import { CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential } from "@owlmeans/regov-ssi-core"
+import {
+  CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential 
+} from "@owlmeans/regov-ssi-core"
 import { IdentitySubject } from "./types"
 import { makeRandomUuid } from "@owlmeans/regov-ssi-core"
 import { credIdToIdentityId } from "./helper"
@@ -26,7 +30,9 @@ import { credIdToIdentityId } from "./helper"
 
 export const BASIC_IDENTITY_TYPE = 'Identity'
 
-export const buildIdentityExtension = (type: string, params: BuildExtensionParams, details: ExtensionDetails) => {
+export const buildIdentityExtension = (
+  type: string, params: BuildExtensionParams, details: ExtensionDetails
+) => {
   const identityType = type || 'OwlMeans:Regov:Identity'
 
   type IdentityCredentials = typeof identityType

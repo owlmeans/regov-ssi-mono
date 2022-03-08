@@ -16,16 +16,24 @@
 
 export * from './types'
 import React from 'react'
-import {addObserverToSchema, ExtensionDetails, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams, isCredential } from '@owlmeans/regov-ssi-core'
+import {
+  addObserverToSchema, ExtensionDetails, EXTENSION_TRIGGER_AUTHENTICATED,
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams, isCredential
+} from '@owlmeans/regov-ssi-core'
 import { BASIC_IDENTITY_TYPE, BuildExtensionParams, buildIdentityExtension } from '../ext'
 import en from './i18n/en.json'
 import { 
-  buildUIExtension, UIExtensionFactoryProduct, MainModalAuthenticatedEventParams, ExtensionItemPurpose,
-  EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET, EXTENSION_ITEM_PURPOSE_EVIDENCE, EXTENSION_ITEM_PURPOSE_VALIDATION, MainModalHandle, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, MainModalShareEventParams, EXTENSION_ITEM_PURPOSE_ITEM,
+  buildUIExtension, UIExtensionFactoryProduct, MainModalAuthenticatedEventParams,
+  ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
+  EXTENSION_ITEM_PURPOSE_EVIDENCE, EXTENSION_ITEM_PURPOSE_VALIDATION, MainModalHandle,
+  EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, MainModalShareEventParams,
+  EXTENSION_ITEM_PURPOSE_ITEM
 } from '@owlmeans/regov-lib-react'
 import { DashboardWidget, EvidenceWidget, Onboarding, ValidationWidget } from './component'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
-import { REGISTRY_TYPE_IDENTITIES, Credential, CredentialSubject, WalletWrapper } from '@owlmeans/regov-ssi-core'
+import {
+  REGISTRY_TYPE_IDENTITIES, Credential, CredentialSubject, WalletWrapper
+} from '@owlmeans/regov-ssi-core'
 import { IdentityView } from './component/identity/view'
 import { IdentityItem } from './component/identity/item'
 
