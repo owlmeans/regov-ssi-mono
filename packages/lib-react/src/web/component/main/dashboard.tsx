@@ -34,8 +34,8 @@ export const MainDashboardWeb = ({ }: MainDashboardImplProps) => {
     <Grid container direction="column" justifyContent="flex-start" alignItems="stretch">
       <Grid item container direction="row" justifyContent="flex-start" alignItems="stretch">
         {extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET).map(
-          (ext, idx) => <Grid key={`${ext.extensionCode}-${idx}`} item p={1} xs={12} sm={6} md={4}>
-            <Paper style={{ height: 125, maxHeight: 125, minWidth: 325, overflowY: 'hidden' }}>{<ext.com />}</Paper>
+          (ext, idx) => <Grid key={`${ext.extensionCode}-${idx}`} item p={1}>
+            <Paper style={{ height: 140, maxHeight: 140, minWidth: 325, maxWidth: 325, overflowY: 'hidden' }}>{<ext.com />}</Paper>
           </Grid>
         )}
       </Grid>
