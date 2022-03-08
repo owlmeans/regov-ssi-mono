@@ -9,6 +9,21 @@
       }
     }
   },
+  "identity": {
+    "view": {
+      "title": "Digital Identity",
+      "identifier": "ID",
+      "sourceApp": "Issuing App",
+      "uuid": "Unique Sequence",
+      "createdAt": "Creation Date",
+      "close": "Close"
+    },
+    "list": {
+      "item": {
+        "unknown": "Digital Identity"
+      }
+    }
+  },
   "identityName": {
     "label": "Identity Name",
     "hint": "It will be used only to list the Identity into your wallet. Nobody else will see it."
