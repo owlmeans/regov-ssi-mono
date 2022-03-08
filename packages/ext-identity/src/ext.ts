@@ -16,7 +16,7 @@
 
 import {
   addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails, defaultBuildMethod,
-  EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams,
+  EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams, isCredential, IncommigDocumentEventParams, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
 } from "@owlmeans/regov-ssi-core"
 import { CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential } from "@owlmeans/regov-ssi-core"
 import { IdentitySubject } from "./types"
@@ -80,6 +80,21 @@ export const buildIdentityExtension = (type: string, params: BuildExtensionParam
       const subject = getCompatibleSubject<IdentitySubject>(credential)
       setName(`ID: ${subject.identifier}`)
     }
+  })
+
+  schema = addObserverToSchema(schema, {
+    trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
+    filter: async (_, params: IncommigDocumentEventParams) => {
+      if (!isCredential(params.credential)) {
+        return false
+      }
+  
+      if (!params.credential.type || !Array.isArray(params.credential.type)) {
+        return false
+      }
+  
+      return params.credential.type.includes(identityType)
+    },
   })
 
   const extension = buildExtension(schema, {

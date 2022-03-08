@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-
+import { Extension } from "@owlmeans/regov-ssi-core"
 
 export type IdentitySubject = {
   identifier: string
@@ -22,3 +22,5 @@ export type IdentitySubject = {
   uuid: string
   createdAt: string
 }
+
+export type RegovIdentityExtension = Extension
