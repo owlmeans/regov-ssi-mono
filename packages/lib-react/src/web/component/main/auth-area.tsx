@@ -14,25 +14,85 @@
  *  limitations under the License.
  */
 
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { MainAuthAreaImplProps } from '../../../common'
-import { AppBar, Grid, Toolbar, Typography } from '@mui/material'
+import {
+  AppBar, Grid, Toolbar, Typography, Box, CssBaseline, Drawer, IconButton
+} from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu';
+
+const drawerWidth = 240;
 
 
 export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
-  return <Fragment>
-    <AppBar position="fixed" style={{ height: 75, maxHeight: 75 }}>
-      <Toolbar>
-        <Grid container item direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="h5">{name}</Typography>
-        </Grid>
-      </Toolbar>
-    </AppBar>
-    <Grid container direction="row" justifyContent="center" alignItems="flex-start"
-      style={{ marginTop: 80 }}>
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <div>
+      <Toolbar />
       <Grid item xs={4} sm={3} lg={2} xl={1}>{menu}</Grid>
-      <Grid item xs={8} sm={9} lg={10} xl={11}><Outlet /></Grid>
-    </Grid>
-  </Fragment>
+    </div>
+  );
+
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar position="fixed">
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">{name}</Typography>
+        </Toolbar>
+      </AppBar>
+      <Box
+        component="main"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
+      >
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, zIndex: "auto" },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+      >
+        <Toolbar />
+        <Grid item><Outlet /></Grid>
+      </Box>
+    </Box>
+  );
 }
