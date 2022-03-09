@@ -33,6 +33,7 @@
     "@owlmeans/regov-ssi-core": "^0.4.2",
     "@reduxjs/toolkit": "^1.6.2",
     "i18next": "^21.4.2",
+    "i18next-browser-languagedetector": "^6.1.3",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-hook-form": "^7.19.5",

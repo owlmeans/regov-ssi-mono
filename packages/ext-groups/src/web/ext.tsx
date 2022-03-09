@@ -30,7 +30,7 @@ import {
 import { groupsExtension } from '../ext'
 import { getGroupFromMembershipClaimPresentation, getGroupOwnerIdentity } from '../util'
 import { MENU_TAG_CRED_NEW } from '@owlmeans/regov-lib-react'
-import { commonEn } from './i18n'
+import { commonEn, commonRu } from './i18n'
 import {
   GroupCreation, GroupItem, GroupView, EvidenceWidget, MembershipClaimView, MembershipClaimItem,
   MembershipOffer, MembershipValidationWidget, MembershipEvidenceWidget, GroupValidationWidget,
@@ -46,7 +46,10 @@ import { MembershipClaimOffer } from './component/credential/membership/claim-of
 
 
 if (groupsExtension.localization) {
-  groupsExtension.localization.translations['en'] = commonEn
+  groupsExtension.localization.translations = {
+    en: commonEn,
+    ru: commonRu
+  }
 }
 
 if (groupsExtension.schema.events) {

@@ -22,6 +22,7 @@ import {
 } from '@owlmeans/regov-ssi-core'
 import { BASIC_IDENTITY_TYPE, BuildExtensionParams, buildIdentityExtension } from '../ext'
 import en from './i18n/en.json'
+import ru from './i18n/ru.json'
 import { 
   buildUIExtension, UIExtensionFactoryProduct, MainModalAuthenticatedEventParams,
   ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
@@ -56,7 +57,7 @@ export const buildIdentityExtensionUI = (
 
   extension.localization = { ns, translations: {} }
   if (ns === REGOV_IDENTITY_DEFAULT_NAMESPACE) {
-    extension.localization.translations.en = en
+    extension.localization.translations = { en, ru }
   }
 
   if (extension.schema.events) {
