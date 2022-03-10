@@ -1,11 +1,3 @@
-# `ext-groups`
+# OwlMeans Re:gov library: Groups
 
-> TODO: description
-
-## Usage
-
-```
-const extGroups = require('ext-groups');
-
-// TODO: DEMONSTRATE API
-```
+Required for creation decentralized groups and membership of this groups.

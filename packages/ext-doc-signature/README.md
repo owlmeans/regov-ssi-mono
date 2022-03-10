@@ -1,11 +1,3 @@
-# `ext-doc-signature`
+# OwlMeans Re:gov library: Document signature
 
-> TODO: description
-
-## Usage
-
-```
-const extDocSignature = require('ext-doc-signature');
-
-// TODO: DEMONSTRATE API
-```
+Required for creating digital signatures.

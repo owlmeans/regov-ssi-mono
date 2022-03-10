@@ -1,11 +1,3 @@
-# `ext-identity`
+# OwlMeans Re:gov library: Identity
 
-> TODO: description
-
-## Usage
-
-```
-const extIdentity = require('ext-identity');
-
-// TODO: DEMONSTRATE API
-```
+Required for identity management and source of trust.
