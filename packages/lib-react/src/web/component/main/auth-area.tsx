@@ -24,7 +24,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 const drawerWidth = 240;
 
-
 export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -53,7 +52,22 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">{name}</Typography>
+          <Box
+            component="img"
+            sx={{
+              height: 50,
+              width: 159,
+            }}
+            src="/logo.png"
+          />
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ pl: 2 }}
+          >
+            {name}
+          </Typography>
         </Toolbar>
       </AppBar>
       <Box
