@@ -98,6 +98,5 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
       </Box>
       <MainFooter />
     </Box>
-    
   )
 }
