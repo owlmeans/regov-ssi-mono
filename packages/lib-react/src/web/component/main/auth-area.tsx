@@ -20,23 +20,27 @@ import { MainAuthAreaImplProps } from '../../../common'
 import {
   AppBar, Grid, Toolbar, Typography, Box, CssBaseline, Drawer, IconButton
 } from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from '@mui/icons-material/Menu'
+import { useRegov } from '../../../common/context'
 
 const drawerWidth = 240;
 
 export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false)
+  const { config } = useRegov()
+
+  console.log(config)
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+    setMobileOpen(!mobileOpen)
+  }
 
   const drawer = (
     <div>
       <Toolbar />
       <Grid item xs={4} sm={3} lg={2} xl={1}>{menu}</Grid>
     </div>
-  );
+  )
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -52,22 +56,8 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
           >
             <MenuIcon />
           </IconButton>
-          <Box
-            component="img"
-            sx={{
-              height: 50,
-              width: 159,
-            }}
-            src="/logo.png"
-          />
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ pl: 2 }}
-          >
-            {name}
-          </Typography>
+          {config.logo}
+          <Typography variant="h6" noWrap component="div">{name}</Typography>
         </Toolbar>
       </AppBar>
       <Box
@@ -108,5 +98,5 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
         <Grid item><Outlet /></Grid>
       </Box>
     </Box>
-  );
+  )
 }

@@ -22,6 +22,8 @@ import { groupsUIExtension } from '@owlmeans/regov-ext-groups'
 
 import { WalletApp, buildUniversalExtensionUI } from '@owlmeans/regov-lib-react'
 
+import { Box } from '@mui/material'
+
 import { config } from './config'
 
 
@@ -37,7 +39,7 @@ registry.registerSync(buildUniversalExtensionUI({
   schemaBaseUrl: 'https://owlmeans.com/schemas/'
 }))
 
-registry.registerSync(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName: config.name }, {
+registry.registerSync(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName: config.name || '' }, {
   name: '',
   code: 'regov-identity',
   organization: 'OwlMeans',
@@ -48,6 +50,8 @@ registry.registerSync(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName:
 registry.registerSync(signatureWebExtension)
 
 registry.registerSync(groupsUIExtension)
+
+config.logo = (<Box component="img" sx={{ height: 50, width: 159, pr: 2 }} src="/logo.png"/>)
 
 export const App = () => {
   return <WalletApp config={config} extensions={registry.normalize()} />

@@ -14,7 +14,9 @@
  *  limitations under the License.
  */
 
-export const config = {
+import { Config } from '@owlmeans/regov-lib-react';
+
+export const config: Config = {
   DID_PREFIX: process.env.REACT_APP_DID_PREFIX || 'regov',
   DID_SCHEMA_PATH: process.env.REACT_APP_DID_SCHEMA_PATH || 'did-schema.json',
   code: process.env.REACT_APP_BUNDLE_CODE || 'regov.web.app',
