@@ -24,12 +24,13 @@ import {
 } from "./types"
 import { isCredential, isPresentation, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'
+import ruCommon from './i18n/ru/common.json'
 import { normalizeValue } from "@owlmeans/regov-ssi-core"
 
 
 let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
   name: 'extension.details.name',
-  code: 'owlmean-regov-doc-signature',
+  code: 'owlmeans-regov-doc-signature',
   types: {
     claim: REGOV_CLAIM_TYPE_SIGNATURE
   }
@@ -113,6 +114,7 @@ export const signatureExtension = buildExtension(
 signatureExtension.localization = {
   ns: REGOV_EXT_SIGNATURE_NAMESPACE,
   translations: {
-    en: enCommon
+    en: enCommon,
+    ru: ruCommon
   }
 }

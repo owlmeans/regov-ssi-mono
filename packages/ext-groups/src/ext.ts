@@ -33,7 +33,7 @@ import { makeRandomUuid, normalizeValue } from "@owlmeans/regov-ssi-core"
 
 let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
   name: 'extension.details.name',
-  code: 'owlmean-regov-groups',
+  code: 'owlmeans-regov-groups',
   types: {
     claim: REGOV_CLAIM_TYPE
   }

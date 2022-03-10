@@ -23,11 +23,16 @@ import enMain from './en/main.json'
 import enCredential from './en/credential.json'
 import enFlow from './en/flow.json'
 
+import ruStore from './ru/store.json'
+import ruCommon from './ru/common.json'
+import ruMain from './ru/main.json'
+import ruCredential from './ru/credential.json'
+import ruFlow from './ru/flow.json'
+
 export * from './setup'
 
 
 export const i18nDefaultOptions: InitOptions = {
-  lng: 'en',
   fallbackLng: 'en',
   debug: true,
   resources: {
@@ -37,6 +42,13 @@ export const i18nDefaultOptions: InitOptions = {
       'regov-wallet-main': enMain,
       'regov-wallet-credential': enCredential,
       'regov-wallet-flow': enFlow
+    },
+    ru: {
+      'regov-wallet-store': ruStore,
+      'regov-wallet-common': ruCommon,
+      'regov-wallet-main': ruMain,
+      'regov-wallet-credential': ruCredential,
+      'regov-wallet-flow': ruFlow
     }
   },
   ns: [
