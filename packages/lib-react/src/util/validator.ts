@@ -56,7 +56,7 @@ export const humanReadableVersion = {
 
 export const generalNameVlidation = (required: boolean = true) => ({
   required,
-  maxLength: 32,
+  maxLength: 96,
   validate: {
     pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
   }
