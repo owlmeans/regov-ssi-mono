@@ -20,7 +20,7 @@ export * from './credential'
 export * from './main'
 
 import { ImplementationMap } from '../../common'
-import { MainLoadingWeb, MainMenuWeb, MainDashboardWeb, MainModalWeb, MainAuthAreaWeb } from './main'
+import { MainLoadingWeb, MainMenuWeb, MainDashboardWeb, MainModalWeb, MainAuthAreaWeb, MainFooterWeb } from './main'
 import { StoreCreationWeb, StoreLoginWeb, StoreListWeb } from "./store"
 import { CredentialEvidenceWidgetWeb, CredentialListWeb, CredentialProcessorWeb } from './credential'
 
@@ -31,6 +31,7 @@ export const webComponentMap: ImplementationMap = {
   'MainDashboard': MainDashboardWeb,
   'MainLoading': MainLoadingWeb,
   'MainMenu': MainMenuWeb,
+  'MainFooter': MainFooterWeb,
   'StoreList': StoreListWeb,
   'CredentialList': CredentialListWeb,
   'MainModal': MainModalWeb,

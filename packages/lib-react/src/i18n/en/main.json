@@ -8,5 +8,12 @@
       "export": { "title": "Export" },
       "delete": {"title": "Delete"}
     }
+  },
+  "footer": {
+    "link": {
+      "policy": "Privacy Policy",
+      "terms": "Terms & Conditions",
+      "guides": "Guides"
+    }
   }
 }
