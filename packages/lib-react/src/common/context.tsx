@@ -189,6 +189,7 @@ export type Config = {
   baseSchemaUrl?: string
   code: string
   name?: string
+  logo?: JSX.Element
 }
 
 export type ContextProviderParams = ContextParams & {
