@@ -7,5 +7,12 @@
       "copy": { "title": "Copy" },
       "export": { "title": "Export" }
     }
+  },
+  "footer": {
+    "link": {
+      "policy": "Privacy Policy",
+      "terms": "Terms & Conditions",
+      "guides": "Guides"
+    }
   }
 }

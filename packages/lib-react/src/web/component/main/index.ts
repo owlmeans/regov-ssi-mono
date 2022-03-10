@@ -16,6 +16,7 @@
 
 
 export * from './dashboard'
+export * from './footer'
 export * from './loading'
 export * from './menu'
 export * from './menu/'

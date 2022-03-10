@@ -190,6 +190,11 @@ export type Config = {
   code: string
   name?: string
   logo?: JSX.Element
+  urls?: {
+    privacyPolicy?: string
+    terms?: string
+    guides?: string
+  }
 }
 
 export type ContextProviderParams = ContextParams & {

@@ -22,9 +22,6 @@ import { normalizeValue } from '@owlmeans/regov-ssi-core'
 
 export const StandardEvidenceWidget: FunctionComponent<PurposeEvidenceWidgetParams> =
   ({ wrapper }: PurposeEvidenceWidgetParams) => {
-
-    console.log(wrapper)
-
     return <Grid container direction="column" justifyContent="flex-start" alignItems="stretch">
       <Grid item>
         <Typography variant="h6">{wrapper.meta.title}</Typography>

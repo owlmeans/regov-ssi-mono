@@ -16,7 +16,7 @@
 
 import React from 'react'
 
-import { StoreListImplProps } from '../../../common'
+import { StoreListImplProps, MainFooter } from '../../../common'
 import { FormHeaderButton, SimpleList, SimpleListItem } from '../../component/common'
 import { Grid, ListItemSecondaryAction } from '@mui/material'
 import { saveAs } from 'file-saver'
@@ -77,5 +77,6 @@ export const StoreListWeb = (props: StoreListImplProps) => {
         )
         : <SimpleListItem {...props} label={'list.empty'} />
     }
-  </SimpleList></span>
+  </SimpleList>
+  <MainFooter /></span>
 }

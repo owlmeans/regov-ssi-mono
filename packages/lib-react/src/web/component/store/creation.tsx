@@ -15,7 +15,7 @@
  */
 
 import React from 'react'
-import { StoreCreationFields, StoreCreationImplProps } from '../../../common'
+import { StoreCreationFields, StoreCreationImplProps, MainFooter } from '../../../common'
 import { useForm, FormProvider, UseFormProps, } from 'react-hook-form'
 import { webCryptoHelper } from '@owlmeans/regov-ssi-core'
 import {
@@ -37,5 +37,6 @@ export const StoreCreationWeb = (props: StoreCreationImplProps) => {
         methods.handleSubmit(props.create(methods, webCryptoHelper))
       } />
     </PrimaryForm>
+    <MainFooter />
   </FormProvider>
 }

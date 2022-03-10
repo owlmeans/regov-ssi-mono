@@ -16,7 +16,7 @@
 
 import React from 'react'
 import { FormProvider, useForm, UseFormProps } from 'react-hook-form'
-import { StoreLoginFields, StoreLoginImplProps } from '../../../common'
+import { StoreLoginFields, StoreLoginImplProps, MainFooter } from '../../../common'
 import { webCryptoHelper } from '@owlmeans/regov-ssi-core'
 import {
   FormMainAction, PasswordInput, PrimaryForm, AlertOutput, FormHeaderButton
@@ -36,5 +36,6 @@ export const StoreLoginWeb = (props: StoreLoginImplProps) => {
         methods.handleSubmit(props.login(methods, webCryptoHelper))
       } />
     </PrimaryForm>
+    <MainFooter />
   </FormProvider>
 }

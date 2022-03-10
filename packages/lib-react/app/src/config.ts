@@ -22,5 +22,10 @@ export const config: Config = {
   code: process.env.REACT_APP_BUNDLE_CODE || 'regov.web.app',
   baseSchemaUrl: process.env.REACT_APP_SCHEMA_URL || 'https://owlmeans.com/schemas',
   name: process.env.REACT_APP_NAME || 'Re:gov',
-  development: false
+  development: false,
+  urls: {
+    privacyPolicy: process.env.REACT_APP_PRIVACY_POLICY_URL,
+    terms: process.env.REACT_APP_TERMS_URL,
+    guides: process.env.REACT_APP_GUIDES_URL
+  }
 }

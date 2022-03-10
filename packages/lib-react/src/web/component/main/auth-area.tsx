@@ -16,20 +16,19 @@
 
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import { MainAuthAreaImplProps } from '../../../common'
+import { MainAuthAreaImplProps, MainFooter } from '../../../common'
 import {
   AppBar, Grid, Toolbar, Typography, Box, CssBaseline, Drawer, IconButton
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import { useRegov } from '../../../common/context'
 
+
 const drawerWidth = 240;
 
 export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const { config } = useRegov()
-
-  console.log(config)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -97,6 +96,8 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
         <Toolbar />
         <Grid item><Outlet /></Grid>
       </Box>
+      <MainFooter />
     </Box>
+    
   )
 }
