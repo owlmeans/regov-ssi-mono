@@ -1,3 +1,3 @@
-# OwlMeans Re:gov example app
+# OwlMeans Re:gov Example Application
 
 Example application.
