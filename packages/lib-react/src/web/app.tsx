@@ -57,7 +57,7 @@ export const WalletApp = ({ config, extensions }: WalletAppParams) => {
     }
   }, [storage])
 
-  return <Container maxWidth="xl">
+  return <Container maxWidth="xl" sx={{ pb: 10 }}>
     {
       loaded
         ? <BrowserRouter>
