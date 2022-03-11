@@ -33,7 +33,7 @@ export const defaultOfferMethod: OfferMethodBuilder = schema => async (wallet, p
   })
 
   if (!isValid) {
-    console.log(result)
+    console.error(result)
     throw 'claim.invalid'
   }
 

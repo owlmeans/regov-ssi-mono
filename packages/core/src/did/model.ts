@@ -402,7 +402,7 @@ export const buildDidHelper =
 
       verifyDID: async (didDoc: DIDDocument) => {
         if (!didDoc.proof?.verificationMethod) {
-          console.log('No proof or verification method')
+          console.error('No proof or verification method')
           return false
         }
 
@@ -441,7 +441,7 @@ export const buildDidHelper =
           )
 
           if (!res.verified) {
-            console.log(res)
+            console.error(res)
           }
 
           return res.verified

@@ -112,7 +112,6 @@ export const withRegov = <
     const [, setState] = useState<S>(state)
     useEffect(() => {
       if (transformer) {
-        // console.log('Register transformer')
         return handler.observe(setState, (wallet: WalletWrapper) => {
           return transformer(wallet, props, handler)
         })

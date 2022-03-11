@@ -33,20 +33,17 @@ export const createWalletHandler = (): WalletHandler => {
     ) => {
       const _observer = () => {
         const transformed = transformer(_handler.wallet)
-        // console.log('transformed', transformed)
         setState(transformed)
       }
       _handler.observers.push(_observer)
       const idx = _handler.observers.length - 1
 
       return () => {
-        // console.log('Unregister transformer')
         delete _handler.observers[idx]
       }
     },
 
     notify: () => {
-      // console.log('Notify observers', _handler.observers.length)
       _handler.observers.forEach(observer => observer && observer())
     },
 
