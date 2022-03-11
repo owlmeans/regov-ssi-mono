@@ -20,7 +20,7 @@ import { buildIdentityExtensionUI } from '@owlmeans/regov-ext-identity'
 import { signatureWebExtension } from '@owlmeans/regov-ext-doc-signature'
 import { groupsUIExtension } from '@owlmeans/regov-ext-groups'
 
-import { WalletApp, buildUniversalExtensionUI } from '@owlmeans/regov-lib-react'
+import { WalletApp } from '@owlmeans/regov-lib-react'
 
 import { Box } from '@mui/material'
 
@@ -31,13 +31,13 @@ const EXAMPLE_IDENTITY_TYPE = 'ExampleIdentity'
 
 const registry = buildUIExtensionRegistry()
 
-registry.registerSync(buildUniversalExtensionUI({
-  name: '',
-  code: 'owlmeans-regov-uvc',
-  organization: 'OwlMeans',
-  home: 'https://owlmeans.com/',
-  schemaBaseUrl: 'https://owlmeans.com/schemas/'
-}))
+// registry.registerSync(buildUniversalExtensionUI({
+//   name: '',
+//   code: 'owlmeans-regov-uvc',
+//   organization: 'OwlMeans',
+//   home: 'https://owlmeans.com/',
+//   schemaBaseUrl: 'https://owlmeans.com/schemas/'
+// }))
 
 registry.registerSync(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName: config.name || '' }, {
   name: '',

@@ -20,8 +20,8 @@ import { MainMenuItemImplProps } from '../../../../common'
 
 
 export const MainMenuItemWeb = ({ title, t, ns, action }: MainMenuItemImplProps) => {
-  return <ListItem>
-    <ListItemButton component={Button} onClick={action}>
+  return <ListItem sx={{width: "100%", maxWidth: 240}}>
+    <ListItemButton fullWidth component={Button} onClick={action}>
       <ListItemText primary={t(title, { ns })} />
     </ListItemButton>
   </ListItem>

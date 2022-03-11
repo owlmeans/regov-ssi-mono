@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Outlet } from 'react-router-dom'
 import { MainAuthAreaImplProps, MainFooter } from '../../../common'
 import {
@@ -35,10 +35,10 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
   }
 
   const drawer = (
-    <div>
+    <Fragment>
       <Toolbar />
-      <Grid item xs={4} sm={3} lg={2} xl={1}>{menu}</Grid>
-    </div>
+      {menu}
+    </Fragment>
   )
 
   return (

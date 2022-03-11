@@ -21,7 +21,7 @@ import { MainMenuItemWeb } from './menu/item'
 
 
 export const MainMenuWeb = ({ items, t, i18n }: MainMenuImplProps) => {
-  return <List>
+  return <List sx={{ width: "100%", maxWidth: 240 }}>
     {items.map(item => <MainMenuItemWeb key={item.title} {...item} t={t} i18n={i18n} />)}
   </List>
 }
