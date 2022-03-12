@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-identity",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Simple Identity Extension for Regov SSI",
   "keywords": [
     "Regov",
@@ -32,18 +32,18 @@
     "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
   },
   "peerDependencies": {
-    "@owlmeans/regov-ssi-core": "^0.4.2",
-    "@owlmeans/regov-lib-react": "^0.1.0",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0",
-    "react-router-dom": "^6.0.2",
-    "i18next": "^21.4.2",
-    "react-hook-form": "^7.19.5",
-    "react-i18next": "^11.14.2",
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.2.4",
-    "@mui/icons-material": "^5.2.5"
+    "@owlmeans/regov-lib-react": "^0.1.0",
+    "@owlmeans/regov-ssi-core": "^0.4.2",
+    "i18next": "^21.4.2",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "react-hook-form": "^7.19.5",
+    "react-i18next": "^11.14.2",
+    "react-router-dom": "^6.0.2"
   },
   "devDependencies": {
     "microbundle-crl": "^0.13.11",
