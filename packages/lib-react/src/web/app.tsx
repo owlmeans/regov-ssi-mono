@@ -18,7 +18,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Backdrop, CircularProgress, Container } from '@mui/material'
 import { i18nDefaultOptions, i18nSetup, createWalletHandler, } from '../common'
 import { NavigationRoot, createRootNavigator } from './router'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 import { buildStorageHelper } from './storage'
 import { WalletAppParams, AppProvider } from './app/'
 
@@ -60,12 +60,12 @@ export const WalletApp = ({ config, extensions }: WalletAppParams) => {
   return <Container maxWidth="xl" sx={{ pb: 10 }}>
     {
       loaded
-        ? <BrowserRouter>
+        ? <HashRouter>
           <AppProvider handler={handler} config={config} extensions={extensions}
             i18n={i18n} navigatorBuilder={createRootNavigator}>
             <NavigationRoot />
           </AppProvider>
-        </BrowserRouter>
+        </HashRouter>
         : <Backdrop sx={{ color: '#fff' }} open={!loaded}>
           <CircularProgress color="inherit" />
         </Backdrop>
