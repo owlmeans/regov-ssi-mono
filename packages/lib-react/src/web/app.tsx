@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { Backdrop, CircularProgress, Container } from '@mui/material'
+import { Backdrop, CircularProgress, Container, CssBaseline } from '@mui/material'
 import { i18nDefaultOptions, i18nSetup, createWalletHandler, } from '../common'
 import { NavigationRoot, createRootNavigator } from './router'
 import { HashRouter } from 'react-router-dom'
@@ -57,7 +57,7 @@ export const WalletApp = ({ config, extensions }: WalletAppParams) => {
     }
   }, [storage])
 
-  return <Container maxWidth="xl" sx={{ pb: 10 }}>
+  return <CssBaseline><Container maxWidth="xl" sx={{ pb: 10 }}>
     {
       loaded
         ? <HashRouter>
@@ -70,5 +70,5 @@ export const WalletApp = ({ config, extensions }: WalletAppParams) => {
           <CircularProgress color="inherit" />
         </Backdrop>
     }
-  </Container>
+  </Container></CssBaseline>
 }
