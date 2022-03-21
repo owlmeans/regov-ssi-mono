@@ -15,7 +15,7 @@
  */
 
 import React, { FunctionComponent } from 'react'
-import { 
+import {
   BasicNavigator, EmptyProps, NavigatorLoading, RegovComponentProps, withRegov, WrappedComponentProps
 } from '../../common/'
 

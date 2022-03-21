@@ -15,9 +15,4 @@
  */
 
 
-
-export * from './common'
-
-export * from './web'
-
-export * from './mobile'
+export * from './provider'

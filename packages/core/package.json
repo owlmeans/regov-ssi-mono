@@ -36,7 +36,8 @@
     "jest": "^27.0.6",
     "ts-jest": "^27.0.4",
     "ts-node": "^10.2.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "url-polyfill": "^1.1.12"
   },
   "dependencies": {
     "@affinidi/tiny-lds-ecdsa-secp256k1-2019": "^1.1.0",
@@ -44,6 +45,7 @@
     "ajv": "^8.8.2",
     "bip32": "^2.0.6",
     "browserify-aes": "^1.2.0",
+    "buffer": "^6.0.3",
     "hash.js": "^1.1.7",
     "jsonld-signatures": "^7.0.0",
     "secp256k1": "^4.0.2",

@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+const Buffer = require('buffer/').Buffer
+
 import {
   EmptyProps, generalNameVlidation, RegovComponentProps, urlVlidation, useRegov, withRegov,
   humanReadableVersion, useNavigator, generalIdVlidation

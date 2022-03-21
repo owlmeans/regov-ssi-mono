@@ -34,7 +34,7 @@ export * from './setup'
 
 export const i18nDefaultOptions: InitOptions = {
   fallbackLng: 'en',
-  debug: true,
+  debug: false,
   resources: {
     en: {
       'regov-wallet-store': enStore,

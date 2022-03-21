@@ -14,11 +14,13 @@
  *  limitations under the License.
  */
 
+const Buffer = require('buffer/').Buffer
+
 import {
   CryptoKey, CryptoHelper, extractId, Idish, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY,
   COMMON_CRYPTO_ERROR_NOID, normalizeValue, addToValue
 } from '../common'
-import { URLSearchParams } from 'url'
+import 'url-polyfill'
 import { QueryDict, DEFAULT_VERIFICATION_KEY, VERIFICATION_KEY_HOLDER, } from './types'
 import {
   DIDDocument, DIDPURPOSE_VERIFICATION, DIDHelper, DEFAULT_APP_SCHEMA_URL, DEFAULT_DID_PREFIX,
@@ -41,7 +43,7 @@ const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
  */
 export const buildDidHelper =
   (
-    crypto: CryptoHelper, 
+    crypto: CryptoHelper,
     buildOptions: BuildDIDHelperOptions = {
       prefix: DEFAULT_DID_PREFIX,
       schemaPath: DEFAULT_DID_SCHEMA_PATH,
@@ -358,7 +360,7 @@ export const buildDidHelper =
             type: VERIFICATION_METHOD,
             ..._buildKeyPayload(key.pubKey)
           }
-          
+
           const existedVerificationIdx = normalizeValue(didDocUnsigned.verificationMethod).findIndex(
             _method => _method && _method.id === verification.id
           )

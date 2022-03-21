@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+const Buffer = require('buffer/').Buffer
+
 import { Secp256k1Key, Secp256k1Signature } from "@affinidi/tiny-lds-ecdsa-secp256k1-2019"
 
 import {sha256} from 'hash.js'

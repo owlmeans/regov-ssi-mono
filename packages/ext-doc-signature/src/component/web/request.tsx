@@ -14,12 +14,14 @@
  *  limitations under the License.
  */
 
+const Buffer = require('buffer/').Buffer
+
 import {
-  EmptyProps, generalIdVlidation, generalNameVlidation, humanReadableVersion, RegovComponentProps, urlVlidation, useNavigator, 
+  EmptyProps, generalIdVlidation, generalNameVlidation, humanReadableVersion, RegovComponentProps, urlVlidation, useNavigator,
   useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  AlertOutput, FileProcessorWeb, FormMainAction, ListNavigator, LongTextInput, MainTextInput, 
+  AlertOutput, FileProcessorWeb, FormMainAction, ListNavigator, LongTextInput, MainTextInput,
   partialListNavigator, PrimaryForm, WalletFormProvider, FileProcessorParamsHandler
 } from '@owlmeans/regov-lib-react'
 import { REGISTRY_SECTION_OWN, REGISTRY_TYPE_REQUESTS } from '@owlmeans/regov-ssi-core'

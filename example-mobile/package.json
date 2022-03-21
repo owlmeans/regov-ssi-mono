@@ -1,0 +1,59 @@
+{
+  "name": "@owlmeans/regov-mold-wallet-mobile-example",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject"
+  },
+  "dependencies": {
+    "@affinidi/wallet-react-native-sdk": "^6.1.0",
+    "@owlmeans/regov-ext-doc-signature": "file:../packages/ext-doc-signature",
+    "@owlmeans/regov-ext-groups": "file:../packages/ext-groups",
+    "@owlmeans/regov-ext-identity": "file:../packages/ext-identity",
+    "@owlmeans/regov-lib-react": "file:../packages/lib-react",
+    "@owlmeans/regov-ssi-core": "file:../packages/core",
+    "@reduxjs/toolkit": "^1.6.2",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
+    "expo": "~44.0.0",
+    "expo-status-bar": "~1.2.0",
+    "i18next": "^21.4.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-hook-form": "^7.28.1",
+    "react-i18next": "^11.14.2",
+    "react-native": "0.64.3",
+    "react-native-crypto": "^2.2.0",
+    "react-native-randombytes": "^3.6.1",
+    "react-native-web": "0.17.7",
+    "react-redux": "^7.2.6",
+    "stream-browserify": "^3.0.0",
+    "url-polyfill": "^1.1.12",
+    "util": "^0.12.4",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@types/react": "~17.0.41",
+    "@types/react-native": "~0.67.3",
+    "typescript": "~4.6.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

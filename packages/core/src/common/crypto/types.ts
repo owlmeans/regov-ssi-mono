@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+const Buffer = require('buffer/').Buffer
 
 export type CryptoHelper = {
   buildSignSuite: (keyOptions: BuildSignSignatureOptions) => Object
@@ -32,7 +33,7 @@ export type CryptoHelper = {
 
   encrypt: (body: string, password: string) => Promise<string>
 
-  decrypt: (chiper: string, password: string)=> Promise<string>
+  decrypt: (chiper: string, password: string) => Promise<string>
 
   makeDerivationPath: (index?: number, change?: number, account?: number, bc?: string) => string
 

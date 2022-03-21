@@ -59,6 +59,7 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
     "is-utf8": "^0.2.1"
   },
   "gitHead": "7ed39c573fab390171491390a484f0f6188a163c"
