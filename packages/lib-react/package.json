@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-lib-react",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "UI toolkit to build SSI Applications over OwlMeans Regov SSI",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
