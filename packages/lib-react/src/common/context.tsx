@@ -71,8 +71,6 @@ export const RegovProvider = ({
 }: PropsWithChildren<ContextProviderParams>) => {
   const props = { map, handler, config, extensions }
 
-  console.log('re-provider')
-
   return <I18nextProvider i18n={i18n}>
     <NavigatorContextProvider navigator={navigator}>
       <RegovContext.Provider value={props}>{children}</RegovContext.Provider>

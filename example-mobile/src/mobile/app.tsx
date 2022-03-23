@@ -14,25 +14,26 @@
  *  limitations under the License.
  */
 
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 // import { Container } from '@mui/material'
 import { View, Text, StatusBar } from 'react-native'
-import { i18nDefaultOptions, i18nSetup, createWalletHandler, } from '../common'
+import { i18nDefaultOptions, i18nSetup, createWalletHandler } from '@owlmeans/regov-lib-react/dist/index.mobile'
 import { createRootNavigator } from './router'
 //  import { HashRouter } from 'react-router-dom'
-//  import { buildStorageHelper } from './storage'
-import { AppProvider } from './app/'
-import { WalletAppParams } from '../web/app/types'
+import { buildStorageHelper } from './storage'
+import { AppProvider } from './app/index'
+import { WalletAppParams } from './app/index'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
+const Stack = createNativeStackNavigator()
 
 const i18n = i18nSetup(i18nDefaultOptions)
 
 export const WalletAppMobile = ({ config, extensions }: WalletAppParams) => {
-  console.log('try xxxx')
   const handler = useMemo(createWalletHandler, [])
-  //  const storage = useMemo(() => buildStorageHelper(handler, config), [config])
+  const storage = useMemo(() => buildStorageHelper(handler, config), [config])
 
-  console.log('mobile')
   useEffect(() => {
     console.log('adding extensions')
     extensions?.uiExtensions.forEach(ext => {
@@ -46,27 +47,34 @@ export const WalletAppMobile = ({ config, extensions }: WalletAppParams) => {
     })
   }, extensions?.uiExtensions || [])
 
-  // const [loaded, setLoaded] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
-  //  useEffect(() => {
-  //    storage.init().then(
-  //      async _ => {
-  //        console.info('STORE INITIALIZED')
-  //        setLoaded(true)
-  //      }
-  //    )
+  useEffect(() => {
+    storage.init().then(
+      async _ => {
+        console.info('STORE INITIALIZED')
+        setLoaded(true)
+      }
+    )
 
-  //    return () => {
-  //      console.info('STORE DETACHED')
-  //      storage.detach()
-  //    }
-  //  }, [storage])
+    return () => {
+      console.info('STORE DETACHED')
+      storage.detach()
+    }
+  }, [storage])
 
-  return <AppProvider handler={handler} config={config} extensions={extensions}
-    i18n={i18n} navigatorBuilder={createRootNavigator}>
-    <View>
-      <Text>Hello world!</Text>
-      <StatusBar />
-    </View>
-  </AppProvider>
+  return <NavigationContainer>
+    <AppProvider handler={handler} config={config} extensions={extensions}
+      i18n={i18n} navigatorBuilder={createRootNavigator}>
+      <Stack.Navigator>
+        <Stack.Screen name="home" options={{title: 'xxx'}}>
+          {() => <View>
+            <Text>Hello world!</Text>
+            <StatusBar />
+          </View>}
+        </Stack.Screen>
+      </Stack.Navigator>
+    </AppProvider>
+  </NavigationContainer>
 }
+

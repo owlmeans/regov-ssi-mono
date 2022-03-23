@@ -1,14 +1,13 @@
-import { WalletAppMobile, buildUIExtensionRegistry } from '@owlmeans/regov-lib-react/dist/native'
+global.Buffer = require('buffer/').Buffer
+
 import React from 'react'
+import { WalletAppMobile } from './src'
+import { buildUIExtensionRegistry } from '@owlmeans/regov-lib-react/dist/index.mobile'
 import { config } from './config'
+
 
 const registry = buildUIExtensionRegistry()
 export default function App() {
-  console.log('zzzz')
-  //   return <View>
-  //   <Text>Hello world!</Text>
-  //   <StatusBar />
-  // </View>
   return <WalletAppMobile config={config} extensions={registry.normalize()} />
 }
 

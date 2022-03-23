@@ -14,8 +14,18 @@
  *  limitations under the License.
  */
 
+import { Config } from "@owlmeans/regov-lib-react/dist/index.mobile"
+import { webCryptoHelper } from "@owlmeans/regov-ssi-core"
+import { buildWalletWrapper } from "@owlmeans/regov-ssi-core"
 
 
-export * from './common'
+export const buildDevWallet = async (config: Config, alias = DEFAULT_DEVELOPMENT_VOICE_ALIAS) =>
+  await buildWalletWrapper(
+    webCryptoHelper, '11111111', { alias, name: 'Development wallet' }, { 
+      prefix: config.DID_PREFIX,
+      defaultSchema: config.baseSchemaUrl,
+      didSchemaPath: config.DID_SCHEMA_PATH,
+    }
+  )
 
-export * from './web'
+export const DEFAULT_DEVELOPMENT_VOICE_ALIAS = 'development'

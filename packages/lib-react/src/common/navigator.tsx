@@ -38,7 +38,7 @@ export const NavigatorContext = createContext<BasicNavigator>(basicNavigator)
 export const NavigatorContextProvider = <T extends WalletNavigator = BasicNavigator>(
   { navigator, children }: PropsWithChildren<{ navigator: T }>
 ) => {
-  return <NavigatorContext.Provider value={navigator as BasicNavigator}> {children} </NavigatorContext.Provider>
+  return <NavigatorContext.Provider value={navigator as BasicNavigator}>{children}</NavigatorContext.Provider>
 }
 
 export const extendNavigator = <

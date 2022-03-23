@@ -14,12 +14,11 @@
  *  limitations under the License.
  */
 
-import { NavigateFunction } from 'react-router'
-import { basicNavigator, extendNavigator, WalletHandler, Config } from '../../common'
+import { NavigationProp } from '@react-navigation/native'
+import { basicNavigator, extendNavigator, WalletHandler, Config } from '@owlmeans/regov-lib-react/dist/index.mobile'
 
 
-
-export const createRootNavigator = (navigate: NavigateFunction, handler: WalletHandler, config: Config) =>
+export const createRootNavigator = (navigation: NavigationProp<ReactNavigation.RootParamList>, handler: WalletHandler, config: Config) =>
   extendNavigator(basicNavigator, {
     assertAuth: async () => {
       if (handler.wallet) {
@@ -27,7 +26,7 @@ export const createRootNavigator = (navigate: NavigateFunction, handler: WalletH
       }
 
       if (!config.development) {
-        navigate('/store/list')
+        navigation.navigate({ key: 'store/list' })
       }
 
       return false
@@ -35,8 +34,8 @@ export const createRootNavigator = (navigate: NavigateFunction, handler: WalletH
 
     checkAuth: async () => !!handler.wallet,
 
-    home: async () => { setTimeout(() => navigate('/'), 100) },
+    home: async () => { setTimeout(() => navigation.navigate({ key: 'home' }), 100) },
 
-    back: async () => navigate(-1)
+    back: async () => navigation.goBack()
   })
 

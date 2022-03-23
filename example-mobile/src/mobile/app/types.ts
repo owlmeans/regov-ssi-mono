@@ -14,8 +14,15 @@
  *  limitations under the License.
  */
 
+import { BasicNavigator, Config, UIExtensionRegistry, WalletHandler } from "@owlmeans/regov-lib-react/dist/index.mobile"
+import { NavigationProp } from '@react-navigation/native'
 
 
-export * from './common'
+export type WalletAppParams = {
+  config: Config
+  extensions?: UIExtensionRegistry
+}
 
-export * from './web'
+export type RootNavigatorBuilder = (
+  navigation: NavigationProp<ReactNavigation.RootParamList>, handler: WalletHandler, config: Config
+) => BasicNavigator
