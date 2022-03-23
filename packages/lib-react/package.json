@@ -9,6 +9,7 @@
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "typings": "dist/index.d.ts",
+  "react-native": "dist/index.mobile.modern.js",
   "directories": {
     "dist": "dist",
     "test": "__tests__"

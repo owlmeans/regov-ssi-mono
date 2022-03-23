@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { BasicNavigator, Config, UIExtensionRegistry, WalletHandler } from "@owlmeans/regov-lib-react/dist/index.mobile"
+import { BasicNavigator, Config, UIExtensionRegistry, WalletHandler } from "@owlmeans/regov-lib-react"
 import { NavigationProp } from '@react-navigation/native'
 
 

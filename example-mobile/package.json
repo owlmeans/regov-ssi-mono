@@ -3,16 +3,14 @@
   "version": "0.1.0",
   "license": "Apache-2.0",
   "private": true,
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject"
   },
   "dependencies": {
-    "@affinidi/wallet-react-native-sdk": "^6.1.0",
     "@aveq-research/localforage-asyncstorage-driver": "^3.0.1",
     "@owlmeans/regov-ext-doc-signature": "file:../packages/ext-doc-signature",
     "@owlmeans/regov-ext-groups": "file:../packages/ext-groups",
@@ -27,10 +25,12 @@
     "buffer": "^6.0.3",
     "events": "^3.3.0",
     "expo": "~44.0.0",
+    "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
     "i18next": "^21.4.2",
     "localforage": "^1.7.3",
-    "react": "17.0.2",
+    "process": "^0.11.10",
+    "react": "17.0.1",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.28.1",
     "react-i18next": "^11.14.2",
@@ -44,7 +44,8 @@
     "stream-browserify": "^3.0.0",
     "url-polyfill": "^1.1.12",
     "util": "^0.12.4",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "vm-browserify": "^1.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

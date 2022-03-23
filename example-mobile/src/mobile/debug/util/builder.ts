@@ -14,9 +14,8 @@
  *  limitations under the License.
  */
 
-import { Config } from "@owlmeans/regov-lib-react/dist/index.mobile"
-import { webCryptoHelper } from "@owlmeans/regov-ssi-core"
-import { buildWalletWrapper } from "@owlmeans/regov-ssi-core"
+import { Config } from "@owlmeans/regov-lib-react"
+import { webCryptoHelper, buildWalletWrapper } from "@owlmeans/regov-ssi-core"
 
 
 export const buildDevWallet = async (config: Config, alias = DEFAULT_DEVELOPMENT_VOICE_ALIAS) =>

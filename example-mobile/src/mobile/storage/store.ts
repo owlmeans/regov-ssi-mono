@@ -15,7 +15,7 @@
  */
 
 
-import { Config, WalletHandler } from '@owlmeans/regov-lib-react/dist/index.mobile'
+import { Config, WalletHandler } from '@owlmeans/regov-lib-react'
 import { EncryptedStore } from '@owlmeans/regov-ssi-core'
 import localforage from 'localforage'
 

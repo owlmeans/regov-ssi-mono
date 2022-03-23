@@ -17,7 +17,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 // import { Container } from '@mui/material'
 import { View, Text, StatusBar } from 'react-native'
-import { i18nDefaultOptions, i18nSetup, createWalletHandler } from '@owlmeans/regov-lib-react/dist/index.mobile'
+import { i18nDefaultOptions, i18nSetup, createWalletHandler } from '@owlmeans/regov-lib-react'
 import { createRootNavigator } from './router'
 //  import { HashRouter } from 'react-router-dom'
 import { buildStorageHelper } from './storage'
@@ -35,7 +35,6 @@ export const WalletAppMobile = ({ config, extensions }: WalletAppParams) => {
   const storage = useMemo(() => buildStorageHelper(handler, config), [config])
 
   useEffect(() => {
-    console.log('adding extensions')
     extensions?.uiExtensions.forEach(ext => {
       if (ext.extension.localization) {
         Object.entries(ext.extension.localization.translations).forEach(([lng, resource]) => {

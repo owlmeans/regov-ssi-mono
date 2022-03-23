@@ -101,7 +101,6 @@ export const withRegov = <
         name = UNKNOWN_COMPONENT
       }
     }
-    console.log('wrap 2')
     const transformer = options?.transformer
 
     const { handler, map, config } = useRegov()
@@ -111,7 +110,6 @@ export const withRegov = <
 
     const [, setState] = useState<S>(state)
     useEffect(() => {
-      console.log('wrap 3')
       if (transformer) {
         return handler.observe(setState, (wallet: WalletWrapper) => {
           return transformer(wallet, props, handler)
@@ -125,7 +123,6 @@ export const withRegov = <
       name = UNKNOWN_COMPONENT
     }
 
-    console.log('wrap 4')
     /**
      * @TODO Fix typing the way the casting through unknown isn't required
      */
@@ -135,8 +132,6 @@ export const withRegov = <
       config: config,
       t, i18n, ...props, ...state
     } as unknown as Type
-
-    console.log('wrap 5')
 
     return <Com {..._props} />
   }) as FunctionComponent<T>

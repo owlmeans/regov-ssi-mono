@@ -1,8 +1,8 @@
-global.Buffer = require('buffer/').Buffer
+
 
 import React from 'react'
 import { WalletAppMobile } from './src'
-import { buildUIExtensionRegistry } from '@owlmeans/regov-lib-react/dist/index.mobile'
+import { buildUIExtensionRegistry } from '@owlmeans/regov-lib-react'
 import { config } from './config'
 
 

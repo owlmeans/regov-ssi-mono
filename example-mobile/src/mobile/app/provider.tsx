@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import React, { PropsWithChildren, useState } from "react"
-import { MainLoading, RegovProvider, WalletHandler, MainModal } from "@owlmeans/regov-lib-react/dist/index.mobile"
+import React, { PropsWithChildren, useEffect, useState } from "react"
+import { MainLoading, RegovProvider, WalletHandler, MainModal } from "@owlmeans/regov-lib-react"
 import { useNavigation } from '@react-navigation/native'
 import { buildDevWallet } from "../debug/util/builder"
 import { WalletAppParams, RootNavigatorBuilder } from "./types"

@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
+import React from 'react'
 import { NavigationProp } from '@react-navigation/native'
-import { basicNavigator, extendNavigator, WalletHandler, Config } from '@owlmeans/regov-lib-react/dist/index.mobile'
+import { basicNavigator, extendNavigator, WalletHandler, Config } from '@owlmeans/regov-lib-react'
 
 
 export const createRootNavigator = (navigation: NavigationProp<ReactNavigation.RootParamList>, handler: WalletHandler, config: Config) =>
