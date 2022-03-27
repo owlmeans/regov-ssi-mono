@@ -60,7 +60,9 @@ export const StoreListWeb = (props: StoreListImplProps) => {
           store => <SimpleListItem key={store.alias} {...props} label={store.name}
             hint={store.alias} noTranslation action={() => props.login(store.alias)}>
             <ListItemSecondaryAction>
-              <Grid columnSpacing={1} container>
+              <Grid columnSpacing={1} container sx={{
+                flexDirection: { xs: "column", sm: "row" }
+              }}>
                 <Grid item>
                   <FormHeaderButton {...props} title='list.item.export' action={() => saveAs(new Blob(
                     [JSON.stringify(store)], { type: "text/plain;charset=utf-8" }
@@ -78,5 +80,5 @@ export const StoreListWeb = (props: StoreListImplProps) => {
         : <SimpleListItem {...props} label={'list.empty'} />
     }
   </SimpleList>
-  <MainFooter /></span>
+    <MainFooter /></span>
 }

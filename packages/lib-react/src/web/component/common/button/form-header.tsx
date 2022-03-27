@@ -22,6 +22,9 @@ import { ButtonParams } from './types'
 
 
 export const FormHeaderButton = ({ t, title, action }: FormHeaderButtonProps) =>
-  <Button variant="contained" size="small" onClick={action}>{t(title)}</Button>
+  <Button variant="contained" size="small" sx={{
+    maxWidth: { xs: 100, sm: 150, md: 200, lg: 300, xl: 400 },
+    justifyContent: { xs: 'start', sm: 'center' }
+  }} onClick={action}>{t(title)}</Button>
 
 export type FormHeaderButtonProps = WrappedComponentProps<ButtonParams>

@@ -21,6 +21,7 @@ import { FormControl, FormHelperText, Grid, IconButton, Paper, TextField, Typogr
 import { Controller, useForm, UseFormProps } from 'react-hook-form'
 import { formatError } from '../common'
 import { Close, Delete } from '@mui/icons-material'
+import { isMobile } from "react-device-detect"
 
 
 export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialProcessorImplProps) => {
@@ -51,7 +52,7 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
   }, [])
 
   const [showInput, setShowInput] = useState(false)
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: true, maxFiles: 1 })
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({ onDrop, noClick: true, maxFiles: 1 })
 
   const document = watch("document")
 
@@ -75,53 +76,78 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
       render={({ field, fieldState }) => {
         const success = hasDoc && !fieldState.invalid
 
-        return <Grid container direction="column" justifyContent="center" alignItems="stretch" minHeight={200}
-          onClick={() => !showInput && openInput()}>
-          <Grid item container direction="row" justifyContent="center" alignItems="center">
-            {showInput
-              ? <TextField fullWidth multiline margin="normal" variant="filled"
-                InputLabelProps={{ shrink: true }} maxRows={15} minRows={5}
-                {...field} label={t('processor.input.label')} error={fieldState.invalid}
-                helperText={
-                  fieldState.invalid ? formatError(t, "processor.input", fieldState) : t('processor.input.hint')
-                }
-                InputProps={{
-                  sx: { fontSize: 10, fontFamily: "monospace" },
-                  endAdornment: <IconButton size="large" color="primary" edge="end"
-                    onClick={() => {
-                      setShowInput(false)
-                      handleSubmit(process(methods))()
-                    }}>
-                    <Close fontSize="inherit" />
-                  </IconButton>
-                }}
-              />
-              : <Grid item container direction="row" justifyContent="flex-end" alignItems="center">
-                <Grid item container direction="row" justifyContent="center" alignItems="center"
-                  px={3} xs={hasDoc ? 11 : 12}>
-                  <FormControl>
-                    <Typography sx={{ color: success ? "success.main" : "main" }}>{t(
-                      document
-                        ? 'processor.import.loaded'
-                        : isDragActive ? 'processor.import.drop' : 'processor.import.here'
-                    )}</Typography>
-                    {fieldState.invalid && <FormHelperText error={true}>
-                      {formatError(t, "processor.input", fieldState)}
-                    </FormHelperText>}
-                  </FormControl>
-                </Grid>
-                {hasDoc && <Grid item xs={1}>
-                  <IconButton onClick={(event) => {
-                    event.stopPropagation()
-                    reset()
-                  }}>
-                    <Delete />
-                  </IconButton>
-                </Grid>}
-              </Grid>
-            }
+        return isMobile
+          ? <Grid item container direction="row" justifyContent="flex-end" alignItems="center" minHeight={200}
+            onClick={open}>
+            <Grid item container direction="row" justifyContent="center" alignItems="center"
+              px={3} xs={hasDoc ? 11 : 12}>
+              <FormControl>
+                <Typography sx={{ color: success ? "success.main" : "main" }}>{t(
+                  document
+                    ? 'processor.mobile.import.loaded'
+                    : 'processor.mobile.import.label'
+                )}</Typography>
+                {fieldState.invalid && <FormHelperText error={true}>
+                  {formatError(t, "processor.mobile.input", fieldState)}
+                </FormHelperText>}
+              </FormControl>
+            </Grid>
+            {hasDoc && <Grid item xs={1}>
+              <IconButton onClick={(event) => {
+                event.stopPropagation()
+                reset()
+              }}>
+                <Delete />
+              </IconButton>
+            </Grid>}
           </Grid>
-        </Grid>
+          : <Grid container direction="column" justifyContent="center" alignItems="stretch" minHeight={200}
+            onClick={() => !showInput && openInput()}>
+            <Grid item container direction="row" justifyContent="center" alignItems="center">
+              {showInput
+                ? <TextField fullWidth multiline margin="normal" variant="filled"
+                  InputLabelProps={{ shrink: true }} maxRows={15} minRows={5}
+                  {...field} label={t('processor.input.label')} error={fieldState.invalid}
+                  helperText={
+                    fieldState.invalid ? formatError(t, "processor.input", fieldState) : t('processor.input.hint')
+                  }
+                  InputProps={{
+                    sx: { fontSize: 10, fontFamily: "monospace" },
+                    endAdornment: <IconButton size="large" color="primary" edge="end"
+                      onClick={() => {
+                        setShowInput(false)
+                        handleSubmit(process(methods))()
+                      }}>
+                      <Close fontSize="inherit" />
+                    </IconButton>
+                  }}
+                />
+                : <Grid item container direction="row" justifyContent="flex-end" alignItems="center">
+                  <Grid item container direction="row" justifyContent="center" alignItems="center"
+                    px={3} xs={hasDoc ? 11 : 12}>
+                    <FormControl>
+                      <Typography sx={{ color: success ? "success.main" : "main" }}>{t(
+                        document
+                          ? 'processor.import.loaded'
+                          : isDragActive ? 'processor.import.drop' : 'processor.import.here'
+                      )}</Typography>
+                      {fieldState.invalid && <FormHelperText error={true}>
+                        {formatError(t, "processor.input", fieldState)}
+                      </FormHelperText>}
+                    </FormControl>
+                  </Grid>
+                  {hasDoc && <Grid item xs={1}>
+                    <IconButton onClick={(event) => {
+                      event.stopPropagation()
+                      reset()
+                    }}>
+                      <Delete />
+                    </IconButton>
+                  </Grid>}
+                </Grid>
+              }
+            </Grid>
+          </Grid>
       }} />
   </Paper>
 }

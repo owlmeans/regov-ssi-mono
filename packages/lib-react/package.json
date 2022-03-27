@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-lib-react",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "UI toolkit to build SSI Applications over OwlMeans Regov SSI",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -42,12 +42,15 @@
     "react-i18next": "^11.14.2",
     "react-native": "0.64.3",
     "react-redux": "^7.2.6",
-    "react-router-dom": "^6.0.2"
+    "react-router-dom": "^6.0.2",
+    "react-device-detect": "^2.1.2"
   },
   "optionalDependencies": {
     "@types/react-native": "~0.64.12",
     "react-native": "0.64.3",
-    "react-router-dom": "^6.0.2"
+    "react-dom": "^17.0.0",
+    "react-router-dom": "^6.0.2",
+    "react-device-detect": "^2.1.2"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
