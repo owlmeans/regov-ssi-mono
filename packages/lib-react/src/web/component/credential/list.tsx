@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { FunctionComponent, useMemo, Fragment } from 'react'
 
 import { Box, Divider, Tab, Tabs } from '@mui/material'
 import {
@@ -29,9 +29,10 @@ export const CredentialListWeb = (props: CredentialListImplProps) => {
   const { credentials, tabs, t, tab, section } = props
   const currentTab = tabs.find(_tab => _tab.name === tab) || tabs[0]
 
-  return <Box>
+  return <Fragment>
     <Box>
-      <Tabs value={tab} variant="scrollable" scrollButtons="auto"
+      <Tabs value={tab} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile
+        sx={{ maxWidth: window.innerWidth * 0.80 }}
         onChange={(_, tab) => props.switchTab(tab)}>
         {tabs.map(
           tab => <Tab key={tab.name} value={tab.registry.type} label={t(`list.tab.${tab.name}.label`)} />
@@ -49,7 +50,7 @@ export const CredentialListWeb = (props: CredentialListImplProps) => {
           meta={{ registry: tab, section: section }} />
       )}
     </SimpleList>
-  </Box>
+  </Fragment>
 }
 
 const CredentialListItem = ({ wrapper, props, meta }: CredentialListItemProps) => {

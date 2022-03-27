@@ -43,7 +43,8 @@ export const CredentialHeader = withRegov<
   const [openRequest, setOpenRequest] = useState<boolean>(false)
 
   return <Fragment>
-    <Grid container direction="row" justifyContent="flex-end" alignItems="flex-start" columnSpacing={2}>
+    <Grid container direction="row" justifyContent="flex-end" alignItems="flex-start" columnSpacing={2}
+      maxWidth="100%">
       <Grid item>
         <Button variant="outlined" color="primary"
           onClick={() => setOpenCreation(true)}>{t('header.create')}</Button>
