@@ -133,6 +133,10 @@
           "pattern": "Wrong version format use numbers, letters, dots and minuses"
         }
       },
+      "author": {
+        "label": "Author",
+        "hint": "Document author name"
+      },
       "authorId": {
         "label": "Author ID",
         "hint": "ID sequence of the author. Can be a DID of identity."

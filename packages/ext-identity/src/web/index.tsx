@@ -23,6 +23,7 @@ import {
 import { BASIC_IDENTITY_TYPE, BuildExtensionParams, buildIdentityExtension } from '../ext'
 import en from './i18n/en.json'
 import ru from './i18n/ru.json'
+import by from './i18n/by.json'
 import { 
   buildUIExtension, UIExtensionFactoryProduct, MainModalAuthenticatedEventParams,
   ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
@@ -57,7 +58,7 @@ export const buildIdentityExtensionUI = (
 
   extension.localization = { ns, translations: {} }
   if (ns === REGOV_IDENTITY_DEFAULT_NAMESPACE) {
-    extension.localization.translations = { en, ru }
+    extension.localization.translations = { en, ru, be: by }
   }
 
   if (extension.schema.events) {

@@ -1,0 +1,64 @@
+{
+  "ERROR_STORE_CANT_DECRYPT": "Wallet store can't be decrypted with provided password",
+  "ERROR_INVALID_EVIDENCE": "Invalid credential evidence",
+  "Invalid signature.": "Invalid signature.",
+  "alert": {
+    "error": {
+      "label": "Error",
+      "severity": "error"
+    },
+    "success": {
+      "label": "Success",
+      "severity": "success"
+    }
+  },
+  "error": {
+    "default": "Some error happened!",
+    "required": "This field is required!",
+    "authenticated": "You need to authenticate to proceed!",
+    "evidence": {
+      "holder": {
+        "key": "No signing key for holder",
+        "pk": "Can't deduct private key for signing from holder information"
+      },
+      "signer": {
+        "type": "Signer should be an object"
+      }
+    },
+    "claimer": {
+      "holder": {
+        "key": "You can't sign not your document",
+        "pk": "Can't find key from your document",
+        "format": "Provided holder information has incorrect format"
+      }
+    },
+    "proposer": {
+      "claim": {
+        "format": "Claim isn't a valid verifiable presentation",
+        "no": "Claim presentation doesn't contain claims for credentials",
+        "type": "Provided presentation isn't supported as claim"
+      },
+      "issuer": {
+        "no": "No issuing evidence",
+        "format": "Issuing evidence should be verifiable credential",
+        "didformat": "Issuing evidence doesn't provide corret did document as issuer",
+        "key": "Can't extract key from did evidence DID document",
+        "pk": "Can't find private key from did evidence DID document"
+      }
+    },
+    "reader": {
+      "vo": {
+        "format": "Provided object isn't verifiable credential or presentation",
+        "presentation": "Can't validate presentation: {{message}}",
+        "credential": "Can't validate credential: {{message}}"
+      }
+    }
+  },
+  "clipboard": {
+    "copyhint": "Copy to clipboard: #{key}, Enter"
+  },
+  "file": {
+    "aborted": "File loading aborted",
+    "error": "Some error happened during file loading"
+  }
+}
