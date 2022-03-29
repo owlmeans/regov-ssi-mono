@@ -15,6 +15,9 @@
   "error": {
     "default": "Some error happened!",
     "required": "This field is required!",
+    "minLength": "Value is too short",
+    "maxLength": "Value is too long",
+    "pattern": "Value has incorrect format",
     "authenticated": "You need to authenticate to proceed!",
     "evidence": {
       "holder": {

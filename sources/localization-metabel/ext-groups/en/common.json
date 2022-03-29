@@ -1,0 +1,184 @@
+{
+  "menu": {
+    "new": {
+      "group": "Decentralized Group"
+    }
+  },
+  "group": {
+    "title": "Decentralized Group Credential",
+    "view": {
+      "title": "Decentralized group: \"{{name}}\"",
+      "claimMembership": "Claim Membership"
+    },
+    "list": {
+      "item": {
+        "unknown": "Unknown Group",
+        "type": "Regov Decentralized Group"
+      }
+    },
+    "uuid": {
+      "hint": "Unique Sequence",
+      "label": "Unique Sequence"
+    },
+    "name": {
+      "label": "Group name",
+      "hint": "This is the group name, that will be seen by other people",
+      "error": {
+        "maxLength": "The name you provided is too long",
+        "pattern": "Name contains prohibited symbols"
+      }
+    },
+    "description": {
+      "label": "Group description",
+      "hint": "This is the group description, that will be seen by other people",
+      "error": {
+        "maxLength": "The decription you wrote is too long"
+      }
+    },
+    "createdAt": {
+      "hint": "Creation date",
+      "label": "Creation date"
+    },
+    "creation": {
+      "defaultName": "My Group",
+      "title": "Create a new decentralized group",
+      "create": "Create",
+      "success": "Congratulation! The group credential is successfully created!",
+      "credentialName": {
+        "label": "Credentail title",
+        "hint": "Nobody will see this name except you. It's required to easier find the credential in lists.",
+        "error": {
+          "maxLength": "Credential name is too long",
+          "pattern": "Credential name contains prohibited symbols"
+        }
+      }
+    },
+    "widget": {
+      "validation": {
+        "trusted": "Trusted group identity ✅", 
+        "untrusted": "Untrusted group identity ⛔️", 
+        "valid": "Valid group identity ✅", 
+        "invalid": "Invalid group identity ⛔️"
+      },
+      "evidence": {
+        "name": "Group name",
+        "uuid": "Group ID",
+        "createdAt": "Creation date:"
+      }
+    }
+  },
+  "widget": {
+    "validation": {
+      "header": {
+        "parent": "Parent evidence"
+      }
+    }
+  },
+  "membership": {
+    "widget": {
+      "validation": {
+        "trusted": "Trusted membership identity ✅", 
+        "untrusted": "Untrusted membership identity ⛔️", 
+        "valid": "Valid membership identity ✅", 
+        "invalid": "Invalid membership identity ⛔️"
+      },
+      "evidence": {
+        "groupId": "Group ID",
+        "role": "Role",
+        "memberCode": "Member code",
+        "issuedAt": "Issuence date"
+      }
+    },
+    "claim": {
+      "title": "Create a claim for the group membership",
+      "create": "Create claim",
+      "success": "Claim for the group membership is created successfully",
+      "groupId": {
+        "label": "Group ID",
+        "hint": "ID of a group you request membership from"
+      },
+      "role": {
+        "label": "Member role",
+        "hint": "Put down the role you are applying to"
+      },
+      "description": {
+        "label": "Application description",
+        "hint": "Short info about you for the application"
+      },
+      "memberCode": {
+        "label": "Group Member Code",
+        "hint": "Unique sequence that allows to identity the member"
+      },
+      "createdAt": {
+        "hint": "Creation date"
+      },
+      "meta": {
+        "title": "Claim \"{{role}}\" role for \"{{group}}\" group"
+      },
+      "list": {
+        "item": {
+          "type": "Membership claim"
+        }
+      }
+    },
+    "claimView": {
+      "title": "Membership Claim Preview",
+      "close": "Cancel",
+      "role": {
+        "hint": "Role you claim"
+      }
+    }, 
+    "offer": {
+      "title": "Membership claim review",
+      "close": "Close",
+      "proceed": "Issue",
+      "groupId": {
+        "label": "Group ID",
+        "hint": "Membership is request from a group with ID"
+      },
+      "role": {
+        "label": "Member role",
+        "hint": "Put down a role description for a member"
+      },
+      "description": {
+        "label": "Member description",
+        "hint": "Short info about the member"
+      },
+      "memberCode": {
+        "label": "Member Code",
+        "hint": "Unique sequence that allows to identity the member"
+      },
+      "createdAt": {
+        "hint": "Creation date"
+      },
+      "claim": {
+        "title": "Offered membership"
+      },
+      "alert": {
+        "error": {
+          "unknwonValidationError": "Provided document isn't a valid credential claim. Reason is unknown.",
+          "identityAlien": "Provided membership isn't for you",
+          "claimAlien": "Unknown memberhship claim. You haven't requested this document."
+        }
+      },
+      "save": "Save"
+    },
+    "message": {
+      "claimed": "You claimed credential successfully."
+    },
+    "title": {
+      "label": "Credential name",
+      "hint": "Use a recongizable name to store the credential"
+    },
+    "group": {
+      "name": {
+        "hint": "This is the group name you request a membership for"
+      }
+    },
+    "list": {
+      "item": {
+        "type": "Membership credential"
+      }
+    }
+  }
+}

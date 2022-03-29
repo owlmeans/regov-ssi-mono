@@ -25,6 +25,7 @@ import {
 import { isCredential, isPresentation, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'
 import ruCommon from './i18n/ru/common.json'
+import byCommon from './i18n/by/common.json'
 import { normalizeValue } from "@owlmeans/regov-ssi-core"
 
 
@@ -115,6 +116,7 @@ signatureExtension.localization = {
   ns: REGOV_EXT_SIGNATURE_NAMESPACE,
   translations: {
     en: enCommon,
-    ru: ruCommon
+    ru: ruCommon,
+    be: byCommon
   }
 }
