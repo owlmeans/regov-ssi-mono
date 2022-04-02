@@ -28,7 +28,7 @@ import {
 } from './types'
 import {
   COMMON_CRYPTO_ERROR_NOID, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY, makeRandomUuid,
-  mapValue, MaybeArray, addToValue, convertToSchema, CREDENTIAL_SCHEMA_TYPE_2020, validateSchema
+  mapValue, MaybeArray, addToValue, convertToSchema, CREDENTIAL_SCHEMA_TYPE_2020, validateSchema, singleValue, normalizeValue
 } from '../common'
 import {
   DIDDocument, buildDocumentLoader, documentWarmer, DID_REGISTRY_ERROR_NO_DID,
@@ -294,6 +294,36 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       didDoc = didDoc || (
         did.helper().isDIDDocument(presentation.holder) ? presentation.holder : undefined
       )
+      if (did.helper().isDIDDocument(presentation.holder)) {
+        const pubKey = singleValue(presentation.holder.verificationMethod)?.publicKeyBase58
+        const unknownIdAndStates = normalizeValue(presentation.verifiableCredential).map(cred => {
+          if (did.helper().isDIDDocument(cred.issuer)) {
+            if (normalizeValue(cred.issuer.verificationMethod).some(
+              method => method?.publicKeyBase58 === pubKey
+            )) {
+              return [cred.id, true]
+            }
+          }
+          if (did.helper().isDIDDocument(cred.holder)) {
+            if (normalizeValue(cred.holder.verificationMethod).some(
+              method => method?.publicKeyBase58 === pubKey
+            )) {
+              return [cred.id, true]
+            }
+          }
+
+          return [cred.id, false]
+        }).filter(([, state]) => !state)
+
+        if (unknownIdAndStates.length > 0) {
+          return [false, {
+            kind: 'invalid',
+            errors: unknownIdAndStates.map(([id]) => {
+              return { kind: 'foreign', message: id }
+            }) as unknown as { kind: string, message: string }[] || [{ kind: 'foreign', message: 'unknown' }]
+          }]
+        }
+      }
       const _updateDidDoc = async (didId: string): Promise<DIDDocument | undefined> => {
         if (localLoader) {
           const doc = await localLoader(
