@@ -12,6 +12,9 @@
       "severity": "success"
     }
   },
+  "claim": {
+    "invalid": "The claim is invalid. You can't proceed!"
+  },
   "error": {
     "default": "Some error happened!",
     "required": "This field is required!",
@@ -19,6 +22,7 @@
     "maxLength": "Value is too long",
     "pattern": "Value has incorrect format",
     "authenticated": "You need to authenticate to proceed!",
+    "foreign": "One of provided credentials doesn't belong to those who provides it",
     "evidence": {
       "holder": {
         "key": "No signing key for holder",

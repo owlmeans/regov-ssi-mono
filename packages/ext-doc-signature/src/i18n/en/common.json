@@ -29,6 +29,20 @@
     "creation": {
       "title": "Document Signature Credential",
       "file": {
+        "mobile": {
+          "import": {
+            "label": "Click here to choose a file to read",
+            "loaded": "Document loaded."
+          },
+          "input": {
+            "label": "Document",
+            "hint": "Please add Verifiable Credential or Presentation document text here",
+            "error": {
+              "json": "The provided document has broken or isn't a JSON",
+              "unknown": "Unknwon document type. We can't process it."
+            }
+          }
+        },
         "browse": "Browse",
         "binary": "You uploaded a binary file. The system can't display it's content.",
         "import": {
@@ -98,6 +112,20 @@
     "request": {
       "title": "Document Signature Request",
       "file": {
+        "mobile": {
+          "import": {
+            "label": "Click here to choose a file to read",
+            "loaded": "Document loaded."
+          },
+          "input": {
+            "label": "Document",
+            "hint": "Please add Verifiable Credential or Presentation document text here",
+            "error": {
+              "json": "The provided document has broken or isn't a JSON",
+              "unknown": "Unknwon document type. We can't process it."
+            }
+          }
+        },
         "browse": "Browse",
         "binary": "You uploaded a binary file. The system can't display it's content.",
         "import": {
@@ -239,6 +267,20 @@
       },
       "upload": "Upload file",
       "file": {
+        "mobile": {
+          "import": {
+            "label": "Click here to choose a file to read",
+            "loaded": "Document loaded."
+          },
+          "input": {
+            "label": "Document",
+            "hint": "Please add Verifiable Credential or Presentation document text here",
+            "error": {
+              "json": "The provided document has broken or isn't a JSON",
+              "unknown": "Unknwon document type. We can't process it."
+            }
+          }
+        },
         "browse": "Browse",
         "input": {
           "hint": "Document text or JSON content to be verfied.",
