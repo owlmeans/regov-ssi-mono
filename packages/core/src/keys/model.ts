@@ -15,106 +15,15 @@
  */
 
 import {
-  BuildKeyChainWrapperMethod, CreateKeyOptions, DPArgs, KeyChain, KEYCHAIN_DEFAULT_KEY,
-  KEYCHAIN_ERROR_NO_KEY, KEYCHAIN_ERROR_WRONG_DP, KeyPair, KeyPairToCryptoKeyOptions,
-  KeyRotation
+  BuildKeyChainWrapperMethod, KeyChain, KEYCHAIN_DEFAULT_KEY, KeyRotation, KeyPair,
+  KEYCHAIN_ERROR_NO_KEY, KeyPairToCryptoKeyOptions, KEYCHAIN_ERROR_CANT_ROTATION,
 } from "./types"
-import { CryptoKey, COMMON_CRYPTO_ERROR_ISNOTFULL } from '../common'
+import { CryptoKey } from '../common'
+import { _createKeyBuilder } from "./builder"
 
 
 export const buildKeyChain: BuildKeyChainWrapperMethod =
   async ({ password, source, keyOptions, crypto }) => {
-    const _createKeyBuilder = (keys?: KeyChain) =>
-      async (alias: string, _password?: string, options: CreateKeyOptions = {}): Promise<KeyPair> => {
-        const type = 'BIP32'
-
-        const safe = options?.safe || false
-        const safeCommentObj = (options?.safeComment ? { safeComment: options?.safeComment } : {})
-
-        if (!options.seed && keys) {
-          const seedKey = keys.keys[keys.defaultKey]
-          // @TODO Make sure that we shouldn't use 0 rotation seed
-          const seedRotation = seedKey.rotations[seedKey.currentRotation]
-          if (seedKey.safe && !options.seedPassword) {
-            throw new Error(KEYCHAIN_ERROR_NO_KEY)
-          }
-          options.seed = await crypto.decrypt(
-            seedKey.seed,
-            seedKey.safe && options.seedPassword ? options.seedPassword : _password || password
-          )
-          const seedDp = seedRotation.dp
-          if (typeof seedDp[0] !== 'number') {
-            throw new Error(KEYCHAIN_ERROR_WRONG_DP)
-          }
-          const newDp: DPArgs = [...seedDp]
-          newDp[1] = typeof newDp[1] !== 'number' ? 1 : newDp[1] + 1
-          options.dp = newDp
-        }
-
-        const seed = options.seed ? crypto.base58().decode(options.seed) : (await crypto.getRandomBytes(32))
-        const seed58 = crypto.base58().encode(seed)
-        const dp = options?.dp ? options.dp : <DPArgs>[0]
-        if (dp.length < 1) {
-          dp.push(0)
-        }
-
-        const commonKey = crypto.getKey(seed, crypto.makeDerivationPath.apply(null, dp))
-        if (!commonKey.id || !commonKey.pk || !commonKey.pubKey) {
-          throw new Error(COMMON_CRYPTO_ERROR_ISNOTFULL)
-        }
-
-        const nextDp = <DPArgs>[...dp]
-        nextDp.unshift(<number>nextDp.shift() + 1)
-        const nextKey = crypto.getKey(seed, crypto.makeDerivationPath.apply(null, nextDp))
-        if (!nextKey.id || !nextKey.pk || !nextKey.pubKey) {
-          throw new Error(COMMON_CRYPTO_ERROR_ISNOTFULL)
-        }
-
-        const rotation: KeyRotation = {
-          type,
-          opened: options.opened || false,
-          private: options.opened
-            ? commonKey.pk
-            : await crypto.encrypt(commonKey.pk, _password || password),
-          public: commonKey.pubKey,
-          digest: commonKey.id,
-          nextDigest: crypto.sign(commonKey.id, nextKey.pk),
-          safe,
-          dp,
-          future: false,
-          ...safeCommentObj
-        }
-
-        const nextRotation: KeyRotation = {
-          type,
-          opened: false,
-          private: await crypto.encrypt(nextKey.pk, _password || password),
-          public: await crypto.encrypt(nextKey.pubKey, _password || password),
-          digest: nextKey.id,
-          safe,
-          future: true,
-          dp: nextDp,
-          ...safeCommentObj
-        }
-
-        const keypair = {
-          type,
-          dp: dp,
-          currentRotation: 0,
-          rotations: [rotation, nextRotation],
-          alias,
-          seed: await crypto.encrypt(seed58, _password || password),
-          id: commonKey.id,
-          safe,
-          ...safeCommentObj
-        }
-
-        if (keys) {
-          keys.keys[alias] = keypair
-        }
-
-        return keypair
-      }
 
     const _openKey = async (
       keypair: KeyPair,
@@ -134,45 +43,53 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
       }
     }
 
+    const _ensureKeyPair = async (
+      keys: KeyChain, key: KeyPair | string | undefined, _password?: string, options?: KeyPairToCryptoKeyOptions
+    ): Promise<[KeyRotation, KeyPair]> => {
+      if (!key) {
+        key = keys.defaultKey
+      }
+      if (typeof key === 'string') {
+        key = keys.keys[key]
+      }
+      if (!key) {
+        throw new Error(KEYCHAIN_ERROR_NO_KEY)
+      }
+
+      let keyRotation = key.rotations[
+        options?.rotation !== undefined ? options?.rotation : key.currentRotation
+      ]
+
+      if (!keyRotation.opened) {
+        return [await _openKey(
+          key,
+          _password || password,
+          options?.rotation
+        ), key]
+      }
+
+      throw new Error(KEYCHAIN_ERROR_CANT_ROTATION)
+    }
+
     const _keyPairToCryptoKey = (keys: KeyChain) =>
       async (
         key?: KeyPair | string, _password?: string, options?: KeyPairToCryptoKeyOptions
       ): Promise<CryptoKey> => {
-        if (!key) {
-          key = keys.defaultKey
-        }
-        if (typeof key === 'string') {
-          key = keys.keys[key]
-        }
-        if (!key) {
-          throw new Error(KEYCHAIN_ERROR_NO_KEY)
-        }
-
-        let keyRotation = key.rotations[
-          options?.rotation !== undefined ? options?.rotation : key.currentRotation
-        ]
-
-        if (!keyRotation.opened) {
-          keyRotation = await _openKey(
-            key,
-            _password || password,
-            options?.rotation
-          )
-        }
+        const [keyRotation, _key] = await _ensureKeyPair(keys, key, _password, options)
 
         return {
-          id: options?.id || key.id,
+          id: options?.id || _key.id,
           pk: keyRotation.private,
           pubKey: keyRotation.public,
           nextKeyDigest: keyRotation.nextDigest ? crypto.hash(keyRotation.nextDigest) : undefined
         }
       }
 
-    
+
     const keys = source || {
       defaultKey: KEYCHAIN_DEFAULT_KEY,
       keys: {
-        [KEYCHAIN_DEFAULT_KEY]: await _createKeyBuilder()(KEYCHAIN_DEFAULT_KEY, password, keyOptions)
+        [KEYCHAIN_DEFAULT_KEY]: await _createKeyBuilder(crypto, password)(KEYCHAIN_DEFAULT_KEY, password, keyOptions)
       }
     }
 
@@ -185,7 +102,7 @@ export const buildKeyChain: BuildKeyChainWrapperMethod =
 
       getCryptoKey: _keyPairToCryptoKey(keys),
 
-      createKey: _createKeyBuilder(keys),
+      createKey: _createKeyBuilder(crypto, password, keys),
 
       expandKey: async (key, _password = undefined) => {
         if (!key.pk) {

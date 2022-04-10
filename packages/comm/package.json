@@ -1,0 +1,45 @@
+{
+  "name": "@owlmeans/regov-comm",
+  "version": "0.1.0",
+  "description": "It's DIDComm package for OwlMeans Re:gov SSI",
+  "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
+  "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "main": "src/index.ts",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/owlmeans/regov-ssi-mono.git",
+    "directory": "packages/comm"
+  },
+  "scripts": {
+    "test": "jest --testTimeout 30000",
+    "build": "tsc -b",
+    "build:watch": "tsc -b -w"
+  },
+  "bugs": {
+    "url": "https://github.com/owlmeans/regov-ssi-mono/issues"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.6.1",
+    "@types/uuid": "^8.3.1",
+    "dotenv": "^10.0.0",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4",
+    "ts-node": "^10.2.0",
+    "typescript": "^4.3.5"
+  },
+  "peerDependencies": {
+    "@owlmeans/regov-ssi-core": "^0.5.3",
+    "@stablelib/x25519": "^1.0.2"
+  },
+  "dependencies": {
+    "did-jwt": "^6.0.0"
+  }
+}

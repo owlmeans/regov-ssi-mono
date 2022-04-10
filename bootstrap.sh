@@ -4,6 +4,10 @@ cd packages/core
 yarn build
 lerna link
 yarn link
+cd packages/comm
+yarn build
+lerna link
+yarn link
 cd ../../packages/lib-react
 yarn build
 lerna link

@@ -167,6 +167,7 @@ export type DIDVerificationItem = {
   controller: string
   nonce?: string
   publicKeyBase58?: string
+  publicKeyHex?: string 
 }
 
 export type DIDVerificationMethod = DIDVerificationItem & {}
