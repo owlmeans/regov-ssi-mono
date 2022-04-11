@@ -53,6 +53,8 @@ export type WalletOptions = {
 }
 
 export type WalletWrapper = {
+  crypto: CryptoHelper
+  
   store: SecureStore
 
   wallet: Wallet

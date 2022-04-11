@@ -140,6 +140,8 @@ export const buildWalletWrapper: WalletWrapperBuilder =
     }
 
     const _wallet = {
+      crypto,
+      
       did,
 
       ssi: ctx,

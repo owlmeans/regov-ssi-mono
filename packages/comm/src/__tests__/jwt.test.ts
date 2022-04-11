@@ -1,7 +1,7 @@
 
 import { nodeCryptoHelper, buildKeyChain, KeyChainWrapper } from "@owlmeans/regov-ssi-core"
 import { generateKeyPairFromSeed } from '@stablelib/x25519'
-import { x25519Encrypter, x25519Decrypter, createJWE, decryptJWE } from 'did-jwt'
+import { x25519Encrypter, x25519Decrypter, createJWE, decryptJWE, decodeJWT } from 'did-jwt'
 
 import util from 'util'
 import { cryptoKeyToCommKey } from "../util"
@@ -21,7 +21,6 @@ describe('JWT', () => {
 
   it('packs', async () => {
     const hash = nodeCryptoHelper.hash(Buffer.from(pubKey))
-    console.log(hash)
     const encrypter = x25519Encrypter(pubKey, hash)
     const arr = new Uint8Array(Buffer.from('test string', 'utf8'))
     const jwe = await createJWE(arr, [encrypter])
@@ -30,5 +29,9 @@ describe('JWT', () => {
     const decrypted8a = await decryptJWE(jwe, decrypter)
     const decrypted = Buffer.from(decrypted8a).toString('utf8')
     expect(decrypted).toBe('test string')
+  })
+
+  it ('Unpack base64 jwt', async () => {
+    
   })
 })

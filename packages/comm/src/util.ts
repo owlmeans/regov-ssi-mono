@@ -22,12 +22,12 @@ export const cryptoKeyToCommKey = async (
 }
 
 export const didDocToCommKeyBuilder = (helper: DIDHelper) =>
-  async (did: DIDDocument): Promise<Partial<CommKey>> => {
-    const agreement = helper.expandVerificationMethod(did, DIDPURPOSE_AGREEMENT)
+  async (did: DIDDocument, keyId?: string): Promise<Partial<CommKey>> => {
+    const agreement = helper.expandVerificationMethod(did, DIDPURPOSE_AGREEMENT, keyId)
     if (!agreement.publicKeyHex) {
       throw new Error(ERROR_COMM_DID_NOKEY)
     }
-    
+
     return {
       id: did.id,
       pubKey: Buffer.from(agreement.publicKeyHex, 'hex')
