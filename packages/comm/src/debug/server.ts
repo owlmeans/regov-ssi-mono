@@ -26,7 +26,7 @@ export const createDebugServer = (): DIDCommChannel => {
     },
 
     receive: (datagram) => {
-      _server._model?.receive(datagram)
+      _server._model?.receive(datagram, _server)
     },
 
     close: async () => {

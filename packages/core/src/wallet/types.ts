@@ -20,7 +20,7 @@ import { SSICore, Credential, CredentialSubject } from "../vc"
 import { CreateKeyOptions, KeyChain, KeyChainWrapper } from "../keys/types"
 import { BasicStore, EncryptedStore, SecureStore } from "../store/types"
 import {
-  CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryType
+  CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryItem, RegistryType
 } from './registry/types'
 
 
@@ -54,7 +54,7 @@ export type WalletOptions = {
 
 export type WalletWrapper = {
   crypto: CryptoHelper
-  
+
   store: SecureStore
 
   wallet: Wallet
@@ -73,6 +73,8 @@ export type WalletWrapper = {
     >() => CredentialWrapper<Subject, Identity> | undefined
 
   getRegistry: GetRegistryMethod
+
+  findCredential: (id: string, section?: string) => CredentialWrapper | undefined
 
   export: (_password?: string) => Promise<EncryptedStore>
 

@@ -3,7 +3,7 @@ import { generateKeyPairFromSeed } from '@stablelib/x25519'
 import {
   CryptoKey, DIDDocument, DIDHelper, DIDPURPOSE_AGREEMENT, KEYCHAIN_ERROR_NO_KEY, KeyPairToCryptoKeyOptions
 } from "@owlmeans/regov-ssi-core"
-import { CommKey, ERROR_COMM_DID_NOKEY } from "./types"
+import { CommKey, COMM_DID_AGREEMENT_KEY_DEFAULT, connectionFieldList, DIDCommConnectMeta, ERROR_COMM_DID_NOKEY, ERROR_COMM_NO_RECIPIENT } from "./types"
 
 
 export const cryptoKeyToCommKey = async (
@@ -21,15 +21,37 @@ export const cryptoKeyToCommKey = async (
   }
 }
 
+export const filterConnectionFields = (connection: DIDCommConnectMeta): DIDCommConnectMeta => {
+  return Object.fromEntries(
+    connectionFieldList.map(field => [field, connection[field]])
+  ) as unknown as DIDCommConnectMeta
+}
+
+export const invertConnection = (connection: DIDCommConnectMeta, channel?: string): DIDCommConnectMeta => {
+  const newConnection = filterConnectionFields(JSON.parse(JSON.stringify(connection)))
+
+  if (!newConnection.recipient) {
+    throw new Error(ERROR_COMM_NO_RECIPIENT)
+  }
+
+  return {
+    ...newConnection,
+    recipientId: newConnection.sender.id,
+    recipient: newConnection.sender,
+    sender: newConnection.recipient,
+    channel: channel || newConnection.channel
+  }
+}
+
 export const didDocToCommKeyBuilder = (helper: DIDHelper) =>
-  async (did: DIDDocument, keyId?: string): Promise<Partial<CommKey>> => {
+  async (did: DIDDocument, keyId: string = COMM_DID_AGREEMENT_KEY_DEFAULT): Promise<Partial<CommKey>> => {
     const agreement = helper.expandVerificationMethod(did, DIDPURPOSE_AGREEMENT, keyId)
-    if (!agreement.publicKeyHex) {
+    if (!agreement.publicKeyBase58) {
       throw new Error(ERROR_COMM_DID_NOKEY)
     }
 
     return {
       id: did.id,
-      pubKey: Buffer.from(agreement.publicKeyHex, 'hex')
+      pubKey: helper.getCrypto().base58().decode(agreement.publicKeyBase58)
     }
   }

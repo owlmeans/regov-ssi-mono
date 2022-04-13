@@ -14,8 +14,7 @@
  *  limitations under the License.
  */
 
-
-import { CryptoKey, MaybeArray, Idish } from '../common'
+import { CryptoKey, MaybeArray, Idish, CryptoHelper } from '../common'
 
 
 export type DIDHelper = {
@@ -27,6 +26,7 @@ export type DIDHelper = {
   expandVerificationMethod: ExpandVerificationMethod
 
   createDID: (key: CryptoKey, options?: CreateDIDMethodOptions) => Promise<DIDDocumentUnsinged>
+  addPurpose: (did: DIDDocumentUnsinged, purpose: DIDDocumentSimplePurpose, method: DIDVerificationItem) => DIDDocumentUnsinged
   signDID: (
     key: CryptoKey,
     didDocUnsigned: DIDDocumentUnsinged | DIDDocument,
@@ -49,12 +49,15 @@ export type DIDHelper = {
   extractKey: ExtractKeyMethod
   extractKeyId: (key: string) => string
   setupDocumentLoader: (loader: BuildDocumentLoader) => void
+
+  getCrypto: () => CryptoHelper
 }
 
-export type ExtractKeyMethod = (did: DIDDocument | DIDDocumentUnsinged | string , keyId?: string) => Promise<CryptoKey | undefined>
+export type ExtractKeyMethod = (did: DIDDocument | DIDDocumentUnsinged | string, keyId?: string) => Promise<CryptoKey | undefined>
 
-export type ExpandVerificationMethod = (didDoc: DIDDocument, purpose: DIDDocumentPurpose, keyId?: string) =>
-  DIDVerificationItem | never
+export type ExpandVerificationMethod = (
+  didDoc: DIDDocument | DIDDocumentUnsinged, purpose: DIDDocumentPurpose, keyId?: string
+) => DIDVerificationItem | never
 
 
 export const VERIFICATION_KEY_HOLDER = 'holder'

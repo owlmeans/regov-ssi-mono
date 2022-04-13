@@ -23,15 +23,16 @@ describe('JWT', () => {
     const hash = nodeCryptoHelper.hash(Buffer.from(pubKey))
     const encrypter = x25519Encrypter(pubKey, hash)
     const arr = new Uint8Array(Buffer.from('test string', 'utf8'))
-    const jwe = await createJWE(arr, [encrypter])
+    const jwe = await createJWE(arr, [encrypter], {x: 1}, Buffer.from('zzz', 'utf8'))
+    
+    if (!jwe.aad) {
+      throw new Error('No aad')
+    }
+    console.log(jwe, Buffer.from(jwe.aad, 'base64').toString('utf8'))
 
     const decrypter = await x25519Decrypter(secret)
     const decrypted8a = await decryptJWE(jwe, decrypter)
     const decrypted = Buffer.from(decrypted8a).toString('utf8')
     expect(decrypted).toBe('test string')
-  })
-
-  it ('Unpack base64 jwt', async () => {
-    
   })
 })

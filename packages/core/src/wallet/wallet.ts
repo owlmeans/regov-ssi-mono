@@ -23,7 +23,7 @@ import {
   CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryItem,
   REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES
 } from "./registry"
-import { GetRegistryMethod, WalletWrapperBuilder } from "./types"
+import { GetRegistryMethod, WalletWrapper, WalletWrapperBuilder } from "./types"
 
 
 export const buildWalletWrapper: WalletWrapperBuilder =
@@ -40,8 +40,8 @@ export const buildWalletWrapper: WalletWrapperBuilder =
     _store.data.keyChain = keyChain.keys
 
     const did = buildDidRegistryWarpper(
-      buildDidHelper(crypto, { 
-        prefix: options?.prefix, 
+      buildDidHelper(crypto, {
+        prefix: options?.prefix,
         schemaPath: options?.didSchemaPath,
         baseSchemaUrl: options?.defaultSchema
       }),
@@ -139,9 +139,9 @@ export const buildWalletWrapper: WalletWrapperBuilder =
       return _registryWrappers[type]
     }
 
-    const _wallet = {
+    const _wallet: WalletWrapper = {
       crypto,
-      
+
       did,
 
       ssi: ctx,
@@ -168,6 +168,16 @@ export const buildWalletWrapper: WalletWrapperBuilder =
         }
 
         return undefined
+      },
+
+      findCredential: (id: string, section: string = REGISTRY_SECTION_OWN) => {
+        return Object.entries(_registryWrappers).reduce<CredentialWrapper | undefined>((found, [, registry]) => {
+          if (found) {
+            return found
+          }
+
+          return registry.registry.credentials[section].find(_cred => _cred.credential.id === id)
+        }, undefined)
       },
 
       export: async (_password?: string) => {
