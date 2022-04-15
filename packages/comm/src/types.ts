@@ -70,6 +70,14 @@ export const ERROR_COMM_ALIAN_SENDER = 'ERROR_COMM_ALIAN_SENDER'
 
 export const COMM_CHANNEL_DEFAULT = '_default'
 export const COMM_CHANNEL_BROADCAST = '__broadcast'
+export const COMM_WS_SUBPROTOCOL = 'owlmeans-regov-ws-did-com'
+
+export const COMM_WS_PREFIX_CONFIRMED = 'ok'
+export const COMM_WS_PREFIX_ERROR = 'error'
+
+export const ERROR_COMM_WS_DID_REGISTERED = 'ERROR_COMM_WS_DID_REGISTERED'
+export const ERROR_COMM_WS_UNKNOWN = 'ERROR_COMM_WS_UNKNOWN'
+export const ERROR_COMM_WS_TIMEOUT = 'ERROR_COMM_WS_TIMEOUT'
 
 export const COMM_DID_AGREEMENT_KEY_DEFAULT = 'comm'
 

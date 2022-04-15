@@ -1,17 +1,18 @@
 import {
-  buildWalletLoader,
-  Credential,
-  DIDDocument, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION, isPresentation, KEYCHAIN_ERROR_NO_KEY, Presentation, VERIFICATION_KEY_HOLDER, WalletWrapper
+  buildWalletLoader, Credential, DIDDocument, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION,
+  isPresentation, KEYCHAIN_ERROR_NO_KEY, Presentation, VERIFICATION_KEY_HOLDER, WalletWrapper
 } from "@owlmeans/regov-ssi-core"
 import {
   COMM_CHANNEL_BROADCAST, COMM_CHANNEL_DEFAULT, DIDCommChannel, DIDCommConnectMeta, DIDCommHelper,
   DIDCommListner, ERROR_COMM_ALIAN_SENDER, ERROR_COMM_DID_WRONG_SIGNATURE,
-  ERROR_COMM_INVALID_PAYLOAD,
-  ERROR_COMM_MALFORMED_PAYLOAD,
-  ERROR_COMM_NODID, ERROR_COMM_NO_CHANNEL, ERROR_COMM_NO_CONNECTION, ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER
+  ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD, ERROR_COMM_NODID, ERROR_COMM_NO_CHANNEL,
+  ERROR_COMM_NO_CONNECTION, ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER
 } from "./types"
-import { didDocToCommKeyBuilder, filterConnectionFields, invertConnection } from "./util"
-import { x25519Encrypter, createJWE, JWE, createJWT, ES256KSigner, decodeJWT, verifyJWT, x25519Decrypter, decryptJWE } from 'did-jwt'
+import { didDocToCommKeyBuilder, filterConnectionFields, invertConnection, parseJWE } from "./util"
+import {
+  x25519Encrypter, createJWE, JWE, createJWT, ES256KSigner, decodeJWT, verifyJWT, x25519Decrypter,
+  decryptJWE
+} from 'did-jwt'
 import { buildBasicResolver } from "./resolver/basic"
 import { commDidHelperBuilder } from "./did"
 
@@ -163,15 +164,11 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
     receive: async (datagram, channel) => {
       if (datagram.startsWith('{') && datagram.endsWith('}')) {
-        let jwe: JWE | undefined
-        try {
-          jwe = JSON.parse(datagram)
-        } catch (e) {
-        }
+        const jwe = parseJWE(datagram)
         if (!jwe?.protected) {
           throw new Error(ERROR_COMM_NO_CONNECTION)
         }
-        const connection = JSON.parse(Buffer.from(jwe.protected, 'base64').toString());
+        const connection: DIDCommConnectMeta = JSON.parse(Buffer.from(jwe.protected, 'base64').toString())
         if (!connection) {
           throw new Error(ERROR_COMM_NO_CONNECTION)
         }

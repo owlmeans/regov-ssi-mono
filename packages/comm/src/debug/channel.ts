@@ -4,7 +4,7 @@ import { DIDCommChannel, DIDCommHelper } from "../types"
 
 const _servers: (DIDCommChannel & DebugServer)[] = []
 
-export const createDebugServer = (): DIDCommChannel => {
+export const createDebugChannel = (): DIDCommChannel => {
   const _server: DIDCommChannel & DebugServer = {
     code: 'debug-server',
 

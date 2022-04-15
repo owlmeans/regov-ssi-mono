@@ -1,17 +1,18 @@
+import 'dotenv/config'
 import {
   buildWalletWrapper, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION,
   nodeCryptoHelper, REGISTRY_TYPE_IDENTITIES, VERIFICATION_KEY_HOLDER, WalletWrapper
 } from "@owlmeans/regov-ssi-core"
-import { createDebugServer } from "../debug/server"
+import { createDebugChannel } from "../debug/channel"
 import { commDidHelperBuilder } from "../did"
 import { buildDidCommHelper } from "../model"
 import { DIDCommConnectMeta, DIDCommHelper, DIDCommListner } from "../types"
 
 
 const config = {
-  prefix: 'exm',
-  defaultSchema: 'https://owlmeans.com/schemas',
-  didSchemaPath: 'did-schema.json',
+  prefix: process.env.DID_PREFIX,
+  defaultSchema: process.env.DID_SCHEMA,
+  didSchemaPath: process.env.DID_SCHEMA_PATH,
 }
 
 describe('Comm model', () => {
@@ -25,8 +26,8 @@ describe('Comm model', () => {
       nodeCryptoHelper, '11111111', { alias: 'bob', name: 'Bob' }, config
     )
 
-    const aliceServer = createDebugServer()
-    const bobServer = createDebugServer()
+    const aliceServer = createDebugChannel()
+    const bobServer = createDebugChannel()
 
     const aliceComm = buildDidCommHelper(aliceWallet)
     const bobComm = buildDidCommHelper(bobWallet)

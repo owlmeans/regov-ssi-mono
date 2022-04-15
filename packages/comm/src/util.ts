@@ -4,6 +4,7 @@ import {
   CryptoKey, DIDDocument, DIDHelper, DIDPURPOSE_AGREEMENT, KEYCHAIN_ERROR_NO_KEY, KeyPairToCryptoKeyOptions
 } from "@owlmeans/regov-ssi-core"
 import { CommKey, COMM_DID_AGREEMENT_KEY_DEFAULT, connectionFieldList, DIDCommConnectMeta, ERROR_COMM_DID_NOKEY, ERROR_COMM_NO_RECIPIENT } from "./types"
+import { JWE } from 'did-jwt'
 
 
 export const cryptoKeyToCommKey = async (
@@ -41,6 +42,15 @@ export const invertConnection = (connection: DIDCommConnectMeta, channel?: strin
     sender: newConnection.recipient,
     channel: channel || newConnection.channel
   }
+}
+
+export const parseJWE = (data: string) => {
+  try {
+    return JSON.parse(data) as JWE
+  } catch (e) {
+  }
+
+  return undefined
 }
 
 export const didDocToCommKeyBuilder = (helper: DIDHelper) =>
