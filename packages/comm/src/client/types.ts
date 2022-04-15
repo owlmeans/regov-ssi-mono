@@ -5,6 +5,8 @@ export type WSClientConfig = {
   timeout: number
 }
 
+export type Receiver = (msg: string) => void
+
 export type CommWSClient = {
   opened: boolean
   occupied: boolean

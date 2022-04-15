@@ -1,10 +1,12 @@
 
 import { client as WSClient, connection as WSConnection } from 'websocket'
-import { COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, ERROR_COMM_WS_TIMEOUT } from '../types'
-import { CommWSClient, WSClientConfig } from './types'
+import {
+  COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, ERROR_COMM_WS_TIMEOUT
+} from '../types'
+import { CommWSClient, Receiver, WSClientConfig } from './types'
 
 
-export const createWSClient = (config: WSClientConfig) => {
+export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
   return new Promise<CommWSClient>((resolve, reject) => {
     let _conn: WSConnection
     const _wsClient = new WSClient()
@@ -40,13 +42,18 @@ export const createWSClient = (config: WSClientConfig) => {
             await new Promise((resolve, reject) => {
               _conn.send(msg, err => err ? reject(err) : resolve(undefined))
             })
-            const code = await new Promise<string>((resolve, reject) => {
-              _client.currentResolve = resolve
-              _client.currentReject = reject
-              timeout = setTimeout(() => reject(ERROR_COMM_WS_TIMEOUT), config.timeout * 1000)
-            })
-            console.log('Sent', msg, code)
+            console.log('sending... ' + msg.substring(0, 23))
+            if (!msg.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')
+              && !msg.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
+              const code = await new Promise<string>((resolve, reject) => {
+                _client.currentResolve = resolve
+                _client.currentReject = reject
+                timeout = setTimeout(() => reject(ERROR_COMM_WS_TIMEOUT), config.timeout * 1000)
+              })
+              console.log('Sent', msg.substring(0, 16) + '...', code)
+            }
           } catch (err) {
+            console.log(err)
             if (_conn.connected) {
               _conn.drop()
             }
@@ -92,7 +99,11 @@ export const createWSClient = (config: WSClientConfig) => {
             const code = data.substring(data.search(':') + 1)
             _client.currentReject && _client.currentReject(code)
           } else {
-            console.log(data)
+            if (receive) {
+              receive(data)
+            } else {
+              console.log(data)
+            }
           }
         }
       })

@@ -15,6 +15,9 @@ startWSServer(httpServer, {
     prefix: process.env.DID_PREFIX,
     baseSchemaUrl: process.env.DID_SCHEMA,
     schemaPath: process.env.DID_SCHEMA_PATH,
+  },
+  message: {
+    ttl: 2 * 24 * 3600 * 1000
   }
 })
 

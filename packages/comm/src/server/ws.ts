@@ -8,19 +8,49 @@ import {
   ERROR_COMM_WS_DID_REGISTERED,
   ERROR_COMM_WS_TIMEOUT
 } from '../types'
-import { buildDidHelper, makeRandomUuid, nodeCryptoHelper } from '@owlmeans/regov-ssi-core'
+import { buildDidHelper, buildWalletWrapper, makeRandomUuid, nodeCryptoHelper } from '@owlmeans/regov-ssi-core'
 import { parseJWE } from '../util'
 import { decodeJWT } from 'did-jwt'
 
+import util from 'util'
+util.inspect.defaultOptions.depth = 8
 
-export const startWSServer = (server: HttpServer, config: ServerConfig): void => {
+
+export const startWSServer = async (server: HttpServer, config: ServerConfig): Promise<void> => {
   const _wsServer = new WSServer({ httpServer: server })
 
-  const didHelper = buildDidHelper(nodeCryptoHelper, config.did)
+  const serverWallet = await buildWalletWrapper(
+    nodeCryptoHelper, '00000000', { alias: 'server', name: 'Regov' },
+    {
+      prefix: config.did.prefix,
+      defaultSchema: config.did.baseSchemaUrl,
+      didSchemaPath: config.did.schemaPath
+    }
+  )
+  const didHelper = serverWallet.did.helper()
 
   const _clientList: { [uuid: string]: Client } = {}
   const _didToClient: { [did: string]: string } = {}
-  const _messages: { [did: string]: string[] } = {}
+  const _messages: { [did: string]: Message[] } = {}
+
+  setInterval(() => {
+    Object.entries(_messages).forEach(([did, messages]) => {
+      if (messages.length > 0) {
+        let idx = messages.length - 1
+        for (; idx > -1; --idx) {
+          if (messages[idx].ttl < Date.now()) {
+            break
+          }
+        }
+        if (idx > -1) {
+          messages.splice(0, idx + 1)
+        }
+      }
+      if (messages.length < 1) {
+        delete _messages[did]
+      }
+    })
+  }, config.message.ttl)
 
   /**
    * @PROCEED Process paused connections 
@@ -33,6 +63,7 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
   // }
 
   const _pokeDid = async (did: string) => {
+    console.log('>>> Poke did: ' + did)
     if (!_didToClient[did]) {
       return
     }
@@ -42,7 +73,8 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
       return
     }
     if (client.occupied) {
-      setTimeout(() => _pokeDid(did), 250 * Math.random())
+      console.log('> Tryied to use occupied connection for: ' + did)
+      setTimeout(() => _pokeDid(did), 1000 * Math.random())
       return
     }
     if (_messages[did] && _messages[did].length) {
@@ -50,11 +82,12 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
       if (!msg) {
         return
       }
+      console.log('try to send: ' + msg.id)
       let timeout: ReturnType<typeof setTimeout> | undefined
       try {
         client.occupied = true
         await new Promise((resolve, reject) => {
-          client.connection.send(msg, err => err ? reject(err) : resolve(undefined))
+          client.connection.send(msg.data, err => err ? reject(err) : resolve(undefined))
         })
         const code = await new Promise<string>((resolve, reject) => {
           client.proceedCurrent = resolve
@@ -70,14 +103,17 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
         }
       } finally {
         if (timeout) {
-          clearTimeout(timeout) 
+          clearTimeout(timeout)
         }
+        console.log('> Released occupied')
         client.occupied = false
         client.proceedCurrent && delete client.proceedCurrent
         client.stopCurrent && delete client.stopCurrent
       }
       if (_messages[did].length) {
         setImmediate(() => _pokeDid(did))
+      } else {
+        delete _messages[did]
       }
     }
   }
@@ -87,7 +123,11 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
       _messages[did] = []
     }
 
-    _messages[did].push(message)
+    _messages[did].push({
+      id: nodeCryptoHelper.hash(message),
+      data: message,
+      ttl: Date.now() + config.message.ttl
+    })
     setImmediate(() => _pokeDid(did))
   }
 
@@ -108,11 +148,12 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
     const _send = async (msg: string) => {
       if (client.occupied) {
         console.error('Tried to use occuppied connection!')
-        setTimeout(() => _send(msg), 250 * Math.random())
+        setTimeout(() => _send(msg), 1000 * Math.random())
         return
       }
       try {
         client.occupied = true
+        console.log('...seding: ' + msg.substring(0, 32))
         await new Promise((resolve, reject) => {
           client.connection.send(msg, err => err ? reject(err) : resolve(undefined))
         })
@@ -122,20 +163,23 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
           client.connection.drop()
         }
       } finally {
+        console.log('released occupied')
         client.occupied = false
         // client.proceedCurrent && delete client.proceedCurrent
         // client.stopCurrent && delete client.stopCurrent
       }
     }
 
-
     conn.on('message', async msg => {
       if (msg.type === 'utf8') {
         const data = msg.utf8Data
+        console.log('[data]: ' + data.substring(0, 32))
         if (client.occupied && data.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')) {
+          console.log(data)
           const code = data.substring(data.search(':') + 1)
           return client.proceedCurrent && client.proceedCurrent(code)
         } else if (client.occupied && data.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
+          console.log(data)
           const code = data.substring(data.search(':') + 1)
           return client.stopCurrent && client.stopCurrent(code)
         } else if (data.startsWith('did:' + config.did.prefix + ':')) {
@@ -162,7 +206,7 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
           if (!await didHelper.verifyDID(commConn.sender)) {
             return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_SENDER)
           }
-          if (commConn.recipient && await didHelper.verifyDID(commConn.recipient)) {
+          if (commConn.recipient && await !didHelper.verifyDID(commConn.recipient)) {
             return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_RECIPIENT)
           }
           _addMessage(commConn.recipientId, data)
@@ -170,6 +214,7 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
         }
         try {
           const jwt = decodeJWT(data)
+          console.log('we got jwt: ' + jwt.payload.iss)
           const commConn: DIDCommConnectMeta = jwt.payload as DIDCommConnectMeta
           const results = [
             !commConn.recipientId,
@@ -179,6 +224,7 @@ export const startWSServer = (server: HttpServer, config: ServerConfig): void =>
           if (results.some(result => result)) {
             return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_MALFORMED_PAYLOAD)
           }
+          console.log('JWT from: ' + commConn.sender.id + ' - to: ' + commConn.recipientId)
           _addMessage(commConn.recipientId, data)
           return await _send(COMM_WS_PREFIX_CONFIRMED + ':' + commConn.recipientId)
         } catch (err) {
@@ -202,4 +248,10 @@ type Client = {
   stopCurrent?: (err: any) => void
   connection: WSConnection
   dids: string[]
+}
+
+type Message = {
+  id: string
+  data: string
+  ttl: number
 }

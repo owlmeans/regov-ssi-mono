@@ -1,12 +1,9 @@
 import 'dotenv/config'
-import {
-  buildWalletWrapper, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION,
-  nodeCryptoHelper, REGISTRY_TYPE_IDENTITIES, VERIFICATION_KEY_HOLDER, WalletWrapper
-} from "@owlmeans/regov-ssi-core"
-import { createDebugChannel } from "../debug/channel"
-import { commDidHelperBuilder } from "../did"
+import { buildWalletWrapper, nodeCryptoHelper } from "@owlmeans/regov-ssi-core"
+import { createDebugChannel } from "../channel/debug"
 import { buildDidCommHelper } from "../model"
 import { DIDCommConnectMeta, DIDCommHelper, DIDCommListner } from "../types"
+import { fillWallet } from '../test/fill-wallet'
 
 
 const config = {
@@ -38,8 +35,8 @@ describe('Comm model', () => {
     bobListener.receive = jest.fn()
     await bobComm.addListener(bobListener)
 
-    await _produceCred(aliceWallet)
-    await _produceCred(bobWallet)
+    await fillWallet(aliceWallet)
+    await fillWallet(bobWallet)
 
     const recipientId = bobWallet.getIdentity()?.credential.id
     if (!recipientId) {
@@ -51,7 +48,7 @@ describe('Comm model', () => {
       throw 'no sender'
     }
 
-    let resolve: CallableFunction 
+    let resolve: CallableFunction
     const promise = new Promise((_resolve) => {
       resolve = _resolve
     })
@@ -78,55 +75,6 @@ describe('Comm model', () => {
     expect(bobListener.receive).toBeCalled()
   })
 })
-
-
-const _produceCred = async (wallet: WalletWrapper) => {
-  const subject = {
-    data: {
-      '@type': 'TestCredentialSubjectDataType',
-      worker: 'Valentin Michalych'
-    }
-  }
-  const key = await wallet.ssi.keys.getCryptoKey()
-  const didUnsigned = await wallet.ssi.did.helper().createDID(
-    key,
-    {
-      data: JSON.stringify(subject),
-      hash: true,
-      purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
-    }
-  )
-
-  const _didHelper = commDidHelperBuilder(wallet)
-
-  const did = await wallet.ssi.did.helper().signDID(key, await _didHelper.addDIDAgreement(didUnsigned))
-
-  const unsingnedCredentail = await wallet.ssi.buildCredential({
-    id: did.id,
-    type: ['VerifiableCredential', 'TestCredential'],
-    holder: did,
-    context: {
-      '@version': 1.1,
-      xsd: 'http://www.w3.org/2001/XMLSchema#',
-      exam: 'https://example.org/vc-schema#',
-      data: {
-        '@id': 'exam:data',
-        '@type': '@id',
-        '@context': {
-          worker: { '@id': 'exam:worker', '@type': 'xsd:string' }
-        }
-      }
-    },
-    subject
-  })
-
-  const credentail = await wallet.ssi.signCredential(
-    unsingnedCredentail, did, { keyId: VERIFICATION_KEY_HOLDER }
-  )
-
-  await wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).addCredential(credentail)
-  wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).registry.rootCredential = credentail.id
-}
 
 export const createDebugListener = (callback: CallableFunction): DIDCommListner => {
   let _comm: DIDCommHelper | undefined

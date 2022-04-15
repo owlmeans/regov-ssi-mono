@@ -1,4 +1,4 @@
-import { Credential, DIDDocument, Presentation } from "@owlmeans/regov-ssi-core"
+import { Credential, DIDDocument, Presentation, WalletWrapper } from "@owlmeans/regov-ssi-core"
 import { JWE } from 'did-jwt'
 
 
@@ -26,6 +26,7 @@ export type DIDCommHelper = {
   unregister: (channel: DIDCommChannel) => Promise<void>
   addListener: (listner: DIDCommListner) => Promise<void>
   receive: (datagram: string, channel: DIDCommChannel) => Promise<void>
+  listen: (did: WalletWrapper | string) => Promise<boolean>
 }
 
 export type DIDCommConnectMeta = {
@@ -52,7 +53,7 @@ export type DIDCommChannel = {
   code: string
 
   init: (didComm: DIDCommHelper) => Promise<void>
-  send: (message: string) => Promise<boolean>
+  send: (message: string, ok?: boolean) => Promise<boolean>
   close: () => Promise<void>
 }
 
