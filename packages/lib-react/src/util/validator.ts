@@ -49,6 +49,13 @@ export const passwordValidation = {
   maxLength: 64
 }
 
+export const didValidation = {
+  required: true,
+  minLength: 10,
+  maxLength: 128,
+  pattern: /^did\:\w+\:.+/
+}
+
 export const humanReadableVersion = {
   maxLength: 128,
   pattern: /^[\w\d\s\._-]*$/

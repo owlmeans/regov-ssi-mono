@@ -1,0 +1,24 @@
+{
+  "auth": {
+    "title": "Request wallet login",
+    "did": {
+      "label": "Identity DID",
+      "hint": "Enter decentralized ID of one of your identities, the auth request will come to your external wallet",
+      "error": {
+        "required": "DID is required",
+        "minLength": "DID can't be shorter than 10 symbols",
+        "maxLength": "Please provide only DID address",
+        "pattern": "Wrong DID format"
+      }
+    },
+    "alert": {
+      "error": {
+        "wrong": "Can't login: {{message}}",
+        "severity": {
+          "error": "error"
+        }
+      }
+    },
+    "main": "Request Auth"
+  }
+}

@@ -21,6 +21,7 @@ import { NavigationRoot, createRootNavigator } from './router'
 import { HashRouter } from 'react-router-dom'
 import { buildStorageHelper } from './storage'
 import { WalletAppParams, AppProvider } from './app/'
+import { i18nRegisterExtensions } from '../i18n/util'
 
 
 const i18n = i18nSetup(i18nDefaultOptions)
@@ -29,17 +30,7 @@ export const WalletApp = ({ config, extensions }: WalletAppParams) => {
   const handler = useMemo(createWalletHandler, [])
   const storage = useMemo(() => buildStorageHelper(handler, config), [config])
 
-  useEffect(() => {
-    extensions?.uiExtensions.forEach(ext => {
-      if (ext.extension.localization) {
-        Object.entries(ext.extension.localization.translations).forEach(([lng, resource]) => {
-          if (ext.extension.localization?.ns) {
-            i18n.addResourceBundle(lng, ext.extension.localization?.ns, resource, true, true)
-          }
-        })
-      }
-    })
-  }, extensions?.uiExtensions || [])
+  useEffect(() => extensions && i18nRegisterExtensions(i18n, extensions), extensions?.uiExtensions || [])
 
   const [loaded, setLoaded] = useState(false)
 

@@ -12,6 +12,14 @@ cd ../../packages/lib-react
 yarn build
 lerna link
 yarn link
+cd packages/ext-comm
+yarn build
+lerna link
+yarn link
+cd packages/ext-auth
+yarn build
+lerna link
+yarn link
 cd ../../packages/ext-identity
 yarn build
 lerna link
