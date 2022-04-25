@@ -4,7 +4,11 @@ cd packages/core
 yarn build
 lerna link
 yarn link
-cd packages/comm
+cd ../../packages/comm
+yarn build
+lerna link
+yarn link
+cd ../../packages/lib-node
 yarn build
 lerna link
 yarn link
@@ -12,11 +16,11 @@ cd ../../packages/lib-react
 yarn build
 lerna link
 yarn link
-cd packages/ext-comm
+cd ../../packages/ext-comm
 yarn build
 lerna link
 yarn link
-cd packages/ext-auth
+cd ../../packages/ext-auth
 yarn build
 lerna link
 yarn link

@@ -126,7 +126,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
     },
 
     addListener: async (listner) => {
-      await listner.init(_helper)
+      listner.init && await listner.init(_helper)
       _listeners.push(listner)
     },
 
@@ -229,7 +229,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
           await channel.send(connection.recipientId, true)
 
-          _listeners.forEach(listener => listener.receive(
+          _listeners.forEach(listener => listener.receive && listener.receive(
             invertConnection(connection, channel.code), decodedJWE
           ))
         } catch (error) {
@@ -259,7 +259,10 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
           }
           await channel.send(connection.recipientId, true)
 
-          _listeners.forEach(listener => listener.established(invertConnection(connection, channel.code)))
+          _listeners.forEach(
+            listener =>
+              listener.established && listener.established(invertConnection(connection, channel.code))
+          )
         } else {
           if (!wallet.did.helper().verifyDID(connection.sender)) {
             throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
@@ -277,7 +280,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
           await channel.send(newConnection.sender.id, true)
 
-          _listeners.forEach(listener => listener.accept(newConnection))
+          _listeners.forEach(listener => listener.accept && listener.accept(newConnection))
         }
       } catch (error) {
         await channel.send(ERROR_COMM_MALFORMED_PAYLOAD, false)

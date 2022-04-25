@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
-import { BasicNavigator, Config, UIExtensionRegistry, WalletHandler } from "../../common"
+import { BasicNavigator, Config, UIExtensionRegistry } from "../../common"
 import { NavigateFunction } from "react-router-dom"
+import { WalletHandler } from "@owlmeans/regov-ssi-core"
 
 
 export type WalletAppParams = {

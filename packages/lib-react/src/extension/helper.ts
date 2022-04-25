@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
+import { addObserverToSchema, Extension } from "@owlmeans/regov-ssi-core"
 import {
-  ManuItemParams,
-  MenuActionResult
-} from "./types"
+  EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, MainModalHandle, MainModalShareEventParams
+} from "../component/main/modal"
+import { ManuItemParams, MenuActionResult } from "./types"
 
 
 export const castMenuItemParams = async (item: ManuItemParams): Promise<MenuActionResult | void> => {
@@ -25,4 +26,18 @@ export const castMenuItemParams = async (item: ManuItemParams): Promise<MenuActi
     ? await item.action()
     : typeof item.action === 'string'
       ? { path: item.action } : item.action
+}
+
+export const castMainModalHandler = (extension: Extension) => {
+  const handler: { handle?: MainModalHandle } = {}
+  extension.schema = addObserverToSchema(extension.schema, {
+    trigger: EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
+    method: async (_, params: MainModalShareEventParams) => {
+      handler.handle = params.handle
+
+      return false
+    }
+  })
+
+  return handler
 }

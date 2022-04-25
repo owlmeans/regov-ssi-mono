@@ -14,6 +14,7 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
+  "server": "dist/index.server.modern.js",
   "typings": "dist/index.d.ts",
   "directories": {
     "dist": "dist",
@@ -29,7 +30,7 @@
   },
   "sources": "src/index.ts",
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
+    "build": "microbundle-crl --no-compress --format modern,cjs && microbundle-crl --no-compress --format modern,cjs -i src/index.server.ts -o dist/index.server.js",
     "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
   },
   "peerDependencies": {
@@ -40,6 +41,7 @@
     "@owlmeans/regov-lib-react": "^0.1.8",
     "@owlmeans/regov-ssi-core": "^0.5.3",
     "@owlmeans/regov-ext-comm": "^0.1.0",
+    "@owlmeans/regov-lib-node": "^0.1.0",
     "@owlmeans/regov-comm": "^0.1.0",
     "i18next": "^21.4.2",
     "react": "^17.0.0",
@@ -47,7 +49,8 @@
     "react-hook-form": "^7.19.5",
     "react-i18next": "^11.14.2",
     "react-router-dom": "^6.0.2",
-    "react-device-detect": "^2.1.2"
+    "react-device-detect": "^2.1.2",
+    "express": "^4.17.3"
   },
   "devDependencies": {
     "microbundle-crl": "^0.13.11",

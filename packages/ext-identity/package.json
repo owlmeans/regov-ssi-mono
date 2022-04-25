@@ -28,7 +28,7 @@
   },
   "sources": "src/index.ts",
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
+    "build": "microbundle-crl --no-compress --format modern,cjs && microbundle-crl --no-compress --format modern,cjs -i src/index.server.ts -o dist/index.server.js",
     "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
   },
   "peerDependencies": {
@@ -38,6 +38,8 @@
     "@mui/material": "^5.2.4",
     "@owlmeans/regov-lib-react": "^0.1.8",
     "@owlmeans/regov-ssi-core": "^0.5.3",
+    "@owlmeans/regov-lib-node": "^0.1.0",
+    "express": "^4.17.3",
     "i18next": "^21.4.2",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",

@@ -16,5 +16,6 @@
 
 
 export * from './context'
-export * from './wallet'
 export * from './navigator'
+export * from './client'
+export * from './types'

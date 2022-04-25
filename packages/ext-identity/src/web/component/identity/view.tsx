@@ -15,9 +15,9 @@
  */
 
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
-import { 
+import {
   CredentialEvidenceWidget, EmptyProps, EntityRenderer, RegovComponentProps, useRegov,
-  ValidationResultWidgetWeb, withRegov 
+  ValidationResultWidgetWeb, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
   Button, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, Typography
@@ -28,8 +28,9 @@ import {
 } from '@owlmeans/regov-ssi-core'
 import { Close } from '@mui/icons-material'
 import { ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-core'
-import { RegovIdentityExtension, IdentitySubject } from '../../../types'
-import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
+import {
+  RegovIdentityExtension, IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE
+} from '../../../types'
 
 
 export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<IdentityViewProps>({
@@ -43,7 +44,7 @@ export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<Ide
   const registry = handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
   const credentialWrapper =
     registry?.getCredential(credential.id, REGISTRY_SECTION_OWN)
-      || registry?.getCredential(credential.id, REGISTRY_SECTION_PEER)
+    || registry?.getCredential(credential.id, REGISTRY_SECTION_PEER)
 
   const reload = () => setCounter(counter + 1)
 

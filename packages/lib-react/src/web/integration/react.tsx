@@ -1,12 +1,12 @@
 import { WalletAppParams } from '../app/types'
 import {
-  i18nDefaultOptions, i18nSetup, createWalletHandler, BasicNavigator, RegovProvider, MainLoading
+  i18nDefaultOptions, i18nSetup, BasicNavigator, RegovProvider, MainLoading
 } from '../../common'
 import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 import { buildStorageHelper } from '../storage'
 import { i18nRegisterExtensions } from '../../i18n/util'
 import { webComponentMap } from '../component'
-import { WalletHandler } from '../../common'
+import { createWalletHandler, WalletHandler } from '@owlmeans/regov-ssi-core'
 
 
 const i18n = i18nSetup(i18nDefaultOptions)

@@ -8,7 +8,7 @@ import {
   ERROR_COMM_WS_DID_REGISTERED,
   ERROR_COMM_WS_TIMEOUT
 } from '../types'
-import { buildDidHelper, buildWalletWrapper, makeRandomUuid, nodeCryptoHelper } from '@owlmeans/regov-ssi-core'
+import { buildWalletWrapper, makeRandomUuid, nodeCryptoHelper } from '@owlmeans/regov-ssi-core'
 import { parseJWE } from '../util'
 import { decodeJWT } from 'did-jwt'
 

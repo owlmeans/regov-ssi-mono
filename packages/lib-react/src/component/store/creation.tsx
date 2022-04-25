@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-import React, {
-  FunctionComponent,
-} from 'react'
+import React, { FunctionComponent } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { CryptoHelper } from '@owlmeans/regov-ssi-core'
 import { buildWalletWrapper } from '@owlmeans/regov-ssi-core'

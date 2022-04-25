@@ -16,22 +16,26 @@
 
 import {
   addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails,
-  defaultBuildMethod, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME, 
-  RetreiveNameEventParams, isCredential, IncommigDocumentEventParams, 
+  defaultBuildMethod, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME,
+  RetreiveNameEventParams, isCredential, IncommigDocumentEventParams,
   EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED
 } from "@owlmeans/regov-ssi-core"
 import {
-  CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential 
+  CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
-import { IdentitySubject } from "./types"
+import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE } from "./types"
 import { makeRandomUuid } from "@owlmeans/regov-ssi-core"
 import { credIdToIdentityId } from "./helper"
+import en from './i18n/en.json'
+import ru from './i18n/ru.json'
+import by from './i18n/by.json'
 
 
 export const BASIC_IDENTITY_TYPE = 'Identity'
 
 export const buildIdentityExtension = (
-  type: string, params: BuildExtensionParams, details: ExtensionDetails
+  type: string, params: BuildExtensionParams, details: ExtensionDetails,
+  ns = REGOV_IDENTITY_DEFAULT_NAMESPACE
 ) => {
   const identityType = type || 'OwlMeans:Regov:Identity'
 
@@ -78,10 +82,10 @@ export const buildIdentityExtension = (
       if (!params.credential.type || !Array.isArray(params.credential.type)) {
         return false
       }
-  
+
       return params.credential.type.includes(identityType)
     },
-    
+
     method: async (_, { credential, setName }: RetreiveNameEventParams) => {
       const subject = getCompatibleSubject<IdentitySubject>(credential)
       setName(`ID: ${subject.identifier}`)
@@ -94,11 +98,11 @@ export const buildIdentityExtension = (
       if (!isCredential(params.credential)) {
         return false
       }
-  
+
       if (!params.credential.type || !Array.isArray(params.credential.type)) {
         return false
       }
-  
+
       return params.credential.type.includes(identityType)
     },
   })
@@ -114,7 +118,7 @@ export const buildIdentityExtension = (
           sourceApp: inputData.sourceApp || (credSchema.defaultSubject as any).sourceApp,
           uuid: makeRandomUuid()
         }
-        
+
         const unsigned = await defaultBuildMethod(credSchema)(wallet, {
           ...params, subjectData: updatedSubjectData
         })
@@ -125,6 +129,11 @@ export const buildIdentityExtension = (
       }
     }
   })
+
+  extension.localization = { ns, translations: {} }
+  if (ns === REGOV_IDENTITY_DEFAULT_NAMESPACE) {
+    extension.localization.translations = { en, ru, be: by }
+  }
 
   return extension
 }

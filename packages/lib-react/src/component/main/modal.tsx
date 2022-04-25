@@ -15,9 +15,9 @@
  */
 
 import React, { FunctionComponent, ReactNode, useEffect, useMemo } from 'react'
-import { EventParams, EXTENSION_TRIGGER_AUTHENTICATED } from '@owlmeans/regov-ssi-core'
+import { EventParams, EXTENSION_TRIGGER_AUTHENTICATED, WalletHandler } from '@owlmeans/regov-ssi-core'
 import {
-  RegovComponentProps, useRegov, withRegov, WrappedComponentProps, Config, WalletHandler
+  RegovComponentProps, useRegov, withRegov, WrappedComponentProps, Config
 } from '../../common/'
 
 

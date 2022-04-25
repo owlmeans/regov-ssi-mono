@@ -21,13 +21,12 @@ import {
   ListItemText, Typography
 } from '@mui/material'
 import { Done, ExpandMore, ErrorOutline } from '@mui/icons-material'
-import { IdentitySubject } from '../../../types'
+import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../../types'
 import {
   EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget
 } from '@owlmeans/regov-lib-react'
 import { normalizeValue } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-core'
-import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
 import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-lib-react'
 
 

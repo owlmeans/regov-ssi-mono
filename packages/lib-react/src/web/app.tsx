@@ -16,7 +16,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Backdrop, CircularProgress, Container, CssBaseline } from '@mui/material'
-import { i18nDefaultOptions, i18nSetup, createWalletHandler, } from '../common'
+import { i18nDefaultOptions, i18nSetup } from '../common'
+import { createWalletHandler} from '@owlmeans/regov-ssi-core'
 import { NavigationRoot, createRootNavigator } from './router'
 import { HashRouter } from 'react-router-dom'
 import { buildStorageHelper } from './storage'

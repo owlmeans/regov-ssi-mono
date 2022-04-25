@@ -20,10 +20,9 @@ import {
   EmptyProps, generalNameVlidation, MainModalAuthenticatedEventParams, RegovComponentProps,
   useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
-import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
 import { MainTextInput, MainTextOutput, PrimaryForm, WalletFormProvider, dateFormatter, AlertOutput } from '@owlmeans/regov-lib-react'
 import { CredentialSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential, Credential } from '@owlmeans/regov-ssi-core'
-import { IdentitySubject } from '../../../types'
+import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../../types'
 import { BASIC_IDENTITY_TYPE } from '../../../ext'
 import { ERROR_CREATION_AUTHENTICATION, ERROR_CREATION_EXTENSION, ERROR_CREATION_READYTO_SIGN } from './types'
 

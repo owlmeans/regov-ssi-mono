@@ -43,10 +43,10 @@ export const connectionFieldList: DIDCommConnectMetaKeys[] = [
 ]
 
 export type DIDCommListner = {
-  init: (didComm: DIDCommHelper) => Promise<void>
-  accept: (connection: DIDCommConnectMeta) => Promise<void>
-  established: (connection: DIDCommConnectMeta) => Promise<void>
-  receive: (connection: DIDCommConnectMeta, doc: Presentation | Credential) => Promise<void>
+  init?: (didComm: DIDCommHelper) => Promise<void>
+  accept?: (connection: DIDCommConnectMeta) => Promise<void>
+  established?: (connection: DIDCommConnectMeta) => Promise<void>
+  receive?: (connection: DIDCommConnectMeta, doc: Presentation | Credential) => Promise<void>
 }
 
 export type DIDCommChannel = {

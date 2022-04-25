@@ -15,12 +15,13 @@
  */
 
 import React, { PropsWithChildren, useState } from "react"
-import { MainLoading, RegovProvider, WalletHandler, MainModal } from "../../common"
+import { MainLoading, RegovProvider, MainModal } from "../../common"
 import { useNavigate } from "react-router-dom"
 import { buildDevWallet } from "../debug/util/builder"
 import { WalletAppParams, RootNavigatorBuilder } from "./types"
 import { webComponentMap } from "../component"
 import { i18n } from "i18next"
+import { WalletHandler } from "@owlmeans/regov-ssi-core"
 
 
 export const AppProvider = ({
