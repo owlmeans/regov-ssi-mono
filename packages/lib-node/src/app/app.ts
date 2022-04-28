@@ -71,6 +71,8 @@ export const buildApp = async (
   const _app: RegovServerApp = {
     handler,
 
+    extensions,
+
     app: express()
   }
 

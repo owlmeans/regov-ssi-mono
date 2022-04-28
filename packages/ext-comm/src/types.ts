@@ -4,6 +4,14 @@ import { Credential, DIDDocument, EventParams, Extension, Presentation } from "@
 
 export const REGOV_EXT_COMM_NAMESPACE = 'owlmeans-regov-ext-comm'
 
+/**
+ * @PROCEED
+ * 1. Move event types to comm library
+ * 2. Think about replacing request / response events with passing 
+ * channel / client object on the event basis same way as main modal
+ * passed
+ */
+
 export const EVENT_SEND_REQUEST = 'regov:ext:comm:send:request'
 
 export type SendRequestEventParams = EventParams & {
@@ -25,9 +33,11 @@ export type InitCommEventParams = EventParams & {
   trigger: (conn: DIDCommConnectMeta, doc: Credential | Presentation) => Promise<void>
   resolveConnection: () => Promise<void>
   rejectConnection: (err: any) => Promise<void>
-  registerDidHandle: {
-    registerDid?: (dids: string[]) => Promise<boolean[]>
-  }
+  registerDidHandle: RegisterDIDHandle
+}
+
+export type RegisterDIDHandle = {
+  registerDid?: (dids: string[]) => Promise<boolean[]>
 }
 
 export type CommExtConfig = {

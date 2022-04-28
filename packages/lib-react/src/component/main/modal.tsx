@@ -19,6 +19,7 @@ import { EventParams, EXTENSION_TRIGGER_AUTHENTICATED, WalletHandler } from '@ow
 import {
   RegovComponentProps, useRegov, withRegov, WrappedComponentProps, Config
 } from '../../common/'
+import { UIExtensionRegistry } from '../../extension'
 
 
 export const MainModal: FunctionComponent<MainModalParams> = withRegov<MainModalProps>(
@@ -35,7 +36,7 @@ export const MainModal: FunctionComponent<MainModalParams> = withRegov<MainModal
           )
 
           await extensions.triggerEvent<MainModalAuthenticatedEventParams>(
-            handler.wallet, EXTENSION_TRIGGER_AUTHENTICATED, { handle, config, handler }
+            handler.wallet, EXTENSION_TRIGGER_AUTHENTICATED, { handle, config, handler, extensions }
           )
         }
       })()
@@ -50,6 +51,7 @@ export type MainModalAuthenticatedEventParams = EventParams & {
   handle: MainModalHandle
   config: Config
   handler: WalletHandler
+  extensions: UIExtensionRegistry
 }
 
 export type MainModalParams = {

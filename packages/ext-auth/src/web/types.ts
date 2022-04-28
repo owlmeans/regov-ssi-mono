@@ -13,3 +13,18 @@ export type SendRequestEventParams = EventParams & {
   rejectSending: (err: any) => Promise<void>
   resolveResponse: (doc: Presentation) => Promise<void>
 }
+
+export const EVENT_INIT_CONNECTION = 'regov:ext:comm:init'
+
+export type InitCommEventParams = EventParams & {
+  alias?: string
+  statusHandle: { established: boolean }
+  trigger: (conn: Object, doc: Credential | Presentation) => Promise<void>
+  resolveConnection: () => Promise<void>
+  rejectConnection: (err: any) => Promise<void>
+  registerDidHandle: RegisterDIDHandle
+}
+
+export type RegisterDIDHandle = {
+  registerDid?: (dids: string[]) => Promise<boolean[]>
+}

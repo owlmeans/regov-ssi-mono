@@ -1,10 +1,12 @@
 
 import { WalletHandler, WalletOptions } from '@owlmeans/regov-ssi-core'
 import { Application } from 'express'
+import { ServerExtensionRegistry } from '../extension'
 
 
 export type RegovServerApp = {
   app: Application
+  extensions: ServerExtensionRegistry
   handler: WalletHandler
 }
 
