@@ -85,3 +85,4 @@ export type GetRegistryMethod = (type?: RegistryType) => CredentialsRegistryWrap
 
 export const DEFAULT_WALLET_ALIAS = 'citizen'
 
+export const ERROR_NO_IDENTITY = 'ERROR_NO_IDENTITY'

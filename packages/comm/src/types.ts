@@ -1,4 +1,4 @@
-import { Credential, DIDDocument, Presentation, WalletWrapper } from "@owlmeans/regov-ssi-core"
+import { Credential, DIDDocument, EventParams, Presentation, WalletWrapper } from "@owlmeans/regov-ssi-core"
 import { JWE } from 'did-jwt'
 
 
@@ -25,6 +25,7 @@ export type DIDCommHelper = {
   addChannel: (channel: DIDCommChannel, def?: boolean) => Promise<void>
   unregister: (channel: DIDCommChannel) => Promise<void>
   addListener: (listner: DIDCommListner) => Promise<void>
+  removeListener: (listner: DIDCommListner) => void
   receive: (datagram: string, channel: DIDCommChannel) => Promise<void>
   listen: (did: WalletWrapper | string) => Promise<boolean>
 }
@@ -79,7 +80,28 @@ export const COMM_WS_PREFIX_ERROR = 'error'
 export const ERROR_COMM_WS_DID_REGISTERED = 'ERROR_COMM_WS_DID_REGISTERED'
 export const ERROR_COMM_WS_UNKNOWN = 'ERROR_COMM_WS_UNKNOWN'
 export const ERROR_COMM_WS_TIMEOUT = 'ERROR_COMM_WS_TIMEOUT'
+export const ERROR_COMM_CANT_SEND = 'ERROR_COMM_CANT_SEND'
 
 export const COMM_DID_AGREEMENT_KEY_DEFAULT = 'comm'
 
 export const COMM_VERIFICATION_TYPE = 'X25519KeyAgreementKey2020'
+
+
+export const EVENT_INIT_CONNECTION = 'regov:comm:init'
+
+export type InitCommEventParams = EventParams & {
+  alias?: string
+  statusHandle: CommConnectionStatusHandler
+  trigger?: (conn: DIDCommConnectMeta, doc: Credential | Presentation) => Promise<void>
+  resolveConnection: (helper: DIDCommHelper) => Promise<void>
+  rejectConnection: (err: any) => Promise<void>
+}
+
+export type CommConnectionStatusHandler = { 
+  established: boolean
+  helper?: DIDCommHelper
+  defaultListener?: DIDCommListner
+}
+
+export const ERROR_COMM_CONNECTION_UNKNOWN = 'ERROR_COMM_CONNECTION_UNKNOWN'
+

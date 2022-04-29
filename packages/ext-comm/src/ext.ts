@@ -1,10 +1,12 @@
-import { buildDidCommHelper, createWSChannel, DIDCommChannel, DIDCommHelper, DIDCommListner } from '@owlmeans/regov-comm'
-import { addObserverToSchema, buildExtension, buildExtensionSchema, DIDDocument, isPresentation } from '@owlmeans/regov-ssi-core'
-import { localizations } from './i18n'
 import {
-  CommExtConfig, DEFAULT_SERVER_ALIAS, SendRequestEventParams,
-  EVENT_INIT_CONNECTION, EVENT_SEND_REQUEST, InitCommEventParams, REGOV_EXT_COMM_NAMESPACE, CommExtension
-} from './types'
+  buildDidCommHelper, createWSChannel, DIDCommChannel, DIDCommHelper,
+  ERROR_COMM_CONNECTION_UNKNOWN, EVENT_INIT_CONNECTION, InitCommEventParams
+} from '@owlmeans/regov-comm'
+import {
+  addObserverToSchema, buildExtension, buildExtensionSchema
+} from '@owlmeans/regov-ssi-core'
+import { localizations } from './i18n'
+import { CommExtConfig, DEFAULT_SERVER_ALIAS, REGOV_EXT_COMM_NAMESPACE, CommExtension } from './types'
 
 
 export const buildCommExtension = (config: CommExtConfig) => {
@@ -40,49 +42,14 @@ export const buildCommExtension = (config: CommExtConfig) => {
             _channels[combined] = await createWSChannel(cfg)
             await helper.addChannel(_channels[combined])
           }
-          params.registerDidHandle.registerDid = async (dids) => {
-            return Promise.all(dids.map(async did => helper.listen(did)))
-          }
+          params.statusHandle.established = true
+          params.statusHandle.helper = helper
+          await params.resolveConnection(helper)
+        } else {
+          await params.rejectConnection(ERROR_COMM_CONNECTION_UNKNOWN)
         }
-        await params.resolveConnection()
       } catch (err) {
         await params.rejectConnection(err)
-      }
-    }
-  })
-
-  commExtensionSchema = addObserverToSchema(commExtensionSchema, {
-    trigger: EVENT_SEND_REQUEST,
-    filter: async (wallet, params: SendRequestEventParams) => {
-      const combined = wallet.store.alias + ':' + (params.alias || DEFAULT_SERVER_ALIAS)
-      return !params.statusHandle.sent && !!_channels[combined]
-    },
-    method: async (wallet, params: SendRequestEventParams) => {
-      params.statusHandle.sent = true
-      try {
-        const helper = _didComm[wallet.store.alias]
-        const listener: DIDCommListner = {
-          established: async (conn) => {
-            try {
-              await helper.send(params.cred, conn)
-              await params.resolveSending()
-            } catch (err) {
-              await params.rejectSending(err)
-            }
-          },
-          receive: async (_, cred) => {
-            if (isPresentation(cred)) {
-              await params.resolveResponse(cred)
-            }
-          }
-        }
-        await helper.addListener(listener)
-        await helper.connect({
-          recipientId: params.recipient,
-          sender: params.sender || (wallet.getIdentity()?.credential)?.holder as DIDDocument
-        })
-      } catch (err) {
-        await params.rejectSending(err)
       }
     }
   })

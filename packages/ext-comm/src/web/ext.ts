@@ -1,7 +1,7 @@
-import { DIDCommListner } from "@owlmeans/regov-comm"
+import { EVENT_INIT_CONNECTION, InitCommEventParams } from "@owlmeans/regov-comm"
 import { buildUIExtension } from "@owlmeans/regov-lib-react"
 import { buildCommExtension } from "../ext"
-import { CommExtConfig, EVENT_INIT_CONNECTION, InitCommEventParams } from "../types"
+import { CommExtConfig } from "../types"
 
 
 export const buildCommUIExtension = (config: CommExtConfig) => {
@@ -15,15 +15,15 @@ export const buildCommUIExtension = (config: CommExtConfig) => {
         await initMethod(wallet, params)
         const helper = commExtension.didComm && commExtension.didComm[wallet.store.alias]
         if (helper) {
-          const requestListener: DIDCommListner = {
+          params.statusHandle.defaultListener = {
             accept: async (conn) => {
               await helper.accept(conn)
             },
             receive: async (conn, cred) => {
-              await params.trigger(conn, cred)
+              params.trigger && await params.trigger(conn, cred)
             }
           }
-          await helper.addListener(requestListener)
+          await helper.addListener(params.statusHandle.defaultListener)
         }
       }
     }

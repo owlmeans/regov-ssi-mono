@@ -130,6 +130,11 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
       _listeners.push(listner)
     },
 
+    removeListener: (listener: DIDCommListner) => {
+      const idx = _listeners.findIndex(_listener => _listener === listener)
+      idx > -1 && _listeners.splice(idx, 1)
+    },
+
     accept: async (connection) => {
       const channel = _channels.find(channel => channel.code === connection.channel)
       if (!channel) {

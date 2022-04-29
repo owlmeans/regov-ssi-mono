@@ -5,7 +5,7 @@ import {
 import { authExtension } from './ext'
 import { ERROR_NO_AUTHENTICATION_FROM_EXTERNAL_WALLET, REGOV_AUTH_REQUEST_TYPE, REGOV_CREDENTIAL_TYPE_AUTH, SERVER_PROVIDE_AUTH, SERVER_REQUEST_AUTH } from './types'
 import { Presentation } from '@owlmeans/regov-ssi-core'
-import { getAuthFromResponsePresentation } from './util'
+import { getAuthFromPresentation } from './util'
 
 export * from './types'
 export * from './ext'
@@ -42,7 +42,7 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
       }
 
       const presentation: Presentation = req.body().json()
-      const credential = getAuthFromResponsePresentation(presentation)
+      const credential = getAuthFromPresentation(presentation)
       if (!credential) {
         throw ERROR_NO_AUTHENTICATION_FROM_EXTERNAL_WALLET
       }
