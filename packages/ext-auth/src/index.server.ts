@@ -3,7 +3,10 @@ import {
   buildServerExtension, ERROR_NO_WALLET, getAppContext
 } from '@owlmeans/regov-lib-node'
 import { authExtension } from './ext'
-import { ERROR_NO_AUTHENTICATION_FROM_EXTERNAL_WALLET, REGOV_AUTH_REQUEST_TYPE, REGOV_CREDENTIAL_TYPE_AUTH, SERVER_PROVIDE_AUTH, SERVER_REQUEST_AUTH } from './types'
+import {
+  ERROR_NO_AUTHENTICATION_FROM_EXTERNAL_WALLET, REGOV_AUTH_REQUEST_TYPE, REGOV_CREDENTIAL_TYPE_AUTH,
+  SERVER_PROVIDE_AUTH, SERVER_REQUEST_AUTH
+} from './types'
 import { Presentation } from '@owlmeans/regov-ssi-core'
 import { getAuthFromPresentation } from './util'
 
@@ -27,7 +30,10 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
           createdAt: (new Date).toISOString()
         }
       })
-      const request = await factory.request(handler.wallet, { unsignedRequest: unsigned })
+      const request = await factory.request(handler.wallet, { 
+        unsignedRequest: unsigned,
+        identity: handler.wallet.getIdentity()?.credential
+      })
       res.json(request)
     } catch (e) {
       res.status(500).send(`${e}`)
@@ -48,8 +54,8 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
       }
 
       const factory = authExtension.getFactory(REGOV_CREDENTIAL_TYPE_AUTH)
-      const result = await factory.validate(handler.wallet, { 
-        presentation, credential, extensions: extensions.registry 
+      const result = await factory.validate(handler.wallet, {
+        presentation, credential, extensions: extensions.registry
       })
       res.json(result)
     } catch (e) {

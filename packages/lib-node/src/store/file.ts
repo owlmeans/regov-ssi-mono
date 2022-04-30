@@ -14,10 +14,9 @@ export const buildFileStore = (path: string): ServerStore => {
         if (err) {
           return reject(err)
         }
-
         handler.stores = await files.reduce(
-          async (_stores, file) => await new Promise(resolve =>
-            fs.readFile(file, async (err, data) => {
+          async (_stores, file) => await new Promise(resolve => {
+            fs.readFile(path + '/' + file, async (err, data) => {
               const stores = await _stores
               if (err) {
                 return stores
@@ -31,7 +30,7 @@ export const buildFileStore = (path: string): ServerStore => {
 
               resolve(stores)
             })
-          ), Promise.resolve<{ [key: string]: EncryptedStore }>({})
+          }), Promise.resolve<{ [key: string]: EncryptedStore }>({})
         )
 
         handler.observers.push(() => _store.commit().catch(console.error))

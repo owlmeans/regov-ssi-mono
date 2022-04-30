@@ -12,7 +12,7 @@ import { createWalletHandler, WalletHandler } from '@owlmeans/regov-ssi-core'
 const i18n = i18nSetup(i18nDefaultOptions)
 
 export const WalletIntergationReact = (
-  { config, extensions, navigatorBuilder, children }: PropsWithChildren<
+  { config, extensions, navigatorBuilder, children, serverClient }: PropsWithChildren<
     WalletAppParams & {
       navigatorBuilder: (handler: WalletHandler) => BasicNavigator
     }>
@@ -40,7 +40,7 @@ export const WalletIntergationReact = (
   }, [storage])
 
   return /* loaded ? */ <RegovProvider i18n={i18n} map={webComponentMap} handler={handler}
-      config={config} navigator={navigator} extensions={extensions}>
+      config={config} navigator={navigator} extensions={extensions} serverClient={serverClient}>
       {children}
       <MainLoading nav={navigator} />
     </RegovProvider>

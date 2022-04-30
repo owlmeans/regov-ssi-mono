@@ -17,7 +17,10 @@
 import { RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, useState } from 'react'
-import { Dialog, DialogContent, DialogTitle, Grid, ListItemIcon, ListItemText, MenuItem, MenuList, Typography } from '@mui/material'
+import {
+  Dialog, DialogContent, DialogTitle, Grid, ListItemIcon, ListItemText, MenuItem, MenuList,
+  Typography
+} from '@mui/material'
 import { Add, AddCircleOutline, Drafts } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'

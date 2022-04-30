@@ -25,7 +25,7 @@ import { WalletHandler } from "@owlmeans/regov-ssi-core"
 
 
 export const AppProvider = ({
-  handler, config, extensions, i18n, navigatorBuilder, children
+  handler, config, extensions, i18n, navigatorBuilder, children, serverClient
 }: ProviderParams) => {
   const navigate = useNavigate()
   const navigator = navigatorBuilder(navigate, handler, config)
@@ -47,7 +47,7 @@ export const AppProvider = ({
   }
 
   return <RegovProvider i18n={i18n} map={webComponentMap} handler={handler}
-    config={config} navigator={navigator} extensions={extensions}>
+    config={config} navigator={navigator} extensions={extensions} serverClient={serverClient}>
     <MainLoading nav={navigator} />
     <MainModal />
     {children}

@@ -18,10 +18,10 @@
     "directory": "packages/lib-node"
   },
   "scripts": {
-    "start": "node ./dist/test/server.js",
     "test": "jest --testTimeout 30000",
     "build": "tsc -b",
-    "build:watch": "tsc -b -w"
+    "build:watch": "tsc -b -w",
+    "build:watch-server": "tsc -b -w"
   },
   "bugs": {
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"

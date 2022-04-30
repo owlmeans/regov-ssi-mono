@@ -31,7 +31,9 @@
   "sources": "src/index.ts",
   "scripts": {
     "build": "microbundle-crl --no-compress --format modern,cjs && microbundle-crl --no-compress --format modern,cjs -i src/index.server.ts -o dist/index.server.js",
-    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
+    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs",
+    "build:watch-server": "microbundle-crl watch --no-compress --format modern,cjs -i src/index.server.ts -o dist/index.server.js",
+    "build:watch-client": "microbundle-crl watch --no-compress --format modern,cjs -i src/index.ts -o dist/index.js"
   },
   "peerDependencies": {
     "@emotion/react": "^11.6.0",

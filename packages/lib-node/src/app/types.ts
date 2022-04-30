@@ -8,6 +8,7 @@ export type RegovServerApp = {
   app: Application
   extensions: ServerExtensionRegistry
   handler: WalletHandler
+  start: () => void
 }
 
 export type ServerAppConfig = {
@@ -17,6 +18,7 @@ export type ServerAppConfig = {
     password?: string
   }
   peerVCs?: string
+  port: number
 }
 
 export const DEFAULT_STORE_PASSWORD = 'securepassword'

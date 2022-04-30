@@ -1,12 +1,15 @@
 
-import { 
-  buildWalletWrapper, DEFAULT_WALLET_ALIAS, nodeCryptoHelper, WalletHandler, WalletWrapper 
+import {
+  buildWalletWrapper, DEFAULT_WALLET_ALIAS, nodeCryptoHelper, WalletHandler, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import express, { Router, Request, Response } from 'express'
 import { ServerExtensionRegistry } from '../extension'
 import { ServerStore } from '../store'
 import { readPeerVCs } from './peer-reader'
-import { APP_EVENT_PRODUCE_IDENTITY, DEFAULT_STORE_PASSWORD, ERROR_NO_WALLET, RegovServerApp, ServerAppConfig } from './types'
+import {
+  APP_EVENT_PRODUCE_IDENTITY, DEFAULT_STORE_PASSWORD, ERROR_NO_WALLET, RegovServerApp,
+  ServerAppConfig
+} from './types'
 
 
 const _bindings = new WeakMap<Request, RegovServerApp>()
@@ -31,11 +34,8 @@ export const buildApp = async (
         }
       )
     })
-    /**
-     * @PROCEED Generate credentials from extensions
-     */
   } else {
-    const wallet = await handler.loadStore(async () => {
+    await handler.loadStore(async () => {
       const wallet = await buildWalletWrapper(
         nodeCryptoHelper,
         config.wallet?.password || DEFAULT_STORE_PASSWORD,
@@ -54,11 +54,11 @@ export const buildApp = async (
       return wallet
     })
 
-    if (!wallet) {
+    if (!handler.wallet) {
       throw ERROR_NO_WALLET
     }
 
-    await extensions.triggerEvent(wallet, APP_EVENT_PRODUCE_IDENTITY)
+    await extensions.triggerEvent(handler.wallet, APP_EVENT_PRODUCE_IDENTITY)
 
     handler.notify()
   }
@@ -73,7 +73,19 @@ export const buildApp = async (
 
     extensions,
 
-    app: express()
+    app: express(),
+
+    start: () => {
+      extensions.serverExtensions.forEach(
+        ext => {
+          const router = ext.produceRouter()
+          router && _app.app.use(router)
+        }
+      )
+      _app.app.listen(config.port, () => {
+        console.log(`Server started on port ${config.port}.`)
+      })
+    }
   }
 
   _app.app.use((req, res, next) => {

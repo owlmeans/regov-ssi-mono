@@ -12,8 +12,8 @@ import { buildWalletWrapper, makeRandomUuid, nodeCryptoHelper } from '@owlmeans/
 import { parseJWE } from '../util'
 import { decodeJWT } from 'did-jwt'
 
-import util from 'util'
-util.inspect.defaultOptions.depth = 8
+// import util from 'util'
+// util.inspect.defaultOptions.depth = 8
 
 
 export const startWSServer = async (server: HttpServer, config: ServerConfig): Promise<void> => {

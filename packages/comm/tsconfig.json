@@ -78,8 +78,12 @@
     "forceConsistentCasingInFileNames": true,       /* Disallow inconsistently-cased references to the same file. */
     "resolveJsonModule": true
   },
+  "include": [
+    "./src/**/*"
+  ],
   "exclude": [
     "./jest.config.js",
-    "./dist/**/*"
+    "./dist/**/*",
+    "./exmaple-server/**/*"
   ]
 }
