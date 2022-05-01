@@ -20,8 +20,7 @@
   "scripts": {
     "test": "jest --testTimeout 30000",
     "build": "tsc -b",
-    "build:watch": "tsc -b -w",
-    "build:watch-server": "tsc -b -w"
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "bugs": {
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"

@@ -11,8 +11,8 @@
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
-  "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "main": "src/index.ts",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "directories": {
     "dist": "dist",
@@ -28,8 +28,8 @@
   },
   "sources": "src/index.ts",
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
+    "build": "tsc -b",
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
     "@emotion/react": "^11.6.0",
@@ -46,7 +46,6 @@
     "react-router-dom": "^6.0.2"
   },
   "devDependencies": {
-    "microbundle-crl": "^0.13.11",
     "typescript": "^4.5.2"
   },
   "gitHead": "7ed39c573fab390171491390a484f0f6188a163c"

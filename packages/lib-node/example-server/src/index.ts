@@ -1,4 +1,5 @@
 import "dotenv"
+import cors from "cors"
 import { buildApp, buildFileStore, buildRotuer, buildServerExtensionRegistry, ServerAppConfig } from "@owlmeans/regov-lib-node"
 import { createWalletHandler } from "@owlmeans/regov-ssi-core"
 import { buildIdentityExtensionServer } from "@owlmeans/regov-ext-identity/dist/index.server"
@@ -39,4 +40,7 @@ buildApp({
   handler: createWalletHandler(),
   router: buildRotuer(),
   extensions: registry
-}).then(app => app.start())
+}).then(app => {
+  app.app.use(cors())
+  app.start()
+})

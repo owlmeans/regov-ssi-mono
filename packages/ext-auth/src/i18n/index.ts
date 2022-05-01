@@ -1,2 +1,4 @@
 
-export { default as en } from './en.json'
+import _en from './en.json'
+
+export const en = _en

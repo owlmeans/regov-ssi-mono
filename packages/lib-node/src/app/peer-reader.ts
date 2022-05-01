@@ -19,7 +19,7 @@ export const readPeerVCs = async (wallet: WalletWrapper, config: ServerAppConfig
 
       await Promise.all(files.map(async file => {
         return new Promise((resolve, reject) => {
-          fs.readFile(file, async (err, data) => {
+          fs.readFile(config.peerVCs + '/' + file, async (err, data) => {
             if (err) {
               reject(err)
               return

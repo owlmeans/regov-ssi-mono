@@ -17,7 +17,7 @@
 
 import { Config } from '../../common'
 import { EncryptedStore, WalletHandler } from '@owlmeans/regov-ssi-core'
-import * as localforage from 'localforage'
+import localforage from 'localforage'
 
 
 export const buildStorageHelper = (

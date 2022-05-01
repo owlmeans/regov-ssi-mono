@@ -83,8 +83,8 @@ import { WalletWrapper } from "./types"
  export type HandlerObserver = () => void
  
  export type ObserverTransformerOption<
-   T extends {} = {},
-   Props extends {} = {}
+   T extends any = any,
+   Props extends any = any
    > = (wallet: WalletWrapper | undefined, props?: Props, handler?: WalletHandler) => T
  
  export type HandlerObserverTransformer<T> = (wallet?: WalletWrapper) => T

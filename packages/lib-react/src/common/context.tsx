@@ -21,9 +21,7 @@ import React, {
 import { i18n, TFunction } from 'i18next'
 import { I18nextProvider, useTranslation } from 'react-i18next'
 import { RegisterOptions, UseFormProps } from 'react-hook-form'
-import { 
-  WalletWrapper, createWalletHandler, ObserverTransformerOption, WalletHandler
-} from '@owlmeans/regov-ssi-core'
+import { createWalletHandler, ObserverTransformerOption, WalletHandler } from '@owlmeans/regov-ssi-core'
 import {
   BasicNavigator, NavigatorContextProvider, WalletNavigator, NavigatorContext
 } from './navigator'
@@ -56,22 +54,25 @@ export const RegovProvider = ({
   </I18nextProvider>
 }
 
+type InferState<Type extends RegovComponentProps> = Type extends RegovComponentProps<any, any, infer State> ? State : never
+type InferProps<Type extends RegovComponentProps> = Type extends RegovComponentProps<infer Props, any, any> ? Props : never
+
 export const withRegov = <
   Type extends RegovComponentProps = RegovComponentProps,
   Nav extends WalletNavigator = BasicNavigator,
-  Transformer extends ObserverTransformerOption = ObserverTransformerOption<
-    Type extends RegovComponentProps<any, any, infer State> ? State : never,
-    Type extends RegovComponentProps<infer Props, any, any> ? Props : never
-  >
+  Transformer extends ObserverTransformerOption<
+    InferState<Type>, InferProps<Type>
+  > = ObserverTransformerOption<InferState<Type>, InferProps<Type>>
 >(
   name: string | RegovHOCOptions<Transformer>,
   Com: FunctionComponent<Type>,
   options?: RegovHOCOptions<Transformer>
 ) => {
-  type T = Type extends RegovComponentProps<infer Props, any, any> ? Props : never
-  type S = Type extends RegovComponentProps<any, any, infer State> ? State : never
+  type T = InferProps<Type>
+  // type I = Type extends RegovComponentProps<any,  infer Impl, any> ? Impl : never
+  type S = InferState<Type>
 
-  return ((props: PropsWithChildren<T>): FunctionComponentElement<Type> => {
+  return ((props: PropsWithChildren<T>): FunctionComponentElement<T> => {
     if (typeof name !== 'string') {
       options = name
       if (options.name) {
@@ -90,7 +91,7 @@ export const withRegov = <
     const [, setState] = useState<S>(state)
     useEffect(() => {
       if (transformer) {
-        return handler.observe(setState, (wallet: WalletWrapper) => {
+        return handler.observe(setState, (wallet) => {
           return transformer(wallet, props, handler)
         })
       }
@@ -109,7 +110,7 @@ export const withRegov = <
       navigator: navigator as Nav,
       config: config,
       client: serverClient,
-      extensions, handler, t, i18n, ...props, ...state
+      extensions, handler, t, i18n, ...props, ...state,
     } as unknown as Type
 
     return <Com {..._props} />

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { FunctionComponent } from "react"
 
 import { DIDCommConnectMeta, CommConnectionStatusHandler, ERROR_COMM_SEND_FAILED } from "@owlmeans/regov-comm"
 import {
@@ -12,7 +12,7 @@ import { getAuthFromPresentation, getAuthSubject, pinValidation } from "../../..
 import { ERROR_NO_AUTH_REQUEST, ERROR_NO_REQUESTED_IDENTITY } from "../../types"
 
 
-export const DIDAuthResponse = withRegov<DIDAuthResponseProps>(
+export const DIDAuthResponse: FunctionComponent<DIDAuthResponseParams> = withRegov<DIDAuthResponseProps>(
   { namespace: REGOV_EXT_ATUH_NAMESPACE }, ({
     handler, i18n, t, request, conn, connection, navigator, extensions, close
   }) => {
