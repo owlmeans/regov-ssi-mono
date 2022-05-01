@@ -193,7 +193,7 @@ export const SignatureRequestWeb = (ext: Extension): FunctionComponent<Signature
       <WalletFormProvider {...methods}>
         <PrimaryForm {..._props} title="signature.request.title">
           <FileProcessorWeb {..._props} field="signature.request.file"
-            isCode={isCode} onDrop={onDrop} process={processFile} handler={handle} />
+            isCode={isCode} onDrop={onDrop} process={processFile} fileHandler={handle} />
           <MainTextInput {..._props} field="signature.request.name" />
           <MainTextInput {..._props} field="signature.request.documentHash" />
           <LongTextInput {..._props} field="signature.request.description" />

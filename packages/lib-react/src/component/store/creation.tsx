@@ -22,13 +22,13 @@ import {
   BasicNavigator, EmptyProps, RegovComponentProps, RegovValidationRules, useRegov,
   WalletNavigatorMenuMethod, WalletNavigatorMethod, withRegov, WrappedComponentProps
 } from '../../common/'
-import { generalNameVlidation, loginAliasValidation,  passwordValidation  } from '../../util'
+import { generalNameVlidation, loginAliasValidation, passwordValidation } from '../../util'
 
 
 export const StoreCreation: FunctionComponent<StoreCreationParams> =
   withRegov<StoreCreationProps, StoreCreationNavigator>(
     'StoreCreation',
-    ({ t, i18n, defaultAlias, config, navigator, renderer: Renderer }) => {
+    ({ t, i18n, defaultAlias, config, navigator, renderer: Renderer, extensions }) => {
       const { handler } = useRegov()
 
       const _props: StoreCreationImplProps = {
@@ -63,13 +63,13 @@ export const StoreCreation: FunctionComponent<StoreCreationParams> =
             }
 
             const wallet = await buildWalletWrapper(
-              crypto,
+              { crypto, extensions: extensions?.registry },
               data.creation.password.input,
               {
                 name: data.creation.name,
                 alias: data.creation.login,
               },
-              { 
+              {
                 prefix: config.DID_PREFIX,
                 defaultSchema: config.baseSchemaUrl,
                 didSchemaPath: config.DID_SCHEMA_PATH,

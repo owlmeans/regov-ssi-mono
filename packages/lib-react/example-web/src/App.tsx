@@ -19,17 +19,21 @@ import { buildUIExtensionRegistry } from '@owlmeans/regov-lib-react'
 import { buildIdentityExtensionUI } from '@owlmeans/regov-ext-identity'
 import { signatureWebExtension } from '@owlmeans/regov-ext-doc-signature'
 import { groupsUIExtension } from '@owlmeans/regov-ext-groups'
-// import { authUIExtension } from '@owlmeans/regov-ext-auth'
-// import { buildCommUIExtension } from '@owlmeans/regov-ext-comm'
+import { authUIExtension } from '@owlmeans/regov-ext-auth'
+import { buildCommUIExtension } from '@owlmeans/regov-ext-comm'
 
 import { WalletApp, buildUniversalExtensionUI } from '@owlmeans/regov-lib-react'
 
-import { config } from './config'
+import { config, commConfig } from './config'
 
 
 const EXAMPLE_IDENTITY_TYPE = 'ExampleIdentity'
 
 const registry = buildUIExtensionRegistry()
+
+registry.registerSync(buildCommUIExtension(commConfig))
+
+registry.registerSync(authUIExtension)
 
 registry.registerSync(buildUniversalExtensionUI({
   name: '',
@@ -50,10 +54,6 @@ registry.registerSync(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName:
 registry.registerSync(signatureWebExtension)
 
 registry.registerSync(groupsUIExtension)
-
-// registry.registerSync(authUIExtension)
-
-// registry.registerSync(buildCommUIExtension(commConfig))
 
 export const App = () => {
   return <WalletApp config={config} extensions={registry.normalize()} />

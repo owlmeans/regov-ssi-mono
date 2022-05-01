@@ -6,8 +6,8 @@
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
-  "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "main": "src/index.ts",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "directories": {
     "dist": "dist",
@@ -26,8 +26,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
+    "build": "tsc -b # microbundle-crl --no-compress --format modern,cjs",
+    "build:watch": "tsc -b -w # microbundle-crl watch --no-compress --format modern,cjs"
   },
   "peerDependencies": {
     "@owlmeans/regov-ssi-core": "^0.5.3",

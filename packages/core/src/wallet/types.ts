@@ -22,6 +22,7 @@ import { BasicStore, EncryptedStore, SecureStore } from "../store/types"
 import {
   CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryItem, RegistryType
 } from './registry/types'
+import { ExtensionRegistry } from "../extension"
 
 
 export type Wallet = {
@@ -39,7 +40,10 @@ export type Wallet = {
 export type WalletWrapperMethodBuilder<Method extends Function> = (wallet: Wallet, context: SSICore) => Method
 
 export type WalletWrapperBuilder = <Store extends BasicStore = BasicStore>(
-  crypto: CryptoHelper,
+  dependencies: { 
+    crypto: CryptoHelper
+    extensions?: ExtensionRegistry
+  },
   password: string,
   store?: Store | string,
   options?: WalletOptions

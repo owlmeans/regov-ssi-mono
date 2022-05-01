@@ -15,7 +15,7 @@ export const ERROR_WRONG_AUTHENTICATION = 'ERROR_WRONG_AUTHENTICATION'
 export const ERROR_NO_CONNECTION = 'ERROR_NO_CONNECTION'
 
 export const SERVER_REQUEST_AUTH = '/regov-auth/request/create/'
-export const SERVER_PROVIDE_AUTH = '/regov-auth/response/provide/'
+export const SERVER_PROVIDE_AUTH = '/regov-auth/response/provide'
 export const SERVER_INTEGRATION_ALIAS = 'integration'
 
 export type AuthSubject = {

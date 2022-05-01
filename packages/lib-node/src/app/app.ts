@@ -24,7 +24,7 @@ export const buildApp = async (
   if (stored) {
     await handler.loadStore(async () => {
       return await buildWalletWrapper(
-        nodeCryptoHelper,
+        { crypto: nodeCryptoHelper, extensions: extensions.registry },
         config.wallet?.password || DEFAULT_STORE_PASSWORD,
         stored,
         {
@@ -37,7 +37,7 @@ export const buildApp = async (
   } else {
     await handler.loadStore(async () => {
       const wallet = await buildWalletWrapper(
-        nodeCryptoHelper,
+        { crypto: nodeCryptoHelper, extensions: extensions.registry },
         config.wallet?.password || DEFAULT_STORE_PASSWORD,
         {
           alias: config.wallet?.alias || DEFAULT_WALLET_ALIAS,

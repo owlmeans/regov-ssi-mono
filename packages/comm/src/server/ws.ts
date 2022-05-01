@@ -8,7 +8,7 @@ import {
   ERROR_COMM_WS_DID_REGISTERED,
   ERROR_COMM_WS_TIMEOUT
 } from '../types'
-import { buildWalletWrapper, makeRandomUuid, nodeCryptoHelper } from '@owlmeans/regov-ssi-core'
+import { buildWalletWrapper, ExtensionRegistry, makeRandomUuid, nodeCryptoHelper } from '@owlmeans/regov-ssi-core'
 import { parseJWE } from '../util'
 import { decodeJWT } from 'did-jwt'
 
@@ -16,11 +16,11 @@ import { decodeJWT } from 'did-jwt'
 // util.inspect.defaultOptions.depth = 8
 
 
-export const startWSServer = async (server: HttpServer, config: ServerConfig): Promise<void> => {
+export const startWSServer = async (server: HttpServer, config: ServerConfig, extensions?: ExtensionRegistry): Promise<void> => {
   const _wsServer = new WSServer({ httpServer: server })
 
   const serverWallet = await buildWalletWrapper(
-    nodeCryptoHelper, '00000000', { alias: 'server', name: 'Regov' },
+    { crypto: nodeCryptoHelper, extensions }, '00000000', { alias: 'server', name: 'Regov' },
     {
       prefix: config.did.prefix,
       defaultSchema: config.did.baseSchemaUrl,

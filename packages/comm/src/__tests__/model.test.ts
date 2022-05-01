@@ -16,11 +16,11 @@ describe('Comm model', () => {
 
   it('opens connection', async () => {
     const aliceWallet = await buildWalletWrapper(
-      nodeCryptoHelper, '11111111', { alias: 'alice', name: 'Alice' }, config
+      { crypto: nodeCryptoHelper }, '11111111', { alias: 'alice', name: 'Alice' }, config
     )
 
     const bobWallet = await buildWalletWrapper(
-      nodeCryptoHelper, '11111111', { alias: 'bob', name: 'Bob' }, config
+      { crypto: nodeCryptoHelper }, '11111111', { alias: 'bob', name: 'Bob' }, config
     )
 
     const aliceServer = createDebugChannel()

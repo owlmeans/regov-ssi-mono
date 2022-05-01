@@ -36,11 +36,11 @@ describe('WS Server', () => {
 
   it('works with wallets', async () => {
     const aliceWallet = await buildWalletWrapper(
-      nodeCryptoHelper, '11111111', { alias: 'alice', name: 'Alice' }, config
+      { crypto: nodeCryptoHelper }, '11111111', { alias: 'alice', name: 'Alice' }, config
     )
 
     const bobWallet = await buildWalletWrapper(
-      nodeCryptoHelper, '11111111', { alias: 'bob', name: 'Bob' }, config
+      { crypto: nodeCryptoHelper }, '11111111', { alias: 'bob', name: 'Bob' }, config
     )
 
     const aliceChannel = await createWSChannel({
@@ -103,7 +103,7 @@ describe('WS Server', () => {
     console.log(aliceWallet.store.alias + ': ' + sender.id)
     console.log(bobWallet.store.alias + ': ' + recipientId)
     await aliceComm.connect({ recipientId, sender })
-    
+
     await promise
 
     await aliceChannel.close()

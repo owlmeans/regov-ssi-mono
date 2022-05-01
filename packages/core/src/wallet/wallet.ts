@@ -24,15 +24,16 @@ import {
   REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES
 } from "./registry"
 import { GetRegistryMethod, WalletWrapper, WalletWrapperBuilder } from "./types"
+import { CredentialEventParams, EXTENSION_TRIGGER_ADD_CREDENTIAL } from "../extension"
 
 
 export const buildWalletWrapper: WalletWrapperBuilder =
-  async (crypto, password, store?, options?) => {
-    const _store: SecureStore = await buildStore(crypto, password, store)
+  async (dependencies, password, store?, options?) => {
+    const _store: SecureStore = await buildStore(dependencies.crypto, password, store)
 
     _store.data = _store.data || {}
     const keyChain = await buildKeyChain({
-      crypto,
+      crypto: dependencies.crypto,
       password,
       source: _store.data.keyChain,
       keyOptions: options?.key
@@ -40,7 +41,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
     _store.data.keyChain = keyChain.keys
 
     const did = buildDidRegistryWarpper(
-      buildDidHelper(crypto, {
+      buildDidHelper(dependencies.crypto, {
         prefix: options?.prefix,
         schemaPath: options?.didSchemaPath,
         baseSchemaUrl: options?.defaultSchema
@@ -51,7 +52,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
 
     const ctx = await buildSSICore({
       keys: keyChain,
-      crypto,
+      crypto: dependencies.crypto,
       did
     })
 
@@ -81,6 +82,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             }
             _registry.credentials[section || _registry.defaultSection].push(
               wrappedCred as CredentialWrapper<CredentialSubject>
+            )
+
+            dependencies.extensions?.triggerEvent<CredentialEventParams>(
+              _wallet, EXTENSION_TRIGGER_ADD_CREDENTIAL, { item: wrappedCred as CredentialWrapper }
             )
 
             return wrappedCred
@@ -131,6 +136,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             const wrapper = _registry.credentials[section][wrapperIdx]
             _registry.credentials[section].splice(wrapperIdx, 1)
 
+            dependencies.extensions?.triggerEvent<CredentialEventParams>(
+              _wallet, EXTENSION_TRIGGER_ADD_CREDENTIAL, { item: wrapper as CredentialWrapper }
+            )
+
             return wrapper
           }
         }
@@ -140,7 +149,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
     }
 
     const _wallet: WalletWrapper = {
-      crypto,
+      crypto: dependencies.crypto,
 
       did,
 
@@ -192,7 +201,9 @@ export const buildWalletWrapper: WalletWrapperBuilder =
           data = data.substring(1024)
         }
         chunks.push(data)
-        const dataChunks = await Promise.all(chunks.map(chunk => crypto.encrypt(chunk, password)))
+        const dataChunks = await Promise.all(chunks.map(
+          chunk => dependencies.crypto.encrypt(chunk, password)
+        ))
 
         return {
           alias: _store.alias,

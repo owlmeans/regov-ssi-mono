@@ -34,7 +34,7 @@ export const AppProvider = ({
     const storedAssertAuth = navigator.assertAuth
     navigator.assertAuth = async () => {
       if (firstLoad && !handler.wallet) {
-        const wallet = await buildDevWallet(config)
+        const wallet = await buildDevWallet(config, extensions?.registry)
         handler.stores[wallet.store.alias] = await wallet.export()
         await handler.loadStore(async _ => wallet)
         setFirstLoad(false)

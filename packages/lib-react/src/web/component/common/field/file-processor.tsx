@@ -25,7 +25,7 @@ import { isMobile } from "react-device-detect"
 
 
 export const FileProcessorWeb = (props: FileProcessorImplProps) => {
-  const { t, square, rules, field, process, onDrop, isCode, handler } = props
+  const { t, square, rules, field, process, onDrop, isCode, fileHandler } = props
   const methods = useFormContext()
 
   const onDropCallback = useCallback(onDrop, [])
@@ -40,8 +40,8 @@ export const FileProcessorWeb = (props: FileProcessorImplProps) => {
     methods.trigger(field)
   }
 
-  if (handler) {
-    handler.setShowInput = setShowInput
+  if (fileHandler) {
+    fileHandler.setShowInput = setShowInput
   }
 
   const document = methods.watch(field)
@@ -147,7 +147,7 @@ export type FileProcessorParams = EmptyProps & {
   onDrop: FileOnDrop
   square?: boolean
   isCode?: boolean
-  handler?: FileProcessorParamsHandler
+  fileHandler?: FileProcessorParamsHandler
 }
 
 export type FileProcessorParamsHandler = {
