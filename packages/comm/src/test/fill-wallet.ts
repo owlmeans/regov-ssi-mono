@@ -4,6 +4,7 @@ import {
 } from "@owlmeans/regov-ssi-core"
 import { commDidHelperBuilder } from "../did"
 
+
 export const fillWallet = async (wallet: WalletWrapper) => {
   const subject = {
     data: {

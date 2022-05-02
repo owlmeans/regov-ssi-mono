@@ -54,10 +54,11 @@ export const IntegratedDIDBasedAuth = withRegov<IntegratedDIDBasedAuthProps, Int
            * 5. Create auth token VC on the server side ❓
            */
 
-          const sender = handler.wallet?.getIdentity()?.credential.holder as DIDDocument
+          console.log(handler.wallet)
 
+          const sender = handler.wallet?.getIdentity()?.credential.issuer as unknown as DIDDocument
           const didAuth = await client.getVC(SERVER_REQUEST_AUTH + data.auth.did)
-          console.log(didAuth)
+
           await extensions.triggerEvent<InitCommEventParams>(handler.wallet, EVENT_INIT_CONNECTION, {
             statusHandle: { established: false },
             resolveConnection: async (helper) => {

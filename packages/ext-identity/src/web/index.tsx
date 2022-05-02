@@ -71,7 +71,6 @@ export const buildIdentityExtensionUI = (
         const identity = await factory.sign(wallet, { unsigned })
 
         const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-
         const item = await registry.addCredential<CredentialSubject, Credential<CredentialSubject>>(
           identity as Credential<CredentialSubject>
         )

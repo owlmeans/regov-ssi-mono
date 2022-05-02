@@ -17,13 +17,13 @@
 import {
   addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails,
   defaultBuildMethod, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME,
-  RetreiveNameEventParams, isCredential, IncommigDocumentEventParams,
-  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED
+  RetreiveNameEventParams, isCredential, IncommigDocumentEventParams, EXTENSION_TRIGGER_INIT_SENSETIVE,
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, REGISTRY_SECTION_OWN
 } from "@owlmeans/regov-ssi-core"
 import {
   CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
-import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE } from "./types"
+import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE, REGOV_IDENTITY_DEFAULT_TYPE } from "./types"
 import { makeRandomUuid } from "@owlmeans/regov-ssi-core"
 import { credIdToIdentityId } from "./helper"
 import en from './i18n/en.json'
@@ -74,6 +74,33 @@ export const buildIdentityExtension = (
   schema = addObserverToSchema(schema, {
     filter: async wallet => !wallet.hasIdentity(),
     trigger: EXTENSION_TRIGGER_AUTHENTICATED
+  })
+
+  schema = addObserverToSchema(schema, {
+    trigger: EXTENSION_TRIGGER_INIT_SENSETIVE,
+    filter: async (wallet) => {
+      const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+      const creds = await registry.lookupCredentials(
+        schema.details.defaultCredType || REGOV_IDENTITY_DEFAULT_TYPE,
+        REGISTRY_SECTION_OWN
+      )
+
+      return creds.length < 1
+    },
+    method: async (wallet) => {
+      const factory = extension.getFactory(
+        schema.details.defaultCredType || REGOV_IDENTITY_DEFAULT_TYPE
+      )
+      const unsigned = await factory.build(wallet, { subjectData: {} })
+      const identity = await factory.sign(wallet, { unsigned })
+
+      const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+      const item = await registry.addCredential(identity)
+      item.meta.title = 'Main ID'
+      registry.registry.rootCredential = identity.id
+
+      console.info('Sensetive: Identity initiated.')
+    }
   })
 
   schema = addObserverToSchema(schema, {

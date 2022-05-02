@@ -275,11 +275,14 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
           const recipient = wallet.findCredential(connection.recipientId)
 
+          console.log('Current recipient', recipient)
+
           const newConnection: DIDCommConnectMeta = {
             ...filterConnectionFields(connection),
             recipientId: connection.sender.id,
             recipient: connection.sender,
-            sender: recipient?.credential.holder as DIDDocument,
+            sender: (wallet.did.helper().isDIDDocument(recipient?.credential.holder as DIDDocument)
+              ? recipient?.credential.holder : recipient?.credential.issuer as unknown) as DIDDocument,
             channel: channel.code
           }
 

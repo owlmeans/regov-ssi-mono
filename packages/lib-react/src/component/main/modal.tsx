@@ -55,7 +55,6 @@ export type MainModalAuthenticatedEventParams = EventParams & {
 }
 
 export type MainModalParams = {
-
 }
 
 export type MainModalState = {

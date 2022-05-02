@@ -90,6 +90,7 @@ export type ExtensionEventFilter =
 
 export const EXTENSION_TRIGGER_AUTHENTICATION = 'wallet:authentication'
 export const EXTENSION_TRIGGER_AUTHENTICATED = 'wallet:authenticated'
+export const EXTENSION_TRIGGER_INIT_SENSETIVE = 'wallet:init-sensetive'
 export const EXTENSION_TRIGGER_ADD_CREDENTIAL = 'wallet:add-credential'
 export const EXTENSION_TRIGGER_REMOVE_CREDENTIAL = 'wallet:remove-credential'
 export const EXTENSION_TRIGGER_DEFAULT_SIGNATURE = 'signer:default-signature'
