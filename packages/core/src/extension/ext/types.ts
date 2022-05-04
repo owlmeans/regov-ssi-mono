@@ -85,6 +85,7 @@ export type BuildMethodParams = {
   type?: CredentialType
   schema?: MaybeArray<CredentialSchema>
   context?: MultiSchema
+  extensions?: ExtensionRegistry
 }
 
 export type SignMethodBuilder = <
@@ -96,8 +97,9 @@ export type SignMethod = <
   >(wallet: WalletWrapper, params: Params) => Promise<Credential>
 
 export type SignMethodParams = {
-  unsigned: UnsignedCredential,
+  unsigned: UnsignedCredential
   evidence?: MaybeArray<Evidence>
+  extensions?: ExtensionRegistry
 }
 
 export type ValidateMethodBuilder = <

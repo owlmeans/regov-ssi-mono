@@ -8,7 +8,8 @@ import { ServerStore } from '../store'
 import { readPeerVCs } from './peer-reader'
 import {
   APP_EVENT_PRODUCE_IDENTITY, DEFAULT_STORE_PASSWORD, ERROR_NO_WALLET, RegovServerApp,
-  ServerAppConfig
+  ServerAppConfig,
+  ServerEventProduceIdentityParams
 } from './types'
 
 
@@ -58,7 +59,9 @@ export const buildApp = async (
       throw ERROR_NO_WALLET
     }
 
-    await extensions.triggerEvent(handler.wallet, APP_EVENT_PRODUCE_IDENTITY)
+    await extensions.triggerEvent<ServerEventProduceIdentityParams>(
+      handler.wallet, APP_EVENT_PRODUCE_IDENTITY, { extensions: extensions.registry }
+    )
 
     handler.notify()
   }
@@ -96,9 +99,7 @@ export const buildApp = async (
     })
     next()
   })
-  /**
-   * @PROCEED Add routers from extensions
-   */
+
   _app.app.use(router)
 
   return _app

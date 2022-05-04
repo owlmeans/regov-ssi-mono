@@ -6,7 +6,7 @@ import React, { PropsWithChildren, useEffect, useMemo } from 'react'
 import { buildStorageHelper } from '../storage'
 import { i18nRegisterExtensions } from '../../i18n/util'
 import { webComponentMap } from '../component'
-import { buildWalletWrapper, createWalletHandler, EXTENSION_TRIGGER_INIT_SENSETIVE, WalletHandler, webCryptoHelper } from '@owlmeans/regov-ssi-core'
+import { buildWalletWrapper, createWalletHandler, EXTENSION_TRIGGER_INIT_SENSETIVE, InitSensetiveEventParams, WalletHandler, webCryptoHelper } from '@owlmeans/regov-ssi-core'
 import { DEFAULT_GUEST_WALLET_ALIAS } from '../types'
 
 
@@ -32,7 +32,10 @@ export const WalletIntergationReact = (
           didSchemaPath: config.DID_SCHEMA_PATH,
         })
         handler.stores[wallet.store.alias] = await wallet.export()
-        await extensions?.triggerEvent(wallet, EXTENSION_TRIGGER_INIT_SENSETIVE)
+        await extensions?.triggerEvent<InitSensetiveEventParams>(
+          wallet, EXTENSION_TRIGGER_INIT_SENSETIVE, {
+            extensions: extensions.registry
+        })
         await handler.loadStore(async _ => wallet)
       }
     })()

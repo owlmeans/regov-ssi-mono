@@ -191,10 +191,15 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
             throw new Error(ERROR_COMM_NO_SENDER)
           }
           const credential = wallet.findCredential(recipientId)?.credential
-          if (!credential || !wallet.did.helper().isDIDDocument(credential.holder)) {
+          if (!credential) {
             throw new Error(ERROR_COMM_NODID)
           }
-          const commKey = await _didHelper.extractCommKey(credential.holder)
+          const holder = wallet.did.helper().isDIDDocument(credential.holder)
+            ? credential.holder : credential.issuer as unknown as DIDDocument
+          if (!holder) {
+            throw new Error(ERROR_COMM_NODID)
+          }
+          const commKey = await _didHelper.extractCommKey(holder)
           const decrypter = await x25519Decrypter(commKey.pk)
           const decodedJWE8a = await decryptJWE(jwe, decrypter)
           const decodedJWE: Credential | Presentation = JSON.parse(Buffer.from(decodedJWE8a).toString('utf8'))
@@ -238,6 +243,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
             invertConnection(connection, channel.code), decodedJWE
           ))
         } catch (error) {
+          console.error('JWE Error', error)
           await channel.send(ERROR_COMM_MALFORMED_PAYLOAD, false)
           throw error
         } finally {
@@ -291,6 +297,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
           _listeners.forEach(listener => listener.accept && listener.accept(newConnection))
         }
       } catch (error) {
+        console.error('JWT Error', error)
         await channel.send(ERROR_COMM_MALFORMED_PAYLOAD, false)
         throw error
       }

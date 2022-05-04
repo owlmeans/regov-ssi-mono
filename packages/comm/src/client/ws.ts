@@ -23,7 +23,7 @@ const _processMessage = (client: CommWSClient, data: string, receive?: Receiver)
 }
 
 const isWSClient = (client: BrowserClient | WSClient): client is WSClient => {
-  return client.hasOwnProperty('connect')
+  return client.hasOwnProperty('config')
 }
 
 export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {

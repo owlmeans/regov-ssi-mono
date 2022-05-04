@@ -18,7 +18,7 @@ import {
   addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails,
   defaultBuildMethod, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME,
   RetreiveNameEventParams, isCredential, IncommigDocumentEventParams, EXTENSION_TRIGGER_INIT_SENSETIVE,
-  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, REGISTRY_SECTION_OWN
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, REGISTRY_SECTION_OWN, InitSensetiveEventParams
 } from "@owlmeans/regov-ssi-core"
 import {
   CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential
@@ -87,11 +87,13 @@ export const buildIdentityExtension = (
 
       return creds.length < 1
     },
-    method: async (wallet) => {
+    method: async (wallet, params: InitSensetiveEventParams) => {
       const factory = extension.getFactory(
         schema.details.defaultCredType || REGOV_IDENTITY_DEFAULT_TYPE
       )
-      const unsigned = await factory.build(wallet, { subjectData: {} })
+      const unsigned = await factory.build(wallet, {
+        extensions: params.extensions, subjectData: {}
+      })
       const identity = await factory.sign(wallet, { unsigned })
 
       const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)

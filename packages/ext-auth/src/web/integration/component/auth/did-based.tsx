@@ -49,12 +49,10 @@ export const IntegratedDIDBasedAuth = withRegov<IntegratedDIDBasedAuthProps, Int
           /**
            * @PROCEED
            * 1. Server wallet API ✅
-           * 2. PHP Endpoint to work with wallet ❓
-           * 3. Authentication intializeion flow with the wallet 
-           * 5. Create auth token VC on the server side ❓
+           * 2. PHP Endpoint to work with wallet 🏷
+           * 3. Authentication intializeion flow with the wallet 🏇 
+           * 5. Create auth token VC on the server side ✅
            */
-
-          console.log(handler.wallet)
 
           const sender = handler.wallet?.getIdentity()?.credential.issuer as unknown as DIDDocument
           const didAuth = await client.getVC(SERVER_REQUEST_AUTH + data.auth.did)
@@ -138,7 +136,7 @@ export const IntegratedDIDBasedAuth = withRegov<IntegratedDIDBasedAuthProps, Int
             }
           })
         } catch (e) {
-          console.log(e)
+          console.error(e)
           methods.setError('auth.alert', { type: 'wrong', message: e.message || e })
           loading?.finish()
         }

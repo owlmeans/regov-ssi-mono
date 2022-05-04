@@ -20,6 +20,7 @@ import {
 } from "../../vc"
 import { CredentialWrapper, WalletWrapper } from '../../wallet'
 import { Extension } from "../ext"
+import { ExtensionRegistry } from "../registry"
 
 
 export type ExtensionSchema = {
@@ -112,4 +113,8 @@ export type IncommigDocumentEventParams = EventParams & {
 export type RetreiveNameEventParams = EventParams & {
   credential: Credential
   setName: (name: string) => void
+}
+
+export type InitSensetiveEventParams = EventParams & {
+  extensions: ExtensionRegistry
 }

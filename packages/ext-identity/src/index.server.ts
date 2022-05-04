@@ -1,5 +1,5 @@
 import { addObserverToSchema, ExtensionDetails, REGISTRY_TYPE_IDENTITIES } from "@owlmeans/regov-ssi-core"
-import { APP_EVENT_PRODUCE_IDENTITY, buildServerExtension } from "@owlmeans/regov-lib-node"
+import { APP_EVENT_PRODUCE_IDENTITY, buildServerExtension, ServerEventProduceIdentityParams } from "@owlmeans/regov-lib-node"
 import { BASIC_IDENTITY_TYPE, BuildExtensionParams, buildIdentityExtension } from "./ext"
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from "./types"
 import { Router } from 'express'
@@ -20,13 +20,15 @@ export const buildIdentityExtensionServer = (
   extension.schema = addObserverToSchema(extension.schema, {
     trigger: APP_EVENT_PRODUCE_IDENTITY,
     filter: async wallet => !wallet.getIdentity(),
-    method: async (wallet, params) => {
+    method: async (wallet, params: ServerEventProduceIdentityParams) => {
       const { ext } = params
       if (!ext) {
         throw ERROR_NO_EXENSION
       }
       const factory = ext.getFactory(ext.schema.details.defaultCredType || BASIC_IDENTITY_TYPE)
-      const unsigned = await factory.build(wallet, { subjectData: {} })
+      const unsigned = await factory.build(wallet, {
+        extensions: params.extensions, subjectData: {}
+      })
       const identity = await factory.sign(wallet, { unsigned })
 
       const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)

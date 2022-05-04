@@ -21,7 +21,6 @@ import { Grid } from '@mui/material'
 
 export const FieldSigner = ({}: FieldSignerProps ) => {
   /**
-   * @PROCEED
    * @TODO Implement signer widget and add it to universal credential signing process
    * Widget returns the list of identities, and access to them, including the default one
    */

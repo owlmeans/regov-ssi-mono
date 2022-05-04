@@ -53,7 +53,7 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
   }, config.message.ttl)
 
   /**
-   * @PROCEED Process paused connections 
+   * @@TODO Process paused connections 
    */
   // const _pokeUuid = async (uuid: string) => {
   //   const client = _clientList[uuid]
@@ -222,6 +222,7 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
             commConn.recipient && !didHelper.verifyDID(commConn.recipient)
           ]
           if (results.some(result => result)) {
+            console.error('ERROR JWT', results)
             return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_MALFORMED_PAYLOAD)
           }
           console.log('JWT from: ' + commConn.sender.id + ' - to: ' + commConn.recipientId)

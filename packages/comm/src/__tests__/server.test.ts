@@ -100,6 +100,7 @@ describe('WS Server', () => {
 
       setTimeout(() => resolve(), 10000)
     }))
+
     console.log(aliceWallet.store.alias + ': ' + sender.id)
     console.log(bobWallet.store.alias + ': ' + recipientId)
     await aliceComm.connect({ recipientId, sender })

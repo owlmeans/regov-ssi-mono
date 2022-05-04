@@ -29,7 +29,7 @@ import { ERROR_CREATION_AUTHENTICATION, ERROR_CREATION_EXTENSION, ERROR_CREATION
 
 export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withRegov<IdentityCreationProps>(
   { namespace: REGOV_IDENTITY_DEFAULT_NAMESPACE }, ({ t, i18n, ext, navigator, proceedHandle }) => {
-    const { handler } = useRegov()
+    const { handler, extensions } = useRegov()
     const props = {
       t, i18n,
       rules: {
@@ -50,7 +50,9 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
             throw ERROR_CREATION_EXTENSION
           }
           const factory = ext.getFactory(ext.schema.details.defaultCredType || BASIC_IDENTITY_TYPE)
-          const unsignedIdentity = await factory.build(handler.wallet, { subjectData: {} })
+          const unsignedIdentity = await factory.build(handler.wallet, 
+            { extensions: extensions?.registry, subjectData: {} }
+          )
           setUnsignedIdentity(unsignedIdentity)
 
           methods.setValue('creation', {

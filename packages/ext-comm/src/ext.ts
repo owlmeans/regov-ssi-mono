@@ -1,15 +1,14 @@
 import {
-  buildDidCommHelper, createWSChannel, DIDCommChannel, DIDCommHelper,
+  buildDidCommHelper, commDidHelperBuilder, createWSChannel, DIDCommChannel, DIDCommHelper,
   ERROR_COMM_CONNECTION_UNKNOWN, EVENT_INIT_CONNECTION, InitCommEventParams
 } from '@owlmeans/regov-comm'
 import {
   addObserverToSchema, buildExtension, buildExtensionSchema, EXTENSION_TRIGGER_ADD_CREDENTIAL,
-  CredentialEventParams,
-  REGISTRY_TYPE_IDENTITIES,
-  REGISTRY_SECTION_OWN
+  CredentialEventParams, EVENT_EXTENSION_AFTER_BULIDING_DID, REGISTRY_TYPE_IDENTITIES,
+  REGISTRY_SECTION_OWN, ExtensionEventAfterBuildingDid
 } from '@owlmeans/regov-ssi-core'
 import { localizations } from './i18n'
-import { CommExtConfig, DEFAULT_SERVER_ALIAS, REGOV_EXT_COMM_NAMESPACE, CommExtension } from './types'
+import { CommExtConfig, DEFAULT_SERVER_ALIAS, REGOV_EXT_COMM_NAMESPACE, CommExtension, BASIC_IDENTITY_TYPE } from './types'
 
 
 export const buildCommExtension = (config: CommExtConfig) => {
@@ -60,6 +59,22 @@ export const buildCommExtension = (config: CommExtConfig) => {
     }
   })
 
+  commExtensionSchema = addObserverToSchema(commExtensionSchema, {
+    trigger: EVENT_EXTENSION_AFTER_BULIDING_DID,
+    filter: async (_, { unsigned, cred }: ExtensionEventAfterBuildingDid) => {
+      return !unsigned.keyAgreement && cred.type.includes(BASIC_IDENTITY_TYPE)
+    },
+    method: async (wallet, { unsigned }: ExtensionEventAfterBuildingDid) => {
+      const didHelper = commDidHelperBuilder(wallet)
+      const extendedClone = await didHelper.addDIDAgreement(unsigned)
+      unsigned.keyAgreement = extendedClone.keyAgreement
+    }
+  })
+
+  /**
+   * @PROCEED 
+   * 1. Add agreement to identity and group membership DIDs
+   */
   commExtensionSchema = addObserverToSchema(commExtensionSchema, {
     trigger: EXTENSION_TRIGGER_ADD_CREDENTIAL,
     filter: async (wallet, { item }: CredentialEventParams) => {

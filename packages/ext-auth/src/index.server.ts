@@ -19,7 +19,7 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
 
   router.get(SERVER_REQUEST_AUTH + ':did', async (req, res) => {
     try {
-      const handler = getAppContext(req).handler
+      const { handler } = getAppContext(req)
       if (!handler.wallet) {
         throw ERROR_NO_WALLET
       }
@@ -30,7 +30,7 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
           createdAt: (new Date).toISOString()
         }
       })
-      const request = await factory.request(handler.wallet, { 
+      const request = await factory.request(handler.wallet, {
         unsignedRequest: unsigned,
         identity: handler.wallet.getIdentity()?.credential
       })
