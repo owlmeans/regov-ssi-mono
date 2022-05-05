@@ -12,6 +12,8 @@ let authExtensionSchema = buildExtensionSchema({
 }, {
   [REGOV_CREDENTIAL_TYPE_AUTH]: {
     mainType: REGOV_CREDENTIAL_TYPE_AUTH,
+    requestType: REGOV_AUTH_REQUEST_TYPE,
+    responseType: REGOV_AUTH_RESPONSE_TYPE,
     defaultNameKey: 'cred.auth.name',
     contextUrl: 'https://owlmeans.com/schema/auth',
     credentialContext: {
@@ -20,11 +22,12 @@ let authExtensionSchema = buildExtensionSchema({
       pinCode: "http://www.w3.org/2001/XMLSchema#string",
       createdAt: "http://www.w3.org/2001/XMLSchema#datetime",
     },
-    evidence: { type: BASIC_IDENTITY_TYPE, signing: true },
-    requestType: REGOV_AUTH_REQUEST_TYPE
+    evidence: { type: BASIC_IDENTITY_TYPE, signing: true }
   },
   [REGOV_AUTH_REQUEST_TYPE]: {
     mainType: REGOV_AUTH_REQUEST_TYPE,
+    requestType: REGOV_AUTH_REQUEST_TYPE,
+    responseType: REGOV_AUTH_RESPONSE_TYPE,
     mandatoryTypes: [REGOV_CREDENTIAL_TYPE_AUTH],
     defaultNameKey: 'request.auth.name',
     contextUrl: 'https://owlmeans.com/schema/auth-request',
@@ -38,6 +41,7 @@ let authExtensionSchema = buildExtensionSchema({
   [REGOV_AUTH_RESPONSE_TYPE]: {
     mainType: REGOV_AUTH_RESPONSE_TYPE,
     responseType: REGOV_AUTH_RESPONSE_TYPE,
+    mandatoryTypes: [REGOV_CREDENTIAL_TYPE_AUTH],
     credentialContext: {}
   }
 })

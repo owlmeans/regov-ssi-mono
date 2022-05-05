@@ -11,6 +11,10 @@
         "pattern": "Wrong DID format"
       }
     },
+    "pin": {
+      "label": "Auth PIN code",
+      "hint": "Enter PIN code into your wallet to confirm authentication"
+    },
     "alert": {
       "error": {
         "wrong": "Can't login: {{message}}",
@@ -20,5 +24,22 @@
       }
     },
     "main": "Request Auth"
+  },
+  "authResponse": {
+    "title": "Authenticate login",
+    "did": {
+      "label": "Identity DID",
+      "hint": "Decentralized ID of your identities"
+    },
+    "pin": {
+      "label": "PIN Code",
+      "hint": "Type PIN code from the page that requests authentication here",
+      "error": {
+        "required": "Pin is required",
+        "minLength": "PIN can't be shorter than 4 symbols",
+        "pattern": "Pin should consist of numbers"
+      }
+    },
+    "main": "Authenticate"
   }
 }

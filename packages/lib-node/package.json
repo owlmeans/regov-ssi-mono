@@ -26,6 +26,7 @@
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.2",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
@@ -36,13 +37,14 @@
     "typescript": "^4.3.5"
   },
   "peerDependencies": {
-    "@owlmeans/regov-ssi-core": "^0.5.3",
-    "@owlmeans/regov-lib-react": "^0.1.8"
+    "@owlmeans/regov-lib-react": "^0.1.8",
+    "@owlmeans/regov-ssi-core": "^0.5.3"
   },
   "optionalDependencies": {
     "@owlmeans/regov-lib-react": "^0.1.8"
   },
   "dependencies": {
+    "body-parser": "^1.20.0",
     "express": "^4.17.3"
   }
 }

@@ -7,6 +7,8 @@ import { CommWSClient, Receiver, WSClientConfig } from './types'
 
 
 const _processMessage = (client: CommWSClient, data: string, receive?: Receiver) => {
+  // console.log('<<<<')
+  // console.log(data)
   if (client.occupied && data.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')) {
     const code = data.substring(data.search(':') + 1)
     client.currentResolve && client.currentResolve(code)
@@ -43,6 +45,8 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
         opened: false,
 
         send: async (msg) => {
+          // console.log('>>>>')
+          // console.log(msg)
           if (_client.opened) {
             if (_client.occupied) {
               console.error('Tried to use occuppied connection!')
@@ -137,7 +141,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
           reject(err)
         }
         console.error('Socket error %s', err)
-      } 
+      }
 
       _wsClient.onmessage = msg => {
         if (typeof msg.data === 'string') {
@@ -155,6 +159,8 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
         occupied: false,
 
         send: async (msg) => {
+          // console.log('>>>>')
+          // console.log(msg)
           if (_client.opened) {
             if (_client.occupied) {
               console.error('Tried to use occuppied connection!')
@@ -187,7 +193,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
                 console.log('Sent', msg.substring(0, 16) + '...', code)
               }
             } catch (err) {
-              console.log(err)
+              console.error(err)
               if (_wsClient.readyState === _wsClient.OPEN) {
                 _wsClient.close()
               }

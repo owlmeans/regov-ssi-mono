@@ -1,10 +1,12 @@
 import { Credential, Presentation } from "@owlmeans/regov-ssi-core";
-import { AuthSubject, REGOV_AUTH_RESPONSE_TYPE, REGOV_CREDENTIAL_TYPE_AUTH } from "./types";
-
+import { 
+  AuthSubject, REGOV_AUTH_REQUEST_TYPE, REGOV_AUTH_RESPONSE_TYPE, REGOV_CREDENTIAL_TYPE_AUTH 
+} from "./types";
 
 
 export const getAuthFromPresentation = (presentation: Presentation) => {
-  if (!presentation.type.includes(REGOV_AUTH_RESPONSE_TYPE)) {
+  if (!presentation.type.includes(REGOV_AUTH_RESPONSE_TYPE)
+   && !presentation.type.includes(REGOV_AUTH_REQUEST_TYPE)) {
     return undefined
   }
 

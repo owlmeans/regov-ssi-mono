@@ -72,7 +72,7 @@ export const DIDAuthResponse: FunctionComponent<DIDAuthResponseParams> = withReg
 
   return <FormProvider {...methods}>
     <PrimaryForm {...props} title="authResponse.title">
-      <MainTextOutput {...props} field="authResponse.did" />
+      <MainTextOutput {...props} field="authResponse.did" showHint />
       <MainTextInput {...props} field="authResponse.pin" />
       <AlertOutput {...props} field="authResponse.alert" />
       <FormMainAction {...props} title="authResponse.main" action={

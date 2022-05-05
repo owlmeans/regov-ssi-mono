@@ -3,6 +3,7 @@ import {
   buildWalletWrapper, DEFAULT_WALLET_ALIAS, nodeCryptoHelper, WalletHandler, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import express, { Router, Request, Response } from 'express'
+import bodyParser from 'body-parser'
 import { ServerExtensionRegistry } from '../extension'
 import { ServerStore } from '../store'
 import { readPeerVCs } from './peer-reader'
@@ -91,12 +92,12 @@ export const buildApp = async (
     }
   }
 
+  _app.app.use(bodyParser.json())
+  _app.app.use(bodyParser.urlencoded({ extended: true }))
+
   _app.app.use((req, res, next) => {
     _bindings.set(req, _app)
-    res.on('finish', () => {
-      _bindings.delete(req)
-      console.log('request context cleaned app')
-    })
+    res.on('finish', () => _bindings.delete(req))
     next()
   })
 

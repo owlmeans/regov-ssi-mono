@@ -13,8 +13,14 @@ export const buildServerClient = (config: ServerClientConfig) => {
     sendVC: async (uri, cred) => {
       const [url] = uriToUrlAndConfig(uri, config)
       const result = await fetch(
-        url, { body: JSON.stringify(cred), method: 'POST' }
-      )
+        url, {
+        body: JSON.stringify(cred), method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      console.log(result)
 
       return result.json()
     }
@@ -46,7 +52,7 @@ export type ServerClient = {
     Result extends {} = {}
     >(
     uri: string | ServierClientRequest, cred: Type
-  ) => Promise<ServerClientSentVCResult<Result>>
+  ) => Promise<Result>
 }
 
 export type ServierClientRequest = {
@@ -64,4 +70,4 @@ export type ServerClientSentVCResult<Result extends {}> = {
   message?: string
   error?: string
   data?: Result
-}
+} | Result

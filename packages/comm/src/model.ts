@@ -281,8 +281,6 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
           const recipient = wallet.findCredential(connection.recipientId)
 
-          console.log('Current recipient', recipient)
-
           const newConnection: DIDCommConnectMeta = {
             ...filterConnectionFields(connection),
             recipientId: connection.sender.id,

@@ -96,7 +96,7 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
         })
         console.log('Sent to ' + uuid + ': ' + code)
       } catch (err) {
-        console.log(`Crash from ${uuid}: ${err}`)
+        console.error(`Crash from ${uuid}: ${err}`)
         _messages[did].unshift(msg)
         if (client.connection.connected) {
           client.connection.drop()
@@ -175,11 +175,9 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
         const data = msg.utf8Data
         console.log('[data]: ' + data.substring(0, 32))
         if (client.occupied && data.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')) {
-          console.log(data)
           const code = data.substring(data.search(':') + 1)
           return client.proceedCurrent && client.proceedCurrent(code)
         } else if (client.occupied && data.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
-          console.log(data)
           const code = data.substring(data.search(':') + 1)
           return client.stopCurrent && client.stopCurrent(code)
         } else if (data.startsWith('did:' + config.did.prefix + ':')) {
