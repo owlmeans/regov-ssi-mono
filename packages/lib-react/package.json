@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-lib-react",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "UI toolkit to build SSI Applications over OwlMeans Regov SSI",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -30,7 +30,7 @@
     "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
-    "@owlmeans/regov-ssi-core": "^0.5.3",
+    "@owlmeans/regov-ssi-core": "^0.5.4",
     "i18next": "^21.4.2",
     "i18next-browser-languagedetector": "^6.1.3",
     "react": "^17.0.0",
