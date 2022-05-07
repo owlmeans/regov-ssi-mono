@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 export { FormProvider as WalletFormProvider } from 'react-hook-form'
 
 export * from './component'
