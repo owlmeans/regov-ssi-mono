@@ -21,7 +21,7 @@ import {
 import {
   EmptyProps, FormHeaderButton, MainModalAuthenticatedEventParams, RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
-import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../types'
+import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
 import { FormMainButton } from '@owlmeans/regov-lib-react'
 import { IdentityCreation, IdentityCreationProceedHandle } from './identity'
 import { isMobile, isBrowser } from 'react-device-detect'

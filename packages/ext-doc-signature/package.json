@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-doc-signature",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Regov extension to sign and check signatures of random documents.",
   "keywords": [
     "Regov",
@@ -12,8 +12,8 @@
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
-  "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "main": "src/index.ts",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "directories": {
     "dist": "dist",
@@ -29,16 +29,16 @@
   },
   "sources": "src/index.ts",
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
+    "build": "tsc -b",
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.2.4",
-    "@owlmeans/regov-lib-react": "^0.1.8",
-    "@owlmeans/regov-ssi-core": "^0.5.3",
+    "@owlmeans/regov-lib-react": "^0.1.9",
+    "@owlmeans/regov-ssi-core": "^0.5.4",
     "i18next": "^21.4.2",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
@@ -55,7 +55,6 @@
     "react-router-dom": "^6.0.2"
   },
   "devDependencies": {
-    "microbundle-crl": "^0.13.11",
     "typescript": "^4.5.2"
   },
   "dependencies": {

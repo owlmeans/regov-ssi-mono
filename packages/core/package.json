@@ -1,12 +1,12 @@
 {
   "name": "@owlmeans/regov-ssi-core",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "It's core package for OwlMeans Regov SSI",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -20,7 +20,7 @@
   "scripts": {
     "test": "jest --testTimeout 30000",
     "build": "tsc -b",
-    "build:watch": "tsc -b -w",
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty",
     "review:ssi": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/ssi.ts",
     "review:compact": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/compactssi.ts"
   },

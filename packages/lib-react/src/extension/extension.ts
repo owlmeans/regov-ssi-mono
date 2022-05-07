@@ -20,6 +20,7 @@ import { EmptyProps } from "../common"
 import { ManuItemParams, ExtensionItemPurpose } from "./types"
 import { MaybeArray } from "@owlmeans/regov-ssi-core"
 
+
 export const buildUIExtension = (
   extension: Extension,
   produceComponent: UIExtensionFactory

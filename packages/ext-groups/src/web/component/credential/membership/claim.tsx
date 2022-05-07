@@ -41,7 +41,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
   MembershipClaimProps, ListNavigator
 >({ namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
   const { group, t, i18n, ext } = props
-  const { handler } = useRegov()
+  const { handler, extensions } = useRegov()
   const navigate = useNavigate()
   const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
   const groupSubjet = group ? getCompatibleSubject<GroupSubject>(group) : undefined
@@ -76,6 +76,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
         }
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
         const unsignedMemberhips = await factory.build(handler.wallet, {
+          extensions: extensions?.registry,
           subjectData: {
             groupId: group ? group.id : ''
           }

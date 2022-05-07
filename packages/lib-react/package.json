@@ -1,13 +1,13 @@
 {
   "name": "@owlmeans/regov-lib-react",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "UI toolkit to build SSI Applications over OwlMeans Regov SSI",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
-  "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "main": "src/index.ts",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "directories": {
     "dist": "dist",
@@ -26,31 +26,28 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
+    "build": "tsc -b",
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
-    "@owlmeans/regov-ssi-core": "^0.5.3",
-    "@reduxjs/toolkit": "^1.6.2",
+    "@owlmeans/regov-ssi-core": "^0.5.4",
     "i18next": "^21.4.2",
     "i18next-browser-languagedetector": "^6.1.3",
     "react": "^17.0.0",
+    "react-device-detect": "^2.1.2",
     "react-dom": "^17.0.0",
     "react-hook-form": "^7.19.5",
     "react-i18next": "^11.14.2",
-    "react-redux": "^7.2.6",
-    "react-router-dom": "^6.0.2",
-    "react-device-detect": "^2.1.2"
+    "react-router-dom": "^6.0.2"
   },
   "optionalDependencies": {
+    "react-device-detect": "^2.1.2",
     "react-dom": "^17.0.0",
-    "react-router-dom": "^6.0.2",
-    "react-device-detect": "^2.1.2"
+    "react-router-dom": "^6.0.2"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
     "@types/node": "^16.11.10",
-    "microbundle-crl": "^0.13.11",
     "typescript": "^4.5.2"
   },
   "dependencies": {

@@ -31,7 +31,7 @@ import { REGISTRY_TYPE_CREDENTIALS, UnsignedCredential } from '@owlmeans/regov-s
 
 export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationParams> =>
   withRegov<GroupCreationProps>({ namespace: ext.localization?.ns }, ({ t, i18n, navigator, next }) => {
-    const { handler } = useRegov()
+    const { handler, extensions } = useRegov()
     const props = {
       t, i18n,
       rules: {
@@ -57,7 +57,9 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
             throw ERROR_WIDGET_EXTENSION
           }
           const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
-          const unsginedGroup = await factory.build(handler.wallet, { subjectData: {} })
+          const unsginedGroup = await factory.build(handler.wallet, {
+            extensions: extensions?.registry, subjectData: {}
+          })
           setUnsignedGroup(unsginedGroup)
 
           methods.setValue('group', {

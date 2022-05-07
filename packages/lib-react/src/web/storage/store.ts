@@ -14,10 +14,9 @@
  *  limitations under the License.
  */
 
-
-import { Config, WalletHandler } from '../../common'
-import { EncryptedStore } from '@owlmeans/regov-ssi-core'
-import * as localforage from 'localforage'
+import { Config } from '../../common'
+import { EncryptedStore, WalletHandler } from '@owlmeans/regov-ssi-core'
+import localforage from 'localforage'
 
 
 export const buildStorageHelper = (

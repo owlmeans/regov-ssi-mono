@@ -14,17 +14,13 @@
  *  limitations under the License.
  */
 
-export * from './types'
 import React from 'react'
 import {
   addObserverToSchema, ExtensionDetails, EXTENSION_TRIGGER_AUTHENTICATED,
   EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams, isCredential
 } from '@owlmeans/regov-ssi-core'
 import { BASIC_IDENTITY_TYPE, BuildExtensionParams, buildIdentityExtension } from '../ext'
-import en from './i18n/en.json'
-import ru from './i18n/ru.json'
-import by from './i18n/by.json'
-import { 
+import {
   buildUIExtension, UIExtensionFactoryProduct, MainModalAuthenticatedEventParams,
   ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
   EXTENSION_ITEM_PURPOSE_EVIDENCE, EXTENSION_ITEM_PURPOSE_VALIDATION, MainModalHandle,
@@ -32,15 +28,13 @@ import {
   EXTENSION_ITEM_PURPOSE_ITEM
 } from '@owlmeans/regov-lib-react'
 import { DashboardWidget, EvidenceWidget, Onboarding, ValidationWidget } from './component'
-import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from './types'
 import {
   REGISTRY_TYPE_IDENTITIES, Credential, CredentialSubject, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import { IdentityView } from './component/identity/view'
 import { IdentityItem } from './component/identity/item'
+import { REGOV_IDENTITY_DEFAULT_NAMESPACE, REGOV_IDENTITY_DEFAULT_TYPE } from '../types'
 
-
-export const REGOV_IDENTITY_DEFAULT_TYPE = 'OwlMeans:Regov:Identity'
 
 export const buildIdentityExtensionUI = (
   type: string,
@@ -54,12 +48,7 @@ export const buildIdentityExtensionUI = (
   const extension = buildIdentityExtension(type, params, {
     ...details,
     name: details.name === '' ? 'extension.details.name' : details.name,
-  })
-
-  extension.localization = { ns, translations: {} }
-  if (ns === REGOV_IDENTITY_DEFAULT_NAMESPACE) {
-    extension.localization.translations = { en, ru, be: by }
-  }
+  }, ns)
 
   if (extension.schema.events) {
     let modalHandler: MainModalHandle
@@ -68,7 +57,7 @@ export const buildIdentityExtensionUI = (
       trigger: EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
       method: async (_, params: MainModalShareEventParams) => {
         modalHandler = params.handle
-  
+
         return false
       }
     })
@@ -78,11 +67,12 @@ export const buildIdentityExtensionUI = (
     ) => {
       if (params.config.development && extension.schema.details.defaultCredType) {
         const factory = extension.getFactory(extension.schema.details.defaultCredType)
-        const unsigned = await factory.build(wallet, { subjectData: {} })
+        const unsigned = await factory.build(wallet, {
+          extensions: params.extensions.registry, subjectData: {}
+        })
         const identity = await factory.sign(wallet, { unsigned })
 
         const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-
         const item = await registry.addCredential<CredentialSubject, Credential<CredentialSubject>>(
           identity as Credential<CredentialSubject>
         )
@@ -118,7 +108,7 @@ export const buildIdentityExtensionUI = (
         params.cleanUp()
         modalHandler.setOpen && modalHandler.setOpen(false)
       }
-      
+
       if (modalHandler) {
         if (isCredential(params.credential)) {
           modalHandler.getContent = () => <IdentityView ext={extension} close={close}
@@ -129,7 +119,7 @@ export const buildIdentityExtensionUI = (
 
         if (params.statusHandler.successful && modalHandler.setOpen) {
           modalHandler.setOpen(true)
-  
+
           return true
         }
       }

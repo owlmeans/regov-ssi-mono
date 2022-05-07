@@ -1,0 +1,100 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1"
+  ],
+  "id": "did:exm:29bxxjaZh1cJCseHwX9miPXyjjPeCVqM2Xfo8uUk1wqu",
+  "type": [
+    "VerifiablePresentation",
+    "OwlMeans:Regov:Auth:Response"
+  ],
+  "holder": {
+    "@context": [
+      "https://w3id.org/did/v1",
+      "https://owlmeans.com/schemas/did-schema.json#"
+    ],
+    "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a",
+    "verificationMethod": {
+      "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+      "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+      "nonce": "edJpJT5HcMb:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+      "type": "EcdsaSecp256k1VerificationKey2019",
+      "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+    },
+    "assertionMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+    "authentication": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+    "keyAgreement": {
+      "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#comm",
+      "type": "X25519KeyAgreementKey2020",
+      "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+      "publicKeyBase58": "GmsW5yZuaYEoL2qwAStnePqpYnCAHxACTCmFLEXhLhxS"
+    },
+    "proof": {
+      "type": "EcdsaSecp256k1Signature2019",
+      "created": "2022-05-04T20:11:44Z",
+      "verificationMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+      "proofPurpose": "verificationMethod",
+      "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..nxOdg62omwNctgvbu6PEtZRFmgsQHP9zk5zT-7F4VJRRdOjXpJxpMdnJDxqA0PodTCtI4anWONVAlcuiWgER6g"
+    }
+  },
+  "verifiableCredential": [
+    {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://owlmeans.com/schema/auth"
+      ],
+      "id": "did:exm:CEBjovie3Ro5qbrngUHPM6TVCimLso56ANKExWa8QiyL",
+      "type": [
+        "VerifiableCredential",
+        "OwlMeans:Regov:Auth"
+      ],
+      "holder": {
+        "id": "did:exm:CEBjovie3Ro5qbrngUHPM6TVCimLso56ANKExWa8QiyL"
+      },
+      "credentialSubject": {
+        "did": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a",
+        "createdAt": "2022-05-07T13:03:16.498Z",
+        "pinCode": "0414"
+      },
+      "issuanceDate": "2022-05-07T13:03:21.696Z",
+      "issuer": {
+        "@context": [
+          "https://w3id.org/did/v1",
+          "https://owlmeans.com/schemas/did-schema.json#"
+        ],
+        "id": "did:exm:CEBjovie3Ro5qbrngUHPM6TVCimLso56ANKExWa8QiyL",
+        "verificationMethod": {
+          "id": "did:exm:CEBjovie3Ro5qbrngUHPM6TVCimLso56ANKExWa8QiyL#holder",
+          "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+          "nonce": "hwgMArQeZJZ:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+          "type": "EcdsaSecp256k1VerificationKey2019",
+          "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+        },
+        "assertionMethod": "did:exm:CEBjovie3Ro5qbrngUHPM6TVCimLso56ANKExWa8QiyL#holder",
+        "authentication": "did:exm:CEBjovie3Ro5qbrngUHPM6TVCimLso56ANKExWa8QiyL#holder",
+        "proof": {
+          "type": "EcdsaSecp256k1Signature2019",
+          "created": "2022-05-07T13:03:21Z",
+          "verificationMethod": "did:exm:CEBjovie3Ro5qbrngUHPM6TVCimLso56ANKExWa8QiyL#holder",
+          "proofPurpose": "verificationMethod",
+          "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..cSw0GpjeDC6wJxxN1_j2rqJAqQVzd-DA5YiTThPv3lRx6DRzpNkAr_IOXZMZ0Mhyi-99H7s5IUb457iusgUGew"
+        }
+      },
+      "proof": {
+        "type": "EcdsaSecp256k1Signature2019",
+        "created": "2022-05-07T13:03:21Z",
+        "verificationMethod": "did:exm:CEBjovie3Ro5qbrngUHPM6TVCimLso56ANKExWa8QiyL#holder",
+        "proofPurpose": "assertionMethod",
+        "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..nvwmFvPE9LvVbdIU9CKZeBd0Ve_KQJ-Q8DN0jBo5ATtrPzWQulbcHp0GOq7HIk7wBXYFcp0GuzjrevUFl3LcQw"
+      }
+    }
+  ],
+  "proof": {
+    "type": "EcdsaSecp256k1Signature2019",
+    "created": "2022-05-07T13:03:21Z",
+    "verificationMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+    "proofPurpose": "authentication",
+    "challenge": "did:exm:29bxxjaZh1cJCseHwX9miPXyjjPeCVqM2Xfo8uUk1wqu",
+    "domain": "did:exm:AVAfQSHK5VJSNT9o97N8RMBr1xXjVC8KgW5SWPcs3VRW",
+    "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..dNQJeIxjuohDZaIyA5MQAnUHjUSBGkGaV86xC-uW1t07nwheb-QtuKIV8gBzXalR-9hXi-fD3naBw2Lnmax4Tw"
+  }
+}

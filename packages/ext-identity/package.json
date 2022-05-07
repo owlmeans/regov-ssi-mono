@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-identity",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Simple Identity Extension for Regov SSI",
   "keywords": [
     "Regov",
@@ -11,8 +11,8 @@
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
-  "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "main": "src/index.ts",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "directories": {
     "dist": "dist",
@@ -28,16 +28,18 @@
   },
   "sources": "src/index.ts",
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
+    "build": "tsc -b",
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.2.4",
-    "@owlmeans/regov-lib-react": "^0.1.8",
-    "@owlmeans/regov-ssi-core": "^0.5.3",
+    "@owlmeans/regov-lib-react": "^0.1.9",
+    "@owlmeans/regov-ssi-core": "^0.5.4",
+    "@owlmeans/regov-lib-node": "^0.1.1",
+    "express": "^4.17.3",
     "i18next": "^21.4.2",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
@@ -47,7 +49,6 @@
     "react-device-detect": "^2.1.2"
   },
   "devDependencies": {
-    "microbundle-crl": "^0.13.11",
     "typescript": "^4.5.2"
   },
   "gitHead": "7ed39c573fab390171491390a484f0f6188a163c"

@@ -29,7 +29,7 @@ import { passwordValidation } from '../../util'
 export const StoreLogin: FunctionComponent<StoreLoginParams> =
   withRegov<StoreLoginProps, StoreLoginNavigator>(
     'StoreLogin',
-    ({ t, i18n, alias, navigator, config, renderer: Renderer }) => {
+    ({ t, i18n, alias, navigator, config, renderer: Renderer, extensions }) => {
       const { handler } = useRegov()
 
       if (!handler.stores[alias]) {
@@ -55,10 +55,10 @@ export const StoreLogin: FunctionComponent<StoreLoginParams> =
           try {
             await handler.loadStore(async (handler) => {
               return await buildWalletWrapper(
-                crypto,
+                { crypto, extensions: extensions?.registry },
                 data.login.password,
                 handler.stores[alias],
-                { 
+                {
                   prefix: config.DID_PREFIX,
                   defaultSchema: config.baseSchemaUrl,
                   didSchemaPath: config.DID_SCHEMA_PATH,

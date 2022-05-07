@@ -15,42 +15,18 @@
  */
 
 import React, {
-  useEffect,
-  useState,
-  useContext,
-  createContext,
-  FunctionComponent,
-  PropsWithChildren,
-  Fragment,
-  FunctionComponentElement
+  useEffect, useState, useContext, createContext, FunctionComponent, PropsWithChildren,
+  Fragment, FunctionComponentElement
 } from 'react'
-
+import { i18n, TFunction } from 'i18next'
+import { I18nextProvider, useTranslation } from 'react-i18next'
+import { RegisterOptions, UseFormProps } from 'react-hook-form'
+import { createWalletHandler, ObserverTransformerOption, WalletHandler } from '@owlmeans/regov-ssi-core'
 import {
-  i18n,
-  TFunction
-} from 'i18next'
-import {
-  I18nextProvider,
-  useTranslation
-} from 'react-i18next'
-import {
-  RegisterOptions,
-  UseFormProps
-} from 'react-hook-form'
-import { WalletWrapper } from '@owlmeans/regov-ssi-core'
-
-import {
-  createWalletHandler,
-  ObserverTransformerOption,
-  WalletHandler
-} from './wallet'
-import {
-  BasicNavigator,
-  NavigatorContextProvider,
-  WalletNavigator,
-  NavigatorContext
+  BasicNavigator, NavigatorContextProvider, WalletNavigator, NavigatorContext
 } from './navigator'
 import { UIExtensionRegistry } from '../extension'
+import { ServerClient } from './client'
 
 
 export const RegovContext = createContext<ContextParams>({
@@ -67,9 +43,9 @@ export const useRegov = () => {
 }
 
 export const RegovProvider = ({
-  map, handler, i18n, navigator, config, extensions, children
+  map, handler, i18n, navigator, config, extensions, serverClient, children
 }: PropsWithChildren<ContextProviderParams>) => {
-  const props = { map, handler, config, extensions }
+  const props = { map, handler, config, extensions, serverClient }
 
   return <I18nextProvider i18n={i18n}>
     <NavigatorContextProvider navigator={navigator}>
@@ -78,22 +54,25 @@ export const RegovProvider = ({
   </I18nextProvider>
 }
 
+type InferState<Type extends RegovComponentProps> = Type extends RegovComponentProps<any, any, infer State> ? State : never
+type InferProps<Type extends RegovComponentProps> = Type extends RegovComponentProps<infer Props, any, any> ? Props : never
+
 export const withRegov = <
   Type extends RegovComponentProps = RegovComponentProps,
   Nav extends WalletNavigator = BasicNavigator,
-  Transformer extends ObserverTransformerOption = ObserverTransformerOption<
-    Type extends RegovComponentProps<any, any, infer State> ? State : never,
-    Type extends RegovComponentProps<infer Props, any, any> ? Props : never
-  >
+  Transformer extends ObserverTransformerOption<
+    InferState<Type>, InferProps<Type>
+  > = ObserverTransformerOption<InferState<Type>, InferProps<Type>>
 >(
   name: string | RegovHOCOptions<Transformer>,
   Com: FunctionComponent<Type>,
   options?: RegovHOCOptions<Transformer>
 ) => {
-  type T = Type extends RegovComponentProps<infer Props, any, any> ? Props : never
-  type S = Type extends RegovComponentProps<any, any, infer State> ? State : never
+  type T = InferProps<Type>
+  // type I = Type extends RegovComponentProps<any,  infer Impl, any> ? Impl : never
+  type S = InferState<Type>
 
-  return ((props: PropsWithChildren<T>): FunctionComponentElement<Type> => {
+  return ((props: PropsWithChildren<T>): FunctionComponentElement<T> => {
     if (typeof name !== 'string') {
       options = name
       if (options.name) {
@@ -104,7 +83,7 @@ export const withRegov = <
     }
     const transformer = options?.transformer
 
-    const { handler, map, config } = useRegov()
+    const { handler, map, config, serverClient, extensions } = useRegov()
     const navigator = useContext(NavigatorContext)
     const { t, i18n } = useTranslation(props.ns || options?.namespace)
     const state: S = (transformer ? transformer(handler.wallet, props, handler) : {}) as S
@@ -112,7 +91,7 @@ export const withRegov = <
     const [, setState] = useState<S>(state)
     useEffect(() => {
       if (transformer) {
-        return handler.observe(setState, (wallet: WalletWrapper) => {
+        return handler.observe(setState, (wallet) => {
           return transformer(wallet, props, handler)
         })
       }
@@ -130,7 +109,8 @@ export const withRegov = <
       renderer: map[name] || (_ => <Fragment>{props.children}</Fragment>),
       navigator: navigator as Nav,
       config: config,
-      t, i18n, ...props, ...state
+      client: serverClient,
+      extensions, handler, t, i18n, ...props, ...state,
     } as unknown as Type
 
     return <Com {..._props} />
@@ -146,6 +126,9 @@ export type RegovComponentProps<
   > = PropsWithChildren<{
     renderer: FunctionComponent<WrappedComponentProps<Props, State>>
     config: Config
+    extensions?: UIExtensionRegistry
+    handler?: WalletHandler
+    client?: ServerClient
     navigator?: Nav
     t: TFunction
     i18n: i18n
@@ -178,6 +161,7 @@ export type ContextParams = {
   map: ImplementationMap,
   handler: WalletHandler,
   config: Config,
+  serverClient?: ServerClient
   extensions?: UIExtensionRegistry
 }
 
@@ -202,7 +186,7 @@ export type ContextProviderParams = ContextParams & {
 }
 
 export type ImplementationMap = {
-  [key: string]: FunctionComponent
+  [key: string]: FunctionComponent<any>
 }
 
 export type EmptyProps = {

@@ -325,6 +325,13 @@ export const buildDidHelper =
         return didDocUnsigned
       },
 
+      addPurpose: (didUnsigned, purpose, method) => {
+        didUnsigned = JSON.parse(JSON.stringify(didUnsigned))
+        didUnsigned[purpose] = addToValue(didUnsigned[purpose], method)
+
+        return didUnsigned
+      },
+
       signDID: async (key, didDocUnsigned, keyId = VERIFICATION_KEY_HOLDER, purposes?) => {
         if (!key.pubKey) {
           throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
@@ -493,7 +500,9 @@ export const buildDidHelper =
 
       setupDocumentLoader: (loader) => {
         __buildDocumentLoader = loader
-      }
+      },
+
+      getCrypto: () => crypto
     }
 
     return _helper
