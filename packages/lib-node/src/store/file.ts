@@ -16,6 +16,11 @@ export const buildFileStore = (path: string): ServerStore => {
         }
         handler.stores = await files.reduce(
           async (_stores, file) => await new Promise(resolve => {
+            if (!file.match(/\.json$/)) {
+              resolve(_stores)
+              return
+            }
+
             fs.readFile(path + '/' + file, async (err, data) => {
               const stores = await _stores
               if (err) {

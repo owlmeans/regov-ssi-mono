@@ -1,1 +1,5 @@
 build
+vcs/*
+!vcs/.gitkeep
+store/*
+!store/.gitkeep
