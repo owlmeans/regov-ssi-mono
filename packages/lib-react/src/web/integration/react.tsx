@@ -28,7 +28,7 @@ import { DEFAULT_GUEST_WALLET_ALIAS } from '../types'
 
 const i18n = i18nSetup(i18nDefaultOptions)
 
-export const WalletIntergationReact = (
+export const WalletIntegrationReact = (
   { config, extensions, navigatorBuilder, children, serverClient }: PropsWithChildren<
     WalletAppParams & {
       navigatorBuilder: (handler: WalletHandler) => BasicNavigator
