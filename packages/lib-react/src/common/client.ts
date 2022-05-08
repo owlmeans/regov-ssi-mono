@@ -36,8 +36,6 @@ export const buildServerClient = (config: ServerClientConfig) => {
         }
       })
 
-      console.log(result)
-
       return result.json()
     }
   }

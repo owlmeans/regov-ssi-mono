@@ -9,6 +9,7 @@
   "dependencies": {
     "@owlmeans/regov-ext-auth": "link:../../ext-auth/",
     "@owlmeans/regov-ext-identity": "link:../../ext-identity/",
+    "@owlmeans/regov-ext-groups": "link:../../ext-groups/",
     "@owlmeans/regov-lib-node": "link:../",
     "@owlmeans/regov-ssi-core": "link:../../core/",
     "cors": "^2.8.5",

@@ -18,6 +18,9 @@ import "dotenv"
 import http from 'http'
 import { startWSServer } from '@owlmeans/regov-come'
 
+import util from 'util'
+util.inspect.defaultOptions.depth = 8
+
 
 const httpServer = http.createServer((_, response) => {
   response.writeHead(404)

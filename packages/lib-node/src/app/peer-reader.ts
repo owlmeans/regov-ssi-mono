@@ -33,9 +33,12 @@ export const readPeerVCs = async (wallet: WalletWrapper, config: ServerAppConfig
         return
       }
 
+      console.log('Found potenatial creds to read', files)
+
       await Promise.all(files.map(async file => {
         return new Promise((resolve, reject) => {
           if (!file.match(/\.json$/)) {
+            console.log(`Skip file: ${file}`)
             resolve(undefined)
             return
           }
@@ -47,6 +50,7 @@ export const readPeerVCs = async (wallet: WalletWrapper, config: ServerAppConfig
             }
 
             try {
+              console.log(`Read file: ${file}`)
               const vc: Credential = JSON.parse(data.toString('utf8'))
               const [result, err] = await wallet.ssi.verifyCredential(vc, undefined, {
                 localLoader: buildWalletLoader(wallet),
@@ -61,6 +65,7 @@ export const readPeerVCs = async (wallet: WalletWrapper, config: ServerAppConfig
               if (registry.getCredential(vc.id)) {
                 throw ERROR_VC_EXISTS
               }
+              console.log(`Adding cred from: ${file}`)
               await registry.addCredential(vc, REGISTRY_SECTION_PEER)
             } catch (e) {
               console.error(e)

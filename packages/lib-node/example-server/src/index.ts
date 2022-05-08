@@ -16,10 +16,18 @@
 
 import "dotenv"
 import cors from "cors"
-import { buildApp, buildFileStore, buildRotuer, buildServerExtensionRegistry, ServerAppConfig } from "@owlmeans/regov-lib-node"
+import {
+  buildApp, buildFileStore, buildRotuer, buildServerExtension, buildServerExtensionRegistry,
+  ServerAppConfig
+} from "@owlmeans/regov-lib-node"
 import { createWalletHandler } from "@owlmeans/regov-ssi-core"
 import { buildIdentityExtensionServer } from "@owlmeans/regov-ext-identity/dist/index.server"
 import { authServerExtension } from "@owlmeans/regov-ext-auth/dist/index.server"
+import { groupsExtension } from "@owlmeans/regov-ext-groups/dist/ext"
+
+import util from 'util'
+import { Router } from "express"
+util.inspect.defaultOptions.depth = 8
 
 
 const EXAMPLE_IDENTITY_TYPE = 'ExampleIdentity'
@@ -48,6 +56,7 @@ const identity = buildIdentityExtensionServer(
 const registry = buildServerExtensionRegistry()
 registry.registerSync(identity)
 registry.registerSync(authServerExtension)
+registry.registerSync(buildServerExtension(groupsExtension, () => Router()))
 
 
 buildApp({

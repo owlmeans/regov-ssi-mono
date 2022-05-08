@@ -69,7 +69,10 @@ export const DIDAuthResponse: FunctionComponent<DIDAuthResponseParams> = withReg
         const unsigned = await factory.build(handler.wallet, {
           subjectData: { ...subject, pinCode: data.authResponse.pin }
         })
-        const auth = await factory.sign(handler.wallet, { unsigned })
+        const auth = await factory.sign(handler.wallet, { 
+          unsigned, evidence: identity.credential
+        })
+        
         const response = await factory.respond(
           handler.wallet, { request, credential: auth, identity: identity.credential }
         )

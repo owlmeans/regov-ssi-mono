@@ -29,6 +29,7 @@ import {
   REGOV_OFFER_TYPE
 } from "./types"
 import { makeRandomUuid, normalizeValue } from "@owlmeans/regov-ssi-core"
+import { localization } from "./i18n"
 
 
 let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
@@ -225,6 +226,5 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
 
 groupsExtension.localization = {
   ns: REGOV_EXT_GROUP_NAMESPACE,
-  translations: {
-  }
+  translations: localization
 }

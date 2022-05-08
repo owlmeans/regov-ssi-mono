@@ -18,7 +18,7 @@ import React, { FunctionComponent, useMemo } from 'react'
 import {
   RegovComponentProps, withRegov, PrimaryForm, AlertOutput, FormMainAction, MainTextInput,
   didValidation, ERROR_NO_SERVER_CLIENT, ERROR_NO_EXTENSION_REGISTRY, ERROR_NO_WALLET_HANDLER_AUTH,
-  WalletNavigatorMethod, BasicNavigator, EmptyProps, MainTextOutput
+  EmptyProps, MainTextOutput, NavigatorLoading
 } from '@owlmeans/regov-lib-react'
 import { FormProvider, useForm, UseFormProps, UseFormReturn } from 'react-hook-form'
 import {
@@ -35,9 +35,9 @@ import { getAuthFromPresentation, getAuthSubject } from '../../../../util'
 
 
 export const IntegratedDIDBasedAuth: FunctionComponent<IntegratedDIDBasedAuthParams>
-  = withRegov<IntegratedDIDBasedAuthProps, IntegratedDIDBasedAuthNavigator>(
+  = withRegov<IntegratedDIDBasedAuthProps>(
     { namespace: REGOV_EXT_ATUH_NAMESPACE },
-    ({ auth, close, i18n, t, navigator, client, extensions, handler }) => {
+    ({ auth, i18n, t, navigator, client, extensions, handler, valideteResponseUrl }) => {
       const pin = useMemo(
         () => Array(4).fill(0).map(_ => Math.round(Math.random() * 9)).join(''), []
       )
@@ -134,27 +134,15 @@ export const IntegratedDIDBasedAuth: FunctionComponent<IntegratedDIDBasedAuthPar
                       }
 
                       const authResponse = await client.sendVC<Presentation, AuthIntengratedServerResponse>({
-                        uri: SERVER_PROVIDE_AUTH,
+                        uri: valideteResponseUrl || SERVER_PROVIDE_AUTH,
                         serverAlias: SERVER_INTEGRATION_ALIAS
                       }, doc as Presentation)
 
-                      console.log('Integrated server response: ', authResponse)
-                      /**
-                       * @TODO 
-                       * 1. Call some provided callback to finish authentication
-                       * 2. Fallback to check of server check response
-                       */
-
-                      if (!authResponse || !await auth(authResponse)) {
+                      if (!authResponse || !await auth(authResponse, loading)) {
                         throw ERROR_INTEGRATED_SERVER_CANT_LOGIN
                       }
-
-                      /**
-                       * @TODO Show a success message from the server if any
-                       */
-
-                      close && close()
-                      navigator?.next()
+                    } catch (e) {
+                      methods.setError('auth.alert', { type: 'wrong', message: e.message || e })
                     } finally {
                       helper.removeListener(listner)
                       loading?.finish()
@@ -202,14 +190,8 @@ export type IntegratedDIDBasedAuthFields = {
 }
 
 export type IntegratedDIDBasedAuthParams = EmptyProps & {
-  auth: (data: AuthIntengratedServerResponse) => Promise<boolean>
-  close?: () => void
+  auth: (data: AuthIntengratedServerResponse, loader?: NavigatorLoading) => Promise<boolean>
+  valideteResponseUrl?: string
 }
 
-export type IntegratedDIDBasedAuthProps = RegovComponentProps<
-  IntegratedDIDBasedAuthParams, {}, {}, IntegratedDIDBasedAuthNavigator
->
-
-export type IntegratedDIDBasedAuthNavigator = BasicNavigator & {
-  next: WalletNavigatorMethod<undefined>
-}
+export type IntegratedDIDBasedAuthProps = RegovComponentProps<IntegratedDIDBasedAuthParams>

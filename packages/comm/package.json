@@ -20,7 +20,7 @@
   "scripts": {
     "start": "node ./dist/test/server.js",
     "test": "jest --testTimeout 30000",
-    "build": "tsc -b",
+    "build": "tsc -b -f",
     "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "bugs": {

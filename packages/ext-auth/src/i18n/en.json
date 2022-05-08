@@ -1,4 +1,6 @@
 {
+  "ERROR_INTEGRATED_AUTH_WRONG_PIN": "Provided pin code doesn't match",
+  "ERROR_INTEGRATED_SERVER_CANT_LOGIN": "Server can't allow you to login",
   "auth": {
     "title": "Request wallet login",
     "did": {

@@ -195,7 +195,7 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
         } else if (client.occupied && data.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
           const code = data.substring(data.search(':') + 1)
           return client.stopCurrent && client.stopCurrent(code)
-        } else if (data.startsWith('did:' + config.did.prefix + ':')) {
+        } else if (data.startsWith('did:')) {
           const didInfo = didHelper.parseDIDId(data)
           const did = didInfo.did
           if (_didToClient[did]) {

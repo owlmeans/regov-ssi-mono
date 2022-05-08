@@ -15,6 +15,13 @@
  */
 
 
-export { default as commonEn } from './en/common.json'
-export { default as commonRu } from './ru/common.json'
-export { default as commonBy } from './by/common.json'
+import commonEn from './en/common.json'
+import commonRu from './ru/common.json'
+import commonBy from './by/common.json'
+
+
+export const localization = {
+  en: commonEn,
+  ru: commonRu,
+  be: commonBy
+}

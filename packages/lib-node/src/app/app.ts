@@ -108,7 +108,7 @@ export const buildApp = async (
   }
 
   _app.app.use(bodyParser.json())
-  _app.app.use(bodyParser.urlencoded({ extended: true }))
+  // _app.app.use(bodyParser.urlencoded({ extended: true }))
 
   _app.app.use((req, res, next) => {
     _bindings.set(req, _app)

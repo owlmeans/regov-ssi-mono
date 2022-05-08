@@ -28,7 +28,7 @@
   },
   "sources": "src/index.ts",
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -b -f",
     "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
