@@ -42,7 +42,7 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
       // console.log('Query', req.query)
       // console.log('Params', req.params)
       // console.log('Headers', req.headers)
-      console.log('Body', req.body)
+      // console.log('Body', req.body)
       const presentation: Presentation = req.body
       // console.log(presentation)
       const credential = getAuthFromPresentation(presentation)
