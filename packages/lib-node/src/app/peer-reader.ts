@@ -62,7 +62,7 @@ export const readPeerVCs = async (wallet: WalletWrapper, config: ServerAppConfig
                 throw err
               }
               const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-              if (registry.getCredential(vc.id)) {
+              if (registry.getCredential(vc.id, REGISTRY_SECTION_PEER)) {
                 throw ERROR_VC_EXISTS
               }
               console.log(`Adding cred from: ${file}`)

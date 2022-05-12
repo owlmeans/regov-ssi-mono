@@ -1,12 +1,12 @@
 {
   "name": "@owlmeans/regov-comm",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "It's DIDComm package for OwlMeans Re:gov SSI",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [

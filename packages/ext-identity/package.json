@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-identity",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Simple Identity Extension for Regov SSI",
   "keywords": [
     "Regov",
@@ -11,7 +11,7 @@
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "directories": {
@@ -36,9 +36,9 @@
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.2.4",
-    "@owlmeans/regov-lib-react": "^0.1.11",
+    "@owlmeans/regov-lib-react": "^0.1.12",
     "@owlmeans/regov-ssi-core": "^0.5.4",
-    "@owlmeans/regov-lib-node": "^0.1.3",
+    "@owlmeans/regov-lib-node": "^0.1.4",
     "express": "^4.17.3",
     "i18next": "^21.4.2",
     "react": "^17.0.0",
