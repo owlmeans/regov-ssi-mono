@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { Secp256k1Key, Secp256k1Signature } from "../../../../../tiny-secp256k1-2019/dist"
+import { Secp256k1Key, Secp256k1Signature } from "@owlmeans/tiny-lds-ecdsa-secp256k1-2019"
 
 import { sha256 } from 'hash.js'
 import { fromSeed, BIP32Interface } from 'bip32'
