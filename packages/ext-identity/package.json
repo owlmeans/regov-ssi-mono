@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-identity",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Simple Identity Extension for Regov SSI",
   "keywords": [
     "Regov",
@@ -36,19 +36,22 @@
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.2.4",
-    "@owlmeans/regov-lib-react": "^0.1.12",
-    "@owlmeans/regov-ssi-core": "^0.5.4",
-    "@owlmeans/regov-lib-node": "^0.1.4",
+    "@owlmeans/regov-lib-node": "^0.1.6",
+    "@owlmeans/regov-lib-react": "^0.1.13",
+    "@owlmeans/regov-ssi-core": "^0.5.6",
     "express": "^4.17.3",
     "i18next": "^21.4.2",
     "react": "^17.0.0",
+    "react-device-detect": "^2.1.2",
     "react-dom": "^17.0.0",
     "react-hook-form": "^7.19.5",
-    "react-i18next": "^11.14.2",
-    "react-device-detect": "^2.1.2"
+    "react-i18next": "^11.14.2"
   },
   "devDependencies": {
     "typescript": "^4.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "7ed39c573fab390171491390a484f0f6188a163c"
 }
