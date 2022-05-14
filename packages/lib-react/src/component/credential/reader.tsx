@@ -40,7 +40,7 @@ export const CredentialReader: FunctionComponent<CredentialReaderParams> =
     com: ComRenderer,
     renderer: FallbackRenderer
   }) => {
-    const Renderer = ComRenderer || FallbackRenderer
+    const Renderer: FunctionComponent<CredentialReaderImplProps> = ComRenderer || FallbackRenderer
 
     const _props: CredentialReaderImplProps = {
       t, i18n,

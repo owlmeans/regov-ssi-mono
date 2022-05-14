@@ -145,7 +145,7 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
       <DialogTitle>
         <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
           <Grid item xs={8}>
-            {t('signature.view.title', { name: request?.meta.title })}
+            {`${t('signature.view.title', { name: request?.meta.title })}`}
           </Grid>
           <Grid item xs={4} container direction="row" justifyContent="flex-end" alignItems="flex-start">
             <Grid item>
@@ -207,10 +207,10 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
       <DialogActions>
         {
           !state.invalid && result.valid && result.trusted
-            ? <Button onClick={accept}>{t('signature.response.accept')}</Button>
+            ? <Button onClick={accept}>{`${t('signature.response.accept')}`}</Button>
             : null
         }
-        <Button onClick={close}>{t('signature.response.close')}</Button>
+        <Button onClick={close}>{`${t('signature.response.close')}`}</Button>
       </DialogActions>
     </Fragment>
   })

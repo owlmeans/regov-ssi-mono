@@ -55,12 +55,12 @@ export const SignatureItemWeb = (ext: Extension): FunctionComponent<SignatureIte
             <BorderColor />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={wrapper.meta.title || t('signature.list.item.unknown')}
+        <ListItemText primary={wrapper.meta.title || `${t('signature.list.item.unknown')}`}
           secondary={
             <Fragment>
               <Typography variant="body2" component="span">{subject.name}</Typography>
               <br />
-              <Typography variant="caption" component="span">{t('signature.list.item.type')}</Typography>
+              <Typography variant="caption" component="span">{`${t('signature.list.item.type')}`}</Typography>
             </Fragment>
           } />
       </ListItemButton>

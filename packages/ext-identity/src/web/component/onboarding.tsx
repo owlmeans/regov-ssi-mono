@@ -40,34 +40,34 @@ export const Onboarding: FunctionComponent<OnboardingParams> =
       {isBrowser && <DialogTitle>
         <Stepper activeStep={activeStep}>
           <Step>
-            <StepLabel><Typography variant='h6'>{t('step.welcom.label')}</Typography></StepLabel>
+            <StepLabel><Typography variant='h6'>{`${t('step.welcom.label')}`}</Typography></StepLabel>
           </Step>
           <Step>
-            <StepLabel><Typography variant='h6'>{t('step.initialize.label')}</Typography></StepLabel>
+            <StepLabel><Typography variant='h6'>{`${t('step.initialize.label')}`}</Typography></StepLabel>
           </Step>
           <Step>
-            <StepLabel><Typography variant='h6'>{t('step.finish.label')}</Typography></StepLabel>
+            <StepLabel><Typography variant='h6'>{`${t('step.finish.label')}`}</Typography></StepLabel>
           </Step>
         </Stepper>
       </DialogTitle>}
       <DialogContent>
         {0 === activeStep && <Fragment>
-          <Typography variant='h5'>{t('step.welcom.title')}</Typography>
-          <Typography variant='body1'>{t('step.welcom.why')}</Typography>
-          <Typography variant='body1'>{t('step.welcom.note')}</Typography>
-          <Typography variant='body1'>{t('step.welcom.oppotunities.title')}</Typography>
+          <Typography variant='h5'>{`${t('step.welcom.title')}`}</Typography>
+          <Typography variant='body1'>{`${t('step.welcom.why')}`}</Typography>
+          <Typography variant='body1'>{`${t('step.welcom.note')}`}</Typography>
+          <Typography variant='body1'>{`${t('step.welcom.oppotunities.title')}`}</Typography>
           <ul>
-            <li><Typography variant='subtitle1'>{t('step.welcom.oppotunities.op1')}</Typography></li>
-            <li><Typography variant='subtitle1'>{t('step.welcom.oppotunities.op2')}</Typography></li>
-            <li><Typography variant='subtitle1'>{t('step.welcom.oppotunities.op3')}</Typography></li>
-            <li><Typography variant='subtitle1'>{t('step.welcom.oppotunities.op4')}</Typography></li>
-            <li><Typography variant='subtitle1'>{t('step.welcom.oppotunities.op5')}</Typography></li>
+            <li><Typography variant='subtitle1'>{`${t('step.welcom.oppotunities.op1')}`}</Typography></li>
+            <li><Typography variant='subtitle1'>{`${t('step.welcom.oppotunities.op2')}`}</Typography></li>
+            <li><Typography variant='subtitle1'>{`${t('step.welcom.oppotunities.op3')}`}</Typography></li>
+            <li><Typography variant='subtitle1'>{`${t('step.welcom.oppotunities.op4')}`}</Typography></li>
+            <li><Typography variant='subtitle1'>{`${t('step.welcom.oppotunities.op5')}`}</Typography></li>
           </ul>
         </Fragment>}
         {1 === activeStep && <IdentityCreation {...props} ns={ns} proceedHandle={proceedHandle} />}
         {2 === activeStep && <Fragment>
-          <Typography variant='h5'>{t('step.finish.title')}</Typography>
-          <Typography variant='body1'>{t('step.finish.congratulation')}</Typography>
+          <Typography variant='h5'>{`${t('step.finish.title')}`}</Typography>
+          <Typography variant='body1'>{`${t('step.finish.congratulation')}`}</Typography>
         </Fragment>}
       </DialogContent>
       <DialogActions>

@@ -37,7 +37,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
     renderer: FallbackRenderer
   }) => {
     const { handler, extensions } = useRegov()
-    const Renderer = ComRenderer || FallbackRenderer
+    const Renderer: FunctionComponent<CredentialBuilderImplProps> = ComRenderer || FallbackRenderer
 
     if (!wallet) {
       return <Fragment />

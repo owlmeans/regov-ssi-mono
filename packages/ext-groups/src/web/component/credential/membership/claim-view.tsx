@@ -77,7 +77,7 @@ export const MembershipClaimView: FunctionComponent<ClaimViewParams> =
       <DialogActions>
         <CredentialActionGroup content={presentation} prettyOutput
           exportTitle={`${wrapper?.meta.title || subject.role}.claim`} />
-        <Button onClick={close}>{t('membership.claimView.close')}</Button>
+        <Button onClick={close}>{`${t('membership.claimView.close')}`}</Button>
       </DialogActions>
     </Fragment>
   })

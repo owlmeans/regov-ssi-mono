@@ -58,12 +58,12 @@ export const SignatureRequestItemWeb = (ext: Extension): FunctionComponent<Signa
               <BorderColor />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={wrapper.meta.title || t('signature.list.item.unknown')}
+          <ListItemText primary={wrapper.meta.title || `${t('signature.list.item.unknown')}`}
             secondary={
               <Fragment>
                 <Typography variant="body2" component="span">{subject.documentHash}</Typography>
                 <br />
-                <Typography variant="caption" component="span">{t('signature.request.item.type')}</Typography>
+                <Typography variant="caption" component="span">{`${t('signature.request.item.type')}`}</Typography>
               </Fragment>
             } />
         </ListItemButton>

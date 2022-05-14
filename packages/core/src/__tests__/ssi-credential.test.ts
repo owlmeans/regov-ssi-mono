@@ -19,7 +19,8 @@ require('dotenv').config()
 import { nodeCryptoHelper } from "../common"
 import {
   buildDidHelper, buildDidRegistryWarpper, DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION,
-  DIDPURPOSE_VERIFICATION
+  DIDPURPOSE_VERIFICATION,
+  VERIFICATION_KEY_HOLDER
 } from "../did"
 import {
   Presentation, UnsignedPresentation, buildSSICore, CredentialSubject, SSICore, Credential,
@@ -99,9 +100,7 @@ describe('SSI Verifiable Credential', () => {
     test.unsigned = unsingnedCredentail
     expect(unsingnedCredentail).toMatchSnapshot({
       id: expect.any(String),
-      holder: {
-        id: expect.any(String)
-      },
+      holder: expect.any(Object),
       issuanceDate: expect.any(String)
     })
   })
@@ -117,17 +116,16 @@ describe('SSI Verifiable Credential', () => {
     const did = <DIDDocument>await test.ssi.did.lookUpDid(test.unsigned.id)
     const credentail = await test.ssi.signCredential(
       test.unsigned,
-      did
+      did,
+      { keyId: VERIFICATION_KEY_HOLDER }
     )
 
     test.credential = credentail
 
     expect(credentail).toMatchSnapshot({
       id: expect.any(String),
-      holder: {
-        id: expect.any(String)
-      },
-      issuer: expect.any(String),
+      holder: expect.any(Object),
+      issuer: expect.any(Object),
       issuanceDate: expect.any(String),
       proof: {
         created: expect.any(String),
@@ -185,10 +183,7 @@ describe('SSI Verifiable Credential', () => {
 
     const vp = await test.ssi?.buildPresentation(
       [test.credential],
-      {
-        holder: did,
-        type: 'TestPresentation'
-      }
+      { id: did.id, holder: did, type: 'TestPresentation' }
     )
 
     test.unsignedP = vp
@@ -196,17 +191,13 @@ describe('SSI Verifiable Credential', () => {
     expect(vp).toMatchSnapshot(
       {
         id: expect.any(String),
-        holder: {
-          id: expect.any(String)
-        },
+        holder: expect.any(Object),
         verifiableCredential: [
           {
-            holder: {
-              id: expect.any(String),
-            },
+            holder: expect.any(Object),
             id: expect.any(String),
             issuanceDate: expect.any(String),
-            issuer: expect.any(String),
+            issuer: expect.any(Object),
             proof: {
               created: expect.any(String),
               jws: expect.any(String),
@@ -236,17 +227,13 @@ describe('SSI Verifiable Credential', () => {
 
     expect(vp).toMatchSnapshot({
       id: expect.any(String),
-      holder: {
-        id: expect.any(String)
-      },
+      holder: expect.any(Object),
       verifiableCredential: [
         {
-          holder: {
-            id: expect.any(String),
-          },
+          holder: expect.any(Object),
           id: expect.any(String),
           issuanceDate: expect.any(String),
-          issuer: expect.any(String),
+          issuer: expect.any(Object),
           proof: {
             created: expect.any(String),
             jws: expect.any(String),

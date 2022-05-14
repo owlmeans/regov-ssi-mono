@@ -43,7 +43,7 @@ export const CredentialProposer: FunctionComponent<CredentialProposerParams> =
     com: ComRenderer,
     renderer: FallbackRenderer
   }) => {
-    const Renderer = ComRenderer || FallbackRenderer
+    const Renderer: FunctionComponent<CredentialProposerImplProps> = ComRenderer || FallbackRenderer
 
     const _props: CredentialProposerImplProps = {
       t, i18n,

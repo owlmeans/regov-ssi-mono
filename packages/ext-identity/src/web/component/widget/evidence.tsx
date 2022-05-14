@@ -45,13 +45,13 @@ export const EvidenceWidget = (ext: Extension): FunctionComponent<EvidenceWidget
         </Grid> */}
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('widget.evidence.uuid')}: {subject.uuid}</Typography>
+        <Typography variant='overline'>{`${t('widget.evidence.uuid')}`}: {subject.uuid}</Typography>
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('widget.evidence.issuedAt')}: {dateFormatter(subject.createdAt)}</Typography>
+        <Typography variant='overline'>{`${t('widget.evidence.issuedAt')}`}: {dateFormatter(subject.createdAt)}</Typography>
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('widget.evidence.sourceApp')}: {subject.sourceApp}</Typography>
+        <Typography variant='overline'>{`${t('widget.evidence.sourceApp')}`}: {subject.sourceApp}</Typography>
       </Grid>
     </Grid>
   })

@@ -71,7 +71,7 @@ export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<Ide
     <DialogTitle>
       <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
         <Grid item xs={8}>
-          {credentialWrapper?.meta?.title || t('identity.view.title')}
+          {credentialWrapper?.meta?.title || `${t('identity.view.title')}`}
         </Grid>
         <Grid item xs={4} container direction="row" justifyContent="flex-end" alignItems="flex-start">
           <Grid item>
@@ -88,16 +88,16 @@ export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<Ide
               <EntityRenderer t={t} entity="identity" title={
                 <Fragment>
                   <Grid item px={1}>
-                    <Typography variant='overline'>{t('identity.view.identifier')}: {subject.identifier}</Typography>
+                    <Typography variant='overline'>{`${t('identity.view.identifier')}`}: {subject.identifier}</Typography>
                   </Grid>
                   <Grid item px={1}>
-                    <Typography variant='overline'>{t('identity.view.sourceApp')}: {subject.sourceApp}</Typography>
+                    <Typography variant='overline'>{`${t('identity.view.sourceApp')}`}: {subject.sourceApp}</Typography>
                   </Grid>
                   <Grid item px={1}>
-                    <Typography variant='overline'>{t('identity.view.uuid')}: {subject.uuid}</Typography>
+                    <Typography variant='overline'>{`${t('identity.view.uuid')}`}: {subject.uuid}</Typography>
                   </Grid>
                   <Grid item px={1}>
-                    <Typography variant='overline'>{t('identity.view.createdAt')}: {subject.createdAt}</Typography>
+                    <Typography variant='overline'>{`${t('identity.view.createdAt')}`}: {subject.createdAt}</Typography>
                   </Grid>
                 </Fragment>
               } subject={subject} />
@@ -115,7 +115,7 @@ export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<Ide
       </Grid>
     </DialogContent>
     <DialogActions>
-      {result.trusted && <Button onClick={() => close && close()}>{t('identity.view.close')}</Button>}
+      {result.trusted && <Button onClick={() => close && close()}>{`${t('identity.view.close')}`}</Button>}
     </DialogActions>
   </Fragment>
 })

@@ -33,9 +33,9 @@ export const CheckGroup = ({ t, fields, rules }: CheckGroupProps) => {
             return <Fragment>
               <FormControlLabel control={<Checkbox {..._field} checked={_field.value} />}
                 label={t(`${field}.label`) as string} />
-              <FormHelperText error={fieldState.invalid}>{
-                fieldState.invalid ? formatError(t, field, fieldState) : t(`${field}.hint`)
-              }</FormHelperText>
+              <FormHelperText error={!!fieldState.error}>
+                {`${fieldState.error ? formatError(t, field, fieldState) : t(`${field}.hint`)}`}
+              </FormHelperText>
             </Fragment>
           }} />
       })}

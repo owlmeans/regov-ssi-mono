@@ -82,11 +82,9 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
             <Grid item container direction="row" justifyContent="center" alignItems="center"
               px={3} xs={hasDoc ? 11 : 12}>
               <FormControl>
-                <Typography sx={{ color: success ? "success.main" : "main" }}>{t(
-                  document
-                    ? 'processor.mobile.import.loaded'
-                    : 'processor.mobile.import.label'
-                )}</Typography>
+                <Typography sx={{ color: success ? "success.main" : "main" }}>
+                  {`${t(document ? 'processor.mobile.import.loaded' : 'processor.mobile.import.label')}`}
+                </Typography>
                 {fieldState.invalid && <FormHelperText error={true}>
                   {formatError(t, "processor.mobile.input", fieldState)}
                 </FormHelperText>}
@@ -107,9 +105,9 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
               {showInput
                 ? <TextField fullWidth multiline margin="normal" variant="filled"
                   InputLabelProps={{ shrink: true }} maxRows={15} minRows={5}
-                  {...field} label={t('processor.input.label')} error={fieldState.invalid}
+                  {...field} label={`${t('processor.input.label')}`} error={!!fieldState.error}
                   helperText={
-                    fieldState.invalid ? formatError(t, "processor.input", fieldState) : t('processor.input.hint')
+                    `${fieldState.error ? formatError(t, "processor.input", fieldState) : t('processor.input.hint')}`
                   }
                   InputProps={{
                     sx: { fontSize: 10, fontFamily: "monospace" },
@@ -126,12 +124,12 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
                   <Grid item container direction="row" justifyContent="center" alignItems="center"
                     px={3} xs={hasDoc ? 11 : 12}>
                     <FormControl>
-                      <Typography sx={{ color: success ? "success.main" : "main" }}>{t(
+                      <Typography sx={{ color: success ? "success.main" : "main" }}>{`${t(
                         document
                           ? 'processor.import.loaded'
                           : isDragActive ? 'processor.import.drop' : 'processor.import.here'
-                      )}</Typography>
-                      {fieldState.invalid && <FormHelperText error={true}>
+                      )}`}</Typography>
+                      {fieldState.error && <FormHelperText error={true}>
                         {formatError(t, "processor.input", fieldState)}
                       </FormHelperText>}
                     </FormControl>

@@ -218,8 +218,8 @@ export const SignatureResponseWeb: FunctionComponent<SignatureResponseParams> =
           {response
             ? <CredentialActionGroup content={response} prettyOutput
               exportTitle={`${currentSignature?.meta.title || currentSubject.name}.response`} />
-            : <Button onClick={methods.handleSubmit(produce)}>{t('signature.response.produce')}</Button>}
-          <Button onClick={close}>{t('signature.response.close')}</Button>
+            : <Button onClick={methods.handleSubmit(produce)}>{`${t('signature.response.produce')}`}</Button>}
+          <Button onClick={close}>{`${t('signature.response.close')}`}</Button>
         </DialogActions>
       </Fragment>
     })

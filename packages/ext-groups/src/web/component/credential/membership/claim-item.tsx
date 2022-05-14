@@ -53,12 +53,12 @@ export const MembershipClaimItem = (ext: Extension): FunctionComponent<ClaimItem
             <Person />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={wrapper.meta.title || t('membership.claim.list.item.unknown')}
+        <ListItemText primary={wrapper.meta.title || `${t('membership.claim.list.item.unknown')}`}
           secondary={
             <Fragment>
               <Typography variant="body2" component="span">{subject.role}</Typography>
               <br />
-              <Typography variant="caption" component="span">{t('membership.claim.list.item.type')}</Typography>
+              <Typography variant="caption" component="span">{`${t('membership.claim.list.item.type')}`}</Typography>
             </Fragment>
           } />
       </ListItemButton>

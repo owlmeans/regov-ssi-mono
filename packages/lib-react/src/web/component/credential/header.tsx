@@ -47,11 +47,11 @@ export const CredentialHeader = withRegov<
       maxWidth="100%">
       <Grid item>
         <Button variant="outlined" color="primary"
-          onClick={() => setOpenCreation(true)}>{t('header.create')}</Button>
+          onClick={() => setOpenCreation(true)}>{`${t('header.create')}`}</Button>
       </Grid>
       <Grid item>
         <Button variant="outlined" color="primary"
-          onClick={() => setOpenRequest(true)}>{t('header.request')}</Button>
+          onClick={() => setOpenRequest(true)}>{`${t('header.request')}`}</Button>
       </Grid>
     </Grid>
     <HeaderMenu open={openCreation} t={t} setOpen={setOpenCreation} menuList={createMenuList}
@@ -73,7 +73,7 @@ export const CredentialHeader = withRegov<
 
 const HeaderMenu: FunctionComponent<HeaderMenuProps> = ({ t, title, open, setOpen, menuList, action, Icon }) => {
   return <Dialog open={open} scroll="paper" onClose={() => setOpen(false)}>
-    <DialogTitle>{t(title)}</DialogTitle>
+    <DialogTitle>{`${t(title)}`}</DialogTitle>
     <DialogContent>
       <MenuList>
         {
@@ -88,7 +88,7 @@ const HeaderMenu: FunctionComponent<HeaderMenuProps> = ({ t, title, open, setOpe
                 }
               }>
                 <ListItemIcon><Icon fontSize="small" /></ListItemIcon>
-                <ListItemText>{t(item.title, { ns: item.ns })}</ListItemText>
+                <ListItemText>{`${t(item.title, { ns: item.ns })}`}</ListItemText>
               </MenuItem>
             }
           )

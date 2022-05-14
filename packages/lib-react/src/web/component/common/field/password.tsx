@@ -29,12 +29,8 @@ export const PasswordInput = ({ t, field, rules }: PasswordInputProps) => {
       render={({ field: _field, fieldState }) => {
         return <TextField type="password" autoComplete="current-password" fullWidth margin="normal" variant="outlined"
           InputLabelProps={{ shrink: true }} {..._field}
-          label={t(`${field}.label`)} error={fieldState.invalid}
-          helperText={
-            fieldState.invalid
-              ? formatError(t, field, fieldState) // t(`${field}.error.${fieldState.error?.message || fieldState.error?.type || ''}`)
-              : t(`${field}.hint`)
-          }
+          label={`${t(`${field}.label`)}`} error={!!fieldState.error}
+          helperText={`${fieldState.error ? formatError(t, field, fieldState) : t(`${field}.hint`)}`}
         />
       }} />
   </Grid>

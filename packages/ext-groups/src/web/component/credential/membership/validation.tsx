@@ -57,11 +57,11 @@ export const MembershipValidationWidget = (_: Extension): FunctionComponent<Resu
           <ListItemText primary={<Typography variant="body2">{`Code: ${subject.memberCode}`}</Typography>}
             secondary={<Fragment>
               <Typography variant='caption'>{
-                t(`membership.widget.validation.${result.result.trusted ? 'trusted' : 'untrusted'}`)
+                `${t(`membership.widget.validation.${result.result.trusted ? 'trusted' : 'untrusted'}`)}`
               }</Typography>
               <br />
               <Typography variant='caption'>{
-                t(`membership.widget.validation.${result.result.valid ? 'valid' : 'invalid'}`)
+                `${t(`membership.widget.validation.${result.result.valid ? 'valid' : 'invalid'}`)}`
               }</Typography>
             </Fragment>} />
         </ListItemButton>
@@ -69,7 +69,7 @@ export const MembershipValidationWidget = (_: Extension): FunctionComponent<Resu
         {evidence.length > 0 && <ListItem sx={{ px: 0, mx: 0 }}>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
+              <Typography variant="subtitle2">{`${t('widget.validation.header.parent')}`}</Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ px: 0, mx: 0 }}>
               <List>

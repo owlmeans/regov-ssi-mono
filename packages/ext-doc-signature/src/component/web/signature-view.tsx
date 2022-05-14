@@ -139,7 +139,7 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
     <DialogTitle>
       <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
         <Grid item xs={8}>
-          {t('signature.view.title', { name: subject.name })}
+          {`${t('signature.view.title', { name: subject.name })}`}
         </Grid>
         <Grid item xs={4} container direction="row" justifyContent="flex-end" alignItems="flex-start">
           <Grid item>
@@ -199,7 +199,7 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
       </Grid>
     </DialogContent>
     <DialogActions>
-      <Button onClick={close}>{t('signature.response.close')}</Button>
+      <Button onClick={close}>{`${t('signature.response.close')}`}</Button>
     </DialogActions>
   </Fragment>
 })

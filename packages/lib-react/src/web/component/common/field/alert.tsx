@@ -29,15 +29,12 @@ export const AlertOutput = ({ t, field }: AlertOutputProps) => {
       ({ field, fieldState }) => {
         const type = fieldState.error?.type || 'error'
 
-        return fieldState.invalid ? <Alert severity={t([
+        return fieldState.error ? <Alert severity={t([
           `${field.name}.error.severity.${type}`,
           `${field.name}.error.severity.error`,
           'alert.error.severity'
         ])}>
-          <AlertTitle>{t([
-            `${field.name}.error.title.${type}`,
-            `alert.error.label`,
-          ])}</AlertTitle>
+          <AlertTitle>{`${t([`${field.name}.error.title.${type}`, `alert.error.label`])}`}</AlertTitle>
           {formatError(t, field.name, fieldState)}
         </Alert> : <Fragment></Fragment>
       }

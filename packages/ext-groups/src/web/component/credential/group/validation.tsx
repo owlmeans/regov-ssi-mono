@@ -56,11 +56,11 @@ export const GroupValidationWidget = (_: Extension): FunctionComponent<ResultWid
           <ListItemText primary={<Typography variant="body2">{`Group ID: ${subject.uuid}`}</Typography>}
             secondary={<Fragment>
               <Typography variant='caption'>{
-                t(`group.widget.validation.${result.result.trusted ? 'trusted' : 'untrusted'}`)
+                `${t(`group.widget.validation.${result.result.trusted ? 'trusted' : 'untrusted'}`)}`
               }</Typography>
               <br />
               <Typography variant='caption'>{
-                t(`group.widget.validation.${result.result.valid ? 'valid' : 'invalid'}`)
+                `${t(`group.widget.validation.${result.result.valid ? 'valid' : 'invalid'}`)}`
               }</Typography>
             </Fragment>} />
         </ListItemButton>
@@ -68,7 +68,7 @@ export const GroupValidationWidget = (_: Extension): FunctionComponent<ResultWid
         {evidence.length > 0 && <ListItem sx={{ px: 0, mx: 0 }}>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
+              <Typography variant="subtitle2">{`${t('widget.validation.header.parent')}`}</Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ px: 0, mx: 0 }}>
               <List>

@@ -37,7 +37,7 @@ export const ValidationResultWidgetWeb: FunctionComponent<ResultWidgetParamsWeb>
 
   return <Fragment>
     <List subheader={<ListSubheader disableSticky>
-      <Typography variant="subtitle1">{t('widget.validation.header.title')}</Typography>
+      <Typography variant="subtitle1">{`${t('widget.validation.header.title')}`}</Typography>
     </ListSubheader>}>
       <ListItemButton onClick={() => {
         if (!result.instance || !handle.setResult) {
@@ -52,13 +52,13 @@ export const ValidationResultWidgetWeb: FunctionComponent<ResultWidgetParamsWeb>
               : <ErrorOutline color="error" />}
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={t(`widget.validation.main.${result.trusted ? 'trusted' : 'untrusted'}`)}
-          secondary={t(`widget.validation.main.${result.valid ? 'valid' : 'invalid'}`)} />
+        <ListItemText primary={`${t(`widget.validation.main.${result.trusted ? 'trusted' : 'untrusted'}`)}`}
+          secondary={`${t(`widget.validation.main.${result.valid ? 'valid' : 'invalid'}`)}`} />
       </ListItemButton>
       <EvidenceTrust handle={handle} />
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
+          <Typography variant="subtitle2">{`${t('widget.validation.header.parent')}`}</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ px: 0, mx: 0 }}>
           <List>

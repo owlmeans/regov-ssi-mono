@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-
 import React, { Fragment, FunctionComponent, useState } from 'react'
 import {
   Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid,
@@ -126,7 +125,7 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
             <Warning color="warning" fontSize="large" />
           </Grid>
           <Grid item>
-            {t('widget.trust.title')}
+            {`${t('widget.trust.title')}`}
           </Grid>
         </Grid>
       </DialogTitle>
@@ -143,19 +142,21 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
         {step === 'confirmation' && <Fragment>
           <Typography variant="h6">
             <Report color="error" fontSize="small" />
-            {t('widget.trust.confirmation.title')}
+            {`${t('widget.trust.confirmation.title')}`}
           </Typography>
-          <DialogContentText>{t('widget.trust.confirmation.text')}</DialogContentText>
+          <DialogContentText>{`${t('widget.trust.confirmation.text')}`}</DialogContentText>
         </Fragment>}
       </DialogContent>
       <DialogActions>
         {step === 'input' && <Fragment>
-          <Button onClick={close}>{t('widget.trust.action.cancel')}</Button>
-          <Button onClick={methods.handleSubmit(() => setStep('confirmation'))}>{t('widget.trust.action.trust')}</Button>
+          <Button onClick={close}>{`${t('widget.trust.action.cancel')}`}</Button>
+          <Button onClick={methods.handleSubmit(() => setStep('confirmation'))}>
+            {`${t('widget.trust.action.trust')}`}
+          </Button>
         </Fragment>}
         {step === 'confirmation' && <Fragment>
-          <Button onClick={() => setStep('input')}>{t('widget.trust.action.back')}</Button>
-          <Button onClick={methods.handleSubmit(trust)}>{t('widget.trust.action.confirm')}</Button>
+          <Button onClick={() => setStep('input')}>{`${t('widget.trust.action.back')}`}</Button>
+          <Button onClick={methods.handleSubmit(trust)}>{`${t('widget.trust.action.confirm')}`}</Button>
         </Fragment>}
       </DialogActions>
     </Dialog>

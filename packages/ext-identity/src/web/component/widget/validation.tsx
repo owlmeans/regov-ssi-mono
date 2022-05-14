@@ -57,10 +57,10 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
           <ListItemText primary={<Typography variant="body2">{`ID: ${subject.identifier}`}</Typography>}
             secondary={<Fragment>
               <Typography variant='caption'>{
-                t(`widget.validation.main.${result.result.trusted ? 'trusted' : 'untrusted'}`)
+                `${t(`widget.validation.main.${result.result.trusted ? 'trusted' : 'untrusted'}`)}`
               }</Typography>
               <Typography variant='caption'>{
-                t(`widget.validation.main.${result.result.valid ? 'valid' : 'invalid'}`)
+                `${t(`widget.validation.main.${result.result.valid ? 'valid' : 'invalid'}`)}`
               }</Typography>
             </Fragment>} />
         </ListItemButton>
@@ -68,7 +68,7 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
         {evidence.length > 0 && <ListItem sx={{ px: 0, mx: 0 }}>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
+              <Typography variant="subtitle2">{`${t('widget.validation.header.parent')}`}</Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ px: 0, mx: 0 }}>
               <List>

@@ -40,7 +40,7 @@ export const CredentialEvidenceWidgetWeb = (props: EvidenceWidgetImplProps) => {
   const Renderer = (renderer?.com || StandardEvidenceWidget) as FunctionComponent<PurposeEvidenceWidgetParams>
 
   return <Card>
-    <CardHeader title={!isChild && t('widget.evidence.header.title')}
+    <CardHeader title={!isChild && `${t('widget.evidence.header.title')}`}
       subheader={<Fragment>
         <Tabs value={tabIdx} onChange={(_, tabIdx) => setTab(tabIdx)}>
           {tabs.map(tab => <Tab key={`${tab.idx}`} value={tab.idx} label={tab.title} />)}
@@ -57,7 +57,7 @@ export const CredentialEvidenceWidgetWeb = (props: EvidenceWidgetImplProps) => {
         {tab.evidence.evidence && <Grid item>
           <Accordion TransitionProps={{ unmountOnExit: true }}>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography>{t('widget.evidence.accordion.summary')}</Typography>
+              <Typography>{`${t('widget.evidence.accordion.summary')}`}</Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ px: 0, mx: 0 }}>
               <CredentialEvidenceWidget isChild credential={tab.evidence as Credential} />

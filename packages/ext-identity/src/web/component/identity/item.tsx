@@ -60,7 +60,7 @@ export const IdentityItem = (ext: Extension): FunctionComponent<IdentityItemPara
             <DocumentScanner />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={wrapper.meta.title || t('identity.list.item.unknown')}
+        <ListItemText primary={wrapper.meta.title || `${t('identity.list.item.unknown')}`}
           secondary={
             <Fragment>
               <Typography variant="body2" component="span">{subject.identifier}</Typography>

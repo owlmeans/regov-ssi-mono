@@ -1,6 +1,10 @@
 yarn install
 lerna clean
-cd packages/core
+cd packages/tiny-secp256k1-2019
+yarn build
+lerna link
+yarn link
+cd ../../packages/core
 yarn build
 lerna link
 yarn link

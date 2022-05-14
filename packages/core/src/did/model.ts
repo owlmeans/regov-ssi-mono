@@ -27,8 +27,10 @@ import {
   DIDVerificationItem, ParseDIDIdMethod, DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD,
   BuildDocumentLoader, ExpandVerificationMethod, ExtractKeyMethod, DID_EXTRACTKEY_WRONG_DID,
 } from './types'
-import didContext from '../docs/did.context.json'
 import { documentWarmer } from './loader'
+import didContext from '../docs/did.context.json'
+import securityV1 from '../docs/v1.security.context.json'
+import securityV2 from '../docs/v2.security.context.json'
 
 const jldsign = require('jsonld-signatures')
 
@@ -41,7 +43,7 @@ const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
  */
 export const buildDidHelper =
   (
-    crypto: CryptoHelper, 
+    crypto: CryptoHelper,
     buildOptions: BuildDIDHelperOptions = {
       prefix: DEFAULT_DID_PREFIX,
       schemaPath: DEFAULT_DID_SCHEMA_PATH,
@@ -56,18 +58,21 @@ export const buildDidHelper =
 
     const baseSchemaUrl = /* options.baseSchemaUrl ||*/ buildOptions.baseSchemaUrl || DEFAULT_APP_SCHEMA_URL
     const contextUrl = `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`
-    const context = JSON.stringify({
+
+    documentWarmer('https://w3id.org/did/v1', JSON.stringify(didContext))
+    documentWarmer('https://w3id.org/security/v1', JSON.stringify(securityV1))
+    documentWarmer('https://w3id.org/security/v2', JSON.stringify(securityV2))
+    documentWarmer(contextUrl, JSON.stringify({
       '@context': {
         '@version': 1.1,
         didx: contextUrl,
         xsd: 'http://www.w3.org/2001/XMLSchema#',
         nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
+        created: { '@id': 'didx:created', '@type': 'xsd:string' },
+        proofPurpose: { '@id': 'didx:proofPurpose', '@type': 'xsd:string' },
         publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
       }
-    })
-
-    documentWarmer('https://w3id.org/did/v1', JSON.stringify({ '@context': didContext }))
-    documentWarmer(contextUrl, context)
+    }))
 
     const _makeDIDId = (key: CryptoKey, options: MakeDIDIdOptions = {}) => {
       if (!key.id) {
@@ -365,7 +370,7 @@ export const buildDidHelper =
             type: VERIFICATION_METHOD,
             ..._buildKeyPayload(key.pubKey)
           }
-          
+
           const existedVerificationIdx = normalizeValue(didDocUnsigned.verificationMethod).findIndex(
             _method => _method && _method.id === verification.id
           )
@@ -382,6 +387,7 @@ export const buildDidHelper =
           }
         }
 
+        // suite, purpose, documentLoader, expansionMap, addSuiteContext
         return await jldsign.sign(
           _cutProof(didDocUnsigned),
           {
@@ -401,8 +407,7 @@ export const buildDidHelper =
               )
               : new jldsign.purposes.PublicKeyProofPurpose({
                 controller: { id: controller }
-              }),
-            compactProof: false,
+              })
           }
         )
       },

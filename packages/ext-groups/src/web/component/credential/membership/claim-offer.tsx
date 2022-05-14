@@ -165,8 +165,8 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
         </WalletFormProvider>
       </DialogContent>
       <DialogActions>
-        <Button onClick={close}>{t('membership.offer.close')}</Button>
-        {claim && <Button onClick={methods.handleSubmit(save)}>{t('membership.offer.save')}</Button>}
+        <Button onClick={close}>{`${t('membership.offer.close')}`}</Button>
+        {claim && <Button onClick={methods.handleSubmit(save)}>{`${t('membership.offer.save')}`}</Button>}
       </DialogActions>
     </Fragment>
   })

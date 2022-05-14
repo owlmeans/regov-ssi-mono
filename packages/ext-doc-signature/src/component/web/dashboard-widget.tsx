@@ -42,7 +42,7 @@ export const DashboardWidgetWeb = (ext: Extension) => withRegov<DashboardWidgetP
           <Grid item>&nbsp;</Grid>
           <Grid item container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item>
-              <Typography variant="h6">{t('dashboard.widget.signature.add')} </Typography>
+              <Typography variant="h6">{`${t('dashboard.widget.signature.add')}`} </Typography>
             </Grid>
             <Grid item><Add /></Grid>
           </Grid>
@@ -51,16 +51,16 @@ export const DashboardWidgetWeb = (ext: Extension) => withRegov<DashboardWidgetP
         <Grid item xs={3}>&nbsp;</Grid>
       </Grid>
       <Dialog open={openMenu} scroll="paper" onClose={() => setOpenMenu(false)}>
-        <DialogTitle>{t('dashboard.widget.menu.title')}</DialogTitle>
+        <DialogTitle>{`${t('dashboard.widget.menu.title')}`}</DialogTitle>
         <DialogContent>
           <MenuList>
             <MenuItem onClick={() => navigate(pathRequest)}>
               <ListItemIcon><Drafts fontSize="small" /></ListItemIcon>
-              <ListItemText>{t('dashboard.widget.menu.request')}</ListItemText>
+              <ListItemText>{`${t('dashboard.widget.menu.request')}`}</ListItemText>
             </MenuItem>
             <MenuItem onClick={() => navigate(pathCreate)}>
               <ListItemIcon><AddCircleOutline fontSize="small" /></ListItemIcon>
-              <ListItemText>{t('dashboard.widget.menu.create')}</ListItemText>
+              <ListItemText>{`${t('dashboard.widget.menu.create')}`}</ListItemText>
             </MenuItem>
           </MenuList>
         </DialogContent>

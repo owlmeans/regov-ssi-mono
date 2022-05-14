@@ -60,12 +60,12 @@ export const MembershipItem = (ext: Extension): FunctionComponent<MembershipItem
             <Person />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={wrapper.meta.title || t('group.list.item.unknown')}
+        <ListItemText primary={wrapper.meta.title || `${t('group.list.item.unknown')}`}
           secondary={
             <Fragment>
               <Typography variant="body2" component="span">{groupSubject.name} - {subject.role}</Typography>
               <br />
-              <Typography variant="caption" component="span">{t('membership.list.item.type')}</Typography>
+              <Typography variant="caption" component="span">{`${t('membership.list.item.type')}`}</Typography>
             </Fragment>
           } />
       </ListItemButton>

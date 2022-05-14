@@ -58,7 +58,7 @@ export const DashboardWidget = (ext: Extension) =>
         </Grid>
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('widget.dashboard.issuedAt')}: {dateFormatter(subject.createdAt)}</Typography>
+        <Typography variant='overline'>{`${t('widget.dashboard.issuedAt')}`}: {dateFormatter(subject.createdAt)}</Typography>
       </Grid>
       <Grid item container px={1} mt={2} direction="row" justifyContent="space-between" alignItems="flex-end">
         <Grid item xs={7}>

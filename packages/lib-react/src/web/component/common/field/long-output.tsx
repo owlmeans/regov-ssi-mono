@@ -66,7 +66,7 @@ export const LongOutput = (props: LongOutputProps) => {
             {longRead
               ? <Typography variant="body1">{valueHolder.value}</Typography>
               : <Typography variant="caption"><pre>{valueHolder.value}</pre></Typography>}
-            <FormHelperText>{t(`${field}.hint`)}</FormHelperText>
+            <FormHelperText>{`${t(`${field}.hint`)}`}</FormHelperText>
           </FormControl>
         }} />
     </Grid>

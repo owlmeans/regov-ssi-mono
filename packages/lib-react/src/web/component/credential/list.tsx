@@ -35,7 +35,7 @@ export const CredentialListWeb = (props: CredentialListImplProps) => {
         sx={{ maxWidth: window.innerWidth * 0.80 }}
         onChange={(_, tab) => props.switchTab(tab)}>
         {tabs.map(
-          tab => <Tab key={tab.name} value={tab.registry.type} label={t(`list.tab.${tab.name}.label`)} />
+          tab => <Tab key={tab.name} value={tab.registry.type} label={`${t(`list.tab.${tab.name}.label`)}`} />
         )}
       </Tabs>
       <Divider />

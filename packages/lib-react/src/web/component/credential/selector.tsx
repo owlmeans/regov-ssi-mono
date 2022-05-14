@@ -41,8 +41,6 @@ export const CredentialSelector = (
     }
   }, [selectedId, currentValue, defaultId])
 
-  // 
-
   return credentials.length > 0
     ? <Fragment>
       <Grid item onClick={() => setOpen(true)} style={{ cursor: "pointer" }}
@@ -54,10 +52,10 @@ export const CredentialSelector = (
               : <FormControl focused fullWidth margin="normal" variant="filled">
                 <Typography color="info.dark">{`${selected.meta.title}`}</Typography>
                 <Typography>{selected.credential.id}</Typography>
-                <FormHelperText>{t(`${field}.hint`)}</FormHelperText>
+                <FormHelperText>{`${t(`${field}.hint`)}`}</FormHelperText>
               </FormControl>
             : <Fragment>
-              <Typography>{t(`${field}.pleaseSelect`)}</Typography>
+              <Typography>{`${t(`${field}.pleaseSelect`)}`}</Typography>
             </Fragment>
         }} />
       </Grid>
@@ -85,7 +83,7 @@ export const CredentialSelector = (
     : <Grid item>
       <FormControl focused fullWidth margin="normal" variant="standard" error={true}>
         <Typography variant="h5" color="error">
-          {t(`${field}.noItems`)}
+          {`${t(`${field}.noItems`)}`}
         </Typography>
       </FormControl>
     </Grid>

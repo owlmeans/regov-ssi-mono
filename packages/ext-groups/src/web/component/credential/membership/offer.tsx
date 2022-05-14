@@ -159,8 +159,8 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
             </WalletFormProvider>
           </DialogContent>
           <DialogActions>
-            <Button onClick={methods.handleSubmit(proceed)}>{t('membership.offer.proceed')}</Button>
-            <Button onClick={close}>{t('membership.offer.close')}</Button>
+            <Button onClick={methods.handleSubmit(proceed)}>{`${t('membership.offer.proceed')}`}</Button>
+            <Button onClick={close}>{`${t('membership.offer.close')}`}</Button>
           </DialogActions>
         </Fragment>
         : <Fragment>
@@ -179,7 +179,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           </DialogContent>
           <DialogActions>
             <CredentialActionGroup prettyOutput content={offer} exportTitle={name} />
-            <Button onClick={close}>{t('membership.offer.close')}</Button>
+            <Button onClick={close}>{`${t('membership.offer.close')}`}</Button>
           </DialogActions>
         </Fragment>}
     </Fragment>

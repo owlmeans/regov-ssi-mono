@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import { Secp256k1Key, Secp256k1Signature } from "@affinidi/tiny-lds-ecdsa-secp256k1-2019"
+import { Secp256k1Key, Secp256k1Signature } from "../../../../../tiny-secp256k1-2019/dist"
 
-import {sha256} from 'hash.js'
+import { sha256 } from 'hash.js'
 import { fromSeed, BIP32Interface } from 'bip32'
 import { Base58Lib, CryptoHelper, CryptoKey } from "../types"
 import { encode as encode58, decode as decode58 } from './base58'

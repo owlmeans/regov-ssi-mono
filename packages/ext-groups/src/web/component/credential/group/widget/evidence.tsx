@@ -32,15 +32,15 @@ export const EvidenceWidget = (ext: Extension): FunctionComponent<EvidenceWidget
       <Grid item container px={1} direction="row" justifyContent="space-between" alignItems="flex-start">
         <Grid item container xs={10} pt={1} direction="column" justifyContent="space-between" alignItems="stretch">
           <Grid item>
-            <Typography variant='overline'>{t('group.widget.evidence.name')}: {subject.name}</Typography>
+            <Typography variant='overline'>{`${t('group.widget.evidence.name')}`}: {subject.name}</Typography>
           </Grid>
         </Grid>
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('group.widget.evidence.uuid')}: {subject.uuid}</Typography>
+        <Typography variant='overline'>{`${t('group.widget.evidence.uuid')}`}: {subject.uuid}</Typography>
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('group.widget.evidence.createdAt')}: {dateFormatter(subject.createdAt)}</Typography>
+        <Typography variant='overline'>{`${t('group.widget.evidence.createdAt')}`}: {dateFormatter(subject.createdAt)}</Typography>
       </Grid>
       {subject.description && subject.description !== '' && <Grid item px={1}>
         <Typography variant='overline'>{subject.description}</Typography>

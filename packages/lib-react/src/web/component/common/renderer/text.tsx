@@ -37,17 +37,17 @@ export const EntityTextRenderer = ({
         entity = entity || _entity
         return value && value !== '' ? <FormControl focused fullWidth margin="normal" variant="standard" size={small ? "small" : "medium"}>
           {(showIntro || showIntroLabel) && <InputLabel htmlFor={`${entity}.${field}.output`}>
-            {showIntro ? t(`${entity}.${field}.intro`) : showIntroLabel ? t(`${entity}.${field}.label`) : ''}
+            {`${showIntro ? t(`${entity}.${field}.intro`) : showIntroLabel ? t(`${entity}.${field}.label`) : ''}`}
           </InputLabel>}
           <Input readOnly disableUnderline id={`${entity}.${field}.output`}
             size={small ? "small" : "medium"}
             sx={small ? { fontSize: 10 } : {}}
             startAdornment={
               useInlinedLabel && <Typography color="primary" marginRight={1} variant="subtitle1">
-                {t(`${field}.label`)}:
+                {`${t(`${field}.label`)}`}:
               </Typography>
             } value={formatter ? formatter(value, formatTemplate) : value} />
-          {showHint && <FormHelperText>{t(`${entity}.${field}.hint`)}</FormHelperText>}
+          {showHint && <FormHelperText>{`${t(`${entity}.${field}.hint`)}`}</FormHelperText>}
         </FormControl> : <Fragment />
       }}
     </EntityContextConsumer>

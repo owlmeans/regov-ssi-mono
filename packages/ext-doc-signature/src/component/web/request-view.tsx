@@ -71,7 +71,7 @@ export const SignatureRequestViewWeb: FunctionComponent<SignatureRequestViewPara
       <DialogActions>
         <CredentialActionGroup content={presentation} prettyOutput
           exportTitle={`${wrapper?.meta.title || subject.documentHash}.request`} />
-        <Button onClick={close}>{t('signature.request.close')}</Button>
+        <Button onClick={close}>{`${t('signature.request.close')}`}</Button>
       </DialogActions>
     </Fragment>
   })
