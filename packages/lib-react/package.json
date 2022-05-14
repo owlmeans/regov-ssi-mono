@@ -61,5 +61,8 @@
     "moment": "^2.29.1",
     "react-dropzone": "^11.4.2"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "gitHead": "7ed39c573fab390171491390a484f0f6188a163c"
 }

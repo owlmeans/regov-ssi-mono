@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/tiny-lds-ecdsa-secp256k1-2019",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "tiny version of lds-ecdsa-secp256k1-2019",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -17,7 +17,6 @@
     "test:watch": "cross-env NODE_ENV=test jest --watch",
     "lint": "eslint src",
     "test:coverage": "npm run test -- --coverage",
-    "test:coverage:codeclimate": "npm run test:coverage && $GITHUB_WORKSPACE/tmp/cc-test-reporter format-coverage -t lcov -o $GITHUB_WORKSPACE/tmp/codeclimate.verifier_util.json coverage/lcov.info --add-prefix $(pwd | rev | cut -d'/' -f-2 | rev)",
     "checkLicenses": "license-checker --production --failOn 'AGPL 3.0;LGPL 2.1' --summary"
   },
   "repository": {
