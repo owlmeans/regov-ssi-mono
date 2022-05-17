@@ -18,12 +18,13 @@ import { WalletAppParams } from '../app/types'
 import {
   i18nDefaultOptions, i18nSetup, BasicNavigator, RegovProvider, MainLoading
 } from '../../common'
-import React, { PropsWithChildren, useEffect, useMemo } from 'react'
+import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { buildStorageHelper } from '../storage'
 import { i18nRegisterExtensions } from '../../i18n/util'
 import { webComponentMap } from '../component'
 import { buildWalletWrapper, createWalletHandler, EXTENSION_TRIGGER_INIT_SENSETIVE, InitSensetiveEventParams, WalletHandler, webCryptoHelper } from '@owlmeans/regov-ssi-core'
 import { DEFAULT_GUEST_WALLET_ALIAS } from '../types'
+import { CircularProgress } from '@mui/material'
 
 
 const i18n = i18nSetup(i18nDefaultOptions)
@@ -50,14 +51,14 @@ export const WalletIntegrationReact = (
         handler.stores[wallet.store.alias] = await wallet.export()
         await extensions?.triggerEvent<InitSensetiveEventParams>(
           wallet, EXTENSION_TRIGGER_INIT_SENSETIVE, {
-            extensions: extensions.registry
+          extensions: extensions.registry
         })
         await handler.loadStore(async _ => wallet)
       }
     })()
   }, [])
 
-  // const [loaded, setLoaded] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
   const navigator = navigatorBuilder(handler)
 
@@ -69,7 +70,7 @@ export const WalletIntegrationReact = (
     storage.init().then(
       async _ => {
         console.info('STORE INITIALIZED')
-        // setLoaded(true)
+        setLoaded(true)
       }
     )
 
@@ -78,13 +79,12 @@ export const WalletIntegrationReact = (
       storage.detach()
     }
   }, [storage])
-
-  return /* loaded ? */ <RegovProvider i18n={i18n} map={webComponentMap} handler={handler}
-    config={config} navigator={navigator} extensions={extensions} serverClient={serverClient}>
-    {children}
-    <MainLoading nav={navigator} />
-  </RegovProvider>
-  // : <Backdrop sx={{ color: '#fff' }} open={!loaded}>
-  //   <CircularProgress color="inherit" />
-  // </Backdrop>
+  
+  return loaded
+    ? <RegovProvider i18n={i18n} map={webComponentMap} handler={handler}
+      config={config} navigator={navigator} extensions={extensions} serverClient={serverClient}>
+      {children}
+      <MainLoading nav={navigator} />
+    </RegovProvider>
+    : <CircularProgress color="inherit" />
 }
