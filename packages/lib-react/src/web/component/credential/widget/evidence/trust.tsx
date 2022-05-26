@@ -23,9 +23,7 @@ import {
   EmptyProps, EXTENSION_ITEM_PURPOSE_EVIDENCE, generalNameVlidation, PurposeEvidenceWidgetParams,
   RegovComponentProps, useRegov, withRegov
 } from '../../../../../common'
-import {
-  Credential, CredentialSubject, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES
-} from '@owlmeans/regov-ssi-core'
+import { Credential, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
 import {
   EvidenceValidationResult, EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams,
   ValidationResult
@@ -86,7 +84,7 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
          * some around validation type is broken
          */
         const wrapper = await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
-          .addCredential(credential as Credential<CredentialSubject>, REGISTRY_SECTION_PEER)
+          .addCredential(credential, REGISTRY_SECTION_PEER)
 
         if (wrapper) {
           wrapper.meta.title = methods.getValues('trust.field.name')
@@ -134,10 +132,7 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
           <FormProvider {...methods}>
             <MainTextInput {..._props} field="trust.field.name" />
           </FormProvider>
-          <Renderer wrapper={{
-            credential: credential as Credential<CredentialSubject>,
-            meta: { secure: false, title }
-          }} />
+          <Renderer wrapper={{ credential, meta: { secure: false, title } }} />
         </Fragment>}
         {step === 'confirmation' && <Fragment>
           <Typography variant="h6">

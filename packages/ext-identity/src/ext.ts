@@ -21,7 +21,7 @@ import {
   EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, REGISTRY_SECTION_OWN, InitSensetiveEventParams
 } from "@owlmeans/regov-ssi-core"
 import {
-  CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential
+  getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
 import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE, REGOV_IDENTITY_DEFAULT_TYPE } from "./types"
 import { makeRandomUuid } from "@owlmeans/regov-ssi-core"
@@ -67,7 +67,7 @@ export const buildIdentityExtension = (
       selfIssuing: true,
       defaultSubject: {
         sourceApp: params.appName
-      } as unknown as CredentialSubject
+      }
     }
   })
 

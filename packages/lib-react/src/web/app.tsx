@@ -17,7 +17,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Backdrop, CircularProgress, Container, CssBaseline } from '@mui/material'
 import { i18nDefaultOptions, i18nSetup } from '../common'
-import { createWalletHandler} from '@owlmeans/regov-ssi-core'
+import { createWalletHandler } from '@owlmeans/regov-ssi-core'
 import { NavigationRoot, createRootNavigator } from './router'
 import { HashRouter } from 'react-router-dom'
 import { buildStorageHelper } from './storage'
@@ -26,7 +26,7 @@ import { i18nRegisterExtensions } from '../i18n/util'
 
 
 const i18n = i18nSetup(i18nDefaultOptions)
-
+  
 export const WalletApp = ({ config, extensions }: WalletAppParams) => {
   const handler = useMemo(createWalletHandler, [])
   const storage = useMemo(() => buildStorageHelper(handler, config), [config])
@@ -49,18 +49,20 @@ export const WalletApp = ({ config, extensions }: WalletAppParams) => {
     }
   }, [storage])
 
-  return <CssBaseline><Container maxWidth="xl" sx={{ pb: 10 }}>
-    {
-      loaded
-        ? <HashRouter>
-          <AppProvider handler={handler} config={config} extensions={extensions}
-            i18n={i18n} navigatorBuilder={createRootNavigator}>
-            <NavigationRoot />
-          </AppProvider>
-        </HashRouter>
-        : <Backdrop sx={{ color: '#fff' }} open={!loaded}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
-    }
-  </Container></CssBaseline>
+  return <CssBaseline>
+    <Container maxWidth="xl" sx={{ pb: 10 }}>
+      {
+        loaded
+          ? <HashRouter>
+            <AppProvider handler={handler} config={config} extensions={extensions}
+              i18n={i18n} navigatorBuilder={createRootNavigator}>
+              <NavigationRoot />
+            </AppProvider>
+          </HashRouter>
+          : <Backdrop sx={{ color: '#fff' }} open={!loaded}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+      }
+    </Container>
+  </CssBaseline>
 }

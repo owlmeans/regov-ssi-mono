@@ -15,11 +15,11 @@
  */
 
 import { MaybeArray } from "../../common"
-import { Credential, CredentialSubject, Presentation, UnsignedCredential, } from "../../vc/types"
+import { Credential, Presentation, UnsignedCredential, } from "../../vc/types"
 
 
 export type CredentialsRegistry<
-  Subject extends CredentialSubject = CredentialSubject,
+  Subject extends {} = {},
   Type extends RegistryItem<Subject> = Credential<Subject>
   > = {
     rootCredential?: string
@@ -46,7 +46,7 @@ export type RemoveCredentialMethod =
   ) => Promise<CredentialWrapper>
 
 export type AddCredentialMethod = <
-  Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>,
+  Subject extends {} = {},
   Type extends RegistryItem<Subject> = Credential<Subject>
   >(
   credential: Type,
@@ -54,13 +54,13 @@ export type AddCredentialMethod = <
 ) => Promise<CredentialWrapper<Subject, Type>>
 
 export type RegistryItem<
-  Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>,
+  Subject extends {} = {},
   PresentationT extends Presentation = Presentation
   > =
   Credential<Subject> | UnsignedCredential<Subject> | PresentationT
 
 export type LookupCredentialsMethod = <
-  Subject extends CredentialSubject = CredentialSubject,
+  Subject extends {} = {},
   Type extends RegistryItem<Subject> = Credential<Subject>
   >(
   type: string | string[],
@@ -68,7 +68,7 @@ export type LookupCredentialsMethod = <
 ) => Promise<CredentialWrapper<Subject, Type>[]>
 
 export type GetCredentialMethod = <
-  Subject extends CredentialSubject = CredentialSubject,
+  Subject extends {} = {},
   Type extends RegistryItem<Subject> = Credential<Subject>
   >(
   id?: string,
@@ -92,7 +92,7 @@ export const REGISTRY_SECTION_OWN = 'own'
 export const REGISTRY_SECTION_PEER = 'peer'
 
 export type CredentialWrapper<
-  Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>,
+  Subject extends {} = {},
   Type extends RegistryItem<Subject> = Credential<Subject>
   > = {
     credential: Type

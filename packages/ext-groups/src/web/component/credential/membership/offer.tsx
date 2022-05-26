@@ -81,8 +81,8 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           offerType: REGOV_OFFER_TYPE,
           subject,
           id: presentation.id as string,
-          challenge: presentation.proof.challenge,
-          domain: presentation.proof.domain
+          challenge: presentation.proof.challenge || '',
+          domain: presentation.proof.domain || ''
         })
 
         setOffer(offer)

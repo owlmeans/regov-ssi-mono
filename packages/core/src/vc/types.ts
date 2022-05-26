@@ -14,55 +14,80 @@
  *  limitations under the License.
  */
 
-import {
-  SimpleThing, TContext, VCV1, VCV1Subject, VCV1Type, VCV1Unsigned, VPV1, VPV1Holder, VPV1Type,
-  VPV1Unsigned, ContextObj, VCV1Holder
-} from "@affinidi/vc-common"
-import { Validatied as AffinidiValidatied } from "@affinidi/vc-common/dist/verifier/util"
 import { MaybeArray } from "../common"
 import { DIDDocument, DIDDocumentUnsinged } from "../did"
 
 
-export type Validated<T> = AffinidiValidatied<T>
+type ValidatiedSuccess<T> = {
+  kind: 'valid'
+  data: T
+}
 
-export type ContextSchema = ContextObj
+type ErrorConfig = {
+  kind: string
+  message: string
+}
+
+type ValidatiedInvalid = {
+  kind: 'invalid'
+  errors: ErrorConfig[]
+}
+
+export type Validated<T> = ValidatiedSuccess<T> | ValidatiedInvalid
+
+export type ContextObjDetailedItem = {
+  [key: string]: undefined | string | Record<string, unknown>
+  '@id': string
+  '@type': string
+}
+
+export type ContextSchema = {
+  [key: string]: undefined | number | string | ContextObjDetailedItem
+  '@version'?: number
+  '@base'?: string
+  '@vocab'?: string
+}
 
 export type MultiSchema = MaybeArray<ContextSchema>
 
-export type Credential<Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>>
-  = VCV1<Subject> & {
-    holder: CredentialHolder
-    evidence?: MaybeArray<Evidence>
-    credentialSchema?: MaybeArray<CredentialSchema>
-  }
+export type Credential<Subject extends MaybeArray<{}> = MaybeArray<{}>> = UnsignedCredential<Subject> & {
+  issuer: CredentialHolder
+  proof: Proof
+}
 
-export type Identity<Subject extends MaybeArray<IdentitySubject> = MaybeArray<IdentitySubject>>
-  = Credential<Subject>
+export type Proof = {
+  type: string
+  created: string
+  proofPurpose: string
+  verificationMethod: string
+  jws?: string
+  proofValue?: string
+  challenge?: string
+  domain?: string
+}
 
-export type IdentitySubject<
-  Type extends WrappedDocument = WrappedDocument,
-  ExtendedType extends {} = {}
-  > = CredentialSubject<Type, ExtendedType>
+export type Identity<Subject extends MaybeArray<{}> = MaybeArray<{}>> = Credential<Subject>
 
-export type CredentialSubjectProperty<Type extends CredentialSubject = CredentialSubject>
-  = Type
-
-export type CredentialSubject<
-  SubjectType extends WrappedDocument = WrappedDocument,
-  ExtendedType extends {} = {}
-  > = VCV1Subject<SubjectType> & ExtendedType
-
-export type WrappedDocument<ExtendedData extends {} = {}> = SimpleThing & ExtendedData
-
-export type CredentialContextType = TContext
+export type CredentialContextType = string | ContextSchema | (string | ContextSchema)[]
 
 export type UnsignedCredential<
-  Subject extends MaybeArray<CredentialSubject> = MaybeArray<CredentialSubject>
-  > = VCV1Unsigned<Subject> & {
+  Subject extends MaybeArray<{}> = MaybeArray<{}>
+  > = {
+    '@context': MultiSchema
+    id: string
+    type: CredentialType
     holder: CredentialHolder
-    evidence?: MaybeArray<Evidence>
     credentialSchema?: MaybeArray<CredentialSchema>
+    evidence?: MaybeArray<Evidence>
+    credentialSubject: Subject
+    issuanceDate: string
+    expirationDate?: string
+    revocation?: Revocation
   }
+
+export type Revocation = {
+  id: string
+}
 
 export type CredentialSchema = FullCredentialSchema | PartialCredentialSchema
 
@@ -85,33 +110,44 @@ export type PartialCredentialEvidence = {
   type: CredentialType
 }
 
-export type CredentialType = VCV1Type
+export type CredentialType = ['VerifiableCredential', ...string[]]
 
 export type BasicCredentialType = string | string[]
 
-export type UnsignedPresentation<
-  CredentialT extends Credential = Credential,
-  Holder extends PresentationHolder = PresentationHolder,
-  > = VPV1Unsigned<CredentialT, PresentationType> & {
-    hodler: Holder
-  }
+type PresentationSubmissionDescriptorV1 = {
+  id: string;
+  path: string;
+  path_nested?: PresentationSubmissionDescriptorV1;
+  format: 'jwt' | 'jwt_vc' | 'jwt_vp' | 'ldp' | 'ldp_vc' | 'ldp_vp';
+}
 
-export type Presentation<
-  CredentialT extends Credential = Credential,
-  Holder extends PresentationHolder = PresentationHolder
-  > = VPV1<CredentialT, PresentationType> & {
-    verifiableCredential: MaybeArray<CredentialT>
-    holder: Holder
+type PresentationSubmissionV1 = {
+  locale?: string;
+  descriptor_map: PresentationSubmissionDescriptorV1[];
+}
+
+export type UnsignedPresentation<CredentialT extends Credential = Credential> = {
+  '@context': MultiSchema
+  id?: string
+  type: PresentationType
+  verifiableCredential: CredentialT[]
+  holder: PresentationHolder
+  presentation_submission?: PresentationSubmissionV1
+}
+
+export type Presentation<CredentialT extends Credential = Credential> = UnsignedPresentation<CredentialT>
+  & {
+    proof: Proof
   }
 
 /**
  * @TODO it can't be used properly because Affinidy takes only objects as this property
  */
-export type CredentialHolder = VCV1Holder | DIDDocument | DIDDocumentUnsinged | string
+export type CredentialHolder = { id: string } | DIDDocument | DIDDocumentUnsinged | string
 
-export type PresentationHolder = VPV1Holder | DIDDocument | DIDDocumentUnsinged | string
+export type PresentationHolder = { id: string } | DIDDocument | DIDDocumentUnsinged | string
 
-export type PresentationType = VPV1Type
+export type PresentationType = ['VerifiablePresentation', ...string[]]
 
 export const BASE_CREDENTIAL_TYPE = 'VerifiableCredential'
 export const BASE_PRESENTATION_TYPE = 'VerifiablePresentation'

@@ -20,8 +20,7 @@ import {
 } from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { ItemMenu, ItemMenuHandle, MenuIconButton, ListItemMeta } from '@owlmeans/regov-lib-react'
-import { MaybeArray } from '@owlmeans/regov-ssi-core'
-import { CredentialWrapper, getCompatibleSubject, Credential, Presentation, CredentialSubject } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, getCompatibleSubject, Credential, Presentation } from '@owlmeans/regov-ssi-core'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
 import { SignatureRequestSubject } from '../../types'
@@ -76,7 +75,7 @@ export const SignatureRequestItemWeb = (ext: Extension): FunctionComponent<Signa
     })
 
 export type SignatureRequestItemParams = EmptyProps & {
-  wrapper: CredentialWrapper<MaybeArray<CredentialSubject>, Presentation>
+  wrapper: CredentialWrapper<{}, Presentation>
   action?: () => void
   trigger?: boolean
   meta?: ListItemMeta

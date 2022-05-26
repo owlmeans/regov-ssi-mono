@@ -21,9 +21,7 @@ import {
 import {
   Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-core'
-import {
-  CredentialWrapper, Credential, CredentialSubject, getCompatibleSubject
-} from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import {
   Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
 } from '@mui/material'
@@ -35,7 +33,7 @@ import { IdentitySubject } from '../../../types'
 export const IdentityItem = (ext: Extension): FunctionComponent<IdentityItemParams> =>
   withRegov<IdentityItemProps>(
     { namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, action }
-  ) => {
+    ) => {
     const subject = getCompatibleSubject<IdentitySubject>(wrapper.credential)
     const { extensions, handler } = useRegov()
 
@@ -76,11 +74,10 @@ export const IdentityItem = (ext: Extension): FunctionComponent<IdentityItemPara
   })
 
 export type IdentityItemParams = EmptyProps & {
-  wrapper: CredentialWrapper<CredentialSubject, Credential<CredentialSubject>>
+  wrapper: CredentialWrapper
   action?: () => void
   meta?: ListItemMeta
 }
 
 export type IdentityItemProps = RegovComponentProps<IdentityItemParams>
- 
- 
+

@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-identity",
-  "version": "0.1.12",
+  "version": "0.2.0",
   "description": "Simple Identity Extension for Regov SSI",
   "keywords": [
     "Regov",
@@ -32,20 +32,55 @@
     "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.6.0",
-    "@emotion/styled": "^11.6.0",
-    "@mui/icons-material": "^5.2.5",
-    "@mui/material": "^5.2.4",
-    "@owlmeans/regov-lib-node": "^0.1.6",
-    "@owlmeans/regov-lib-react": "^0.1.13",
-    "@owlmeans/regov-ssi-core": "^0.5.6",
+    "@emotion/react": "*",
+    "@emotion/styled": "*",
+    "@mui/icons-material": "*",
+    "@mui/material": "*",
+    "@owlmeans/regov-lib-node": "^0.1.7",
+    "@owlmeans/regov-lib-react": "^0.2.0",
+    "@owlmeans/regov-ssi-core": "^0.6.1",
     "express": "^4.17.3",
-    "i18next": "^21.4.2",
+    "i18next": "*",
     "react": "^17.0.0",
     "react-device-detect": "^2.1.2",
     "react-dom": "^17.0.0",
-    "react-hook-form": "^7.19.5",
-    "react-i18next": "^11.14.2"
+    "react-hook-form": "*",
+    "react-i18next": "*"
+  },
+  "peerDependenciesMeta": {
+    "express": {
+      "optional": true
+    },
+    "@emotion/react": {
+      "optional": true
+    },
+    "@emotion/styled": {
+      "optional": true
+    },
+    "@mui/icons-material": {
+      "optional": true
+    },
+    "@mui/material": {
+      "optional": true
+    },
+    "i18next": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-device-detect": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "react-i18next": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "typescript": "^4.5.2"

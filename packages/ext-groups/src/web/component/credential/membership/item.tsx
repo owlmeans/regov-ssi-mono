@@ -20,7 +20,7 @@ import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } fr
 import {
   Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-core'
-import { CredentialWrapper, Credential, CredentialSubject, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import { Person } from '@mui/icons-material'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
@@ -78,7 +78,7 @@ export const MembershipItem = (ext: Extension): FunctionComponent<MembershipItem
   })
 
 export type MembershipItemParams = EmptyProps & {
-  wrapper: CredentialWrapper<CredentialSubject, Credential<CredentialSubject>>
+  wrapper: CredentialWrapper
   action?: () => void
   meta?: ListItemMeta
 }

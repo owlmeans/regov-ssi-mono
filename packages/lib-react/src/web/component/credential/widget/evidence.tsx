@@ -23,7 +23,7 @@ import {
   CredentialEvidenceWidget, EvidenceWidgetImplProps, EXTENSION_ITEM_PURPOSE_EVIDENCE,
   PurposeEvidenceWidgetParams, useRegov
 } from '../../../../common'
-import { CredentialWrapper, CredentialSubject, Credential } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, Credential } from '@owlmeans/regov-ssi-core'
 import { StandardEvidenceWidget } from './evidence/'
 import { ExpandMore } from '@mui/icons-material'
 
@@ -52,7 +52,7 @@ export const CredentialEvidenceWidgetWeb = (props: EvidenceWidgetImplProps) => {
         {<Grid item sx={{ px: 1 }}>
           <Renderer wrapper={{
             credential: tab.evidence, meta: { secure: false, title: tab.title }
-          } as CredentialWrapper<CredentialSubject, Credential<CredentialSubject>>} />
+          } as CredentialWrapper} />
         </Grid>}
         {tab.evidence.evidence && <Grid item>
           <Accordion TransitionProps={{ unmountOnExit: true }}>

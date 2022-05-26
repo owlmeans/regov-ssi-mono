@@ -20,16 +20,18 @@ import {
   CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidgetWeb, 
+  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidgetWeb,
   WalletFormProvider
 } from '@owlmeans/regov-lib-react'
-import { CredentialSubject, getCompatibleSubject, Presentation, REGISTRY_SECTION_PEER, 
-  REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from '@owlmeans/regov-ssi-core'
+import {
+  getCompatibleSubject, Presentation, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CREDENTIALS, 
+  REGISTRY_TYPE_REQUESTS
+} from '@owlmeans/regov-ssi-core'
 import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING, VALIDATION_KIND_RESPONSE } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
-  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject, 
+  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject,
   SignatureRequestSubject, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION
 } from '../../types'
 import { getSignatureResponseFromPresentation, getSignatureRequestFromPresentation } from '../../util'
@@ -42,7 +44,7 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
   }) => {
     const { handler, extensions } = useRegov()
     const request = handler.wallet && handler.wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
-      .getCredential<CredentialSubject, Presentation>(presentation.id)
+      .getCredential<{}, Presentation>(presentation.id)
 
     const methods = useForm<SignatureReuqestResponseFields>({
       mode: 'onChange',

@@ -23,8 +23,7 @@ import {
   VERIFICATION_KEY_HOLDER
 } from "../did"
 import {
-  Presentation, UnsignedPresentation, buildSSICore, CredentialSubject, SSICore, Credential,
-  UnsignedCredential, buildKeyChain
+  Presentation, UnsignedPresentation, buildSSICore, SSICore, Credential, UnsignedCredential, buildKeyChain
 } from "../index"
 
 import util from 'util'
@@ -33,7 +32,7 @@ util.inspect.defaultOptions.depth = 8
 
 const test: {
   ssi?: SSICore
-  unsigned?: UnsignedCredential<CredentialSubject>
+  unsigned?: UnsignedCredential<{}>
   credential?: Credential
   unsignedP?: UnsignedPresentation
   presentation?: Presentation
@@ -179,7 +178,7 @@ describe('SSI Verifiable Credential', () => {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
 
-    const did = <DIDDocument>await test.ssi.did.lookUpDid(test.credential.holder.id)
+    const did = <DIDDocument>await test.ssi.did.lookUpDid((test.credential.holder as DIDDocument).id)
 
     const vp = await test.ssi?.buildPresentation(
       [test.credential],
@@ -216,7 +215,7 @@ describe('SSI Verifiable Credential', () => {
     if (!test.unsignedP) {
       throw 'Previous test didn\'t provide UnsingedPresentation'
     }
-    const did = await test.ssi.did.lookUpDid<DIDDocument>(test.unsignedP.holder.id)
+    const did = await test.ssi.did.lookUpDid<DIDDocument>((test.unsignedP.holder as DIDDocument).id)
     if (!did) {
       throw 'No related did in registry'
     }

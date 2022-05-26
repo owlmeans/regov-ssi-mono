@@ -15,9 +15,7 @@
  */
 
 import { MaybeArray } from "../../common"
-import {
-  BasicCredentialType, CredentialSchema, MultiSchema, CredentialSubject, Credential, Presentation
-} from "../../vc"
+import { BasicCredentialType, CredentialSchema, MultiSchema, Credential, Presentation } from "../../vc"
 import { CredentialWrapper, WalletWrapper } from '../../wallet'
 import { Extension } from "../ext"
 import { ExtensionRegistry } from "../registry"
@@ -46,7 +44,7 @@ export type ExtensionTypes = {
 
 export type CredentialDescription<
   Schema extends CredentialSchema = CredentialSchema,
-  Subject extends CredentialSubject = CredentialSubject
+  Subject extends {} = {}
   > = {
     defaultNameKey?: string
     mainType: string

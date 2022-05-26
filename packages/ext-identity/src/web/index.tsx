@@ -28,9 +28,7 @@ import {
   EXTENSION_ITEM_PURPOSE_ITEM
 } from '@owlmeans/regov-lib-react'
 import { DashboardWidget, EvidenceWidget, Onboarding, ValidationWidget } from './component'
-import {
-  REGISTRY_TYPE_IDENTITIES, Credential, CredentialSubject, WalletWrapper
-} from '@owlmeans/regov-ssi-core'
+import { REGISTRY_TYPE_IDENTITIES, Credential, WalletWrapper } from '@owlmeans/regov-ssi-core'
 import { IdentityView } from './component/identity/view'
 import { IdentityItem } from './component/identity/item'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE, REGOV_IDENTITY_DEFAULT_TYPE } from '../types'
@@ -73,9 +71,7 @@ export const buildIdentityExtensionUI = (
         const identity = await factory.sign(wallet, { unsigned })
 
         const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-        const item = await registry.addCredential<CredentialSubject, Credential<CredentialSubject>>(
-          identity as Credential<CredentialSubject>
-        )
+        const item = await registry.addCredential(identity)
         item.meta.title = 'Main ID'
         registry.registry.rootCredential = identity.id
 

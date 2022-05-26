@@ -16,7 +16,7 @@
 
 import { DIDRegistryBundle, DIDRegistryWrapper } from "../did"
 import { CryptoHelper } from "../common"
-import { SSICore, Credential, CredentialSubject } from "../vc"
+import { SSICore, Credential } from "../vc"
 import { CreateKeyOptions, KeyChain, KeyChainWrapper } from "../keys/types"
 import { BasicStore, EncryptedStore, SecureStore } from "../store/types"
 import {
@@ -72,7 +72,7 @@ export type WalletWrapper = {
   hasIdentity: () => boolean
 
   getIdentity: <
-    Subject extends CredentialSubject = CredentialSubject,
+    Subject extends {} = {},
     Identity extends Credential<Subject> = Credential<Subject>
     >() => CredentialWrapper<Subject, Identity> | undefined
 

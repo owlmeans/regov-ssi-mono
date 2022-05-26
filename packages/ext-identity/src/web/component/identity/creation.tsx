@@ -21,7 +21,7 @@ import {
   useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import { MainTextInput, MainTextOutput, PrimaryForm, WalletFormProvider, dateFormatter, AlertOutput } from '@owlmeans/regov-lib-react'
-import { CredentialSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential, Credential } from '@owlmeans/regov-ssi-core'
+import { REGISTRY_TYPE_IDENTITIES, UnsignedCredential } from '@owlmeans/regov-ssi-core'
 import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../../types'
 import { BASIC_IDENTITY_TYPE } from '../../../ext'
 import { ERROR_CREATION_AUTHENTICATION, ERROR_CREATION_EXTENSION, ERROR_CREATION_READYTO_SIGN } from './types'
@@ -86,9 +86,7 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
 
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
 
-        const item = await registry.addCredential<CredentialSubject, Credential<CredentialSubject>>(
-          identity as Credential<CredentialSubject>
-        )
+        const item = await registry.addCredential(identity)
 
         item.meta.title = methods.getValues('identityName')
 

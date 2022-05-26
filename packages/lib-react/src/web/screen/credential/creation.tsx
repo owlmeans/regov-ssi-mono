@@ -23,7 +23,7 @@ import { CREDENTIAL_LIST_ROUTE } from '../../component'
 
 
 export const CredentialCreation = withRegov({ namespace: 'regov-wallet-credential' }, () => {
-  const { ext, type } = useParams<{ ext: string, type: string }>()
+  const { ext, type } = useParams()
   const { extensions } = useRegov()
   const navigate = useNavigate()
 

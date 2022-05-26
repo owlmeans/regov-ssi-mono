@@ -18,7 +18,7 @@ import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
 import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import { MembershipSubject } from '../../../../types'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
-import { Credential, CredentialSubject, CredentialWrapper, getCompatibleSubject, Presentation } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, getCompatibleSubject, Presentation } from '@owlmeans/regov-ssi-core'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
 import { Person } from '@mui/icons-material'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
@@ -71,7 +71,7 @@ export const MembershipClaimItem = (ext: Extension): FunctionComponent<ClaimItem
   })
 
 export type ClaimItemParams = EmptyProps & {
-  wrapper: CredentialWrapper<CredentialSubject, Presentation<Credential<CredentialSubject>>>
+  wrapper: CredentialWrapper<{}, Presentation>
   action?: () => void
   trigger?: boolean
   meta?: ListItemMeta

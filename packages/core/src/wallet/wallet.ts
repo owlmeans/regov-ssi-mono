@@ -15,7 +15,7 @@
  */
 
 import { buildDidHelper, buildDidRegistryWarpper } from "../did"
-import { buildSSICore, Credential, CredentialSubject } from "../vc"
+import { buildSSICore, Credential } from "../vc"
 import { buildKeyChain } from "../keys"
 import { buildStore } from "../store/store"
 import { SecureStore } from "../store/types"
@@ -81,7 +81,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
               _registry.credentials[section] = []
             }
             _registry.credentials[section || _registry.defaultSection].push(
-              wrappedCred as CredentialWrapper<CredentialSubject>
+              wrappedCred as CredentialWrapper<{}>
             )
 
             dependencies.extensions?.triggerEvent<CredentialEventParams>(
@@ -92,7 +92,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
           },
 
           lookupCredentials: async <
-            Subject extends CredentialSubject = CredentialSubject,
+            Subject extends {} = {},
             Type extends RegistryItem<Subject> = Credential<Subject>
           >(type: string | string[], section?: string) => {
             const types: string[] = Array.isArray(type) ? type : [type]
@@ -107,7 +107,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
           },
 
           getCredential: <
-            Subject extends CredentialSubject = CredentialSubject,
+            Subject extends {} = {},
             Type extends RegistryItem<Subject> = Credential<Subject>
           >(id?: string, section?: string) => {
             id = id || _registry.rootCredential
@@ -168,7 +168,7 @@ export const buildWalletWrapper: WalletWrapperBuilder =
       },
 
       getIdentity: <
-        Subject extends CredentialSubject = CredentialSubject,
+        Subject extends {} = {},
         Identity extends Credential<Subject> = Credential<Subject>
       >() => {
         if (_wallet.hasIdentity()) {

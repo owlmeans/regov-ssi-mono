@@ -53,7 +53,7 @@ export const defaultClaimMethod: ClaimMethodBuilder = schema =>
       if (typeof holder.issuer === 'string') {
         throw new Error('claimer.holder.format')
       }
-      holder = holder.issuer
+      holder = holder.issuer as DIDDocument
     }
 
     if (!wallet.ssi.did.helper().isDIDDocument(holder)) {
