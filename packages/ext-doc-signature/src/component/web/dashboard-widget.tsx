@@ -17,13 +17,21 @@
 import { RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, useState } from 'react'
-import {
-  Dialog, DialogContent, DialogTitle, Grid, ListItemIcon, ListItemText, MenuItem, MenuList,
-  Typography
-} from '@mui/material'
-import { Add, AddCircleOutline, Drafts } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'
+import Add from '@mui/icons-material/Add'
+import AddCircleOutline from '@mui/icons-material/AddCircleOutline'
+import Drafts from '@mui/icons-material/Drafts'
+
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import MenuItem from '@mui/material/MenuItem'
+import MenuList from '@mui/material/MenuList'
+import Typography from '@mui/material/Typography'
 
 
 export const DashboardWidgetWeb = (ext: Extension) => withRegov<DashboardWidgetProps>(

@@ -16,10 +16,15 @@
 
 import React, { Fragment } from 'react'
 import { EntityItemProps, EntityContextConsumer } from './types'
-import { FormControl, FormHelperText, Grid, Input, InputLabel, Typography } from '@mui/material'
 import { getDeepValue } from '@owlmeans/regov-ssi-core'
 import { OutputFieldFormatter } from '../field'
 import { TFunction } from 'i18next'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
+import Grid from '@mui/material/Grid'
+import Input from '@mui/material/Input'
+import InputLabel from '@mui/material/InputLabel'
+import Typography from '@mui/material/Typography'
 
 
 export const EntityTextRenderer = ({

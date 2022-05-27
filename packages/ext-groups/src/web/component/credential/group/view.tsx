@@ -21,12 +21,21 @@ import {
 import {
   REGOV_EXT_GROUP_NAMESPACE, RegovGroupExtension, GroupSubject, REGOV_CREDENTIAL_TYPE_GROUP
 } from '../../../../types'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, } from '@mui/material'
 import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { EntityRenderer, EntityTextRenderer, ValidationResultWidgetWeb } from '@owlmeans/regov-lib-react'
-import { Close, People } from '@mui/icons-material'
 import { ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-core'
 import { MembershipClaim } from '../membership'
+import Close from '@mui/icons-material/Close'
+import People from '@mui/icons-material/People'
+
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import Paper from '@mui/material/Paper'
 
 
 export const GroupView: FunctionComponent<GroupViewParams> = withRegov<GroupViewProps>({

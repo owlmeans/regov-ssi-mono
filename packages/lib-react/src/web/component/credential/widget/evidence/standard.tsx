@@ -16,8 +16,10 @@
 
 import React, { FunctionComponent } from 'react'
 import { PurposeEvidenceWidgetParams } from '../../../../../common'
-import { Paper, Grid, Typography } from '@mui/material'
 import { normalizeValue } from '@owlmeans/regov-ssi-core'
+import Paper from '@mui/material/Paper'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 
 export const StandardEvidenceWidget: FunctionComponent<PurposeEvidenceWidgetParams> =

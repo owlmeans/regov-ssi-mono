@@ -15,10 +15,9 @@
  */
 
 import React from 'react'
-
-import { Button } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import { ButtonParams } from './types'
+import Button from '@mui/material/Button'
 
 
 export const FormHeaderButton = ({ t, title, action }: FormHeaderButtonProps) =>

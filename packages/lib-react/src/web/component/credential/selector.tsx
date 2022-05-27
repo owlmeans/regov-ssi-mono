@@ -14,11 +14,20 @@
  *  limitations under the License.
  */
 
-import { Dialog, DialogContent, FormControl, FormHelperText, Grid, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material'
 import { CredentialWrapper } from '@owlmeans/regov-ssi-core'
 import { TFunction } from 'i18next'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
+import Grid from '@mui/material/Grid'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const CredentialSelector = (

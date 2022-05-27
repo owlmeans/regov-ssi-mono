@@ -22,12 +22,16 @@ import {
   Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-core'
 import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
-import {
-  Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
-} from '@mui/material'
-import { DocumentScanner } from '@mui/icons-material'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
 import { IdentitySubject } from '../../../types'
+import DocumentScanner from '@mui/icons-material/DocumentScanner'
+import Avatar from '@mui/material/Avatar'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const IdentityItem = (ext: Extension): FunctionComponent<IdentityItemParams> =>

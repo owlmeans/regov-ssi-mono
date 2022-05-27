@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-import { Button } from '@mui/material'
 import { EmptyProps, RegovComponentProps, withRegov } from '../../../common'
 import copy from 'copy-to-clipboard'
 import saveAs from 'file-saver'
 import React, { Fragment, FunctionComponent } from 'react'
+import Button from '@mui/material/Button'
 
 
 export const CredentialActionGroup: FunctionComponent<CredentialActionGroupParams> = withRegov<

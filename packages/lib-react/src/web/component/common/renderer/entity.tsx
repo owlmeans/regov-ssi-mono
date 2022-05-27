@@ -15,8 +15,11 @@
  */
 
 import React from 'react'
-import { Card, CardContent, CardHeader, Grid } from '@mui/material'
 import { EntityContext, EntityProps } from './types'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Grid from '@mui/material/Grid'
 
 
 export const EntityRenderer = <Subject extends {}>({ t, title, entity, children, subject }: EntityProps<Subject>) => {

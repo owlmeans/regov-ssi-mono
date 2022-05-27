@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import { Switch } from '@mui/material'
 import { CredentialListTab, WrappedComponentProps } from '../../../../common'
 import { REGISTRY_SECTION_PEER } from '@owlmeans/regov-ssi-core'
 import React, { Fragment } from 'react'
+import Switch from '@mui/material/Switch'
 
 
 export const CredentialListHeaderAction = (props: HeaderActionProps) => {

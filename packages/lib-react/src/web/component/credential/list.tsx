@@ -15,14 +15,16 @@
  */
 
 import React, { FunctionComponent, useMemo, Fragment } from 'react'
-
-import { Box, Divider, Tab, Tabs } from '@mui/material'
 import {
   CredentialListImplProps, useRegov, EXTENSION_ITEM_PURPOSE_ITEM, PurposeListItemParams
 } from '../../../common'
 import { ItemMenu, ItemMenuHandle, ItemMenuMeta, MenuIconButton, SimpleList, SimpleListItem } from '../common'
 import { CredentialListHeaderAction } from './list/header-action'
 import { CredentialWrapper, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 
 
 export const CredentialListWeb = (props: CredentialListImplProps) => {

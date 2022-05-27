@@ -16,10 +16,6 @@
 
 import React, { Fragment, FunctionComponent, useState } from 'react'
 import {
-  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid,
-  Typography
-} from '@mui/material'
-import {
   EmptyProps, EXTENSION_ITEM_PURPOSE_EVIDENCE, generalNameVlidation, PurposeEvidenceWidgetParams,
   RegovComponentProps, useRegov, withRegov
 } from '../../../../../common'
@@ -31,7 +27,16 @@ import {
 import { StandardEvidenceWidget } from './standard'
 import { MainTextInput } from '../../../common'
 import { useForm, FormProvider } from 'react-hook-form'
-import { Report, Warning } from '@mui/icons-material'
+import Report from '@mui/icons-material/Report'
+import Warning from '@mui/icons-material/Warning'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 
 export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<EvidenceTrustProps>(

@@ -15,10 +15,14 @@
  */
 
 import React, { Fragment } from 'react'
-import { FormGroup, Grid, FormControlLabel, FormHelperText, Checkbox } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import { useFormContext, Controller } from 'react-hook-form'
 import { formatError } from '../error'
+import FormGroup from '@mui/material/FormGroup'
+import Grid from '@mui/material/Grid'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormHelperText from '@mui/material/FormHelperText'
+import Checkbox from '@mui/material/Checkbox'
 
 
 export const CheckGroup = ({ t, fields, rules }: CheckGroupProps) => {

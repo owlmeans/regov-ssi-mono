@@ -14,14 +14,22 @@
  *  limitations under the License.
  */
 
-import { Grid, Paper, TextField, IconButton, FormControl, Typography, FormHelperText, Button } from '@mui/material'
 import { EmptyProps, RegovValidationRules, WrappedComponentProps } from '../../../../common'
 import { formatError } from '../error'
 import React, { useCallback, useState } from 'react'
 import { Controller, useFormContext, UseFormProps } from 'react-hook-form'
-import { Close, Delete } from '@mui/icons-material'
 import { useDropzone } from 'react-dropzone'
 import { isMobile } from "react-device-detect"
+import Close from '@mui/icons-material/Close'
+import Delete from '@mui/icons-material/Delete'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import TextField from '@mui/material/TextField'
+import IconButton from '@mui/material/IconButton'
+import FormControl from '@mui/material/FormControl'
+import Typography from '@mui/material/Typography'
+import FormHelperText from '@mui/material/FormHelperText'
+import Button from '@mui/material/Button'
 
 
 export const FileProcessorWeb = (props: FileProcessorImplProps) => {

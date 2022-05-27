@@ -15,14 +15,22 @@
  */
 
 import React, { Dispatch, Fragment, PropsWithChildren, SetStateAction, useState } from 'react'
-import { ClickAwayListener, IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import saveAs from 'file-saver'
 import copy from 'copy-to-clipboard'
-import { ContentCopy, Delete, FileDownload, MenuOpen } from '@mui/icons-material'
 import { i18n } from 'i18next'
 import { useRegov } from '../../../../../common/'
 import { RegistryType } from '@owlmeans/regov-ssi-core'
+import ContentCopy from '@mui/icons-material/ContentCopy'
+import Delete from '@mui/icons-material/Delete'
+import FileDownload from '@mui/icons-material/FileDownload'
+import MenuOpen from '@mui/icons-material/MenuOpen'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
+import IconButton from '@mui/material/IconButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 
 
 export const ItemMenu = ({ i18n, meta, handle, content, prettyOutput, exportTitle, children }: ItemMenuParams) => {

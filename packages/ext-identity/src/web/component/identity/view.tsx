@@ -20,17 +20,22 @@ import {
   ValidationResultWidgetWeb, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  Button, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, Typography
-} from '@mui/material'
-import {
   Credential, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER,
   REGISTRY_TYPE_IDENTITIES
 } from '@owlmeans/regov-ssi-core'
-import { Close } from '@mui/icons-material'
 import { ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-core'
 import {
   RegovIdentityExtension, IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE
 } from '../../../types'
+import Close from '@mui/icons-material/Close'
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
 
 
 export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<IdentityViewProps>({

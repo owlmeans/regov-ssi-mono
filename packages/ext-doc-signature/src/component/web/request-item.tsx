@@ -14,10 +14,6 @@
  *  limitations under the License.
  */
 
-import { BorderColor } from '@mui/icons-material'
-import {
-  Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
-} from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { ItemMenu, ItemMenuHandle, MenuIconButton, ListItemMeta } from '@owlmeans/regov-lib-react'
 import { CredentialWrapper, getCompatibleSubject, Credential, Presentation } from '@owlmeans/regov-ssi-core'
@@ -25,6 +21,15 @@ import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEv
 import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
 import { SignatureRequestSubject } from '../../types'
 import { getSignatureRequestFromPresentation } from '../../util'
+import BorderColor from '@mui/icons-material/BorderColor'
+
+import Avatar from '@mui/material/Avatar'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const SignatureRequestItemWeb = (ext: Extension): FunctionComponent<SignatureRequestItemParams> =>

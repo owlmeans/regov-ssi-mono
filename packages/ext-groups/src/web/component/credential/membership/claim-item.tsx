@@ -15,13 +15,20 @@
  */
 
 import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
-import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import { MembershipSubject } from '../../../../types'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
 import { CredentialWrapper, getCompatibleSubject, Presentation } from '@owlmeans/regov-ssi-core'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
-import { Person } from '@mui/icons-material'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
+import Person from '@mui/icons-material/Person'
+
+import Avatar from '@mui/material/Avatar'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const MembershipClaimItem = (ext: Extension): FunctionComponent<ClaimItemParams> =>

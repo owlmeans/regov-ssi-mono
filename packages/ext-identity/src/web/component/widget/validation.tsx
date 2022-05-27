@@ -16,11 +16,6 @@
 
 import React, { Fragment, FunctionComponent } from 'react'
 import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
-import {
-  Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemAvatar, ListItemButton,
-  ListItemText, Typography
-} from '@mui/material'
-import { Done, ExpandMore, ErrorOutline } from '@mui/icons-material'
 import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../../types'
 import {
   EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget
@@ -28,6 +23,18 @@ import {
 import { normalizeValue } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-lib-react'
+import Done from '@mui/icons-material/Done'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import ErrorOutline from '@mui/icons-material/ErrorOutline'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetParams> =>

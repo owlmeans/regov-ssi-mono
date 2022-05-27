@@ -16,8 +16,9 @@
 
 
 import React from 'react'
-import { ListItem, ListItemText } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
 
 
 export const SimpleListItem = ({ t, action, noTranslation, label, hint, children }: SimpleListItemProps) => {

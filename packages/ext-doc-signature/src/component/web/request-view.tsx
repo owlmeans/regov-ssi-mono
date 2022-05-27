@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import { Button, DialogActions, DialogContent } from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { CredentialActionGroup, LongOutput, MainTextOutput, PrimaryForm, WalletFormProvider } from '@owlmeans/regov-lib-react'
 import {
@@ -25,6 +24,10 @@ import React, { Fragment, FunctionComponent } from 'react'
 import { useForm } from 'react-hook-form'
 import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureRequestSubject } from '../../types'
 import { getSignatureRequestFromPresentation } from '../../util'
+
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 
 
 export const SignatureRequestViewWeb: FunctionComponent<SignatureRequestViewParams> =

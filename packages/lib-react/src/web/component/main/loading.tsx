@@ -15,8 +15,12 @@
  */
 
 import React, { Fragment, useState } from 'react'
-import { Alert, AlertColor, AlertTitle, Backdrop, CircularProgress, Snackbar } from '@mui/material'
 import { MainLoadingImplProps } from '../../../common'
+import Alert, { AlertColor } from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
+import Snackbar from '@mui/material/Snackbar'
 
 
 /**

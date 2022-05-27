@@ -24,7 +24,7 @@ import { i18nRegisterExtensions } from '../../i18n/util'
 import { webComponentMap } from '../component'
 import { buildWalletWrapper, createWalletHandler, EXTENSION_TRIGGER_INIT_SENSETIVE, InitSensetiveEventParams, WalletHandler, webCryptoHelper } from '@owlmeans/regov-ssi-core'
 import { DEFAULT_GUEST_WALLET_ALIAS } from '../types'
-import { CircularProgress } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 
 
 const i18n = i18nSetup(i18nDefaultOptions)

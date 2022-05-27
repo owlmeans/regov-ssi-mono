@@ -15,10 +15,9 @@
  */
 
 import React from 'react'
-
-import { Grid } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import { FormMainButtonProps, FormMainButton } from '../button/form-main'
+import Grid from '@mui/material/Grid'
 
 
 export const FormMainAction = (props: FormMainActionProps) =>

@@ -19,10 +19,11 @@ import { Extension } from '@owlmeans/regov-ssi-core'
 import { 
   EmptyProps, PurposeEvidenceWidgetParams, RegovComponentProps, withRegov 
 } from '@owlmeans/regov-lib-react'
-import { Grid, Typography } from '@mui/material'
 import { getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { dateFormatter } from '@owlmeans/regov-lib-react'
 import { MembershipSubject } from '../../../../../types'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 
 export const MembershipEvidenceWidget = (ext: Extension): FunctionComponent<MembershipEvidenceWidgetParams> =>

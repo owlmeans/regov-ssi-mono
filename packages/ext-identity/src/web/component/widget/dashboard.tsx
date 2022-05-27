@@ -19,9 +19,10 @@ import React, { Fragment, useMemo } from 'react'
 import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { EmptyImplProps, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-core'
-import { Grid, Typography } from '@mui/material'
 import { IdentitySubject } from '../../../types'
 import { dateFormatter, ItemMenuHandle, MenuIconButton, ItemMenu } from '@owlmeans/regov-lib-react'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 
 export const DashboardWidget = (ext: Extension) =>

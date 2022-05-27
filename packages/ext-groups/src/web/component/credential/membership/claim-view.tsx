@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import { Button, DialogActions, DialogContent } from '@mui/material'
 import {
   GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CREDENTIAL_TYPE_GROUP,
   REGOV_EXT_GROUP_NAMESPACE
@@ -29,6 +28,9 @@ import {
 } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent } from 'react'
 import { useForm } from 'react-hook-form'
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent  from '@mui/material/DialogContent'
 
 
 export const MembershipClaimView: FunctionComponent<ClaimViewParams> =

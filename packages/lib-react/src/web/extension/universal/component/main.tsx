@@ -15,7 +15,6 @@
  */
 
 import React from 'react'
-import { Box, Divider, Tab, Tabs } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
 import { withRegov } from '../../../../common'
 import { UNIVERSAL_EXTENSION_SCREEN_PATH } from '../types'
@@ -23,6 +22,10 @@ import { Extension } from '@owlmeans/regov-ssi-core'
 import {
   MainBuilder, MainSigner, MainClaimer, MainProposer, MainRequester, MainResponder, MainReader
 } from './main/'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 
 
 export const Main = (ext: Extension) => {

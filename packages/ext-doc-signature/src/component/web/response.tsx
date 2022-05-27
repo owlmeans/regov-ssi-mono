@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import { Button, DialogActions, DialogContent } from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import {
   AlertOutput, CredentialActionGroup, CredentialSelector, dateFormatter, EntityRenderer,
@@ -33,6 +32,10 @@ import {
 } from '../../types'
 import { getSignatureRequestFromPresentation } from '../../util'
 import { typeFormatterFacotry } from '../formatter'
+
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 
 
 export const SignatureResponseWeb: FunctionComponent<SignatureResponseParams> =

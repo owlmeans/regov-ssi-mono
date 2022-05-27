@@ -16,7 +16,10 @@
 
 import React, { Fragment } from 'react'
 import { MainFooterImplProps, useRegov } from '../../../common'
-import { AppBar, Grid, Link, Toolbar } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import Grid from '@mui/material/Grid'
+import Link from '@mui/material/Link'
+import Toolbar from '@mui/material/Toolbar'
 
 
 export const MainFooterWeb = ({ t }: MainFooterImplProps) => {

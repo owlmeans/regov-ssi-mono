@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import { Button, DialogActions, DialogContent } from '@mui/material'
 import {
   GroupSubject, MembershipSubject, BASIC_IDENTITY_TYPE, RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP
@@ -32,6 +31,10 @@ import { VALIDATION_KIND_OFFER } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { OfferFields } from './offer'
+
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 
 
 export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withRegov<ClaimOfferProps>(

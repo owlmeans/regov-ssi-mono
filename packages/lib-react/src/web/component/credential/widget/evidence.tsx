@@ -16,16 +16,23 @@
 
 import React, { Fragment, FunctionComponent, useState } from 'react'
 import {
-  Accordion, AccordionDetails, AccordionSummary, Card, CardContent, CardHeader, Grid,
-  Tab, Tabs, Typography, Divider
-} from '@mui/material'
-import {
   CredentialEvidenceWidget, EvidenceWidgetImplProps, EXTENSION_ITEM_PURPOSE_EVIDENCE,
   PurposeEvidenceWidgetParams, useRegov
 } from '../../../../common'
 import { CredentialWrapper, Credential } from '@owlmeans/regov-ssi-core'
 import { StandardEvidenceWidget } from './evidence/'
-import { ExpandMore } from '@mui/icons-material'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Grid from '@mui/material/Grid'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
 
 
 export const CredentialEvidenceWidgetWeb = (props: EvidenceWidgetImplProps) => {

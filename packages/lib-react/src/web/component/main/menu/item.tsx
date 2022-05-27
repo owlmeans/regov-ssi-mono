@@ -15,8 +15,11 @@
  */
 
 import React from 'react'
-import { Button, ListItem, ListItemButton, ListItemText } from '@mui/material'
 import { MainMenuItemImplProps } from '../../../../common'
+import Button from '@mui/material/Button'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
 
 
 export const MainMenuItemWeb = ({ title, t, ns, action }: MainMenuItemImplProps) => {

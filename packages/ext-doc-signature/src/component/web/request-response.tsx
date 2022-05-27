@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-import { BorderColor, Close } from '@mui/icons-material'
-import { Button, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper } from '@mui/material'
 import {
   CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
@@ -36,6 +34,16 @@ import {
 } from '../../types'
 import { getSignatureResponseFromPresentation, getSignatureRequestFromPresentation } from '../../util'
 import { typeFormatterFacotry } from '../formatter'
+import BorderColor from '@mui/icons-material/BorderColor'
+import Close from '@mui/icons-material/Close'
+
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import Paper from '@mui/material/Paper'
 
 
 export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResponseParams> =

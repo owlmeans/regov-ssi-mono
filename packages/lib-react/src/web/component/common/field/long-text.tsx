@@ -15,12 +15,13 @@
  */
 
 import React, { useCallback } from 'react'
-import { Grid, TextField } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import { useFormContext, Controller } from 'react-hook-form'
 import { formatError } from '../error'
 import { useDropzone } from "react-dropzone"
 import { FormHeaderButton } from '../button'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
 
 
 export const LongTextInput = ({

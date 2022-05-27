@@ -17,11 +17,18 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { CredentialProcessorFields, CredentialProcessorImplProps } from '../../../common'
 import { useDropzone } from 'react-dropzone'
-import { FormControl, FormHelperText, Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
 import { Controller, useForm, UseFormProps } from 'react-hook-form'
 import { formatError } from '../common'
-import { Close, Delete } from '@mui/icons-material'
 import { isMobile } from "react-device-detect"
+import Close from '@mui/icons-material/Close'
+import Delete from '@mui/icons-material/Delete'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import Paper from '@mui/material/Paper'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 
 
 export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialProcessorImplProps) => {

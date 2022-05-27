@@ -17,10 +17,11 @@
 import React, { FunctionComponent } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import { EmptyProps, PurposeEvidenceWidgetParams, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
-import { Grid, Typography } from '@mui/material'
 import { getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { dateFormatter } from '@owlmeans/regov-lib-react'
 import { GroupSubject } from '../../../../../types'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 
 export const EvidenceWidget = (ext: Extension): FunctionComponent<EvidenceWidgetParams> =>

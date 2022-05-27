@@ -16,15 +16,21 @@
 
 import React, { FunctionComponent, useState, Fragment } from 'react'
 import {
-  Grid, DialogActions, DialogContent, DialogTitle, Step, StepLabel, Stepper, Typography, MobileStepper
-} from '@mui/material'
-import {
   EmptyProps, FormHeaderButton, MainModalAuthenticatedEventParams, RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
 import { FormMainButton } from '@owlmeans/regov-lib-react'
 import { IdentityCreation, IdentityCreationProceedHandle } from './identity'
 import { isMobile, isBrowser } from 'react-device-detect'
+import Grid from '@mui/material/Grid'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Step from '@mui/material/Step'
+import StepLabel from '@mui/material/StepLabel'
+import Stepper from '@mui/material/Stepper'
+import Typography from '@mui/material/Typography'
+import MobileStepper from '@mui/material/MobileStepper'
 
 
 export const Onboarding: FunctionComponent<OnboardingParams> =

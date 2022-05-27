@@ -15,10 +15,11 @@
  */
 
 import React from 'react'
-import { Grid, TextField } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import { useFormContext, Controller } from 'react-hook-form'
 import { formatError } from '../error'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
 
 
 export const MainTextInput = ({ t, field, rules }: MainTextInputProps) => {

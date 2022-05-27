@@ -19,9 +19,10 @@ import {
   MainDashboardImplProps, NavigatorContextProvider, useNavigator, useRegov,
   CredentialProcessor, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET
 } from '../../../common'
-import { Grid, Paper } from '@mui/material'
 import { ListNavigator, partialListNavigator } from './navigator'
 import { useNavigate } from 'react-router-dom'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
 
 
 export const MainDashboardWeb = ({ }: MainDashboardImplProps) => {

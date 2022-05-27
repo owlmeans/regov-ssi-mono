@@ -15,10 +15,12 @@
  */
 
 import React, { Fragment } from 'react'
-import { Grid, Alert, AlertTitle } from '@mui/material'
 import { useFormContext, Controller } from 'react-hook-form'
 import { WrappedComponentProps } from '../../../../common'
 import { formatError } from '../error'
+import Grid from '@mui/material/Grid'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 
 
 export const AlertOutput = ({ t, field }: AlertOutputProps) => {

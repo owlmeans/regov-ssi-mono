@@ -14,8 +14,10 @@
  *  limitations under the License.
  */
 
-import { Box, Container, CssBaseline } from "@mui/material"
 import React, { PropsWithChildren } from "react"
+import Box from "@mui/material/Box"
+import Container from "@mui/material/Container"
+import CssBaseline from "@mui/material/CssBaseline"
 
 
 export const IntegrationWrapper = ({ width, children }: IntegrationWrapperPorps) => {

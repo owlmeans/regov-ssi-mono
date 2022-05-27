@@ -14,11 +14,12 @@
  *  limitations under the License.
  */
 
-import { Grid, TextField } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { formatError } from '../error'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
 
 
 export const NewPasswordInput = ({ t, field, rules }: NewPasswordInputProps) => {
