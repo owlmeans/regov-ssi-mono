@@ -88,7 +88,7 @@ export const buildCommExtension = (config: CommExtConfig) => {
   })
 
   /**
-   * @PROCEED 
+   * @TODO 
    * 1. Add agreement to identity and group membership DIDs
    */
   commExtensionSchema = addObserverToSchema(commExtensionSchema, {

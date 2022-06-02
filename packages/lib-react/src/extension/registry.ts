@@ -38,12 +38,10 @@ export const buildUIExtensionRegistry = (): UIExtensionRegistry => {
     },
 
     getExtension: (type, code?) => {
-      if (!_typeToExtension[type]) {
-        throw ERROR_NO_UIEXTENSION
-      }
-      const ext = code
-        ? _typeToExtension[type].find(ext => ext.extension.schema.details.code === code)
-        : _typeToExtension[type][0]
+      const extModel = _registry.registry.getExtension(type, code)
+
+      const ext = _registry.uiExtensions.find(ext => ext.extension === extModel)
+
       if (!ext) {
         throw ERROR_NO_UIEXTENSION
       }
