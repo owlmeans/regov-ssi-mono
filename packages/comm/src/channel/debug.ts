@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { DIDCommChannel, DIDCommHelper } from "../types"
+import { COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_ERROR, DIDCommChannel, DIDCommHelper } from "../types"
 
 
 const _servers: (DIDCommChannel & DebugServer)[] = []
@@ -29,7 +29,10 @@ export const createDebugChannel = (): DIDCommChannel => {
       _servers.push(_server)
     },
 
-    send: async (message: string) => {
+    send: async (message: string, ok?: boolean) => {
+      if (typeof ok === 'boolean') {
+        message = (ok ? COMM_WS_PREFIX_CONFIRMED : COMM_WS_PREFIX_ERROR) + ':' + message
+      }
       const targets = _servers.filter(server => server !== _server)
       if (targets.length > 0) {
         targets.map(target => target.receive(message))

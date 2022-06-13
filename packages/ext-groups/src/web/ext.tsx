@@ -20,12 +20,11 @@ import {
   buildUIExtension, ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_CREATION, EXTENSION_ITEM_PURPOSE_ITEM,
   UIExtensionFactoryProduct, PurposeListItemParams, PurposeCredentialCreationParams, MainModalHandle,
   EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, MainModalShareEventParams, EXTENSION_ITEM_PURPOSE_EVIDENCE,
-  PurposeEvidenceWidgetParams,
-  EXTENSION_ITEM_PURPOSE_VALIDATION,
+  PurposeEvidenceWidgetParams, EXTENSION_ITEM_PURPOSE_VALIDATION, MainModalAuthenticatedEventParams,
 } from '@owlmeans/regov-lib-react'
 import {
-  RegovGroupExtensionTypes, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP,
-  REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_OFFER_TYPE,
+  RegovGroupExtensionTypes, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, 
+  REGOV_OFFER_TYPE, REGOV_GROUP_CLAIM_TYPE
 } from '../types'
 import { groupsExtension } from '../ext'
 import { getGroupFromMembershipClaimPresentation, getGroupOwnerIdentity } from '../util'
@@ -36,12 +35,15 @@ import {
   MembershipItem
 } from './component'
 import {
-  addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
+  addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams,
+  EXTENSION_TRIGGER_AUTHENTICATED
 } from '@owlmeans/regov-ssi-core'
 import {
   Credential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import { MembershipClaimOffer } from './component/credential/membership/claim-offer'
+import { EVENT_INIT_CONNECTION, InitCommEventParams } from '@owlmeans/regov-comm'
+import { GroupOffer } from './component/credential/group/claim-view'
 
 
 if (groupsExtension.schema.events) {
@@ -113,7 +115,42 @@ if (groupsExtension.schema.events) {
       return false
     }
   })
+
+  groupsExtension.schema = addObserverToSchema(groupsExtension.schema, {
+    trigger: EXTENSION_TRIGGER_AUTHENTICATED,
+    method: async (wallet, params: MainModalAuthenticatedEventParams) => {
+      const statusHandle = {
+        established: false,
+      }
+      params.extensions.triggerEvent<InitCommEventParams>(wallet, EVENT_INIT_CONNECTION, {
+        statusHandle,
+        trigger: async (conn, doc) => {
+          if (!modalHandler) {
+            return
+          }
+          const close = () => {
+            modalHandler?.setOpen && modalHandler.setOpen(false)
+          }
+
+          if (isPresentation(doc)) {
+            if (doc.type.includes(REGOV_GROUP_CLAIM_TYPE)) {
+              modalHandler.getContent = () =>
+                <GroupOffer close={close} credential={doc} ext={groupsExtension} conn={conn} />
+
+              modalHandler.setOpen && modalHandler.setOpen(true)
+            }
+          }
+        },
+        resolveConnection: async (_) => { },
+        rejectConnection: async (err) => {
+          console.error(err)
+        }
+      })
+    }
+  })
 }
+
+
 
 export const groupsUIExtension = buildUIExtension(groupsExtension,
   (purpose: ExtensionItemPurpose, type?: RegovGroupExtensionTypes) => {

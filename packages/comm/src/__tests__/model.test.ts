@@ -15,7 +15,7 @@
  */
 
 import 'dotenv/config'
-import { buildWalletWrapper, nodeCryptoHelper } from "@owlmeans/regov-ssi-core"
+import { buildWalletWrapper, nodeCryptoHelper, WalletWrapper } from "@owlmeans/regov-ssi-core"
 import { createDebugChannel } from "../channel/debug"
 import { buildDidCommHelper } from "../model"
 import { DIDCommConnectMeta, DIDCommHelper, DIDCommListner } from "../types"
@@ -29,7 +29,6 @@ const config = {
 }
 
 describe('Comm model', () => {
-
   it('opens connection', async () => {
     const aliceWallet = await buildWalletWrapper(
       { crypto: nodeCryptoHelper }, '11111111', { alias: 'alice', name: 'Alice' }, config
@@ -47,7 +46,9 @@ describe('Comm model', () => {
 
     await aliceComm.addChannel(aliceServer)
     await bobComm.addChannel(bobServer)
-    const bobListener = createDebugListener(() => { })
+    const bobListener = createDebugListener(bobWallet, () => {
+      console.log(':= bob established')
+    })
     bobListener.receive = jest.fn()
     await bobComm.addListener(bobListener)
 
@@ -64,12 +65,8 @@ describe('Comm model', () => {
       throw 'no sender'
     }
 
-    let resolve: CallableFunction
-    const promise = new Promise((_resolve) => {
-      resolve = _resolve
-    })
-
-    await aliceComm.addListener(createDebugListener(async (connection: DIDCommConnectMeta) => {
+    await aliceComm.addListener(createDebugListener(aliceWallet, async (connection: DIDCommConnectMeta) => {
+      console.log(':= alice established')
       const cred = aliceWallet.getIdentity()?.credential
       if (!cred) {
         throw new Error('No cred to send')
@@ -81,18 +78,18 @@ describe('Comm model', () => {
         holder: cred.holder, id: cred.id
       })
       const pres = await aliceWallet.ssi.signPresentation(presUn, cred.holder)
+      console.log('before send -')
       await aliceComm.send(pres, connection)
-
-      setTimeout(resolve, 250)
     }))
     await aliceComm.connect({ recipientId, sender })
-    await promise
+
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
     expect(bobListener.receive).toBeCalled()
   })
 })
 
-export const createDebugListener = (callback: CallableFunction): DIDCommListner => {
+export const createDebugListener = (wallet: WalletWrapper, callback: CallableFunction): DIDCommListner => {
   let _comm: DIDCommHelper | undefined
 
   const _listener: DIDCommListner = {
@@ -101,11 +98,13 @@ export const createDebugListener = (callback: CallableFunction): DIDCommListner 
     },
 
     accept: async (connection) => {
-      _comm?.accept(connection)
+      console.log(`accept - ${wallet.store.alias}`)
+      await _comm?.accept(connection)
     },
 
     established: async (connection) => {
-      callback(connection)
+      console.log(`established - ${wallet.store.alias}`)
+      await callback(connection)
     },
 
     receive: async (connection, doc) => {

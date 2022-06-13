@@ -14,12 +14,13 @@
  *  limitations under the License.
  */
 
-import { normalizeValue } from "../common"
-import { BasicCredentialType } from "../vc"
+import { MaybeArray, normalizeValue } from "../common"
+import { BasicCredentialType, Credential } from "../vc"
 import {
   CredentialService, CredentialServiceBuilder, defaultBuildMethod, defaultClaimMethod,
   defaultOfferMethod, defaultRequestMethod, defaultRespondMethod, defaultSignMethod, defaultValidateMethod,
-  Extension
+  Extension,
+  ValidationResult
 } from "./ext"
 import { CredentialDescription } from "./schema"
 
@@ -65,4 +66,34 @@ export const addFactoriesToExt = (ext: Extension, type: string, factories: Crede
       return _facts
     }, {} as CredentialService)
   }
+}
+
+interface CredentialChainDebug {
+  id: string
+  type: string[]
+  children: CredentialChainDebug[]
+}
+
+export const debugCredentialChain = (credential: Credential): CredentialChainDebug => {
+  const result: CredentialChainDebug = { id: credential.id, type: credential.type, children: [] }
+
+  result.children = normalizeValue(credential.evidence).map(
+    evidence => debugCredentialChain(evidence as Credential)
+  )
+
+  return result
+}
+
+export const debugValidationResult = (result: ValidationResult): CredentialChainDebug => {
+  const _result: CredentialChainDebug = {
+    id: result.instance?.id || '',
+    type: result.instance?.type || [''],
+    children: []
+  }
+
+  _result.children = normalizeValue(result.evidence).map(
+    evidence => debugValidationResult(evidence.result)
+  )
+
+  return _result
 }

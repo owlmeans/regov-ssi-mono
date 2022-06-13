@@ -63,13 +63,6 @@ export const IntegratedDIDBasedAuth: FunctionComponent<IntegratedDIDBasedAuthPar
             if (!extensions) {
               throw ERROR_NO_EXTENSION_REGISTRY
             }
-            /**
-             * @PROCEED
-             * 1. Server wallet API ✅
-             * 2. PHP Endpoint to work with wallet 🏷
-             * 3. Authentication intializeion flow with the wallet 🏇 
-             * 5. Create auth token VC on the server side ✅
-             */
 
             const senderIdentity = handler.wallet?.getIdentity()?.credential
 
@@ -102,14 +95,6 @@ export const IntegratedDIDBasedAuth: FunctionComponent<IntegratedDIDBasedAuthPar
                     }
                   },
                   receive: async (_, doc) => {
-                    /**
-                     * @TODO
-                     * 1. Send authenticated response to the server 🏇
-                     * 2. Server should check if the response is valid and trustful ✅
-                     * 3. Server should register and authenticate the user 🏷
-                     * 4. Server should check if the response is generated for a particular client
-                     * even if the client uses some guest wallet ❓
-                     */
                     try {
                       if (!handler?.wallet) {
                         throw ERROR_NO_WALLET_HANDLER_AUTH

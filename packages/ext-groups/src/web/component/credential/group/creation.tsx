@@ -17,7 +17,9 @@
 import React, { FunctionComponent, useEffect, useState, } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import { REGOV_CREDENTIAL_TYPE_GROUP, GroupSubject } from '../../../../types'
-import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { 
+  EmptyProps, generalNameVlidation, RegovComponentProps, SwitchInput, useRegov, withRegov 
+} from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
 import {
   AlertOutput, dateFormatter, FormMainAction, LongTextInput, MainTextInput, MainTextOutput,
@@ -66,6 +68,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
             ...unsginedGroup.credentialSubject as unknown as GroupSubject,
             creation: {
               credentialName: t('group.creation.defaultName'),
+              root: false,
               alert: undefined
             }
           })
@@ -93,6 +96,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
           createdAt: '',
           creation: {
             credentialName: '',
+            root: false,
             alert: undefined
           },
         }
@@ -153,6 +157,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
         <MainTextInput {...props} field="group.name" />
         <LongTextInput {...props} field="group.description" />
         <MainTextOutput {...props} field="group.createdAt" showHint formatter={dateFormatter} />
+        <SwitchInput {...props} field="group.creation.root" />
         <AlertOutput {...props} field="group.creation.alert" />
         <FormMainAction {...props} title="group.creation.create" action={methods.handleSubmit(create)} />
       </PrimaryForm>
@@ -167,6 +172,7 @@ export type GroupCreationFields = {
   group: {
     creation: {
       credentialName: string
+      root: boolean
       alert: string | undefined
     }
   } & GroupSubject
