@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { createWSClient, Receiver, WSClientConfig } from "../client"
+import { createWSClient, WSClientConfig } from "../client"
 import { COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, DIDCommChannel, DIDCommHelper } from "../types"
 
 
@@ -35,11 +35,11 @@ export const createWSChannel = async (config: WSClientConfig): Promise<DIDCommCh
       _comm = didComm
     },
 
-    send: async (message, ok?) => {
-      if (typeof ok === 'boolean') {
-        message = (ok ? COMM_WS_PREFIX_CONFIRMED : COMM_WS_PREFIX_ERROR) + ':' + message
+    send: async (message, params) => {
+      if (typeof params?.ok === 'boolean') {
+        message = (params.ok ? COMM_WS_PREFIX_CONFIRMED : COMM_WS_PREFIX_ERROR) + ':' + message
       }
-      return await client.send(message)
+      return await client.send(message, params?.id)
     },
 
     close: async () => {

@@ -56,6 +56,12 @@ export const buildCommExtension = (config: CommExtConfig) => {
           _didComm[wallet.store.alias] = helper
           const combined = wallet.store.alias + ':' + alias
           if (!_channels[combined]) {
+            _channels[combined] = {
+              code: '',
+              init: async (_) => {},
+              send: async (_, __) => false,
+              close: async () => {}
+            }
             _channels[combined] = await createWSChannel(cfg)
             await helper.addChannel(_channels[combined])
           }

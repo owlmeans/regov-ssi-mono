@@ -18,20 +18,20 @@ import { server as WSServer, connection as WSConnection } from 'websocket'
 import { Server as HttpServer } from 'http'
 import { ServerConfig } from './types'
 import {
-  COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, DIDCommConnectMeta, ERROR_COMM_INVALID_PAYLOAD,
-  ERROR_COMM_MALFORMED_PAYLOAD, ERROR_COMM_NO_CONNECTION, ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER,
-  ERROR_COMM_WS_DID_REGISTERED,
-  ERROR_COMM_WS_TIMEOUT
+  COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, DIDCommConnectMeta,
+  ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD, ERROR_COMM_NO_CONNECTION,
+  ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER, ERROR_COMM_WS_DID_REGISTERED, ERROR_COMM_WS_TIMEOUT
 } from '../types'
 import { buildWalletWrapper, ExtensionRegistry, makeRandomUuid, nodeCryptoHelper } from '@owlmeans/regov-ssi-core'
 import { parseJWE } from '../util'
 import { decodeJWT } from 'did-jwt'
 
-// import util from 'util'
-// util.inspect.defaultOptions.depth = 8
 
+const messages: { [key: string]: SentMessage } = {}
 
-export const startWSServer = async (server: HttpServer, config: ServerConfig, extensions?: ExtensionRegistry): Promise<void> => {
+export const startWSServer = async (
+  server: HttpServer, config: ServerConfig, extensions?: ExtensionRegistry
+): Promise<void> => {
   const _wsServer = new WSServer({ httpServer: server })
 
   const serverWallet = await buildWalletWrapper(
@@ -87,11 +87,11 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
     if (!client) {
       return
     }
-    if (client.occupied) {
-      console.log('> Tryied to use occupied connection for: ' + did)
-      setTimeout(() => _pokeDid(did), 1000 * Math.random())
-      return
-    }
+    // if (client.occupied) {
+    //   console.log('> Tryied to use occupied connection for: ' + did)
+    //   setTimeout(() => _pokeDid(did), 1000 * Math.random())
+    //   return
+    // }
     if (_messages[did] && _messages[did].length) {
       const msg = _messages[did].shift()
       if (!msg) {
@@ -99,16 +99,18 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
       }
       console.log('try to send: ' + msg.id)
       let timeout: ReturnType<typeof setTimeout> | undefined
+      const [id] = msg.data.split(':', 1)
       try {
-        client.occupied = true
         await new Promise((resolve, reject) => {
           client.connection.send(msg.data, err => err ? reject(err) : resolve(undefined))
         })
-        const code = await new Promise<string>((resolve, reject) => {
-          client.proceedCurrent = resolve
-          client.stopCurrent = reject
+        messages[id] = { id }
+        const defer = new Promise<string>((resolve, reject) => {
+          messages[id].resolve = resolve
+          messages[id].reject = reject
           timeout = setTimeout(() => reject(ERROR_COMM_WS_TIMEOUT), config.timeout * 1000)
         })
+        const code = await defer
         console.log('Sent to ' + uuid + ': ' + code)
       } catch (err) {
         console.error(`Crash from ${uuid}: ${err}`)
@@ -121,14 +123,14 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
           clearTimeout(timeout)
         }
         console.log('> Released occupied')
-        client.occupied = false
-        client.proceedCurrent && delete client.proceedCurrent
-        client.stopCurrent && delete client.stopCurrent
+        delete messages[id]
       }
-      if (_messages[did].length) {
-        setImmediate(() => _pokeDid(did))
-      } else {
-        delete _messages[did]
+      if (_messages[did]) {
+        if (_messages[did].length) {
+          setImmediate(() => _pokeDid(did))
+        } else {
+          delete _messages[did]
+        }
       }
     }
   }
@@ -154,20 +156,13 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
     const uuid = makeRandomUuid()
     console.log('Connected ' + uuid)
     const client: Client = {
-      occupied: false,
       connection: conn,
       dids: []
     }
     _clientList[uuid] = client
 
     const _send = async (msg: string) => {
-      if (client.occupied) {
-        console.error('Tried to use occuppied connection!')
-        setTimeout(() => _send(msg), 1000 * Math.random())
-        return
-      }
       try {
-        client.occupied = true
         console.log('...seding: ' + msg.substring(0, 32))
         await new Promise((resolve, reject) => {
           client.connection.send(msg, err => err ? reject(err) : resolve(undefined))
@@ -179,51 +174,51 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
         }
       } finally {
         console.log('released occupied')
-        client.occupied = false
-        // client.proceedCurrent && delete client.proceedCurrent
-        // client.stopCurrent && delete client.stopCurrent
       }
     }
 
     conn.on('message', async msg => {
       if (msg.type === 'utf8') {
-        const data = msg.utf8Data
+        const [id, ...splitedData] = msg.utf8Data.split(':')
+        const data = splitedData.join(':')
         console.log('[data]: ' + data.substring(0, 32))
-        if (client.occupied && data.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')) {
+        if (messages[id] && data.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')) {
           const code = data.substring(data.search(':') + 1)
-          return client.proceedCurrent && client.proceedCurrent(code)
-        } else if (client.occupied && data.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
+          const resolve = messages[id].resolve
+          return resolve && resolve(code)
+        } else if (messages[id] && data.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
           const code = data.substring(data.search(':') + 1)
-          return client.stopCurrent && client.stopCurrent(code)
+          const reject = messages[id].reject
+          return reject && reject(code)
         } else if (data.startsWith('did:')) {
           const didInfo = didHelper.parseDIDId(data)
           const did = didInfo.did
           if (_didToClient[did]) {
-            return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_DID_REGISTERED)
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_DID_REGISTERED)
           }
 
           _didToClient[did] = uuid
           client.dids.push(did)
           _pokeDid(did)
 
-          return await _send(COMM_WS_PREFIX_CONFIRMED + ':' + data)
+          return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + data)
         } else if (data.startsWith('{') && data.endsWith('}')) {
           const jwe = parseJWE(data)
           if (!jwe?.protected) {
-            return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_CONNECTION)
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_CONNECTION)
           }
           const commConn: DIDCommConnectMeta = JSON.parse(Buffer.from(jwe.protected, 'base64').toString())
           if (!commConn) {
-            return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_CONNECTION)
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_CONNECTION)
           }
           if (!await didHelper.verifyDID(commConn.sender)) {
-            return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_SENDER)
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_SENDER)
           }
           if (commConn.recipient && await !didHelper.verifyDID(commConn.recipient)) {
-            return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_RECIPIENT)
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_NO_RECIPIENT)
           }
-          _addMessage(commConn.recipientId, data)
-          return await _send(COMM_WS_PREFIX_CONFIRMED + ':' + commConn.recipientId)
+          _addMessage(commConn.recipientId, id + ':' + data)
+          return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + commConn.recipientId)
         }
         try {
           const jwt = decodeJWT(data)
@@ -236,20 +231,19 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
           ]
           if (results.some(result => result)) {
             console.error('ERROR JWT', results)
-            return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_MALFORMED_PAYLOAD)
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_MALFORMED_PAYLOAD)
           }
           console.log('JWT from: ' + commConn.sender.id + ' - to: ' + commConn.recipientId)
-          _addMessage(commConn.recipientId, data)
-          return await _send(COMM_WS_PREFIX_CONFIRMED + ':' + commConn.recipientId)
+          _addMessage(commConn.recipientId, id + ':' + data)
+          return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + commConn.recipientId)
         } catch (err) {
-          return await _send(COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_INVALID_PAYLOAD)
+          return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_INVALID_PAYLOAD)
         }
       }
     })
 
     conn.on('close', () => {
       console.log('Disconnect ' + uuid + ' - removed did listening for: ' + client.dids.length)
-      client.occupied = true
       client.dids.map(did => delete _didToClient[did])
       delete _clientList[uuid]
     })
@@ -257,9 +251,6 @@ export const startWSServer = async (server: HttpServer, config: ServerConfig, ex
 }
 
 type Client = {
-  occupied: boolean
-  proceedCurrent?: (v: any) => void
-  stopCurrent?: (err: any) => void
   connection: WSConnection
   dids: string[]
 }
@@ -268,4 +259,10 @@ type Message = {
   id: string
   data: string
   ttl: number
+}
+
+type SentMessage = {
+  id: string
+  resolve?: (value: string) => void
+  reject?: (reason?: any) => void
 }

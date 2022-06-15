@@ -29,13 +29,13 @@ export const createDebugChannel = (): DIDCommChannel => {
       _servers.push(_server)
     },
 
-    send: async (message: string, ok?: boolean) => {
-      if (typeof ok === 'boolean') {
-        message = (ok ? COMM_WS_PREFIX_CONFIRMED : COMM_WS_PREFIX_ERROR) + ':' + message
+    send: async (message, params) => {
+      if (typeof params?.ok === 'boolean') {
+        message = (params?.ok ? COMM_WS_PREFIX_CONFIRMED : COMM_WS_PREFIX_ERROR) + ':' + message
       }
       const targets = _servers.filter(server => server !== _server)
       if (targets.length > 0) {
-        targets.map(target => target.receive(message))
+        targets.map(target => target.receive((params?.id ? params?.id + ':' : '') + message))
 
         return true
       }

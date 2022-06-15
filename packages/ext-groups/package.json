@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-groups",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Groups VC Extension for Regov SSI",
   "keywords": [
     "Regov",
@@ -36,7 +36,7 @@
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-lib-react": "^0.2.3",
+    "@owlmeans/regov-lib-react": "^0.2.4",
     "@owlmeans/regov-ssi-core": "^0.6.4",
     "i18next": "*",
     "react": "^17.0.0",

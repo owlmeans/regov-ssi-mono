@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import { makeRandomUuid } from '@owlmeans/regov-ssi-core'
 import { client as WSClient, connection as WSConnection, w3cwebsocket as BrowserClient } from 'websocket'
 import {
   COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, ERROR_COMM_WS_TIMEOUT
@@ -21,20 +22,24 @@ import {
 import { CommWSClient, Receiver, WSClientConfig } from './types'
 
 
-const _processMessage = (client: CommWSClient, data: string, receive?: Receiver) => {
-  // console.log('<<<<')
-  // console.log(data)
-  if (client.occupied && data.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')) {
+const messages: { [key: string]: Message } = {}
+
+const _processMessage = (_data: string, receive?: Receiver) => {
+  const [id, ...splitedData] = _data.split(':')
+  const data = splitedData.join(':')
+  if (messages[id] && data.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')) {
     const code = data.substring(data.search(':') + 1)
-    client.currentResolve && client.currentResolve(code)
-  } else if (client.occupied && data.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
+    const resolve = messages[id].resolve
+    resolve && resolve(code)
+  } else if (messages[id] && data.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
     const code = data.substring(data.search(':') + 1)
-    client.currentReject && client.currentReject(code)
+    const reject = messages[id].reject
+    reject && reject(code)
   } else {
     if (receive) {
-      receive(data)
+      receive(_data)
     } else {
-      console.log(data)
+      console.log('Received data: ', data)
     }
   }
 }
@@ -55,44 +60,34 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
       _wsClient.connect(config.server, config.subProtocal || COMM_WS_SUBPROTOCOL)
 
       const _client: CommWSClient = {
-        occupied: false,
-
         opened: false,
 
-        send: async (msg) => {
-          // console.log('>>>>')
-          // console.log(msg)
+        send: async (msg, id?: string) => {
+          if (!id) {
+            id = makeRandomUuid()
+          }
           if (_client.opened) {
-            if (_client.occupied) {
-              console.error('Tried to use occuppied connection!')
-              return new Promise((resolve, reject) => {
-                setTimeout(async () => {
-                  try {
-                    if (await _client.send(msg)) {
-                      resolve(true)
-                    }
-                    resolve(false)
-                  } catch (e) {
-                    reject(e)
-                  }
-                }, 250 * Math.random())
-              })
-            }
-
-            _client.occupied = true
             let timeout: ReturnType<typeof setTimeout> | undefined
             try {
               await new Promise((resolve, reject) => {
-                _conn.send(msg, err => err ? reject(err) : resolve(undefined))
+                _conn.send(`${id}:${msg}`, err => err ? reject(err) : resolve(undefined))
               })
               console.log('sending... ' + msg.substring(0, 23))
               if (!msg.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')
                 && !msg.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
-                const code = await new Promise<string>((resolve, reject) => {
-                  _client.currentResolve = resolve
-                  _client.currentReject = reject
+
+                messages[id] = { id }
+                const defer = new Promise<string>((resolve, reject) => {
+                  if (id) {
+                    messages[id].resolve = resolve
+                    messages[id].reject = reject
+                  }
+
                   timeout = setTimeout(() => reject(ERROR_COMM_WS_TIMEOUT), config.timeout * 1000)
                 })
+
+                const code = await defer
+
                 console.log('Sent', msg.substring(0, 16) + '...', code)
               }
             } catch (err) {
@@ -105,9 +100,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
               if (timeout) {
                 clearTimeout(timeout)
               }
-              _client.occupied = false
-              delete _client.currentReject
-              delete _client.currentResolve
+              delete messages[id]
             }
 
             return true
@@ -134,7 +127,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
 
         _conn.on('message', msg => {
           if (msg.type === 'utf8') {
-            _processMessage(_client, msg.utf8Data, receive)
+            _processMessage(msg.utf8Data, receive)
           }
         })
 
@@ -160,7 +153,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
 
       _wsClient.onmessage = msg => {
         if (typeof msg.data === 'string') {
-          _processMessage(_client, msg.data, receive)
+          _processMessage(msg.data, receive)
         } else {
           console.log('non string data received from ws: ', msg)
         }
@@ -171,40 +164,28 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
       const _client: CommWSClient = {
         opened: false,
 
-        occupied: false,
-
-        send: async (msg) => {
-          // console.log('>>>>')
-          // console.log(msg)
+        send: async (msg, id?: string) => {
+          if (!id) {
+            id = makeRandomUuid()
+          }
           if (_client.opened) {
-            if (_client.occupied) {
-              console.error('Tried to use occuppied connection!')
-              return new Promise((resolve, reject) => {
-                setTimeout(async () => {
-                  try {
-                    if (await _client.send(msg)) {
-                      resolve(true)
-                    }
-                    resolve(false)
-                  } catch (e) {
-                    reject(e)
-                  }
-                }, 250 * Math.random())
-              })
-            }
-
-            _client.occupied = true
             let timeout: ReturnType<typeof setTimeout> | undefined
             try {
-              _wsClient.send(msg)
+              _wsClient.send(`${id}:${msg}`)
               console.log('sending... ' + msg.substring(0, 23))
               if (!msg.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')
                 && !msg.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
-                const code = await new Promise<string>((resolve, reject) => {
-                  _client.currentResolve = resolve
-                  _client.currentReject = reject
+                messages[id] = { id }
+                const defer = new Promise<string>((resolve, reject) => {
+                  if (id) {
+                    messages[id].resolve = resolve
+                    messages[id].reject = reject
+                  }
+
                   timeout = setTimeout(() => reject(ERROR_COMM_WS_TIMEOUT), config.timeout * 1000)
                 })
+
+                const code = await defer
                 console.log('Sent', msg.substring(0, 16) + '...', code)
               }
             } catch (err) {
@@ -217,9 +198,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
               if (timeout) {
                 clearTimeout(timeout)
               }
-              _client.occupied = false
-              delete _client.currentReject
-              delete _client.currentResolve
+              delete messages[id]
             }
 
             return true
@@ -236,4 +215,10 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
       return _client
     }
   })
+}
+
+type Message = {
+  id: string
+  resolve?: (value: string) => void
+  reject?: (reason?: any) => void
 }

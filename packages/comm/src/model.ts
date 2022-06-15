@@ -16,7 +16,7 @@
 
 import {
   buildWalletLoader, Credential, DIDDocument, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION,
-  isPresentation, KEYCHAIN_ERROR_NO_KEY, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES, 
+  isPresentation, KEYCHAIN_ERROR_NO_KEY, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES,
   VERIFICATION_KEY_HOLDER, WalletWrapper
 } from "@owlmeans/regov-ssi-core"
 import {
@@ -185,7 +185,9 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
       return false
     },
 
-    receive: async (datagram, channel) => {
+    receive: async (_datagram, channel) => {
+      const [id, ...splitedData] = _datagram.split(':')
+      const datagram = splitedData.join(':')
       if (datagram.startsWith('ok:') || datagram.startsWith('error:')) {
         console.log('Receive: ' + datagram)
         return
@@ -254,14 +256,14 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
             throw new Error(ERROR_COMM_ALIAN_SENDER)
           }
 
-          await channel.send(connection.recipientId, true)
+          await channel.send(connection.recipientId, { ok: true, id })
 
           _listeners.forEach(listener => listener.receive && listener.receive(
             invertConnection(connection, channel.code), decodedJWE
           ))
         } catch (error) {
           console.error('JWE Error', error)
-          await channel.send(ERROR_COMM_MALFORMED_PAYLOAD, false)
+          await channel.send(ERROR_COMM_MALFORMED_PAYLOAD, { ok: false, id })
           throw error
         } finally {
           return
@@ -285,7 +287,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
           if (!wallet.did.helper().verifyDID(connection.recipient)) {
             throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
           }
-          await channel.send(connection.recipientId, true)
+          await channel.send(connection.recipientId, { ok: true, id })
 
           _listeners.forEach(
             listener =>
@@ -307,13 +309,13 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
             channel: channel.code
           }
 
-          await channel.send(newConnection.sender.id, true)
+          await channel.send(newConnection.sender.id, { ok: true, id })
 
           _listeners.forEach(listener => listener.accept && listener.accept(newConnection))
         }
       } catch (error) {
         // console.error('JWT Error', error)
-        await channel.send(ERROR_COMM_MALFORMED_PAYLOAD, false)
+        await channel.send(ERROR_COMM_MALFORMED_PAYLOAD, { ok: false, id })
         throw error
       }
     },

@@ -72,7 +72,7 @@ export type DIDCommChannel = {
   code: string
 
   init: (didComm: DIDCommHelper) => Promise<void>
-  send: (message: string, ok?: boolean) => Promise<boolean>
+  send: (message: string, params?: { ok?: boolean, id?: string }) => Promise<boolean>
   close: () => Promise<void>
 }
 

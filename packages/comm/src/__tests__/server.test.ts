@@ -34,7 +34,7 @@ const config = {
 }
 
 describe('WS Server', () => {
-  it.skip('receives', async () => {
+  it('receives', async () => {
     const client1 = await createWSClient({
       timeout: parseInt(process.env.RECEIVE_MESSAGE_TIMEOUT || '30'),
       server: process.env.CLIENT_WS as string
@@ -63,6 +63,7 @@ describe('WS Server', () => {
       timeout: parseInt(process.env.RECEIVE_MESSAGE_TIMEOUT || '30'),
       server: process.env.CLIENT_WS as string
     })
+
     const bobChannel = await createWSChannel({
       timeout: parseInt(process.env.RECEIVE_MESSAGE_TIMEOUT || '30'),
       server: process.env.CLIENT_WS as string
@@ -114,7 +115,8 @@ describe('WS Server', () => {
       const pres = await aliceWallet.ssi.signPresentation(presUn, cred.holder)
       await aliceComm.send(pres, connection)
 
-      setTimeout(() => resolve(), 10000)
+      resolve()
+      // setTimeout(() => resolve(), 10000)
     }))
 
     console.log(aliceWallet.store.alias + ': ' + sender.id)
