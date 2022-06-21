@@ -43,7 +43,7 @@ import {
 } from '@owlmeans/regov-ssi-core'
 import { MembershipClaimOffer } from './component/credential/membership/claim-offer'
 import { EVENT_INIT_CONNECTION, InitCommEventParams } from '@owlmeans/regov-comm'
-import { GroupOffer } from './component/credential/group/claim-view'
+import { GroupClaimView } from './component/credential/group/claim-view'
 
 
 if (groupsExtension.schema.events) {
@@ -133,9 +133,10 @@ if (groupsExtension.schema.events) {
           }
 
           if (isPresentation(doc)) {
+            console.log('INCOMING CLAIM', doc)
             if (doc.type.includes(REGOV_GROUP_CLAIM_TYPE)) {
               modalHandler.getContent = () =>
-                <GroupOffer close={close} credential={doc} ext={groupsExtension} conn={conn} />
+                <GroupClaimView close={close} credential={doc} ext={groupsExtension} conn={conn} />
 
               modalHandler.setOpen && modalHandler.setOpen(true)
             }

@@ -16,9 +16,9 @@
 
 import React, { FunctionComponent, useEffect, useState, } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-core'
-import { REGOV_CREDENTIAL_TYPE_GROUP, GroupSubject } from '../../../../types'
-import { 
-  EmptyProps, generalNameVlidation, RegovComponentProps, SwitchInput, useRegov, withRegov 
+import { REGOV_CREDENTIAL_TYPE_GROUP, GroupSubject, REGOV_GROUP_ROOT_TYPE } from '../../../../types'
+import {
+  EmptyProps, generalNameVlidation, RegovComponentProps, SwitchInput, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
 import {
@@ -43,6 +43,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
             pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
           }
         },
+        'group.depth': { valueAsNumber: true, min: 0, max: 9, pattern: /^\d+$/ },
         'group.description': { maxLength: 1024 },
       }
     }
@@ -94,6 +95,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
           name: '',
           description: '',
           createdAt: '',
+          depth: 0,
           creation: {
             credentialName: '',
             root: false,
@@ -102,6 +104,8 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
         }
       }
     })
+
+    const isRoot = methods.watch('group.creation.root')
 
     const create = async (data: GroupCreationFields) => {
       const loader = await navigator?.invokeLoading()
@@ -121,7 +125,13 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
           ...unsginedGroup.credentialSubject,
           ...extendSubject
         }
-        const credential = await factory.sign(handler.wallet, { unsigned: unsginedGroup })
+        const unsigned = isRoot ? await factory.build(handler.wallet, {
+          extensions: extensions?.registry,
+          subjectData: unsginedGroup.credentialSubject,
+          depth: Math.floor(data.group.depth || 0),
+          chainedType: REGOV_GROUP_ROOT_TYPE,
+        }) : unsginedGroup
+        const credential = await factory.sign(handler.wallet, { unsigned })
 
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
 
@@ -158,6 +168,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
         <LongTextInput {...props} field="group.description" />
         <MainTextOutput {...props} field="group.createdAt" showHint formatter={dateFormatter} />
         <SwitchInput {...props} field="group.creation.root" />
+        {isRoot && <MainTextInput {...props} field="group.depth" />}
         <AlertOutput {...props} field="group.creation.alert" />
         <FormMainAction {...props} title="group.creation.create" action={methods.handleSubmit(create)} />
       </PrimaryForm>

@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form"
 import { DIDCommConnectMeta } from "@owlmeans/regov-comm"
 
 
-export const GroupOffer: FunctionComponent<GroupClaimViewParams> = withRegov<GroupClaimViewProps>(
+export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov<GroupClaimViewProps>(
   { namespace: REGOV_EXT_GROUP_NAMESPACE }, ({ credential: presentation, navigator, t, i18n, close }) => {
     const { handler } = useRegov()
     const groupSubject = getCompatibleSubject<GroupSubject>(
