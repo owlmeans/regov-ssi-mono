@@ -26,14 +26,14 @@ export const buildExtensionSchema = <CredType extends string>(
   const _schema = {
     details,
     credentials: Object.entries<CredentialDescription>(credentials).reduce((creds, [key, cred]) => {
-      if (cred.contextUrl) {
-        documentWarmer(
-          cred.contextUrl,
-          JSON.stringify({
-            '@context': cred.credentialContext
-          })
-        )
-      }
+      // if (cred.contextUrl) {
+      //   documentWarmer(
+      //     cred.contextUrl,
+      //     JSON.stringify({
+      //       '@context': cred.credentialContext
+      //     })
+      //   )
+      // }
 
       return {
         ...creds,

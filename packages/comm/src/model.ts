@@ -224,11 +224,12 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
           const decodedJWE: Credential | Presentation = JSON.parse(Buffer.from(decodedJWE8a).toString('utf8'))
 
           if (isPresentation(decodedJWE)) {
-            const [verified] = await wallet.ssi.verifyPresentation(
+            const [verified, result] = await wallet.ssi.verifyPresentation(
               decodedJWE, undefined,
               { localLoader: buildWalletLoader(wallet), nonStrictEvidence: true, testEvidence: false }
             )
             if (!verified) {
+              console.log(result)
               throw new Error(ERROR_COMM_INVALID_PAYLOAD)
             }
           } else {

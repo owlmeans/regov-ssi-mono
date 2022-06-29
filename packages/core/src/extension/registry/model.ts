@@ -19,6 +19,7 @@ import { normalizeValue } from '../../common'
 import { ExtensionEvent } from '../schema'
 import { Extension } from '../ext'
 import { ERROR_NO_EXTENSION, ExtensionRegistry } from './types'
+import { documentWarmer } from '../../did/loader'
 
 
 export const buildExtensionRegistry = <
@@ -44,6 +45,16 @@ export const buildExtensionRegistry = <
             _typeToExtension[cred.mainType] = [
               ...(_typeToExtension[cred.mainType] ? _typeToExtension[cred.mainType] : []), ext
             ]
+            
+            if (cred.contextUrl) {
+              documentWarmer(
+                cred.contextUrl,
+                JSON.stringify({
+                  '@context': cred.credentialContext
+                })
+              )
+            }
+
             normalizeValue(cred.mandatoryTypes).forEach(type => {
               if (!type) {
                 return
