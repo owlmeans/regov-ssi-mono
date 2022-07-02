@@ -248,17 +248,24 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
           }
 
           const docVerification = wallet.did.helper().expandVerificationMethod(
-            decodedJWE.holder, DIDPURPOSE_AUTHENTICATION,
-            [VERIFICATION_KEY_HOLDER, VERIFICATION_KEY_CONTROLLER]
+            decodedJWE.holder, DIDPURPOSE_AUTHENTICATION, VERIFICATION_KEY_HOLDER
           )
 
           const senderVerification = wallet.did.helper().expandVerificationMethod(
-            connection.sender, DIDPURPOSE_VERIFICATION,
-            [VERIFICATION_KEY_HOLDER, VERIFICATION_KEY_CONTROLLER]
+            connection.sender, DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_HOLDER
           )
 
           if (docVerification.publicKeyBase58 !== senderVerification.publicKeyBase58) {
-            throw new Error(ERROR_COMM_ALIAN_SENDER)
+            try {
+              const docVerificationC = wallet.did.helper().expandVerificationMethod(
+                decodedJWE.holder, DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_CONTROLLER
+              )
+              if (docVerificationC.publicKeyBase58 !== senderVerification.publicKeyBase58) {
+                throw new Error(ERROR_COMM_ALIAN_SENDER)
+              }
+            } catch (e) {
+              throw new Error(ERROR_COMM_ALIAN_SENDER)
+            }
           }
 
           await channel.send(connection.recipientId, { ok: true, id })
