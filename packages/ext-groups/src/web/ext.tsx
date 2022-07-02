@@ -136,7 +136,8 @@ if (groupsExtension.schema.events) {
             console.log('INCOMING CLAIM', doc)
             if (doc.type.includes(REGOV_GROUP_CLAIM_TYPE)) {
               modalHandler.getContent = () =>
-                <GroupClaimView close={close} credential={doc} ext={groupsExtension} conn={conn} />
+                <GroupClaimView close={close} credential={doc} ext={groupsExtension} conn={conn} 
+                  connection={statusHandle}/>
 
               modalHandler.setOpen && modalHandler.setOpen(true)
             }

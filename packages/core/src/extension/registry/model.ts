@@ -45,13 +45,11 @@ export const buildExtensionRegistry = <
             _typeToExtension[cred.mainType] = [
               ...(_typeToExtension[cred.mainType] ? _typeToExtension[cred.mainType] : []), ext
             ]
-            
+
             if (cred.contextUrl) {
               documentWarmer(
                 cred.contextUrl,
-                JSON.stringify({
-                  '@context': cred.credentialContext
-                })
+                JSON.stringify({ '@context': cred.credentialContext })
               )
             }
 

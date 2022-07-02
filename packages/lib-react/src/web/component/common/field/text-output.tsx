@@ -36,7 +36,7 @@ export const MainTextOutput = (
 
   return <Grid item>
     <Controller name={field} control={control} render={({ field: _field, fieldState }) =>
-      <FormControl focused fullWidth margin="normal" variant="standard" error={fieldState.invalid}>
+      <FormControl focused fullWidth margin="normal" variant="standard" error={!!fieldState.error}>
         {(showIntro || showIntroLabel) && <InputLabel htmlFor={`${field}.output`}>
           {`${showIntro ? t(`${field}.intro`) : showIntroLabel ? t(`${field}.label`) : ''}`}
         </InputLabel>}

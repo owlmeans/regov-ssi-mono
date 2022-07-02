@@ -56,7 +56,7 @@ export type DIDHelper = {
 export type ExtractKeyMethod = (did: DIDDocument | DIDDocumentUnsinged | string, keyId?: string) => Promise<CryptoKey | undefined>
 
 export type ExpandVerificationMethod = (
-  didDoc: DIDDocument | DIDDocumentUnsinged, purpose: DIDDocumentPurpose, keyId?: string
+  didDoc: DIDDocument | DIDDocumentUnsinged, purpose: DIDDocumentPurpose, keyId?: string | string[]
 ) => DIDVerificationItem | never
 
 

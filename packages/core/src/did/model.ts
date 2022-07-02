@@ -150,9 +150,10 @@ export const buildDidHelper =
 
     const _expandVerificationMethod: ExpandVerificationMethod
       = (didDoc, purpose, keyId = DEFAULT_VERIFICATION_KEY) => {
-        if (_isDIDId(keyId)) {
+        if (typeof keyId === 'string' && _isDIDId(keyId)) {
           keyId = _extractKeyId(keyId)
         }
+        const keyIds = Array.isArray(keyId) ? keyId : [keyId]
 
         const methodToExpand = normalizeValue(didDoc[purpose]).find(
           (_method) => {
@@ -163,7 +164,7 @@ export const buildDidHelper =
               ? _parseDIDId(_method)
               : _parseDIDId(_method.id)
 
-            return parsedMethod.fragment === keyId
+            return keyIds.includes(parsedMethod.fragment as string)
           }
         )
 
@@ -173,12 +174,12 @@ export const buildDidHelper =
 
         const expandedMethod = typeof methodToExpand === 'string'
           ? normalizeValue(didDoc.verificationMethod).find(
-            _method => _method && _parseDIDId(_method).fragment === keyId
+            _method => _method && keyIds.includes(_parseDIDId(_method).fragment as string)
           )
           : methodToExpand?.publicKeyBase58
             ? methodToExpand
             : normalizeValue(didDoc.verificationMethod).find(
-              _method => _method && _parseDIDId(_method).fragment === keyId
+              _method => _method && keyIds.includes(_parseDIDId(_method).fragment as string)
             )
 
         return expandedMethod === methodToExpand ? methodToExpand

@@ -17,6 +17,7 @@
 import {
   buildWalletLoader, Credential, DIDDocument, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION,
   isPresentation, KEYCHAIN_ERROR_NO_KEY, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES,
+  VERIFICATION_KEY_CONTROLLER,
   VERIFICATION_KEY_HOLDER, WalletWrapper
 } from "@owlmeans/regov-ssi-core"
 import {
@@ -229,14 +230,15 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
               { localLoader: buildWalletLoader(wallet), nonStrictEvidence: true, testEvidence: false }
             )
             if (!verified) {
-              console.log(result)
+              console.error(result)
               throw new Error(ERROR_COMM_INVALID_PAYLOAD)
             }
           } else {
-            const [verified] = await wallet.ssi.verifyCredential(decodedJWE, undefined, {
+            const [verified, result] = await wallet.ssi.verifyCredential(decodedJWE, undefined, {
               verifyEvidence: false, verifySchema: false, nonStrictEvidence: true
             })
             if (!verified) {
+              console.error(result)
               throw new Error(ERROR_COMM_INVALID_PAYLOAD)
             }
           }
@@ -246,11 +248,13 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
           }
 
           const docVerification = wallet.did.helper().expandVerificationMethod(
-            decodedJWE.holder, DIDPURPOSE_AUTHENTICATION, VERIFICATION_KEY_HOLDER
+            decodedJWE.holder, DIDPURPOSE_AUTHENTICATION,
+            [VERIFICATION_KEY_HOLDER, VERIFICATION_KEY_CONTROLLER]
           )
 
           const senderVerification = wallet.did.helper().expandVerificationMethod(
-            connection.sender, DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_HOLDER
+            connection.sender, DIDPURPOSE_VERIFICATION,
+            [VERIFICATION_KEY_HOLDER, VERIFICATION_KEY_CONTROLLER]
           )
 
           if (docVerification.publicKeyBase58 !== senderVerification.publicKeyBase58) {
@@ -315,7 +319,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
           _listeners.forEach(listener => listener.accept && listener.accept(newConnection))
         }
       } catch (error) {
-        // console.error('JWT Error', error)
+        console.error('JWT Error', error)
         await channel.send(ERROR_COMM_MALFORMED_PAYLOAD, { ok: false, id })
         throw error
       }
