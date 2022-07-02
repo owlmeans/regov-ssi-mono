@@ -16,12 +16,13 @@
 
 import { DIDRegistryBundle, DIDRegistryWrapper } from "../did"
 import { CryptoHelper } from "../common"
-import { SSICore, Credential, CredentialSubject } from "../vc"
+import { SSICore, Credential } from "../vc"
 import { CreateKeyOptions, KeyChain, KeyChainWrapper } from "../keys/types"
 import { BasicStore, EncryptedStore, SecureStore } from "../store/types"
 import {
-  CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryType
+  CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryItem, RegistryType
 } from './registry/types'
+import { ExtensionRegistry } from "../extension"
 
 
 export type Wallet = {
@@ -39,7 +40,10 @@ export type Wallet = {
 export type WalletWrapperMethodBuilder<Method extends Function> = (wallet: Wallet, context: SSICore) => Method
 
 export type WalletWrapperBuilder = <Store extends BasicStore = BasicStore>(
-  crypto: CryptoHelper,
+  dependencies: { 
+    crypto: CryptoHelper
+    extensions?: ExtensionRegistry
+  },
   password: string,
   store?: Store | string,
   options?: WalletOptions
@@ -53,6 +57,8 @@ export type WalletOptions = {
 }
 
 export type WalletWrapper = {
+  crypto: CryptoHelper
+
   store: SecureStore
 
   wallet: Wallet
@@ -66,11 +72,13 @@ export type WalletWrapper = {
   hasIdentity: () => boolean
 
   getIdentity: <
-    Subject extends CredentialSubject = CredentialSubject,
+    Subject extends {} = {},
     Identity extends Credential<Subject> = Credential<Subject>
     >() => CredentialWrapper<Subject, Identity> | undefined
 
   getRegistry: GetRegistryMethod
+
+  findCredential: (id: string, section?: string) => CredentialWrapper | undefined
 
   export: (_password?: string) => Promise<EncryptedStore>
 
@@ -81,3 +89,4 @@ export type GetRegistryMethod = (type?: RegistryType) => CredentialsRegistryWrap
 
 export const DEFAULT_WALLET_ALIAS = 'citizen'
 
+export const ERROR_NO_IDENTITY = 'ERROR_NO_IDENTITY'

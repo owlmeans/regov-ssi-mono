@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-import { Button } from '@mui/material'
 import { EmptyProps, RegovComponentProps, withRegov } from '../../../common'
 import copy from 'copy-to-clipboard'
 import saveAs from 'file-saver'
 import React, { Fragment, FunctionComponent } from 'react'
+import Button from '@mui/material/Button'
 
 
 export const CredentialActionGroup: FunctionComponent<CredentialActionGroupParams> = withRegov<
@@ -29,16 +29,16 @@ export const CredentialActionGroup: FunctionComponent<CredentialActionGroupParam
   )
 
   return <Fragment>
-    {remove && <Button onClick={remove}>{t('actionGroup.remove')}</Button>}
+    {remove && <Button onClick={remove}>{`${t('actionGroup.remove')}`}</Button>}
     <Button onClick={() => {
       copy(content as string, {
         message: t([`actionGroup.copyhint`, 'clipboard.copyhint']),
         format: 'text/plain'
       })
-    }}>{t('actionGroup.copy')}</Button>
+    }}>{`${t('actionGroup.copy')}`}</Button>
     {exportTitle && <Button onClick={() => {
       saveAs(new Blob([content as string], { type: "text/plain;charset=utf-8" }), `${exportTitle}.json`)
-    }}>{t('actionGroup.export')}</Button>}
+    }}>{`${t('actionGroup.export')}`}</Button>}
   </Fragment >
 })
 

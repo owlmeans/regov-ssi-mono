@@ -34,7 +34,7 @@ export const CredentialResponder: FunctionComponent<CredentialResponderParams> =
     com: ComRenderer,
     renderer: FallbackRenderer
   }) => {
-    const Renderer = ComRenderer || FallbackRenderer
+    const Renderer: FunctionComponent<CredentialResponderImplProps> = ComRenderer || FallbackRenderer
 
     const _props: CredentialResponderImplProps = {
       t, i18n,

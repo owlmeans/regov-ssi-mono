@@ -14,11 +14,12 @@
  *  limitations under the License.
  */
 
-import { Grid, TextField } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { formatError } from '../error'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
 
 
 export const NewPasswordInput = ({ t, field, rules }: NewPasswordInputProps) => {
@@ -30,11 +31,9 @@ export const NewPasswordInput = ({ t, field, rules }: NewPasswordInputProps) => 
         render={({ field: _field, fieldState }) => {
           return <TextField type="password" autoComplete="new-password" fullWidth margin="normal" variant="outlined"
             InputLabelProps={{ shrink: true }} {..._field}
-            label={t(`${field}.input.label`)} error={fieldState.invalid}
+            label={`${t(`${field}.input.label`)}`} error={!!fieldState.error}
             helperText={
-              fieldState.invalid
-                ? formatError(t, `${field}.input`, fieldState) // t(`${field}.input.error.${fieldState.error?.message || fieldState.error?.type || ''}`)
-                : t(`${field}.input.hint`)
+              `${fieldState.error ? formatError(t, `${field}.input`, fieldState) : t(`${field}.input.hint`)}`
             }
           />
         }} />
@@ -44,11 +43,9 @@ export const NewPasswordInput = ({ t, field, rules }: NewPasswordInputProps) => 
         render={({ field: _field, fieldState }) => {
           return <TextField type="password" autoComplete="new-password" fullWidth margin="normal" variant="outlined"
             InputLabelProps={{ shrink: true }} {..._field}
-            label={t(`${field}.confirm.label`)} error={fieldState.invalid}
+            label={`${t(`${field}.confirm.label`)}`} error={!!fieldState.error}
             helperText={
-              fieldState.invalid
-                ? formatError(t, `${field}.confirm`, fieldState) // t(`${field}.confirm.error.${fieldState.error?.message || fieldState.error?.type || ''}`)
-                : t(`${field}.confirm.hint`)
+              `${fieldState.error ? formatError(t, `${field}.confirm`, fieldState) : t(`${field}.confirm.hint`)}`
             }
           />
         }} />

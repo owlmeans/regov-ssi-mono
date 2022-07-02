@@ -19,16 +19,23 @@ import {
   castMenuItemParams, CredentialListNavigator, EmptyProps, ManuItemParams, MenuActionResult, RegovComponentProps,
   useNavigator, useRegov, withRegov
 } from '../../../common'
-import {
-  Button, Dialog, DialogContent, DialogTitle, Grid, ListItemIcon, ListItemText, MenuItem,
-  MenuList
-} from '@mui/material'
-import {
-  MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW, NewCredentailMenuItem
-} from '../../extension/types'
-import { AddCircleOutline, Drafts, SvgIconComponent } from '@mui/icons-material'
+import { MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW, NewCredentailMenuItem } from '../../extension/types'
 import { TFunction } from 'i18next'
+import AddCircleOutline from '@mui/icons-material/AddCircleOutline'
+import Drafts from '@mui/icons-material/Drafts'
+import SvgIcon from '@mui/material/SvgIcon'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import MenuItem from '@mui/material/MenuItem'
+import MenuList from '@mui/material/MenuList'
 
+
+type SvgIconComponent = typeof SvgIcon 
 
 export const CredentialHeader = withRegov<
   CredentialHeaderProps, CredentialListNavigator
@@ -47,11 +54,11 @@ export const CredentialHeader = withRegov<
       maxWidth="100%">
       <Grid item>
         <Button variant="outlined" color="primary"
-          onClick={() => setOpenCreation(true)}>{t('header.create')}</Button>
+          onClick={() => setOpenCreation(true)}>{`${t('header.create')}`}</Button>
       </Grid>
       <Grid item>
         <Button variant="outlined" color="primary"
-          onClick={() => setOpenRequest(true)}>{t('header.request')}</Button>
+          onClick={() => setOpenRequest(true)}>{`${t('header.request')}`}</Button>
       </Grid>
     </Grid>
     <HeaderMenu open={openCreation} t={t} setOpen={setOpenCreation} menuList={createMenuList}
@@ -60,20 +67,20 @@ export const CredentialHeader = withRegov<
           const params = res.params as NewCredentailMenuItem
           navigator.create(`${params.ext}/${params.type}`)
         }
-      }}/>
-    <HeaderMenu open={openRequest} t={t} setOpen={setOpenRequest} menuList={requestMenuList} 
+      }} />
+    <HeaderMenu open={openRequest} t={t} setOpen={setOpenRequest} menuList={requestMenuList}
       Icon={Drafts} title="header.request-dialog.title" action={async res => {
         if (res.params && navigator.request) {
           const params = res.params as NewCredentailMenuItem
           navigator.request(`${params.ext}/${params.type}`)
         }
-      }}/>
+      }} />
   </Fragment>
 })
 
 const HeaderMenu: FunctionComponent<HeaderMenuProps> = ({ t, title, open, setOpen, menuList, action, Icon }) => {
   return <Dialog open={open} scroll="paper" onClose={() => setOpen(false)}>
-    <DialogTitle>{t(title)}</DialogTitle>
+    <DialogTitle>{`${t(title)}`}</DialogTitle>
     <DialogContent>
       <MenuList>
         {
@@ -88,7 +95,7 @@ const HeaderMenu: FunctionComponent<HeaderMenuProps> = ({ t, title, open, setOpe
                 }
               }>
                 <ListItemIcon><Icon fontSize="small" /></ListItemIcon>
-                <ListItemText>{t(item.title, { ns: item.ns })}</ListItemText>
+                <ListItemText>{`${t(item.title, { ns: item.ns })}`}</ListItemText>
               </MenuItem>
             }
           )

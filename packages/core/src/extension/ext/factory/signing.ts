@@ -16,11 +16,11 @@
 
 import { addToValue, CryptoKey, normalizeValue } from "../../../common"
 import { isCredential } from "../../../vc"
-import { 
+import {
   DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER
 } from "../../../did"
 import { SignMethodBuilder } from "../types"
-import { ERROR_FACTORY_EVIDENCE_HOLDER_FORMAT, ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED } from "./types"
+import { ERROR_FACTORY_EVIDENCE_HOLDER_FORMAT, ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED, EVENT_EXTENSION_BEFORE_SIGNING_DID, ExtensionEventBeforeSigningDid } from "./types"
 
 
 export const defaultSignMethod: SignMethodBuilder = schema =>
@@ -69,6 +69,12 @@ export const defaultSignMethod: SignMethodBuilder = schema =>
       if (!signerKey) {
         throw ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED
       }
+    await params.extensions?.triggerEvent<ExtensionEventBeforeSigningDid>(
+      wallet, EVENT_EXTENSION_BEFORE_SIGNING_DID, {
+      unsigned: unsignedDid,
+      cred: unsigned,
+      key: signerKey
+    })
       unsigned.holder = await wallet.ssi.did.helper().signDID(
         signerKey, unsignedDid, VERIFICATION_KEY_CONTROLLER
       )
@@ -81,6 +87,12 @@ export const defaultSignMethod: SignMethodBuilder = schema =>
       if (!signerKey.pk) {
         throw new Error('evidence.holder.pk')
       }
+      await params.extensions?.triggerEvent<ExtensionEventBeforeSigningDid>(
+        wallet, EVENT_EXTENSION_BEFORE_SIGNING_DID, {
+        unsigned: unsignedDid,
+        cred: unsigned,
+        key: signerKey
+      })
       issuer = await wallet.ssi.did.helper().signDID(signerKey, unsignedDid)
       unsigned.holder = { id: issuer.id }
     }

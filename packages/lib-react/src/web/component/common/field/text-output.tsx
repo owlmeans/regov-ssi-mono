@@ -15,11 +15,16 @@
  */
 
 import React from 'react'
-import { FormControl, FormHelperText, Grid, Input, InputLabel, Typography } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import { Controller, useFormContext } from 'react-hook-form'
 import { formatError } from '../error'
 import { OutputFieldFormatter } from './formatter'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
+import Grid from '@mui/material/Grid'
+import Input from '@mui/material/Input'
+import InputLabel from '@mui/material/InputLabel'
+import Typography from '@mui/material/Typography'
 
 
 export const MainTextOutput = (
@@ -31,19 +36,19 @@ export const MainTextOutput = (
 
   return <Grid item>
     <Controller name={field} control={control} render={({ field: _field, fieldState }) =>
-      <FormControl focused fullWidth margin="normal" variant="standard" error={fieldState.invalid}>
+      <FormControl focused fullWidth margin="normal" variant="standard" error={!!fieldState.error}>
         {(showIntro || showIntroLabel) && <InputLabel htmlFor={`${field}.output`}>
-          {showIntro ? t(`${field}.intro`) : showIntroLabel ? t(`${field}.label`) : ''}
+          {`${showIntro ? t(`${field}.intro`) : showIntroLabel ? t(`${field}.label`) : ''}`}
         </InputLabel>}
         {/* inputProps={{ style: { textAlign: 'right' } }}  */}
         <Input readOnly disableUnderline id={`${field}.output`}
           startAdornment={
             innlineLabel && <Typography color="primary" marginRight={1} variant="subtitle1">
-              {t(`${field}.label`)}:
+              {`${t(`${field}.label`)}`}:
             </Typography>
           } value={formatter ? formatter(_field.value, formatTemplate) : _field.value} />
-        {(showHint || fieldState.invalid) && <FormHelperText error={fieldState.invalid}>
-          {fieldState.invalid ? formatError(t, field, fieldState) : t(`${field}.hint`)}
+        {(showHint || fieldState.error) && <FormHelperText error={!!fieldState.error}>
+          {`${fieldState.error ? formatError(t, field, fieldState) : t(`${field}.hint`)}`}
         </FormHelperText>}
       </FormControl>
     } />

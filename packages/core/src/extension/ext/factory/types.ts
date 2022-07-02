@@ -14,8 +14,29 @@
  *  limitations under the License.
  */
 
+import { CryptoKey } from "../../../common"
+import { DIDDocumentUnsinged } from "../../../did"
+import { UnsignedCredential } from "../../../vc"
+import { EventParams } from "../../schema"
+
 
 export const ERROR_FACTORY_EVIDENCE_HOLDER_FORMAT = 'ERROR_FACTORY_EVIDENCE_HOLDER_FORMAT'
 export const ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED = 'ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED'
 export const ERROR_CANT_IDENTIFY_CREDENTIAL = 'ERROR_CANT_IDENTIFY_CREDENTIAL'
 export const ERROR_FACTORY_NO_IDENTITY = 'ERROR_FACTORY_NO_IDENTITY'
+
+export const EVENT_EXTENSION_BEFORE_SIGNING_DID = 'ext:signing:did:before'
+
+export type ExtensionEventBeforeSigningDid = EventParams & {
+  unsigned: DIDDocumentUnsinged
+  cred: UnsignedCredential
+  key?: CryptoKey
+}
+
+export const EVENT_EXTENSION_AFTER_BULIDING_DID = 'ext:building:did:after'
+
+export type ExtensionEventAfterBuildingDid = EventParams & {
+  unsigned: DIDDocumentUnsinged
+  cred: UnsignedCredential
+  key?: CryptoKey
+}

@@ -20,13 +20,21 @@ import {
   ResultWidgetParams
 } from '../../../../common'
 import { ValidationResult } from '@owlmeans/regov-ssi-core'
-import {
-  Accordion, AccordionDetails, AccordionSummary, Avatar, List, ListItemAvatar, ListItemButton,
-  ListItemText, ListSubheader, Typography
-} from '@mui/material'
-import { Done, ErrorOutline, ExpandMore } from '@mui/icons-material'
 import { normalizeValue } from '@owlmeans/regov-ssi-core'
 import { EvidenceTrust, EvidenceTrustHandle } from './evidence/'
+import Done from '@mui/icons-material/Done'
+import ErrorOutline from '@mui/icons-material/ErrorOutline'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import Avatar from '@mui/material/Avatar'
+import List from '@mui/material/List'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import ListSubheader from '@mui/material/ListSubheader'
+import Typography from '@mui/material/Typography'
 
 
 export const ValidationResultWidgetWeb: FunctionComponent<ResultWidgetParamsWeb> = withRegov<ResultWidgetPropsWeb>({
@@ -37,7 +45,7 @@ export const ValidationResultWidgetWeb: FunctionComponent<ResultWidgetParamsWeb>
 
   return <Fragment>
     <List subheader={<ListSubheader disableSticky>
-      <Typography variant="subtitle1">{t('widget.validation.header.title')}</Typography>
+      <Typography variant="subtitle1">{`${t('widget.validation.header.title')}`}</Typography>
     </ListSubheader>}>
       <ListItemButton onClick={() => {
         if (!result.instance || !handle.setResult) {
@@ -52,13 +60,13 @@ export const ValidationResultWidgetWeb: FunctionComponent<ResultWidgetParamsWeb>
               : <ErrorOutline color="error" />}
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={t(`widget.validation.main.${result.trusted ? 'trusted' : 'untrusted'}`)}
-          secondary={t(`widget.validation.main.${result.valid ? 'valid' : 'invalid'}`)} />
+        <ListItemText primary={`${t(`widget.validation.main.${result.trusted ? 'trusted' : 'untrusted'}`)}`}
+          secondary={`${t(`widget.validation.main.${result.valid ? 'valid' : 'invalid'}`)}`} />
       </ListItemButton>
       <EvidenceTrust handle={handle} />
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
+          <Typography variant="subtitle2">{`${t('widget.validation.header.parent')}`}</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ px: 0, mx: 0 }}>
           <List>

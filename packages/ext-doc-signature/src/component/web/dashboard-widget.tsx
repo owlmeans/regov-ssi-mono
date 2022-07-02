@@ -17,10 +17,21 @@
 import { RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, useState } from 'react'
-import { Dialog, DialogContent, DialogTitle, Grid, ListItemIcon, ListItemText, MenuItem, MenuList, Typography } from '@mui/material'
-import { Add, AddCircleOutline, Drafts } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'
+import Add from '@mui/icons-material/Add'
+import AddCircleOutline from '@mui/icons-material/AddCircleOutline'
+import Drafts from '@mui/icons-material/Drafts'
+
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import MenuItem from '@mui/material/MenuItem'
+import MenuList from '@mui/material/MenuList'
+import Typography from '@mui/material/Typography'
 
 
 export const DashboardWidgetWeb = (ext: Extension) => withRegov<DashboardWidgetProps>(
@@ -39,7 +50,7 @@ export const DashboardWidgetWeb = (ext: Extension) => withRegov<DashboardWidgetP
           <Grid item>&nbsp;</Grid>
           <Grid item container direction="row" justifyContent="space-between" alignItems="center">
             <Grid item>
-              <Typography variant="h6">{t('dashboard.widget.signature.add')} </Typography>
+              <Typography variant="h6">{`${t('dashboard.widget.signature.add')}`} </Typography>
             </Grid>
             <Grid item><Add /></Grid>
           </Grid>
@@ -48,16 +59,16 @@ export const DashboardWidgetWeb = (ext: Extension) => withRegov<DashboardWidgetP
         <Grid item xs={3}>&nbsp;</Grid>
       </Grid>
       <Dialog open={openMenu} scroll="paper" onClose={() => setOpenMenu(false)}>
-        <DialogTitle>{t('dashboard.widget.menu.title')}</DialogTitle>
+        <DialogTitle>{`${t('dashboard.widget.menu.title')}`}</DialogTitle>
         <DialogContent>
           <MenuList>
             <MenuItem onClick={() => navigate(pathRequest)}>
               <ListItemIcon><Drafts fontSize="small" /></ListItemIcon>
-              <ListItemText>{t('dashboard.widget.menu.request')}</ListItemText>
+              <ListItemText>{`${t('dashboard.widget.menu.request')}`}</ListItemText>
             </MenuItem>
             <MenuItem onClick={() => navigate(pathCreate)}>
               <ListItemIcon><AddCircleOutline fontSize="small" /></ListItemIcon>
-              <ListItemText>{t('dashboard.widget.menu.create')}</ListItemText>
+              <ListItemText>{`${t('dashboard.widget.menu.create')}`}</ListItemText>
             </MenuItem>
           </MenuList>
         </DialogContent>

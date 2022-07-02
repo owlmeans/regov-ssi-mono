@@ -20,10 +20,17 @@ import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } fr
 import {
   Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-core'
-import { CredentialWrapper, Credential, CredentialSubject, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
-import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
-import { Groups } from '@mui/icons-material'
+import { CredentialWrapper, Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
+import Groups from '@mui/icons-material/Groups'
+
+import Avatar from '@mui/material/Avatar'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const GroupItem = (ext: Extension): FunctionComponent<GroupItemParams> =>
@@ -52,12 +59,12 @@ export const GroupItem = (ext: Extension): FunctionComponent<GroupItemParams> =>
             <Groups />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={wrapper.meta.title || t('group.list.item.unknown')}
+        <ListItemText primary={wrapper.meta.title || `${t('group.list.item.unknown')}`}
           secondary={
             <Fragment>
               <Typography variant="body2" component="span">{subject.name}</Typography>
               <br />
-              <Typography variant="caption" component="span">{t('group.list.item.type')}</Typography>
+              <Typography variant="caption" component="span">{`${t('group.list.item.type')}`}</Typography>
             </Fragment>
           } />
       </ListItemButton>
@@ -70,7 +77,7 @@ export const GroupItem = (ext: Extension): FunctionComponent<GroupItemParams> =>
   })
 
 export type GroupItemParams = EmptyProps & {
-  wrapper: CredentialWrapper<CredentialSubject, Credential<CredentialSubject>>
+  wrapper: CredentialWrapper<{}, Credential>
   action?: () => void
   meta?: ListItemMeta
 }

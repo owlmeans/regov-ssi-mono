@@ -16,7 +16,10 @@
 
 import React, { Fragment } from 'react'
 import { MainFooterImplProps, useRegov } from '../../../common'
-import { AppBar, Grid, Link, Toolbar } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import Grid from '@mui/material/Grid'
+import Link from '@mui/material/Link'
+import Toolbar from '@mui/material/Toolbar'
 
 
 export const MainFooterWeb = ({ t }: MainFooterImplProps) => {
@@ -24,15 +27,25 @@ export const MainFooterWeb = ({ t }: MainFooterImplProps) => {
 
   return config.urls ? <AppBar position="fixed" color="default" sx={{ top: 'auto', bottom: 0 }}>
     <Toolbar>
-      <Grid
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-      >
-        { config.urls?.privacyPolicy && <Link sx={{p:2}} href={config.urls?.privacyPolicy} target="_blank" color="primary.light">{t('footer.link.policy')}</Link> }
-        { config.urls?.terms && <Link sx={{p:2}} href={config.urls?.terms} target="_blank" color="primary.light">{t('footer.link.terms')}</Link> }
-        { config.urls?.guides && <Link sx={{p:2}} href={config.urls?.guides} target="_blank" color="primary.light">{t('footer.link.guides')}</Link> }
+      <Grid container direction="row" justifyContent="center" alignItems="center">
+        {
+          config.urls?.privacyPolicy
+          && <Link sx={{ p: 2 }} href={config.urls?.privacyPolicy} target="_blank" color="primary.light">
+            {`${t('footer.link.policy')}`}
+          </Link>
+        }
+        {
+          config.urls?.terms
+          && <Link sx={{ p: 2 }} href={config.urls?.terms} target="_blank" color="primary.light">
+            {`${t('footer.link.terms')}`}
+          </Link>
+        }
+        {
+          config.urls?.guides
+          && <Link sx={{ p: 2 }} href={config.urls?.guides} target="_blank" color="primary.light">
+            {`${t('footer.link.guides')}`}
+          </Link>
+        }
       </Grid>
     </Toolbar>
   </AppBar> : <Fragment />

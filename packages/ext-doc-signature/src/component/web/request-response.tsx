@@ -14,26 +14,36 @@
  *  limitations under the License.
  */
 
-import { BorderColor, Close } from '@mui/icons-material'
-import { Button, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper } from '@mui/material'
 import {
   CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
-  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidgetWeb, 
+  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, ValidationResultWidgetWeb,
   WalletFormProvider
 } from '@owlmeans/regov-lib-react'
-import { CredentialSubject, getCompatibleSubject, Presentation, REGISTRY_SECTION_PEER, 
-  REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from '@owlmeans/regov-ssi-core'
+import {
+  getCompatibleSubject, Presentation, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CREDENTIALS, 
+  REGISTRY_TYPE_REQUESTS
+} from '@owlmeans/regov-ssi-core'
 import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING, VALIDATION_KIND_RESPONSE } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
-  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject, 
+  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_CREDENTIAL_TYPE_SIGNATURE, SignatureSubject,
   SignatureRequestSubject, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION
 } from '../../types'
 import { getSignatureResponseFromPresentation, getSignatureRequestFromPresentation } from '../../util'
 import { typeFormatterFacotry } from '../formatter'
+import BorderColor from '@mui/icons-material/BorderColor'
+import Close from '@mui/icons-material/Close'
+
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import Paper from '@mui/material/Paper'
 
 
 export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResponseParams> =
@@ -42,7 +52,7 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
   }) => {
     const { handler, extensions } = useRegov()
     const request = handler.wallet && handler.wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
-      .getCredential<CredentialSubject, Presentation>(presentation.id)
+      .getCredential<{}, Presentation>(presentation.id)
 
     const methods = useForm<SignatureReuqestResponseFields>({
       mode: 'onChange',
@@ -145,7 +155,7 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
       <DialogTitle>
         <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
           <Grid item xs={8}>
-            {t('signature.view.title', { name: request?.meta.title })}
+            {`${t('signature.view.title', { name: request?.meta.title })}`}
           </Grid>
           <Grid item xs={4} container direction="row" justifyContent="flex-end" alignItems="flex-start">
             <Grid item>
@@ -207,10 +217,10 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
       <DialogActions>
         {
           !state.invalid && result.valid && result.trusted
-            ? <Button onClick={accept}>{t('signature.response.accept')}</Button>
+            ? <Button onClick={accept}>{`${t('signature.response.accept')}`}</Button>
             : null
         }
-        <Button onClick={close}>{t('signature.response.close')}</Button>
+        <Button onClick={close}>{`${t('signature.response.close')}`}</Button>
       </DialogActions>
     </Fragment>
   })

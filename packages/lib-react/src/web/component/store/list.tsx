@@ -18,9 +18,10 @@ import React from 'react'
 
 import { StoreListImplProps, MainFooter } from '../../../common'
 import { FormHeaderButton, SimpleList, SimpleListItem } from '../../component/common'
-import { Grid, ListItemSecondaryAction } from '@mui/material'
 import { saveAs } from 'file-saver'
 import { useDropzone } from "react-dropzone"
+import Grid from '@mui/material/Grid'
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 
 
 export const StoreListWeb = (props: StoreListImplProps) => {

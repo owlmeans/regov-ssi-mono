@@ -14,17 +14,15 @@
  *  limitations under the License.
  */
 
-
 import {
   BuildSSICoreMethod, BuildCredentailOptions, SignCredentialOptions, BuildPresentationOptions,
   SignPresentationOptions, ERROR_NO_PRESENTATION_SIGNING_KEY, ERROR_NO_CREDENTIAL_SIGNING_KEY,
   VerifyPresentationResult, SSICore
 } from "./ssi/types"
 import {
-  Credential, CredentialSubject, WrappedDocument, UnsignedCredential, Presentation,
+  Credential, UnsignedCredential, Presentation, ERROR_CREDENTAILSCHEMA_UNKNOWN_ERROR,
   PresentationHolder, UnsignedPresentation, BASE_CREDENTIAL_TYPE, ERROR_EVIDENCE_ISNT_TRUSTED,
-  ERROR_EVIDENCE_ISNT_CREDENTIAL, ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED, SUBJECT_ONLY_CREDENTIAL_SCHEMA_TYPE,
-  ERROR_CREDENTAILSCHEMA_UNKNOWN_ERROR
+  ERROR_EVIDENCE_ISNT_CREDENTIAL, ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED, SUBJECT_ONLY_CREDENTIAL_SCHEMA_TYPE
 } from './types'
 import {
   COMMON_CRYPTO_ERROR_NOID, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY, makeRandomUuid,
@@ -82,10 +80,9 @@ export const buildSSICore: BuildSSICoreMethod = async ({
     },
 
     buildCredential: async <
-      T extends WrappedDocument = WrappedDocument,
-      S extends CredentialSubject<T> = CredentialSubject<T>,
+      S extends {} = {},
       U extends UnsignedCredential<S> = UnsignedCredential<S>
-    >(options: BuildCredentailOptions<T>) => {
+    >(options: BuildCredentailOptions<S>) => {
       const credential = {
         '@context': [
           'https://www.w3.org/2018/credentials/v1',
@@ -107,7 +104,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
     },
 
     signCredential: async <
-      S extends CredentialSubject = CredentialSubject,
+      S extends {} = {},
       C extends Credential<S> = Credential<S>
     >(
       unsingedCredential: UnsignedCredential<MaybeArray<S>>,
@@ -124,7 +121,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
 
       const keyId = options?.keyId
         || (
-          did.helper().extractProofController(issuer) === unsingedCredential.holder.id
+          did.helper().extractProofController(issuer) === (unsingedCredential.holder as DIDDocument).id
             ? VERIFICATION_KEY_HOLDER
             : VERIFICATION_KEY_CONTROLLER
         )
@@ -164,7 +161,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
     verifyCredential: async (credential, didDoc, options) => {
       const keyId = typeof options === 'string' ? options : options?.keyId
       if (!didDoc) {
-        didDoc = credential.issuer
+        didDoc = credential.issuer as DIDDocument
       }
       if (typeof didDoc !== 'object') {
         didDoc = await did.lookUpDid<DIDDocument>(didDoc)
@@ -237,14 +234,13 @@ export const buildSSICore: BuildSSICoreMethod = async ({
         type: addToValue('VerifiablePresentation', options.type),
         holder: options.holder,
         verifiableCredential: credentails,
-      } as unknown as UnsignedPresentation<C, H>
+      } as unknown as UnsignedPresentation<C>
     },
 
     signPresentation: async<
       C extends Credential = Credential,
-      H extends PresentationHolder = PresentationHolder
     >(
-      unsignedPresentation: UnsignedPresentation<C, H>,
+      unsignedPresentation: UnsignedPresentation<C>,
       holder: DIDDocument,
       options?: SignPresentationOptions
     ) => {
@@ -279,7 +275,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             }),
             compactProof: false,
           }
-        ) as Presentation<C, H>
+        ) as Presentation<C>
       } catch (e: any) {
         console.error(e.details)
 
@@ -336,7 +332,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             if (did.helper().isDIDDocument(doc.document)) {
               return doc.document
             } else if (isCredential(doc.document) && typeof doc.document.issuer === 'object') {
-              return doc.document.issuer
+              return doc.document.issuer as DIDDocument
             }
           }
         }

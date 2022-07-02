@@ -14,9 +14,15 @@
  *  limitations under the License.
  */
 
-import { normalizeValue } from "../common"
-import { BasicCredentialType } from "../vc"
-import { Extension } from "./ext"
+import { MaybeArray, normalizeValue } from "../common"
+import { BasicCredentialType, Credential } from "../vc"
+import {
+  CredentialService, CredentialServiceBuilder, defaultBuildMethod, defaultClaimMethod,
+  defaultOfferMethod, defaultRequestMethod, defaultRespondMethod, defaultSignMethod, defaultValidateMethod,
+  Extension,
+  ValidationResult
+} from "./ext"
+import { CredentialDescription } from "./schema"
 
 
 export const findAppropriateCredentialType = (
@@ -26,4 +32,68 @@ export const findAppropriateCredentialType = (
 
   return (Object.entries(ext.factories).map(([type]) => type)
     .find(type => types.includes(type)) || defaultType)
+}
+
+const methodMap = {
+  'produceBuildMethod': 'build',
+  'produceSignMethod': 'sign',
+  'produceValidateMethod': 'validate',
+  'produceClaimMethod': 'claim',
+  'produceOfferMethod': 'offer',
+  'produceRequestMethod': 'request',
+  'produceRespondMethod': 'respond'
+}
+
+export const addFactoriesToExt = (ext: Extension, type: string, factories: CredentialServiceBuilder) => {
+  const description = (ext.schema.credentials as { [key: string]: CredentialDescription })[type]
+  ext.factories[type] = {
+    ...{
+      build: defaultBuildMethod(description),
+      sign: defaultSignMethod(description),
+      validate: defaultValidateMethod(description),
+      claim: defaultClaimMethod(description),
+      offer: defaultOfferMethod(description),
+      request: defaultRequestMethod(description),
+      respond: defaultRespondMethod(description)
+    },
+    ...Object.entries(factories).reduce((_facts, [method, builder]) => {
+      if (ext.schema.credentials) {
+        return {
+          ..._facts,
+          [(methodMap as any)[method]]: builder(description)
+        }
+      }
+      return _facts
+    }, {} as CredentialService)
+  }
+}
+
+interface CredentialChainDebug {
+  id: string
+  type: string[]
+  children: CredentialChainDebug[]
+}
+
+export const debugCredentialChain = (credential: Credential): CredentialChainDebug => {
+  const result: CredentialChainDebug = { id: credential.id, type: credential.type, children: [] }
+
+  result.children = normalizeValue(credential.evidence).map(
+    evidence => debugCredentialChain(evidence as Credential)
+  )
+
+  return result
+}
+
+export const debugValidationResult = (result: ValidationResult): CredentialChainDebug => {
+  const _result: CredentialChainDebug = {
+    id: result.instance?.id || '',
+    type: result.instance?.type || [''],
+    children: []
+  }
+
+  _result.children = normalizeValue(result.evidence).map(
+    evidence => debugValidationResult(evidence.result)
+  )
+
+  return _result
 }

@@ -14,5 +14,4 @@
  *  limitations under the License.
  */
 
-
-export const REGOV_IDENTITY_DEFAULT_NAMESPACE = 'regov-ext-basic-identity'
+export * from './auth'

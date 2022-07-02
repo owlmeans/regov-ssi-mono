@@ -14,15 +14,16 @@
  *  limitations under the License.
  */
 
-import { CryptoHelper, MaybeArray } from "../../common"
+import { CryptoHelper } from "../../common"
 import { KeyChainWrapper } from "../../keys/types"
 import {
   LoadedDocument, BuildDocumentLoader, DIDDocument, DIDHelper, DIDRegistryWrapper, DIDDocumentUnsinged
 } from '../../did'
 import {
-  Credential, CredentialContextType, CredentialSubject, WrappedDocument, CredentialType,
+  Credential, CredentialContextType, CredentialType,
   Presentation, PresentationHolder, UnsignedCredential, UnsignedPresentation, ContextSchema,
   Validated,
+  CredentialHolder,
 } from "../types"
 
 
@@ -60,27 +61,25 @@ export type VerifySchemaOptions = {
 }
 
 export type BuildCredentialMethod = <
-  SubjectType extends WrappedDocument = WrappedDocument,
-  Subject extends CredentialSubject<SubjectType> = CredentialSubject<SubjectType>,
+  Subject extends {} = {},
   Unsigned extends UnsignedCredential<Subject> = UnsignedCredential<Subject>
-  >(options: BuildCredentailOptions<SubjectType>) => Promise<Unsigned>
+  >(options: BuildCredentailOptions<Subject>) => Promise<Unsigned>
 
 export type BuildCredentailOptions<
-  SubjectType extends WrappedDocument = WrappedDocument,
-  Subject extends CredentialSubject<SubjectType> = CredentialSubject<SubjectType>
+  Subject extends {} = {}
   > = {
     id: string,
     type: CredentialType
-    holder: DIDDocument | DIDDocumentUnsinged,
+    holder: CredentialHolder,
     subject: Subject,
     issueanceDate?: string
     context: CredentialContextType
   }
 
 export type SignCredentialMethod = <
-  Subject extends CredentialSubject = CredentialSubject,
+  Subject extends {} = {},
   CredentialT extends Credential<Subject> = Credential<Subject>,
-  CredentialU extends UnsignedCredential<MaybeArray<Subject>> = UnsignedCredential<MaybeArray<Subject>>
+  CredentialU extends UnsignedCredential<Subject> = UnsignedCredential<Subject>
   >(
   unsingedCredential: CredentialU,
   issuer?: DIDDocument,
@@ -112,11 +111,10 @@ export type VerificationResult<CredentialT extends Credential = Credential>
 
 export type BuildPresentationMethod = <
   CredentialT extends Credential = Credential,
-  Holder extends PresentationHolder = PresentationHolder
   >(
   credentials: CredentialT[],
   options: BuildPresentationOptions
-) => Promise<UnsignedPresentation<CredentialT, Holder>>
+) => Promise<UnsignedPresentation<CredentialT>>
 
 export type BuildPresentationOptions = {
   id?: string
@@ -125,14 +123,11 @@ export type BuildPresentationOptions = {
   holder: PresentationHolder
 }
 
-export type SignPresentationMethod = <
-  CredentialT extends Credential = Credential,
-  Holder extends PresentationHolder = PresentationHolder
-  >(
-  unsignedPresentation: UnsignedPresentation<CredentialT, Holder>,
+export type SignPresentationMethod = <CredentialT extends Credential = Credential, >(
+  unsignedPresentation: UnsignedPresentation<CredentialT>,
   holder: DIDDocument,
   options?: SignPresentationOptions
-) => Promise<Presentation<CredentialT, Holder>>
+) => Promise<Presentation<CredentialT>>
 
 export type SignPresentationOptions = {
   buildProofPurposeOptions?: () => Promise<Object>
@@ -150,7 +145,7 @@ export type VerifyPresentationMethod = (
 export type VerifyPresentationOptions = {
   localLoader?: LocalDocumentLoader
   testEvidence?: boolean
-  nonStrictEvidence?: boolean 
+  nonStrictEvidence?: boolean
 }
 
 export type VerifyEvidenceMethod = (

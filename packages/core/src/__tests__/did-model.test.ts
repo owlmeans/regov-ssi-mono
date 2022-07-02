@@ -58,15 +58,13 @@ describe('DID Helper', () => {
     ctx['didDoc'] = didDoc
     expect(didDoc).toMatchSnapshot({
       id: expect.any(String),
-      verificationMethod: [{
+      verificationMethod: {
         id: expect.any(String),
         nonce: expect.any(String),
         controller: expect.any(String),
         publicKeyBase58: expect.any(String),
-      }],
-      assertionMethod: [
-        expect.any(String),
-      ],
+      },
+      assertionMethod: expect.any(String),
       proof: {
         created: expect.any(String),
         jws: expect.any(String),

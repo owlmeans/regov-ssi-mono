@@ -16,7 +16,7 @@
 
 import React, { FunctionComponent, useState } from 'react'
 import { MainModalImplProps } from '../../../common'
-import { Dialog } from '@mui/material'
+import Dialog from '@mui/material/Dialog'
 
 
 export const MainModalWeb: FunctionComponent<MainModalImplProps> = props => {

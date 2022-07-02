@@ -16,8 +16,10 @@
 
 import React, { FunctionComponent, useEffect, useState, } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-core'
-import { REGOV_CREDENTIAL_TYPE_GROUP, GroupSubject } from '../../../../types'
-import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
+import { REGOV_CREDENTIAL_TYPE_GROUP, GroupSubject, REGOV_GROUP_ROOT_TYPE } from '../../../../types'
+import {
+  EmptyProps, generalNameVlidation, RegovComponentProps, SwitchInput, useRegov, withRegov
+} from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
 import {
   AlertOutput, dateFormatter, FormMainAction, LongTextInput, MainTextInput, MainTextOutput,
@@ -31,7 +33,7 @@ import { REGISTRY_TYPE_CREDENTIALS, UnsignedCredential } from '@owlmeans/regov-s
 
 export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationParams> =>
   withRegov<GroupCreationProps>({ namespace: ext.localization?.ns }, ({ t, i18n, navigator, next }) => {
-    const { handler } = useRegov()
+    const { handler, extensions } = useRegov()
     const props = {
       t, i18n,
       rules: {
@@ -41,6 +43,7 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
             pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
           }
         },
+        'group.depth': { valueAsNumber: true, min: 0, max: 9, pattern: /^\d+$/ },
         'group.description': { maxLength: 1024 },
       }
     }
@@ -57,13 +60,16 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
             throw ERROR_WIDGET_EXTENSION
           }
           const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
-          const unsginedGroup = await factory.build(handler.wallet, { subjectData: {} })
+          const unsginedGroup = await factory.build(handler.wallet, {
+            extensions: extensions?.registry, subjectData: {}
+          })
           setUnsignedGroup(unsginedGroup)
 
           methods.setValue('group', {
             ...unsginedGroup.credentialSubject as unknown as GroupSubject,
             creation: {
               credentialName: t('group.creation.defaultName'),
+              root: false,
               alert: undefined
             }
           })
@@ -89,13 +95,17 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
           name: '',
           description: '',
           createdAt: '',
+          depth: 0,
           creation: {
             credentialName: '',
+            root: false,
             alert: undefined
           },
         }
       }
     })
+
+    const isRoot = methods.watch('group.creation.root')
 
     const create = async (data: GroupCreationFields) => {
       const loader = await navigator?.invokeLoading()
@@ -115,7 +125,13 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
           ...unsginedGroup.credentialSubject,
           ...extendSubject
         }
-        const credential = await factory.sign(handler.wallet, { unsigned: unsginedGroup })
+        const unsigned = isRoot ? await factory.build(handler.wallet, {
+          extensions: extensions?.registry,
+          subjectData: unsginedGroup.credentialSubject,
+          depth: Math.floor(data.group.depth || 0),
+          chainedType: REGOV_GROUP_ROOT_TYPE,
+        }) : unsginedGroup
+        const credential = await factory.sign(handler.wallet, { unsigned })
 
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
 
@@ -151,6 +167,8 @@ export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationPa
         <MainTextInput {...props} field="group.name" />
         <LongTextInput {...props} field="group.description" />
         <MainTextOutput {...props} field="group.createdAt" showHint formatter={dateFormatter} />
+        <SwitchInput {...props} field="group.creation.root" />
+        {isRoot && <MainTextInput {...props} field="group.depth" />}
         <AlertOutput {...props} field="group.creation.alert" />
         <FormMainAction {...props} title="group.creation.create" action={methods.handleSubmit(create)} />
       </PrimaryForm>
@@ -165,6 +183,7 @@ export type GroupCreationFields = {
   group: {
     creation: {
       credentialName: string
+      root: boolean
       alert: string | undefined
     }
   } & GroupSubject

@@ -15,21 +15,27 @@
  */
 
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
-import { 
-  CredentialEvidenceWidget, EmptyProps, EntityRenderer, RegovComponentProps, useRegov,
-  ValidationResultWidgetWeb, withRegov 
-} from '@owlmeans/regov-lib-react'
 import {
-  Button, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Paper, Typography
-} from '@mui/material'
+  CredentialEvidenceWidget, EmptyProps, EntityRenderer, RegovComponentProps, useRegov,
+  ValidationResultWidgetWeb, withRegov
+} from '@owlmeans/regov-lib-react'
 import {
   Credential, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER,
   REGISTRY_TYPE_IDENTITIES
 } from '@owlmeans/regov-ssi-core'
-import { Close } from '@mui/icons-material'
 import { ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-core'
-import { RegovIdentityExtension, IdentitySubject } from '../../../types'
-import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../types'
+import {
+  RegovIdentityExtension, IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE
+} from '../../../types'
+import Close from '@mui/icons-material/Close'
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
 
 
 export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<IdentityViewProps>({
@@ -43,7 +49,7 @@ export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<Ide
   const registry = handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
   const credentialWrapper =
     registry?.getCredential(credential.id, REGISTRY_SECTION_OWN)
-      || registry?.getCredential(credential.id, REGISTRY_SECTION_PEER)
+    || registry?.getCredential(credential.id, REGISTRY_SECTION_PEER)
 
   const reload = () => setCounter(counter + 1)
 
@@ -70,7 +76,7 @@ export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<Ide
     <DialogTitle>
       <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
         <Grid item xs={8}>
-          {credentialWrapper?.meta?.title || t('identity.view.title')}
+          {credentialWrapper?.meta?.title || `${t('identity.view.title')}`}
         </Grid>
         <Grid item xs={4} container direction="row" justifyContent="flex-end" alignItems="flex-start">
           <Grid item>
@@ -87,16 +93,16 @@ export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<Ide
               <EntityRenderer t={t} entity="identity" title={
                 <Fragment>
                   <Grid item px={1}>
-                    <Typography variant='overline'>{t('identity.view.identifier')}: {subject.identifier}</Typography>
+                    <Typography variant='overline'>{`${t('identity.view.identifier')}`}: {subject.identifier}</Typography>
                   </Grid>
                   <Grid item px={1}>
-                    <Typography variant='overline'>{t('identity.view.sourceApp')}: {subject.sourceApp}</Typography>
+                    <Typography variant='overline'>{`${t('identity.view.sourceApp')}`}: {subject.sourceApp}</Typography>
                   </Grid>
                   <Grid item px={1}>
-                    <Typography variant='overline'>{t('identity.view.uuid')}: {subject.uuid}</Typography>
+                    <Typography variant='overline'>{`${t('identity.view.uuid')}`}: {subject.uuid}</Typography>
                   </Grid>
                   <Grid item px={1}>
-                    <Typography variant='overline'>{t('identity.view.createdAt')}: {subject.createdAt}</Typography>
+                    <Typography variant='overline'>{`${t('identity.view.createdAt')}`}: {subject.createdAt}</Typography>
                   </Grid>
                 </Fragment>
               } subject={subject} />
@@ -114,7 +120,7 @@ export const IdentityView: FunctionComponent<IdentityViewParams> = withRegov<Ide
       </Grid>
     </DialogContent>
     <DialogActions>
-      {result.trusted && <Button onClick={() => close && close()}>{t('identity.view.close')}</Button>}
+      {result.trusted && <Button onClick={() => close && close()}>{`${t('identity.view.close')}`}</Button>}
     </DialogActions>
   </Fragment>
 })

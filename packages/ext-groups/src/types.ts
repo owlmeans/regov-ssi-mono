@@ -14,11 +14,21 @@
  *  limitations under the License.
  */
 
-import { Extension } from "@owlmeans/regov-ssi-core"
+import { BuildMethodParams, Extension } from "@owlmeans/regov-ssi-core"
 
 export const REGOV_CREDENTIAL_TYPE_GROUP = 'OwlMeans:Regov:Group'
 
 export const REGOV_CREDENTIAL_TYPE_MEMBERSHIP = 'OwlMeans:Regov:Group:Membership'
+
+export const REGOV_GROUP_CLAIM_TYPE = 'OwlMeans:Regov:Group:Entity:Claim'
+
+export const REGOV_GROUP_OFFER_TYPE = 'OwlMeans:Regov:Group:Entity:Offer'
+
+export const REGOV_GROUP_CHAINED_TYPE = 'OwlMeans:Regov:Group:Chained'
+
+export const REGOV_GROUP_LIMITED_TYPE = 'OwlMeans:Regov:Group:Limited'
+
+export const REGOV_GROUP_ROOT_TYPE = 'OwlMeans:Regov:Group:Root'
 
 export const REGOV_CLAIM_TYPE = 'OwlMeans:Regov:Group:Claim'
 export const REGOV_OFFER_TYPE = 'OwlMeans:Regov:Group:Offer'
@@ -38,6 +48,7 @@ export type GroupSubject = {
   name: string
   description: string
   createdAt: string
+  depth?: number
 }
 
 export type RegovGroupExtension = Extension
@@ -48,4 +59,13 @@ export type MembershipSubject = {
   memberCode: string
   description: string
   createdAt: string
+}
+
+export type ChainedType = typeof REGOV_GROUP_CHAINED_TYPE 
+ | typeof REGOV_GROUP_LIMITED_TYPE
+ | typeof REGOV_GROUP_ROOT_TYPE
+
+export type GroupBuildMethodParams = BuildMethodParams & {
+  chainedType?: ChainedType
+  depth?: number
 }

@@ -14,19 +14,12 @@
  *  limitations under the License.
  */
 
-
 import React, { Fragment, FunctionComponent, useState } from 'react'
-import {
-  Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid,
-  Typography
-} from '@mui/material'
 import {
   EmptyProps, EXTENSION_ITEM_PURPOSE_EVIDENCE, generalNameVlidation, PurposeEvidenceWidgetParams,
   RegovComponentProps, useRegov, withRegov
 } from '../../../../../common'
-import {
-  Credential, CredentialSubject, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES
-} from '@owlmeans/regov-ssi-core'
+import { Credential, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
 import {
   EvidenceValidationResult, EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams,
   ValidationResult
@@ -34,7 +27,16 @@ import {
 import { StandardEvidenceWidget } from './standard'
 import { MainTextInput } from '../../../common'
 import { useForm, FormProvider } from 'react-hook-form'
-import { Report, Warning } from '@mui/icons-material'
+import Report from '@mui/icons-material/Report'
+import Warning from '@mui/icons-material/Warning'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 
 export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<EvidenceTrustProps>(
@@ -87,7 +89,7 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
          * some around validation type is broken
          */
         const wrapper = await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
-          .addCredential(credential as Credential<CredentialSubject>, REGISTRY_SECTION_PEER)
+          .addCredential(credential, REGISTRY_SECTION_PEER)
 
         if (wrapper) {
           wrapper.meta.title = methods.getValues('trust.field.name')
@@ -126,7 +128,7 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
             <Warning color="warning" fontSize="large" />
           </Grid>
           <Grid item>
-            {t('widget.trust.title')}
+            {`${t('widget.trust.title')}`}
           </Grid>
         </Grid>
       </DialogTitle>
@@ -135,27 +137,26 @@ export const EvidenceTrust: FunctionComponent<EvidenceTrustParams> = withRegov<E
           <FormProvider {...methods}>
             <MainTextInput {..._props} field="trust.field.name" />
           </FormProvider>
-          <Renderer wrapper={{
-            credential: credential as Credential<CredentialSubject>,
-            meta: { secure: false, title }
-          }} />
+          <Renderer wrapper={{ credential, meta: { secure: false, title } }} />
         </Fragment>}
         {step === 'confirmation' && <Fragment>
           <Typography variant="h6">
             <Report color="error" fontSize="small" />
-            {t('widget.trust.confirmation.title')}
+            {`${t('widget.trust.confirmation.title')}`}
           </Typography>
-          <DialogContentText>{t('widget.trust.confirmation.text')}</DialogContentText>
+          <DialogContentText>{`${t('widget.trust.confirmation.text')}`}</DialogContentText>
         </Fragment>}
       </DialogContent>
       <DialogActions>
         {step === 'input' && <Fragment>
-          <Button onClick={close}>{t('widget.trust.action.cancel')}</Button>
-          <Button onClick={methods.handleSubmit(() => setStep('confirmation'))}>{t('widget.trust.action.trust')}</Button>
+          <Button onClick={close}>{`${t('widget.trust.action.cancel')}`}</Button>
+          <Button onClick={methods.handleSubmit(() => setStep('confirmation'))}>
+            {`${t('widget.trust.action.trust')}`}
+          </Button>
         </Fragment>}
         {step === 'confirmation' && <Fragment>
-          <Button onClick={() => setStep('input')}>{t('widget.trust.action.back')}</Button>
-          <Button onClick={methods.handleSubmit(trust)}>{t('widget.trust.action.confirm')}</Button>
+          <Button onClick={() => setStep('input')}>{`${t('widget.trust.action.back')}`}</Button>
+          <Button onClick={methods.handleSubmit(trust)}>{`${t('widget.trust.action.confirm')}`}</Button>
         </Fragment>}
       </DialogActions>
     </Dialog>

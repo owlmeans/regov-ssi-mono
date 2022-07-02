@@ -37,7 +37,7 @@ import {
 export const SignatureRequestWeb = (ext: Extension): FunctionComponent<SignatureRequestParams> =>
   withRegov<SignatureRequestProps>({ namespace: ext.localization?.ns }, (props) => {
     const { t } = props
-    const { handler } = useRegov()
+    const { handler, extensions } = useRegov()
     const navigate = useNavigate()
     const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
 
@@ -154,6 +154,7 @@ export const SignatureRequestWeb = (ext: Extension): FunctionComponent<Signature
         }
         const factory = ext.getFactory(REGOV_SIGNATURE_REQUEST_TYPE)
         const unsignedRequest = await factory.build(handler.wallet, {
+          extensions: extensions?.registry,
           subjectData: Object.fromEntries(
             Object.entries(data.signature.request)
               .filter(([key]) => !['alert', 'name', 'file'].includes(key))
@@ -195,7 +196,7 @@ export const SignatureRequestWeb = (ext: Extension): FunctionComponent<Signature
       <WalletFormProvider {...methods}>
         <PrimaryForm {..._props} title="signature.request.title">
           <FileProcessorWeb {..._props} field="signature.request.file"
-            isCode={isCode} onDrop={onDrop} process={processFile} handler={handle} />
+            isCode={isCode} onDrop={onDrop} process={processFile} fileHandler={handle} />
           <MainTextInput {..._props} field="signature.request.name" />
           <MainTextInput {..._props} field="signature.request.documentHash" />
           <LongTextInput {..._props} field="signature.request.description" />

@@ -15,10 +15,12 @@
  */
 
 import React, { Fragment } from 'react'
-import { Grid, Alert, AlertTitle } from '@mui/material'
 import { useFormContext, Controller } from 'react-hook-form'
 import { WrappedComponentProps } from '../../../../common'
 import { formatError } from '../error'
+import Grid from '@mui/material/Grid'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 
 
 export const AlertOutput = ({ t, field }: AlertOutputProps) => {
@@ -29,15 +31,12 @@ export const AlertOutput = ({ t, field }: AlertOutputProps) => {
       ({ field, fieldState }) => {
         const type = fieldState.error?.type || 'error'
 
-        return fieldState.invalid ? <Alert severity={t([
+        return fieldState.error ? <Alert severity={t([
           `${field.name}.error.severity.${type}`,
           `${field.name}.error.severity.error`,
           'alert.error.severity'
         ])}>
-          <AlertTitle>{t([
-            `${field.name}.error.title.${type}`,
-            `alert.error.label`,
-          ])}</AlertTitle>
+          <AlertTitle>{`${t([`${field.name}.error.title.${type}`, `alert.error.label`])}`}</AlertTitle>
           {formatError(t, field.name, fieldState)}
         </Alert> : <Fragment></Fragment>
       }

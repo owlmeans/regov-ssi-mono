@@ -38,12 +38,10 @@ export const buildUIExtensionRegistry = (): UIExtensionRegistry => {
     },
 
     getExtension: (type, code?) => {
-      if (!_typeToExtension[type]) {
-        throw ERROR_NO_UIEXTENSION
-      }
-      const ext = code
-        ? _typeToExtension[type].find(ext => ext.extension.schema.details.code === code)
-        : _typeToExtension[type][0]
+      const extModel = _registry.registry.getExtension(type, code)
+
+      const ext = _registry.uiExtensions.find(ext => ext.extension === extModel)
+
       if (!ext) {
         throw ERROR_NO_UIEXTENSION
       }
@@ -118,33 +116,7 @@ export const buildUIExtensionRegistry = (): UIExtensionRegistry => {
     },
 
     triggerEvent: async (wallet, event, params) => {
-      const observers = _registry.registry.getObservers(event)
-      await observers.reduce(
-        async (proceed: Promise<boolean>, [event, ext]) => {
-          if (!await proceed) {
-            return false
-          }
-          const _params = params || { ext }
-          console.info(`event::triggered:${event.trigger}:${ext.schema.details.code}`, event.code)
-          if (event.filter && !await event.filter(wallet, _params)) {
-            return true
-          }
-          console.info('event::filter passed')
-          if (event.method) {
-            if (!_params.ext) {
-              _params.ext = ext
-            }
-            console.info('event::call_method')
-
-            if (await event.method(wallet, _params)) {
-              console.info('event::bubbling_stoped')
-              return false
-            }
-          }
-
-          return true
-        }, Promise.resolve(true)
-      )
+      return _registry.registry.triggerEvent(wallet, event, params)
     },
 
     getMenuItems: (tag?: string) =>

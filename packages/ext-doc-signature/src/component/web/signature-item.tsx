@@ -14,16 +14,21 @@
  *  limitations under the License.
  */
 
-import { BorderColor } from '@mui/icons-material'
-import {
-  Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
-} from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { ItemMenu, ItemMenuHandle, MenuIconButton, ListItemMeta } from '@owlmeans/regov-lib-react'
 import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useMemo, useEffect } from 'react'
 import { SignatureSubject } from '../../types'
+import BorderColor from '@mui/icons-material/BorderColor'
+
+import Avatar from '@mui/material/Avatar'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const SignatureItemWeb = (ext: Extension): FunctionComponent<SignatureItemParams> =>
@@ -55,12 +60,12 @@ export const SignatureItemWeb = (ext: Extension): FunctionComponent<SignatureIte
             <BorderColor />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={wrapper.meta.title || t('signature.list.item.unknown')}
+        <ListItemText primary={wrapper.meta.title || `${t('signature.list.item.unknown')}`}
           secondary={
             <Fragment>
               <Typography variant="body2" component="span">{subject.name}</Typography>
               <br />
-              <Typography variant="caption" component="span">{t('signature.list.item.type')}</Typography>
+              <Typography variant="caption" component="span">{`${t('signature.list.item.type')}`}</Typography>
             </Fragment>
           } />
       </ListItemButton>

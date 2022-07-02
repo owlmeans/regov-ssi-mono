@@ -1,0 +1,389 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://owlmeans.com/schema/auth"
+  ],
+  "id": "did:exm:FuS5qo7XxEqLCuxRx4QeihJCgDsbemXJmLo2Nj669YAL",
+  "type": [
+    "VerifiableCredential",
+    "OwlMeans:Regov:Auth"
+  ],
+  "holder": {
+    "@context": [
+      "https://w3id.org/did/v1",
+      "https://owlmeans.com/schemas/did-schema.json#"
+    ],
+    "id": "did:exm:FuS5qo7XxEqLCuxRx4QeihJCgDsbemXJmLo2Nj669YAL",
+    "verificationMethod": [
+      {
+        "id": "did:exm:FuS5qo7XxEqLCuxRx4QeihJCgDsbemXJmLo2Nj669YAL#holder",
+        "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+        "type": "EcdsaSecp256k1VerificationKey2019",
+        "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ",
+        "nonce": "TX5uXz3hkUs:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm"
+      },
+      {
+        "id": "did:exm:FuS5qo7XxEqLCuxRx4QeihJCgDsbemXJmLo2Nj669YAL#controller",
+        "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+        "nonce": "4SCtELhcqG4:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+        "type": "EcdsaSecp256k1VerificationKey2019",
+        "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+      }
+    ],
+    "assertionMethod": "did:exm:FuS5qo7XxEqLCuxRx4QeihJCgDsbemXJmLo2Nj669YAL#holder",
+    "authentication": "did:exm:FuS5qo7XxEqLCuxRx4QeihJCgDsbemXJmLo2Nj669YAL#holder",
+    "proof": {
+      "type": "EcdsaSecp256k1Signature2019",
+      "created": "2022-05-08T16:28:44Z",
+      "verificationMethod": "did:exm:FuS5qo7XxEqLCuxRx4QeihJCgDsbemXJmLo2Nj669YAL#controller",
+      "proofPurpose": "verificationMethod",
+      "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..fbfvAd8LMec5ou7X6cRRn52mOHqeDHAotX6nSn1auO9gPuldP3g13ejmoAv6GZtSCE2pbz3vsRnndV_ERmYvjw"
+    }
+  },
+  "credentialSubject": {
+    "did": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC",
+    "createdAt": "2022-05-08T16:28:38.971Z",
+    "pinCode": "4699"
+  },
+  "issuanceDate": "2022-05-08T16:28:44.406Z",
+  "evidence": {
+    "@context": [
+      "https://www.w3.org/2018/credentials/v1",
+      "https://owlmeans.com/schema/group-membership"
+    ],
+    "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC",
+    "type": [
+      "VerifiableCredential",
+      "OwlMeans:Regov:Group:Membership",
+      "Identity"
+    ],
+    "holder": {
+      "@context": [
+        "https://w3id.org/did/v1",
+        "https://owlmeans.com/schemas/did-schema.json#"
+      ],
+      "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC",
+      "verificationMethod": {
+        "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+        "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+        "nonce": "PRegPRPVEbs:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+        "type": "EcdsaSecp256k1VerificationKey2019",
+        "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+      },
+      "assertionMethod": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+      "authentication": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+      "keyAgreement": {
+        "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#comm",
+        "type": "X25519KeyAgreementKey2020",
+        "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+        "publicKeyBase58": "GmsW5yZuaYEoL2qwAStnePqpYnCAHxACTCmFLEXhLhxS"
+      },
+      "proof": {
+        "type": "EcdsaSecp256k1Signature2019",
+        "created": "2022-05-08T14:45:21Z",
+        "verificationMethod": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+        "proofPurpose": "verificationMethod",
+        "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..gSJ-LZhuVJcvVix9ZL6fYKU3gbHDjccWjZaEaO3G-19XX0P_rPgvF02grf9G-gczv5z_o3dHaQfxgotwYkFJPw"
+      }
+    },
+    "credentialSubject": {
+      "groupId": "did:exm:9T5Gs1N43yA4hKaEx4JaG1MSNMdji8KLU1NJFzGoKBpg",
+      "createdAt": "2022-05-08T14:45:14.323Z",
+      "role": "Owner",
+      "description": "",
+      "memberCode": "OwlMeans:Owner"
+    },
+    "issuanceDate": "2022-05-08T14:45:14.328Z",
+    "evidence": [
+      {
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          "https://owlmeans.com/schema/group"
+        ],
+        "id": "did:exm:9T5Gs1N43yA4hKaEx4JaG1MSNMdji8KLU1NJFzGoKBpg",
+        "type": [
+          "VerifiableCredential",
+          "OwlMeans:Regov:Group"
+        ],
+        "holder": {
+          "@context": [
+            "https://w3id.org/did/v1",
+            "https://owlmeans.com/schemas/did-schema.json#"
+          ],
+          "id": "did:exm:9T5Gs1N43yA4hKaEx4JaG1MSNMdji8KLU1NJFzGoKBpg",
+          "verificationMethod": [
+            {
+              "id": "did:exm:9T5Gs1N43yA4hKaEx4JaG1MSNMdji8KLU1NJFzGoKBpg#holder",
+              "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+              "type": "EcdsaSecp256k1VerificationKey2019",
+              "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ",
+              "nonce": "e6kYfcQUHuT:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm"
+            },
+            {
+              "id": "did:exm:9T5Gs1N43yA4hKaEx4JaG1MSNMdji8KLU1NJFzGoKBpg#controller",
+              "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+              "nonce": "s33wxAEy1Q:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+              "type": "EcdsaSecp256k1VerificationKey2019",
+              "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+            }
+          ],
+          "assertionMethod": "did:exm:9T5Gs1N43yA4hKaEx4JaG1MSNMdji8KLU1NJFzGoKBpg#holder",
+          "authentication": "did:exm:9T5Gs1N43yA4hKaEx4JaG1MSNMdji8KLU1NJFzGoKBpg#holder",
+          "proof": {
+            "type": "EcdsaSecp256k1Signature2019",
+            "created": "2022-05-08T14:45:01Z",
+            "verificationMethod": "did:exm:9T5Gs1N43yA4hKaEx4JaG1MSNMdji8KLU1NJFzGoKBpg#controller",
+            "proofPurpose": "verificationMethod",
+            "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..maVjcmjRLB5Z8nczkrlKJgwZCRP2kJhy5iEnl3jsCihrjcoHKO6sLBrlfP1rVoCoqLqmfx5g8-RDlQuG_No6aA"
+          }
+        },
+        "credentialSubject": {
+          "createdAt": "2022-05-08T14:44:52.301Z",
+          "uuid": "8dbe053e-58bb-4c0f-a263-87a091fea742",
+          "name": "OwlMeans",
+          "description": ""
+        },
+        "issuanceDate": "2022-05-08T14:44:52.304Z",
+        "evidence": {
+          "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            "https://owlmeans.com/schema/identity"
+          ],
+          "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a",
+          "type": [
+            "VerifiableCredential",
+            "ExampleIdentity",
+            "Identity"
+          ],
+          "holder": {
+            "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a"
+          },
+          "credentialSubject": {
+            "sourceApp": "Regov Example Web Wallet",
+            "createdAt": "2022-05-04T20:11:43.151Z",
+            "uuid": "435d05fe-0ac8-41bc-9957-0a56b436a7b1",
+            "identifier": "5T4ULEMN-GQOFEZRH-MSXA8S8E"
+          },
+          "issuanceDate": "2022-05-04T20:11:43.156Z",
+          "issuer": {
+            "@context": [
+              "https://w3id.org/did/v1",
+              "https://owlmeans.com/schemas/did-schema.json#"
+            ],
+            "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a",
+            "verificationMethod": {
+              "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+              "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+              "nonce": "edJpJT5HcMb:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+              "type": "EcdsaSecp256k1VerificationKey2019",
+              "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+            },
+            "assertionMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+            "authentication": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+            "keyAgreement": {
+              "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#comm",
+              "type": "X25519KeyAgreementKey2020",
+              "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+              "publicKeyBase58": "GmsW5yZuaYEoL2qwAStnePqpYnCAHxACTCmFLEXhLhxS"
+            },
+            "proof": {
+              "type": "EcdsaSecp256k1Signature2019",
+              "created": "2022-05-04T20:11:44Z",
+              "verificationMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+              "proofPurpose": "verificationMethod",
+              "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..nxOdg62omwNctgvbu6PEtZRFmgsQHP9zk5zT-7F4VJRRdOjXpJxpMdnJDxqA0PodTCtI4anWONVAlcuiWgER6g"
+            }
+          },
+          "proof": {
+            "type": "EcdsaSecp256k1Signature2019",
+            "created": "2022-05-04T20:11:44Z",
+            "verificationMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+            "proofPurpose": "assertionMethod",
+            "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..aKXWKtV-KP9LC7C0kO90Ec-uIwWoswqksbMCWzejOm58cnvlIzFpui1Q_FWHZpp9FWOWBGPp6GW21sK6cvtIGQ"
+          }
+        },
+        "issuer": {
+          "@context": [
+            "https://w3id.org/did/v1",
+            "https://owlmeans.com/schemas/did-schema.json#"
+          ],
+          "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a",
+          "verificationMethod": {
+            "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+            "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+            "nonce": "edJpJT5HcMb:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+            "type": "EcdsaSecp256k1VerificationKey2019",
+            "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+          },
+          "assertionMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+          "authentication": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+          "keyAgreement": {
+            "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#comm",
+            "type": "X25519KeyAgreementKey2020",
+            "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+            "publicKeyBase58": "GmsW5yZuaYEoL2qwAStnePqpYnCAHxACTCmFLEXhLhxS"
+          },
+          "proof": {
+            "type": "EcdsaSecp256k1Signature2019",
+            "created": "2022-05-04T20:11:44Z",
+            "verificationMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+            "proofPurpose": "verificationMethod",
+            "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..nxOdg62omwNctgvbu6PEtZRFmgsQHP9zk5zT-7F4VJRRdOjXpJxpMdnJDxqA0PodTCtI4anWONVAlcuiWgER6g"
+          }
+        },
+        "proof": {
+          "type": "EcdsaSecp256k1Signature2019",
+          "created": "2022-05-08T14:45:01Z",
+          "verificationMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+          "proofPurpose": "assertionMethod",
+          "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..FWHi6u6_vXBx3Hkd52QYEqNfomTBw7Sc7wlxlxwY8V07vJCoBT6j4RFuX3IttVsCrUAlzGpdFru3cQha82DCSg"
+        }
+      },
+      {
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          "https://owlmeans.com/schema/identity"
+        ],
+        "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a",
+        "type": [
+          "VerifiableCredential",
+          "ExampleIdentity",
+          "Identity"
+        ],
+        "holder": {
+          "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a"
+        },
+        "credentialSubject": {
+          "sourceApp": "Regov Example Web Wallet",
+          "createdAt": "2022-05-04T20:11:43.151Z",
+          "uuid": "435d05fe-0ac8-41bc-9957-0a56b436a7b1",
+          "identifier": "5T4ULEMN-GQOFEZRH-MSXA8S8E"
+        },
+        "issuanceDate": "2022-05-04T20:11:43.156Z",
+        "issuer": {
+          "@context": [
+            "https://w3id.org/did/v1",
+            "https://owlmeans.com/schemas/did-schema.json#"
+          ],
+          "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a",
+          "verificationMethod": {
+            "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+            "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+            "nonce": "edJpJT5HcMb:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+            "type": "EcdsaSecp256k1VerificationKey2019",
+            "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+          },
+          "assertionMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+          "authentication": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+          "keyAgreement": {
+            "id": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#comm",
+            "type": "X25519KeyAgreementKey2020",
+            "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+            "publicKeyBase58": "GmsW5yZuaYEoL2qwAStnePqpYnCAHxACTCmFLEXhLhxS"
+          },
+          "proof": {
+            "type": "EcdsaSecp256k1Signature2019",
+            "created": "2022-05-04T20:11:44Z",
+            "verificationMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+            "proofPurpose": "verificationMethod",
+            "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..nxOdg62omwNctgvbu6PEtZRFmgsQHP9zk5zT-7F4VJRRdOjXpJxpMdnJDxqA0PodTCtI4anWONVAlcuiWgER6g"
+          }
+        },
+        "proof": {
+          "type": "EcdsaSecp256k1Signature2019",
+          "created": "2022-05-04T20:11:44Z",
+          "verificationMethod": "did:exm:CNDGH2T7UZjuCk2izqoPMzc1p2ftABxgjqBuNs5rAn7a#holder",
+          "proofPurpose": "assertionMethod",
+          "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..aKXWKtV-KP9LC7C0kO90Ec-uIwWoswqksbMCWzejOm58cnvlIzFpui1Q_FWHZpp9FWOWBGPp6GW21sK6cvtIGQ"
+        }
+      }
+    ],
+    "issuer": {
+      "@context": [
+        "https://w3id.org/did/v1",
+        "https://owlmeans.com/schemas/did-schema.json#"
+      ],
+      "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC",
+      "verificationMethod": [
+        {
+          "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+          "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+          "nonce": "PRegPRPVEbs:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+          "type": "EcdsaSecp256k1VerificationKey2019",
+          "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+        },
+        {
+          "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#controller",
+          "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+          "nonce": "6QYHiwBRT5z:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+          "type": "EcdsaSecp256k1VerificationKey2019",
+          "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+        }
+      ],
+      "assertionMethod": [
+        "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+        "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#controller"
+      ],
+      "authentication": [
+        "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+        "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#controller"
+      ],
+      "keyAgreement": {
+        "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#comm",
+        "type": "X25519KeyAgreementKey2020",
+        "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+        "publicKeyBase58": "GmsW5yZuaYEoL2qwAStnePqpYnCAHxACTCmFLEXhLhxS"
+      },
+      "proof": {
+        "type": "EcdsaSecp256k1Signature2019",
+        "created": "2022-05-08T14:45:39Z",
+        "verificationMethod": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#controller",
+        "proofPurpose": "verificationMethod",
+        "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..t6qpAOM9DoqW1FTapjNqMfzwpB3X0X7kmI87tx6oVFAtswHKy1sgJQeosMiKtsJGbaqATlT9wn0gjHV84nXQhw"
+      }
+    },
+    "proof": {
+      "type": "EcdsaSecp256k1Signature2019",
+      "created": "2022-05-08T14:45:39Z",
+      "verificationMethod": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#controller",
+      "proofPurpose": "assertionMethod",
+      "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..Se7wxr7A_Iv5maqFjXYjaj1Zdvn2eZj5qyteim-JMH0psomvqJdir1djNSHsw8F6fAdCvAJq7K64B_esIJJ3NQ"
+    }
+  },
+  "issuer": {
+    "@context": [
+      "https://w3id.org/did/v1",
+      "https://owlmeans.com/schemas/did-schema.json#"
+    ],
+    "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC",
+    "verificationMethod": {
+      "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+      "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5#holder",
+      "nonce": "PRegPRPVEbs:EV5Vo3CsxcsjpeuArb5rr7WyUHJfGjcPQE6e1319rpzm",
+      "type": "EcdsaSecp256k1VerificationKey2019",
+      "publicKeyBase58": "25q2MGj2zXVQkEDt1apZd2W49m7KKC88Vm2CwpwKp3utZ"
+    },
+    "assertionMethod": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+    "authentication": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+    "keyAgreement": {
+      "id": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#comm",
+      "type": "X25519KeyAgreementKey2020",
+      "controller": "did:exm:DMbFqPDU84e9487r39GcvcoH8Xm1aC1dhDAJ4nEVEjz5",
+      "publicKeyBase58": "GmsW5yZuaYEoL2qwAStnePqpYnCAHxACTCmFLEXhLhxS"
+    },
+    "proof": {
+      "type": "EcdsaSecp256k1Signature2019",
+      "created": "2022-05-08T14:45:21Z",
+      "verificationMethod": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+      "proofPurpose": "verificationMethod",
+      "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..gSJ-LZhuVJcvVix9ZL6fYKU3gbHDjccWjZaEaO3G-19XX0P_rPgvF02grf9G-gczv5z_o3dHaQfxgotwYkFJPw"
+    }
+  },
+  "proof": {
+    "type": "EcdsaSecp256k1Signature2019",
+    "created": "2022-05-08T16:28:44Z",
+    "verificationMethod": "did:exm:HBvA4tEeJ3ougtwGiVbbyH2j3WXXgR3z2PNJRRVbeNqC#holder",
+    "proofPurpose": "assertionMethod",
+    "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..mOkmeWtx26enk7LftyIr7Dds4jMfwUUsOy0D0_yzDT8W6AXNANMeGmO_2sK01-QvKyIpKsUbAg0nBy9zX9KwuQ"
+  }
+}

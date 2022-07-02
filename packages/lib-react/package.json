@@ -1,13 +1,13 @@
 {
   "name": "@owlmeans/regov-lib-react",
-  "version": "0.1.8",
+  "version": "0.2.5",
   "description": "UI toolkit to build SSI Applications over OwlMeans Regov SSI",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
   "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "react-native": "dist/index.mobile.modern.js",
   "directories": {
@@ -28,48 +28,70 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs --global buffer=Buffer -i src/index.mobile.ts -o dist/index.mobile.js && microbundle-crl --no-compress --format modern,cjs --global buffer=Buffer -i src/index.ts -o dist/index.js",
-    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
+    "build": "tsc -b -f",
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
-    "@owlmeans/regov-ssi-core": "^0.5.3",
-    "@reduxjs/toolkit": "^1.6.2",
+    "@emotion/react": "*",
+    "@emotion/styled": "*",
+    "@mui/icons-material": "*",
+    "@mui/material": "*",
+    "@owlmeans/regov-ssi-core": "^0.6.6",
+    "copy-to-clipboard": "^3.3.1",
+    "file-saver": "^2.0.5",
     "i18next": "^21.4.2",
     "i18next-browser-languagedetector": "^6.1.3",
     "react": "^17.0.0",
+    "react-device-detect": "^2.1.2",
     "react-dom": "^17.0.0",
-    "react-hook-form": "^7.19.5",
+    "react-dropzone": "^11.4.2",
+    "react-hook-form": "*",
     "react-i18next": "^11.14.2",
-    "react-native": "0.64.3",
-    "react-redux": "^7.2.6",
-    "react-router-dom": "^6.0.2",
-    "react-device-detect": "^2.1.2"
+    "react-router-dom": "^6.*"
   },
-  "optionalDependencies": {
-    "@types/react-native": "~0.64.12",
-    "react-native": "0.64.3",
-    "react-dom": "^17.0.0",
-    "react-router-dom": "^6.0.2",
-    "react-device-detect": "^2.1.2"
+  "peerDependenciesMeta": {
+    "react-device-detect": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "react-router-dom": {
+      "optional": true
+    },
+    "@emotion/react": {
+      "optional": true
+    },
+    "@emotion/styled": {
+      "optional": true
+    },
+    "@mui/icons-material": {
+      "optional": true
+    },
+    "@mui/material": {
+      "optional": true
+    },
+    "copy-to-clipboard": {
+      "optional": true
+    },
+    "react-dropzone": {
+      "optional": true
+    },
+    "file-saver": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
     "@types/node": "^16.11.10",
-    "@types/react-native": "~0.64.12",
-    "microbundle-crl": "^0.13.11",
     "typescript": "^4.5.2"
   },
   "dependencies": {
-    "@emotion/react": "^11.6.0",
-    "@emotion/styled": "^11.6.0",
-    "@mui/icons-material": "^5.2.5",
-    "@mui/material": "^5.2.4",
-    "buffer": "^6.0.3",
-    "copy-to-clipboard": "^3.3.1",
-    "file-saver": "^2.0.5",
     "localforage": "^1.10.0",
-    "moment": "^2.29.1",
-    "react-dropzone": "^11.4.2"
+    "moment": "^2.29.1"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "7ed39c573fab390171491390a484f0f6188a163c"
 }

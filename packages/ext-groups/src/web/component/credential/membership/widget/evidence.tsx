@@ -19,10 +19,11 @@ import { Extension } from '@owlmeans/regov-ssi-core'
 import { 
   EmptyProps, PurposeEvidenceWidgetParams, RegovComponentProps, withRegov 
 } from '@owlmeans/regov-lib-react'
-import { Grid, Typography } from '@mui/material'
 import { getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { dateFormatter } from '@owlmeans/regov-lib-react'
 import { MembershipSubject } from '../../../../../types'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 
 export const MembershipEvidenceWidget = (ext: Extension): FunctionComponent<MembershipEvidenceWidgetParams> =>
@@ -47,13 +48,13 @@ export const MembershipEvidenceWidget = (ext: Extension): FunctionComponent<Memb
         </Grid> */}
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('membership.widget.evidence.groupId')}: {subject.groupId}</Typography>
+        <Typography variant='overline'>{`${t('membership.widget.evidence.groupId')}`}: {subject.groupId}</Typography>
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('membership.widget.evidence.role')}: {subject.role}</Typography>
+        <Typography variant='overline'>{`${t('membership.widget.evidence.role')}`}: {subject.role}</Typography>
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('membership.widget.evidence.issuedAt')}: {dateFormatter(subject.createdAt)}</Typography>
+        <Typography variant='overline'>{`${t('membership.widget.evidence.issuedAt')}`}: {dateFormatter(subject.createdAt)}</Typography>
       </Grid>
     </Grid>
   })

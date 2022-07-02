@@ -19,6 +19,7 @@ import { normalizeValue } from '../../common'
 import { ExtensionEvent } from '../schema'
 import { Extension } from '../ext'
 import { ERROR_NO_EXTENSION, ExtensionRegistry } from './types'
+import { documentWarmer } from '../../did/loader'
 
 
 export const buildExtensionRegistry = <
@@ -44,6 +45,14 @@ export const buildExtensionRegistry = <
             _typeToExtension[cred.mainType] = [
               ...(_typeToExtension[cred.mainType] ? _typeToExtension[cred.mainType] : []), ext
             ]
+
+            if (cred.contextUrl) {
+              documentWarmer(
+                cred.contextUrl,
+                JSON.stringify({ '@context': cred.credentialContext })
+              )
+            }
+
             normalizeValue(cred.mandatoryTypes).forEach(type => {
               if (!type) {
                 return
@@ -118,7 +127,37 @@ export const buildExtensionRegistry = <
       )
 
       return observers as [ExtensionEvent, Extension][]
-    }
+    },
+
+    triggerEvent: async (wallet, event, params) => {
+      const observers = _registry.getObservers(event)
+      await observers.reduce(
+        async (proceed: Promise<boolean>, [event, ext]) => {
+          if (!await proceed) {
+            return false
+          }
+          const _params = params || { ext }
+          console.info(`event::triggered:${event.trigger}:${ext.schema.details.code}`, event.code)
+          if (event.filter && !await event.filter(wallet, _params)) {
+            return true
+          }
+          console.info('event::filter passed')
+          if (event.method) {
+            if (!_params.ext) {
+              _params.ext = ext
+            }
+            console.info('event::call_method')
+
+            if (await event.method(wallet, _params)) {
+              console.info('event::bubbling_stoped')
+              return false
+            }
+          }
+
+          return true
+        }, Promise.resolve(true)
+      )
+    },
   }
 
   return _registry

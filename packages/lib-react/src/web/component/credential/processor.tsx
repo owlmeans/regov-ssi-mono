@@ -17,11 +17,18 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { CredentialProcessorFields, CredentialProcessorImplProps } from '../../../common'
 import { useDropzone } from 'react-dropzone'
-import { FormControl, FormHelperText, Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
 import { Controller, useForm, UseFormProps } from 'react-hook-form'
 import { formatError } from '../common'
-import { Close, Delete } from '@mui/icons-material'
 import { isMobile } from "react-device-detect"
+import Close from '@mui/icons-material/Close'
+import Delete from '@mui/icons-material/Delete'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import Paper from '@mui/material/Paper'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 
 
 export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialProcessorImplProps) => {
@@ -82,11 +89,9 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
             <Grid item container direction="row" justifyContent="center" alignItems="center"
               px={3} xs={hasDoc ? 11 : 12}>
               <FormControl>
-                <Typography sx={{ color: success ? "success.main" : "main" }}>{t(
-                  document
-                    ? 'processor.mobile.import.loaded'
-                    : 'processor.mobile.import.label'
-                )}</Typography>
+                <Typography sx={{ color: success ? "success.main" : "main" }}>
+                  {`${t(document ? 'processor.mobile.import.loaded' : 'processor.mobile.import.label')}`}
+                </Typography>
                 {fieldState.invalid && <FormHelperText error={true}>
                   {formatError(t, "processor.mobile.input", fieldState)}
                 </FormHelperText>}
@@ -107,9 +112,9 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
               {showInput
                 ? <TextField fullWidth multiline margin="normal" variant="filled"
                   InputLabelProps={{ shrink: true }} maxRows={15} minRows={5}
-                  {...field} label={t('processor.input.label')} error={fieldState.invalid}
+                  {...field} label={`${t('processor.input.label')}`} error={!!fieldState.error}
                   helperText={
-                    fieldState.invalid ? formatError(t, "processor.input", fieldState) : t('processor.input.hint')
+                    `${fieldState.error ? formatError(t, "processor.input", fieldState) : t('processor.input.hint')}`
                   }
                   InputProps={{
                     sx: { fontSize: 10, fontFamily: "monospace" },
@@ -126,12 +131,12 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
                   <Grid item container direction="row" justifyContent="center" alignItems="center"
                     px={3} xs={hasDoc ? 11 : 12}>
                     <FormControl>
-                      <Typography sx={{ color: success ? "success.main" : "main" }}>{t(
+                      <Typography sx={{ color: success ? "success.main" : "main" }}>{`${t(
                         document
                           ? 'processor.import.loaded'
                           : isDragActive ? 'processor.import.drop' : 'processor.import.here'
-                      )}</Typography>
-                      {fieldState.invalid && <FormHelperText error={true}>
+                      )}`}</Typography>
+                      {fieldState.error && <FormHelperText error={true}>
                         {formatError(t, "processor.input", fieldState)}
                       </FormHelperText>}
                     </FormControl>

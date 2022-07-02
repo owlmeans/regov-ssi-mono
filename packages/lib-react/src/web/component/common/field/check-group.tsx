@@ -15,10 +15,14 @@
  */
 
 import React, { Fragment } from 'react'
-import { FormGroup, Grid, FormControlLabel, FormHelperText, Checkbox } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import { useFormContext, Controller } from 'react-hook-form'
 import { formatError } from '../error'
+import FormGroup from '@mui/material/FormGroup'
+import Grid from '@mui/material/Grid'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormHelperText from '@mui/material/FormHelperText'
+import Checkbox from '@mui/material/Checkbox'
 
 
 export const CheckGroup = ({ t, fields, rules }: CheckGroupProps) => {
@@ -33,9 +37,9 @@ export const CheckGroup = ({ t, fields, rules }: CheckGroupProps) => {
             return <Fragment>
               <FormControlLabel control={<Checkbox {..._field} checked={_field.value} />}
                 label={t(`${field}.label`) as string} />
-              <FormHelperText error={fieldState.invalid}>{
-                fieldState.invalid ? formatError(t, field, fieldState) : t(`${field}.hint`)
-              }</FormHelperText>
+              <FormHelperText error={!!fieldState.error}>
+                {`${fieldState.error ? formatError(t, field, fieldState) : t(`${field}.hint`)}`}
+              </FormHelperText>
             </Fragment>
           }} />
       })}

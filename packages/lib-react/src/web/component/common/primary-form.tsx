@@ -16,12 +16,15 @@
 
 import React, { ReactElement } from 'react'
 import { WrappedComponentProps } from '../../../common'
-import { Card, CardContent, CardHeader, Grid } from "@mui/material"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import CardHeader from "@mui/material/CardHeader"
+import Grid from "@mui/material/Grid"
 
 
 export const PrimaryForm = (props: PrimaryFormProps) => {
   return <Card>
-    <CardHeader title={props.t(props.title, props)} action={props.action} />
+    <CardHeader title={`${props.t(props.title, props)}`} action={props.action} />
     <CardContent>
       <Grid container direction="column" justifyContent="center" alignItems="stretch">
         {props.children}

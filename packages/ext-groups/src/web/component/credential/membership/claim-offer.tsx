@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import { Button, DialogActions, DialogContent } from '@mui/material'
 import {
   GroupSubject, MembershipSubject, BASIC_IDENTITY_TYPE, RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP
@@ -26,13 +25,16 @@ import {
 } from '@owlmeans/regov-lib-react'
 import { normalizeValue, singleValue } from '@owlmeans/regov-ssi-core'
 import {
-  getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CLAIMS, REGISTRY_TYPE_IDENTITIES,
-  CredentialSubject
+  getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CLAIMS, REGISTRY_TYPE_IDENTITIES
 } from '@owlmeans/regov-ssi-core'
 import { VALIDATION_KIND_OFFER } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { OfferFields } from './offer'
+
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 
 
 export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withRegov<ClaimOfferProps>(
@@ -114,9 +116,7 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
         }
         const registry = handler.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
 
-        const wrapper = await registry.addCredential(
-          membership as Credential<CredentialSubject>
-        )
+        const wrapper = await registry.addCredential(membership)
         wrapper.meta.title = data.membership.title
 
         handler.notify()
@@ -165,8 +165,8 @@ export const MembershipClaimOffer: FunctionComponent<ClaimOfferParams> = withReg
         </WalletFormProvider>
       </DialogContent>
       <DialogActions>
-        <Button onClick={close}>{t('membership.offer.close')}</Button>
-        {claim && <Button onClick={methods.handleSubmit(save)}>{t('membership.offer.save')}</Button>}
+        <Button onClick={close}>{`${t('membership.offer.close')}`}</Button>
+        {claim && <Button onClick={methods.handleSubmit(save)}>{`${t('membership.offer.save')}`}</Button>}
       </DialogActions>
     </Fragment>
   })

@@ -14,18 +14,22 @@
  *  limitations under the License.
  */
 
-import { BorderColor } from '@mui/icons-material'
-import {
-  Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
-} from '@mui/material'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import { ItemMenu, ItemMenuHandle, MenuIconButton, ListItemMeta } from '@owlmeans/regov-lib-react'
-import { MaybeArray } from '@owlmeans/regov-ssi-core'
-import { CredentialWrapper, getCompatibleSubject, Credential, Presentation, CredentialSubject } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, getCompatibleSubject, Credential, Presentation } from '@owlmeans/regov-ssi-core'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
 import { SignatureRequestSubject } from '../../types'
 import { getSignatureRequestFromPresentation } from '../../util'
+import BorderColor from '@mui/icons-material/BorderColor'
+
+import Avatar from '@mui/material/Avatar'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const SignatureRequestItemWeb = (ext: Extension): FunctionComponent<SignatureRequestItemParams> =>
@@ -58,12 +62,12 @@ export const SignatureRequestItemWeb = (ext: Extension): FunctionComponent<Signa
               <BorderColor />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary={wrapper.meta.title || t('signature.list.item.unknown')}
+          <ListItemText primary={wrapper.meta.title || `${t('signature.list.item.unknown')}`}
             secondary={
               <Fragment>
                 <Typography variant="body2" component="span">{subject.documentHash}</Typography>
                 <br />
-                <Typography variant="caption" component="span">{t('signature.request.item.type')}</Typography>
+                <Typography variant="caption" component="span">{`${t('signature.request.item.type')}`}</Typography>
               </Fragment>
             } />
         </ListItemButton>
@@ -76,7 +80,7 @@ export const SignatureRequestItemWeb = (ext: Extension): FunctionComponent<Signa
     })
 
 export type SignatureRequestItemParams = EmptyProps & {
-  wrapper: CredentialWrapper<MaybeArray<CredentialSubject>, Presentation>
+  wrapper: CredentialWrapper<{}, Presentation>
   action?: () => void
   trigger?: boolean
   meta?: ListItemMeta

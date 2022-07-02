@@ -15,8 +15,9 @@
  */
 
 import { MaybeArray } from "../../common"
+import { WalletWrapper } from "../../wallet"
 import { Extension } from "../ext"
-import { ExtensionEvent } from "../schema"
+import { EventParams, ExtensionEvent } from "../schema"
 
 
 export type ExtensionRegistry = {
@@ -27,7 +28,12 @@ export type ExtensionRegistry = {
   register: (ext: Extension) => Promise<void>
   registerSync: (ext: Extension) => void
   getObservers: (event: MaybeArray<string>) => [ExtensionEvent, Extension][]
+  triggerEvent: TriggerEventMethod
 }
+
+export type TriggerEventMethod = <Params extends EventParams = EventParams>(
+  wallet: WalletWrapper, event: MaybeArray<string>, params?: Params
+) => Promise<void>
 
 
 export const ERROR_NO_EXTENSION = 'ERROR_NO_EXTENSION'

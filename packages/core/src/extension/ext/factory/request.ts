@@ -54,7 +54,7 @@ export const defaultRequestMethod: RequestMethodBuilder = schema =>
       if (typeof holder.issuer === 'string') {
         throw new Error('request.holder.format')
       }
-      holder = holder.issuer
+      holder = holder.issuer as DIDDocument
     }
 
     if (!wallet.ssi.did.helper().isDIDDocument(holder)) {

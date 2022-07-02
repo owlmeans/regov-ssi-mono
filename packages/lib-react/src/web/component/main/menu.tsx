@@ -16,8 +16,8 @@
 
 import React from 'react'
 import { MainMenuImplProps } from '../../../common'
-import { List } from '@mui/material'
 import { MainMenuItemWeb } from './menu/item'
+import List from '@mui/material/List'
 
 
 export const MainMenuWeb = ({ items, t, i18n }: MainMenuImplProps) => {

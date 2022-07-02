@@ -26,7 +26,6 @@ import {
   RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE, MembershipSubject, GroupSubject, 
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP
 } from '../../../../types'
-import { DialogContent } from '@mui/material'
 import {
   AlertOutput, dateFormatter, FormMainAction, MainTextInput, MainTextOutput, PrimaryForm, WalletFormProvider, 
   ListNavigator, partialListNavigator
@@ -35,13 +34,14 @@ import { useForm } from 'react-hook-form'
 import { ERROR_MEMBERSHIP_READYTO_CLAIM, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION } from '../../types'
 import { useNavigate } from 'react-router-dom'
 import { addToValue } from '@owlmeans/regov-ssi-core'
+import DialogContent from '@mui/material/DialogContent'
 
 
 export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withRegov<
   MembershipClaimProps, ListNavigator
 >({ namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
   const { group, t, i18n, ext } = props
-  const { handler } = useRegov()
+  const { handler, extensions } = useRegov()
   const navigate = useNavigate()
   const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
   const groupSubjet = group ? getCompatibleSubject<GroupSubject>(group) : undefined
@@ -76,6 +76,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
         }
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
         const unsignedMemberhips = await factory.build(handler.wallet, {
+          extensions: extensions?.registry,
           subjectData: {
             groupId: group ? group.id : ''
           }

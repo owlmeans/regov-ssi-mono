@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-groups",
-  "version": "0.1.6",
+  "version": "0.2.2",
   "description": "Groups VC Extension for Regov SSI",
   "keywords": [
     "Regov",
@@ -12,7 +12,7 @@
   "license": "Apache-2.0",
   "type": "commonjs",
   "main": "dist/index.js",
-  "module": "dist/index.modern.js",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "directories": {
     "dist": "dist",
@@ -28,26 +28,57 @@
   },
   "sources": "src/index.ts",
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
-    "build:watch": "microbundle-crl watch --no-compress --format modern,cjs"
+    "build": "tsc -b -f",
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.6.0",
-    "@emotion/styled": "^11.6.0",
-    "@mui/icons-material": "^5.2.5",
-    "@mui/material": "^5.2.4",
-    "@owlmeans/regov-lib-react": "^0.1.8",
-    "@owlmeans/regov-ssi-core": "^0.5.3",
-    "i18next": "^21.4.2",
+    "@emotion/react": "*",
+    "@emotion/styled": "*",
+    "@mui/icons-material": "*",
+    "@mui/material": "*",
+    "@owlmeans/regov-lib-react": "^0.2.5",
+    "@owlmeans/regov-ssi-core": "^0.6.6",
+    "i18next": "*",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
-    "react-hook-form": "^7.19.5",
+    "react-hook-form": "*",
     "react-i18next": "^11.14.2",
-    "react-router-dom": "^6.0.2"
+    "react-router-dom": "*"
+  },
+  "peerDependenciesMeta": {
+    "@emotion/react": {
+      "optional": true
+    },
+    "@emotion/styled": {
+      "optional": true
+    },
+    "@mui/icons-material": {
+      "optional": true
+    },
+    "@mui/material": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "react-i18next": {
+      "optional": true
+    },
+    "react-router-dom": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "microbundle-crl": "^0.13.11",
     "typescript": "^4.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "7ed39c573fab390171491390a484f0f6188a163c"
 }

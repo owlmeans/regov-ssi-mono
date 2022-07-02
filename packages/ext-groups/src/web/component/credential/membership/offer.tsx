@@ -24,7 +24,6 @@ import {
 import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { getCompatibleSubject, Presentation, Credential } from '@owlmeans/regov-ssi-core'
-import { Button, DialogActions, DialogContent } from '@mui/material'
 import {
   AlertOutput, CredentialActionGroup, dateFormatter, LongTextInput, MainTextInput, MainTextOutput,
   PrimaryForm, WalletFormProvider
@@ -33,6 +32,9 @@ import { useForm } from 'react-hook-form'
 import { ERROR_MEMBERSHIP_READYTO_CLAIM, ERROR_WIDGET_AUTHENTICATION } from '../../types'
 import { EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams } from '@owlmeans/regov-ssi-core'
 import { singleValue } from '@owlmeans/regov-ssi-core'
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
 
 
 export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withRegov<MembershipOfferProps>(
@@ -81,8 +83,8 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           offerType: REGOV_OFFER_TYPE,
           subject,
           id: presentation.id as string,
-          challenge: presentation.proof.challenge,
-          domain: presentation.proof.domain
+          challenge: presentation.proof.challenge || '',
+          domain: presentation.proof.domain || ''
         })
 
         setOffer(offer)
@@ -159,8 +161,8 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
             </WalletFormProvider>
           </DialogContent>
           <DialogActions>
-            <Button onClick={methods.handleSubmit(proceed)}>{t('membership.offer.proceed')}</Button>
-            <Button onClick={close}>{t('membership.offer.close')}</Button>
+            <Button onClick={methods.handleSubmit(proceed)}>{`${t('membership.offer.proceed')}`}</Button>
+            <Button onClick={close}>{`${t('membership.offer.close')}`}</Button>
           </DialogActions>
         </Fragment>
         : <Fragment>
@@ -179,7 +181,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           </DialogContent>
           <DialogActions>
             <CredentialActionGroup prettyOutput content={offer} exportTitle={name} />
-            <Button onClick={close}>{t('membership.offer.close')}</Button>
+            <Button onClick={close}>{`${t('membership.offer.close')}`}</Button>
           </DialogActions>
         </Fragment>}
     </Fragment>

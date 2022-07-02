@@ -14,7 +14,4 @@
  *  limitations under the License.
  */
 
-
-export { default as commonEn } from './en/common.json'
-export { default as commonRu } from './ru/common.json'
-export { default as commonBy } from './by/common.json'
+export * from './auth'

@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import { CommExtConfig, DEFAULT_SERVER_ALIAS } from "@owlmeans/regov-ext-comm"
+
 export const config = {
   DID_PREFIX: process.env.REACT_APP_DID_PREFIX || 'exwaldid',
   DID_SCHEMA_PATH: process.env.REACT_APP_DID_SCHEMA_PATH || 'exdid-schema',
@@ -21,4 +23,13 @@ export const config = {
   baseSchemaUrl: process.env.REACT_APP_SCHEMA_URL || undefined,
   name: process.env.REACT_APP_NAME || 'Noname app',
   development: false
+}
+
+export const commConfig: CommExtConfig = {
+  wsConfig: {
+    [DEFAULT_SERVER_ALIAS]: {
+      server: process.env.REACT_APP_DIDCOMM_SERVER || '',
+      timeout: 30
+    }
+  }
 }

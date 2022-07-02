@@ -1,25 +1,35 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "rootDir": "./src/",
-    "module": "esnext",
-    "lib": ["dom", "esnext"],
-    "moduleResolution": "node",
-    "jsx": "react",
-    "resolveJsonModule": true,
-    "sourceMap": true,
+    "lib": [
+      "dom",
+      "esnext"
+    ],
+    "module": "commonjs",
     "declaration": true,
     "declarationMap": true,
-    "esModuleInterop": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
+    "sourceMap": true,
+    "outDir": "./dist/",
+    "rootDir": "./src/",
+    "moduleResolution": "node",
+    "jsx": "react",
+    // "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true, 
+    "esModuleInterop": true,
+    "inlineSources": true,
+    "resolveJsonModule": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "example"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "./dist/**/*",
+    "./example-web/**/*"
+  ]
 }

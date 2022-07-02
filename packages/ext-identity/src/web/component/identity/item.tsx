@@ -21,21 +21,23 @@ import {
 import {
   Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams
 } from '@owlmeans/regov-ssi-core'
-import {
-  CredentialWrapper, Credential, CredentialSubject, getCompatibleSubject
-} from '@owlmeans/regov-ssi-core'
-import {
-  Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText, Typography
-} from '@mui/material'
-import { DocumentScanner } from '@mui/icons-material'
+import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
 import { IdentitySubject } from '../../../types'
+import DocumentScanner from '@mui/icons-material/DocumentScanner'
+import Avatar from '@mui/material/Avatar'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const IdentityItem = (ext: Extension): FunctionComponent<IdentityItemParams> =>
   withRegov<IdentityItemProps>(
     { namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, action }
-  ) => {
+    ) => {
     const subject = getCompatibleSubject<IdentitySubject>(wrapper.credential)
     const { extensions, handler } = useRegov()
 
@@ -60,7 +62,7 @@ export const IdentityItem = (ext: Extension): FunctionComponent<IdentityItemPara
             <DocumentScanner />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={wrapper.meta.title || t('identity.list.item.unknown')}
+        <ListItemText primary={wrapper.meta.title || `${t('identity.list.item.unknown')}`}
           secondary={
             <Fragment>
               <Typography variant="body2" component="span">{subject.identifier}</Typography>
@@ -76,11 +78,10 @@ export const IdentityItem = (ext: Extension): FunctionComponent<IdentityItemPara
   })
 
 export type IdentityItemParams = EmptyProps & {
-  wrapper: CredentialWrapper<CredentialSubject, Credential<CredentialSubject>>
+  wrapper: CredentialWrapper
   action?: () => void
   meta?: ListItemMeta
 }
 
 export type IdentityItemProps = RegovComponentProps<IdentityItemParams>
- 
- 
+

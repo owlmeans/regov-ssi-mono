@@ -14,18 +14,26 @@
  *  limitations under the License.
  */
 
-import { Grid, Paper, TextField, IconButton, FormControl, Typography, FormHelperText, Button } from '@mui/material'
 import { EmptyProps, RegovValidationRules, WrappedComponentProps } from '../../../../common'
 import { formatError } from '../error'
 import React, { useCallback, useState } from 'react'
 import { Controller, useFormContext, UseFormProps } from 'react-hook-form'
-import { Close, Delete } from '@mui/icons-material'
 import { useDropzone } from 'react-dropzone'
 import { isMobile } from "react-device-detect"
+import Close from '@mui/icons-material/Close'
+import Delete from '@mui/icons-material/Delete'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import TextField from '@mui/material/TextField'
+import IconButton from '@mui/material/IconButton'
+import FormControl from '@mui/material/FormControl'
+import Typography from '@mui/material/Typography'
+import FormHelperText from '@mui/material/FormHelperText'
+import Button from '@mui/material/Button'
 
 
 export const FileProcessorWeb = (props: FileProcessorImplProps) => {
-  const { t, square, rules, field, process, onDrop, isCode, handler } = props
+  const { t, square, rules, field, process, onDrop, isCode, fileHandler } = props
   const methods = useFormContext()
 
   const onDropCallback = useCallback(onDrop, [])
@@ -40,8 +48,8 @@ export const FileProcessorWeb = (props: FileProcessorImplProps) => {
     methods.trigger(field)
   }
 
-  if (handler) {
-    handler.setShowInput = setShowInput
+  if (fileHandler) {
+    fileHandler.setShowInput = setShowInput
   }
 
   const document = methods.watch(field)
@@ -59,12 +67,10 @@ export const FileProcessorWeb = (props: FileProcessorImplProps) => {
             <Grid item container direction="row" justifyContent="center" alignItems="center"
               px={3} xs={hasDoc ? 11 : 12}>
               <FormControl>
-                <Typography sx={{ color: success ? "success.main" : "main" }}>{t(
-                  document
-                    ? `${field.name}.mobile.import.loaded`
-                    : `${field.name}.mobile.import.label`
-                )}</Typography>
-                {fieldState.invalid && <FormHelperText error={true}>
+                <Typography sx={{ color: success ? "success.main" : "main" }}>{`${t(
+                  document ? `${field.name}.mobile.import.loaded` : `${field.name}.mobile.import.label`
+                )}`}</Typography>
+                {fieldState.error && <FormHelperText error={true}>
                   {formatError(t, `${field.name}.mobile.input`, fieldState)}
                 </FormHelperText>}
               </FormControl>
@@ -85,17 +91,17 @@ export const FileProcessorWeb = (props: FileProcessorImplProps) => {
                 ? <Grid item container direction="column" justifyContent="flex-start" alignItems="stretch">
                   <Grid item container direction="row" justifyContent="flex-end" alignItems="flex-start">
                     <Grid item>
-                      <Button onClick={open}>{t(`${field.name}.browse`)}</Button>
+                      <Button onClick={open}>{`${t(`${field.name}.browse`)}`}</Button>
                     </Grid>
                   </Grid>
                   <Grid item>
                     <TextField fullWidth multiline margin="normal" variant="filled"
                       InputLabelProps={{ shrink: true }} maxRows={15} minRows={5}
-                      {...field} label={t(`${field.name}.input.label`)} error={fieldState.invalid}
+                      {...field} label={`${t(`${field.name}.input.label`)}`} error={!!fieldState.error}
                       helperText={
-                        fieldState.invalid
+                        `${fieldState.error
                           ? formatError(t, `${field.name}.input`, fieldState)
-                          : t(`${field.name}.input.hint`)
+                          : t(`${field.name}.input.hint`)}`
                       }
                       InputProps={{
                         sx: isCode ? { fontSize: 10, fontFamily: "monospace" } : {},
@@ -113,12 +119,12 @@ export const FileProcessorWeb = (props: FileProcessorImplProps) => {
                   <Grid item container direction="row" justifyContent="center" alignItems="center"
                     px={3} xs={hasDoc ? 11 : 12}>
                     <FormControl>
-                      <Typography sx={{ color: success ? "success.main" : "main" }}>{t(
+                      <Typography sx={{ color: success ? "success.main" : "main" }}>{`${t(
                         document
                           ? `${field.name}.import.loaded`
                           : isDragActive ? `${field.name}.import.drop` : `${field.name}.import.here`
-                      )}</Typography>
-                      {fieldState.invalid && <FormHelperText error={true}>
+                      )}`}</Typography>
+                      {fieldState.error && <FormHelperText error={true}>
                         {formatError(t, `${field.name}.input`, fieldState)}
                       </FormHelperText>}
                     </FormControl>
@@ -147,7 +153,7 @@ export type FileProcessorParams = EmptyProps & {
   onDrop: FileOnDrop
   square?: boolean
   isCode?: boolean
-  handler?: FileProcessorParamsHandler
+  fileHandler?: FileProcessorParamsHandler
 }
 
 export type FileProcessorParamsHandler = {

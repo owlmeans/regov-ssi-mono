@@ -1,12 +1,12 @@
 {
   "name": "@owlmeans/regov-ssi-core",
-  "version": "0.5.3",
+  "version": "0.6.6",
   "description": "It's core package for OwlMeans Regov SSI",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
   "type": "commonjs",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -19,8 +19,8 @@
   },
   "scripts": {
     "test": "jest --testTimeout 30000",
-    "build": "tsc -b",
-    "build:watch": "tsc -b -w",
+    "build": "tsc -b -f",
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty",
     "review:ssi": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/ssi.ts",
     "review:compact": "ts-node --project tsconfig.json --cwd-mode --ignore .js ./src/debug/compactssi.ts"
   },
@@ -40,17 +40,19 @@
     "url-polyfill": "^1.1.12"
   },
   "dependencies": {
-    "@affinidi/tiny-lds-ecdsa-secp256k1-2019": "^1.1.0",
-    "@affinidi/vc-common": "^1.4.1",
+    "@owlmeans/tiny-lds-ecdsa-secp256k1-2019": "^1.0.3",
     "ajv": "^8.8.2",
     "bip32": "^2.0.6",
     "browserify-aes": "^1.2.0",
     "buffer": "^6.0.3",
     "hash.js": "^1.1.7",
-    "jsonld-signatures": "^7.0.0",
+    "jsonld-signatures": "^9.3.1",
     "secp256k1": "^4.0.2",
     "tiny-secp256k1": "^2.0.0",
     "uuid": "^8.3.2"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "gitHead": "7ed39c573fab390171491390a484f0f6188a163c"
 }

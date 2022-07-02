@@ -16,16 +16,23 @@
 
 import React, { Fragment, FunctionComponent, useState } from 'react'
 import {
-  Accordion, AccordionDetails, AccordionSummary, Card, CardContent, CardHeader, Grid,
-  Tab, Tabs, Typography, Divider
-} from '@mui/material'
-import {
   CredentialEvidenceWidget, EvidenceWidgetImplProps, EXTENSION_ITEM_PURPOSE_EVIDENCE,
   PurposeEvidenceWidgetParams, useRegov
 } from '../../../../common'
-import { CredentialWrapper, CredentialSubject, Credential } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, Credential } from '@owlmeans/regov-ssi-core'
 import { StandardEvidenceWidget } from './evidence/'
-import { ExpandMore } from '@mui/icons-material'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Grid from '@mui/material/Grid'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
 
 
 export const CredentialEvidenceWidgetWeb = (props: EvidenceWidgetImplProps) => {
@@ -40,7 +47,7 @@ export const CredentialEvidenceWidgetWeb = (props: EvidenceWidgetImplProps) => {
   const Renderer = (renderer?.com || StandardEvidenceWidget) as FunctionComponent<PurposeEvidenceWidgetParams>
 
   return <Card>
-    <CardHeader title={!isChild && t('widget.evidence.header.title')}
+    <CardHeader title={!isChild && `${t('widget.evidence.header.title')}`}
       subheader={<Fragment>
         <Tabs value={tabIdx} onChange={(_, tabIdx) => setTab(tabIdx)}>
           {tabs.map(tab => <Tab key={`${tab.idx}`} value={tab.idx} label={tab.title} />)}
@@ -52,12 +59,12 @@ export const CredentialEvidenceWidgetWeb = (props: EvidenceWidgetImplProps) => {
         {<Grid item sx={{ px: 1 }}>
           <Renderer wrapper={{
             credential: tab.evidence, meta: { secure: false, title: tab.title }
-          } as CredentialWrapper<CredentialSubject, Credential<CredentialSubject>>} />
+          } as CredentialWrapper} />
         </Grid>}
         {tab.evidence.evidence && <Grid item>
           <Accordion TransitionProps={{ unmountOnExit: true }}>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography>{t('widget.evidence.accordion.summary')}</Typography>
+              <Typography>{`${t('widget.evidence.accordion.summary')}`}</Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ px: 0, mx: 0 }}>
               <CredentialEvidenceWidget isChild credential={tab.evidence as Credential} />

@@ -40,7 +40,7 @@ const isUtf8 = require('is-utf8') as (arg: any) => boolean
 export const SignatureCreationWeb = (ext: Extension): FunctionComponent<SignatureCreationParams> =>
   withRegov<SignatureCreationProps>({ namespace: ext.localization?.ns }, (props) => {
     const { next, t } = props
-    const { handler } = useRegov()
+    const { handler, extensions } = useRegov()
     const navigate = useNavigate()
     const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
 
@@ -100,6 +100,7 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
 
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
         const unsigned = await factory.build(handler.wallet, {
+          extensions: extensions?.registry,
           identity, subjectData: {
             ...subject,
             signedAt: new Date().toISOString()

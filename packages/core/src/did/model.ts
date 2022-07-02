@@ -29,8 +29,10 @@ import {
   DIDVerificationItem, ParseDIDIdMethod, DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD,
   BuildDocumentLoader, ExpandVerificationMethod, ExtractKeyMethod, DID_EXTRACTKEY_WRONG_DID,
 } from './types'
-import didContext from '../docs/did.context.json'
 import { documentWarmer } from './loader'
+import didContext from '../docs/did.context.json'
+import securityV1 from '../docs/v1.security.context.json'
+import securityV2 from '../docs/v2.security.context.json'
 
 const jldsign = require('jsonld-signatures')
 
@@ -58,18 +60,21 @@ export const buildDidHelper =
 
     const baseSchemaUrl = /* options.baseSchemaUrl ||*/ buildOptions.baseSchemaUrl || DEFAULT_APP_SCHEMA_URL
     const contextUrl = `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`
-    const context = JSON.stringify({
+
+    documentWarmer('https://w3id.org/did/v1', JSON.stringify(didContext))
+    documentWarmer('https://w3id.org/security/v1', JSON.stringify(securityV1))
+    documentWarmer('https://w3id.org/security/v2', JSON.stringify(securityV2))
+    documentWarmer(contextUrl, JSON.stringify({
       '@context': {
         '@version': 1.1,
         didx: contextUrl,
         xsd: 'http://www.w3.org/2001/XMLSchema#',
         nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
+        created: { '@id': 'didx:created', '@type': 'xsd:string' },
+        proofPurpose: { '@id': 'didx:proofPurpose', '@type': 'xsd:string' },
         publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
       }
-    })
-
-    documentWarmer('https://w3id.org/did/v1', JSON.stringify({ '@context': didContext }))
-    documentWarmer(contextUrl, context)
+    }))
 
     const _makeDIDId = (key: CryptoKey, options: MakeDIDIdOptions = {}) => {
       if (!key.id) {
@@ -147,9 +152,10 @@ export const buildDidHelper =
 
     const _expandVerificationMethod: ExpandVerificationMethod
       = (didDoc, purpose, keyId = DEFAULT_VERIFICATION_KEY) => {
-        if (_isDIDId(keyId)) {
+        if (typeof keyId === 'string' && _isDIDId(keyId)) {
           keyId = _extractKeyId(keyId)
         }
+        const keyIds = Array.isArray(keyId) ? keyId : [keyId]
 
         const methodToExpand = normalizeValue(didDoc[purpose]).find(
           (_method) => {
@@ -160,7 +166,7 @@ export const buildDidHelper =
               ? _parseDIDId(_method)
               : _parseDIDId(_method.id)
 
-            return parsedMethod.fragment === keyId
+            return keyIds.includes(parsedMethod.fragment as string)
           }
         )
 
@@ -170,12 +176,12 @@ export const buildDidHelper =
 
         const expandedMethod = typeof methodToExpand === 'string'
           ? normalizeValue(didDoc.verificationMethod).find(
-            _method => _method && _parseDIDId(_method).fragment === keyId
+            _method => _method && keyIds.includes(_parseDIDId(_method).fragment as string)
           )
           : methodToExpand?.publicKeyBase58
             ? methodToExpand
             : normalizeValue(didDoc.verificationMethod).find(
-              _method => _method && _parseDIDId(_method).fragment === keyId
+              _method => _method && keyIds.includes(_parseDIDId(_method).fragment as string)
             )
 
         return expandedMethod === methodToExpand ? methodToExpand
@@ -327,6 +333,13 @@ export const buildDidHelper =
         return didDocUnsigned
       },
 
+      addPurpose: (didUnsigned, purpose, method) => {
+        didUnsigned = JSON.parse(JSON.stringify(didUnsigned))
+        didUnsigned[purpose] = addToValue(didUnsigned[purpose], method)
+
+        return didUnsigned
+      },
+
       signDID: async (key, didDocUnsigned, keyId = VERIFICATION_KEY_HOLDER, purposes?) => {
         if (!key.pubKey) {
           throw new Error(COMMON_CRYPTO_ERROR_NOPUBKEY)
@@ -377,6 +390,7 @@ export const buildDidHelper =
           }
         }
 
+        // suite, purpose, documentLoader, expansionMap, addSuiteContext
         return await jldsign.sign(
           _cutProof(didDocUnsigned),
           {
@@ -396,8 +410,7 @@ export const buildDidHelper =
               )
               : new jldsign.purposes.PublicKeyProofPurpose({
                 controller: { id: controller }
-              }),
-            compactProof: false,
+              })
           }
         )
       },
@@ -495,7 +508,9 @@ export const buildDidHelper =
 
       setupDocumentLoader: (loader) => {
         __buildDocumentLoader = loader
-      }
+      },
+
+      getCrypto: () => crypto
     }
 
     return _helper

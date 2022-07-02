@@ -19,11 +19,11 @@ require('dotenv').config()
 import { nodeCryptoHelper } from "../common"
 import {
   buildDidHelper, buildDidRegistryWarpper, DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION,
-  DIDPURPOSE_VERIFICATION
+  DIDPURPOSE_VERIFICATION,
+  VERIFICATION_KEY_HOLDER
 } from "../did"
 import {
-  Presentation, UnsignedPresentation, buildSSICore, CredentialSubject, SSICore, Credential,
-  UnsignedCredential, buildKeyChain
+  Presentation, UnsignedPresentation, buildSSICore, SSICore, Credential, UnsignedCredential, buildKeyChain
 } from "../index"
 
 import util from 'util'
@@ -32,7 +32,7 @@ util.inspect.defaultOptions.depth = 8
 
 const test: {
   ssi?: SSICore
-  unsigned?: UnsignedCredential<CredentialSubject>
+  unsigned?: UnsignedCredential<{}>
   credential?: Credential
   unsignedP?: UnsignedPresentation
   presentation?: Presentation
@@ -99,9 +99,7 @@ describe('SSI Verifiable Credential', () => {
     test.unsigned = unsingnedCredentail
     expect(unsingnedCredentail).toMatchSnapshot({
       id: expect.any(String),
-      holder: {
-        id: expect.any(String)
-      },
+      holder: expect.any(Object),
       issuanceDate: expect.any(String)
     })
   })
@@ -117,17 +115,16 @@ describe('SSI Verifiable Credential', () => {
     const did = <DIDDocument>await test.ssi.did.lookUpDid(test.unsigned.id)
     const credentail = await test.ssi.signCredential(
       test.unsigned,
-      did
+      did,
+      { keyId: VERIFICATION_KEY_HOLDER }
     )
 
     test.credential = credentail
 
     expect(credentail).toMatchSnapshot({
       id: expect.any(String),
-      holder: {
-        id: expect.any(String)
-      },
-      issuer: expect.any(String),
+      holder: expect.any(Object),
+      issuer: expect.any(Object),
       issuanceDate: expect.any(String),
       proof: {
         created: expect.any(String),
@@ -181,14 +178,11 @@ describe('SSI Verifiable Credential', () => {
       throw 'Previous test didn\'t provide UnsingedCredential'
     }
 
-    const did = <DIDDocument>await test.ssi.did.lookUpDid(test.credential.holder.id)
+    const did = <DIDDocument>await test.ssi.did.lookUpDid((test.credential.holder as DIDDocument).id)
 
     const vp = await test.ssi?.buildPresentation(
       [test.credential],
-      {
-        holder: did,
-        type: 'TestPresentation'
-      }
+      { id: did.id, holder: did, type: 'TestPresentation' }
     )
 
     test.unsignedP = vp
@@ -196,17 +190,13 @@ describe('SSI Verifiable Credential', () => {
     expect(vp).toMatchSnapshot(
       {
         id: expect.any(String),
-        holder: {
-          id: expect.any(String)
-        },
+        holder: expect.any(Object),
         verifiableCredential: [
           {
-            holder: {
-              id: expect.any(String),
-            },
+            holder: expect.any(Object),
             id: expect.any(String),
             issuanceDate: expect.any(String),
-            issuer: expect.any(String),
+            issuer: expect.any(Object),
             proof: {
               created: expect.any(String),
               jws: expect.any(String),
@@ -225,7 +215,7 @@ describe('SSI Verifiable Credential', () => {
     if (!test.unsignedP) {
       throw 'Previous test didn\'t provide UnsingedPresentation'
     }
-    const did = await test.ssi.did.lookUpDid<DIDDocument>(test.unsignedP.holder.id)
+    const did = await test.ssi.did.lookUpDid<DIDDocument>((test.unsignedP.holder as DIDDocument).id)
     if (!did) {
       throw 'No related did in registry'
     }
@@ -236,17 +226,13 @@ describe('SSI Verifiable Credential', () => {
 
     expect(vp).toMatchSnapshot({
       id: expect.any(String),
-      holder: {
-        id: expect.any(String)
-      },
+      holder: expect.any(Object),
       verifiableCredential: [
         {
-          holder: {
-            id: expect.any(String),
-          },
+          holder: expect.any(Object),
           id: expect.any(String),
           issuanceDate: expect.any(String),
-          issuer: expect.any(String),
+          issuer: expect.any(Object),
           proof: {
             created: expect.any(String),
             jws: expect.any(String),

@@ -15,8 +15,12 @@
  */
 
 import React, { Fragment, useState } from 'react'
-import { Alert, AlertTitle, Backdrop, CircularProgress, Snackbar } from '@mui/material'
 import { MainLoadingImplProps } from '../../../common'
+import Alert, { AlertColor } from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
+import Snackbar from '@mui/material/Snackbar'
 
 
 /**
@@ -43,9 +47,9 @@ export const MainLoadingWeb = ({ handle, t }: MainLoadingImplProps) => {
 
     <Snackbar open={!!error} autoHideDuration={6000} onClose={handleClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-      <Alert onClose={handleClose} severity={t(`alert.${errorType || 'error'}.severity`)}>
-        <AlertTitle>{t(`alert.${errorType || 'error'}.label`)}</AlertTitle>
-        {t(error || 'error.default')}
+      <Alert onClose={handleClose} severity={`${t(`alert.${errorType || 'error'}.severity`)}` as unknown as AlertColor}>
+        <AlertTitle>{`${t(`alert.${errorType || 'error'}.label`)}`}</AlertTitle>
+        {`${t(error || 'error.default')}`}
       </Alert>
     </Snackbar>
   </Fragment>

@@ -37,7 +37,7 @@ export const defaultRespondMethod: RespondMethodBuilder = schema =>
         : params.credential.issuer as unknown as DIDDocument
 
     if (!did.authentication) {
-      const key = await wallet.did.extractKey(identity.issuer)
+      const key = await wallet.did.extractKey(identity.issuer as DIDDocument)
 
       if (!key) {
         throw new Error('response.signing.key')

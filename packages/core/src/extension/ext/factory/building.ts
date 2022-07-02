@@ -20,6 +20,7 @@ import { WalletWrapper } from "../../../wallet"
 import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION } from "../../../did"
 import { CredentialDescription } from "../../schema"
 import { BuildMethodParams } from "../types"
+import { EVENT_EXTENSION_AFTER_BULIDING_DID, ExtensionEventAfterBuildingDid } from "./types"
 
 
 export const defaultBuildMethod = <
@@ -34,7 +35,7 @@ export const defaultBuildMethod = <
         params.evidence = addToValue(params.evidence, params.identity)
       }
     }
-    
+
     const identityKey = params.identity && await wallet.ssi.did.extractKey(
       params.identity.holder.hasOwnProperty('@context')
         ? params.identity.holder as DIDDocument
@@ -63,6 +64,13 @@ export const defaultBuildMethod = <
       holder: didUnsigned,
       context: schema.contextUrl || schema.credentialContext,
       subject
+    })
+
+    await params.extensions?.triggerEvent<ExtensionEventAfterBuildingDid>(
+      wallet, EVENT_EXTENSION_AFTER_BULIDING_DID, {
+      unsigned: didUnsigned,
+      cred: unsingnedCredentail,
+      key
     })
 
     if (params.schema) {

@@ -21,14 +21,22 @@ import {
 import { Extension } from "@owlmeans/regov-ssi-core"
 import { FunctionComponent } from "react"
 import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from "../../../types"
-import {
-  Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemAvatar, ListItemButton, ListItemText,
-  Typography
-} from '@mui/material'
 import { getCompatibleSubject, Credential } from '@owlmeans/regov-ssi-core'
 import { normalizeValue } from '@owlmeans/regov-ssi-core'
 import { EvidenceTrust, EvidenceTrustHandle } from '@owlmeans/regov-lib-react'
-import { Done, ErrorOutline, ExpandMore } from '@mui/icons-material'
+import Done from '@mui/icons-material/Done'
+import ErrorOutline from '@mui/icons-material/ErrorOutline'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+
+import Accordion from '@mui/material/Accordion'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import Typography from '@mui/material/Typography'
 
 
 export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetParams> =>
@@ -41,7 +49,6 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
       const evidence = normalizeValue(result.result.evidence)
 
       const handle: EvidenceTrustHandle = { reload }
-
 
       return <Fragment>
         <ListItemButton onClick={() => {
@@ -59,10 +66,10 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
           <ListItemText primary={<Typography variant="body2">{`ID: ${subject.name}`}</Typography>}
             secondary={<Fragment>
               <Typography variant='caption'>{
-                t(`widget.validation.main.${result.result.trusted ? 'trusted' : 'untrusted'}`)
+                `${t(`widget.validation.main.${result.result.trusted ? 'trusted' : 'untrusted'}`)}`
               }</Typography>
               <Typography variant='caption'>{
-                t(`widget.validation.main.${result.result.valid ? 'valid' : 'invalid'}`)
+                `${t(`widget.validation.main.${result.result.valid ? 'valid' : 'invalid'}`)}`
               }</Typography>
             </Fragment>} />
         </ListItemButton>
@@ -70,7 +77,7 @@ export const ValidationWidget = (_: Extension): FunctionComponent<ResultWidgetPa
         {evidence.length > 0 && <ListItem sx={{ px: 0, mx: 0 }}>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Typography variant="subtitle2">{t('widget.validation.header.parent')}</Typography>
+              <Typography variant="subtitle2">{`${t('widget.validation.header.parent')}`}</Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ px: 0, mx: 0 }}>
               <List>

@@ -15,16 +15,17 @@
  */
 
 import React, { useCallback } from 'react'
-import { Grid, TextField } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import { useFormContext, Controller } from 'react-hook-form'
 import { formatError } from '../error'
 import { useDropzone } from "react-dropzone"
 import { FormHeaderButton } from '../button'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
 
 
-export const LongTextInput = ({ 
-  t, field, rules, rows, maxRows, i18n, showImport, alert, sourceCode 
+export const LongTextInput = ({
+  t, field, rules, rows, maxRows, i18n, showImport, alert, sourceCode
 }: LongTextInputProps) => {
   const { control, setValue, setError } = useFormContext()
   const onDrop = useCallback(async (files: File[]) => {
@@ -80,12 +81,8 @@ export const LongTextInput = ({
                   : { minRows: rows, maxRows }
                 : { rows }
             )}
-            {..._field} label={t(`${field}.label`)} error={fieldState.invalid}
-            helperText={
-              fieldState.invalid
-                ? formatError(t, field, fieldState) // t(`${field}.error.${fieldState.error?.message || fieldState.error?.type || ''}`)
-                : t(`${field}.hint`)
-            }
+            {..._field} label={`${t(`${field}.label`)}`} error={!!fieldState.error}
+            helperText={`${fieldState.error ? formatError(t, field, fieldState) : t(`${field}.hint`)}`}
           />
         }} />
     </Grid>

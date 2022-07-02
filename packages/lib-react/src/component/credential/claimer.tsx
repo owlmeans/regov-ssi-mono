@@ -37,7 +37,7 @@ export const CredentialClaimer: FunctionComponent<CredentialClaimerParams> =
     renderer: FallbackRenderer
   }) => {
     const { handler } = useRegov()
-    const Renderer = ComRenderer || FallbackRenderer
+    const Renderer: FunctionComponent<CredentialClaimerImplProps> = ComRenderer || FallbackRenderer
 
     const _props: CredentialClaimerImplProps = {
       t, i18n,

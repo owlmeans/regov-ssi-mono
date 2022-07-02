@@ -15,11 +15,10 @@
  */
 
 import { MaybeArray } from "../../common"
-import {
-  BasicCredentialType, CredentialSchema, MultiSchema, CredentialSubject, Credential, Presentation
-} from "../../vc"
-import { WalletWrapper } from '../../wallet'
+import { BasicCredentialType, CredentialSchema, MultiSchema, Credential, Presentation } from "../../vc"
+import { CredentialWrapper, WalletWrapper } from '../../wallet'
 import { Extension } from "../ext"
+import { ExtensionRegistry } from "../registry"
 
 
 export type ExtensionSchema = {
@@ -45,7 +44,7 @@ export type ExtensionTypes = {
 
 export type CredentialDescription<
   Schema extends CredentialSchema = CredentialSchema,
-  Subject extends CredentialSubject = CredentialSubject
+  Subject extends {} = {}
   > = {
     defaultNameKey?: string
     mainType: string
@@ -90,9 +89,16 @@ export type ExtensionEventFilter =
 
 export const EXTENSION_TRIGGER_AUTHENTICATION = 'wallet:authentication'
 export const EXTENSION_TRIGGER_AUTHENTICATED = 'wallet:authenticated'
+export const EXTENSION_TRIGGER_INIT_SENSETIVE = 'wallet:init-sensetive'
+export const EXTENSION_TRIGGER_ADD_CREDENTIAL = 'wallet:add-credential'
+export const EXTENSION_TRIGGER_REMOVE_CREDENTIAL = 'wallet:remove-credential'
 export const EXTENSION_TRIGGER_DEFAULT_SIGNATURE = 'signer:default-signature'
 export const EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED = 'documnet:received'
 export const EXTENSION_TRIGGER_RETRIEVE_NAME = 'credentail:get-name'
+
+export type CredentialEventParams = EventParams & {
+  item: CredentialWrapper
+}
 
 export type IncommigDocumentEventParams = EventParams & {
   credential: Credential | Presentation
@@ -105,4 +111,8 @@ export type IncommigDocumentEventParams = EventParams & {
 export type RetreiveNameEventParams = EventParams & {
   credential: Credential
   setName: (name: string) => void
+}
+
+export type InitSensetiveEventParams = EventParams & {
+  extensions: ExtensionRegistry
 }

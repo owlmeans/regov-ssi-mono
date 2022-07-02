@@ -19,9 +19,10 @@ import React, { Fragment, useMemo } from 'react'
 import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { EmptyImplProps, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-core'
-import { Grid, Typography } from '@mui/material'
 import { IdentitySubject } from '../../../types'
 import { dateFormatter, ItemMenuHandle, MenuIconButton, ItemMenu } from '@owlmeans/regov-lib-react'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 
 export const DashboardWidget = (ext: Extension) =>
@@ -58,7 +59,7 @@ export const DashboardWidget = (ext: Extension) =>
         </Grid>
       </Grid>
       <Grid item px={1}>
-        <Typography variant='overline'>{t('widget.dashboard.issuedAt')}: {dateFormatter(subject.createdAt)}</Typography>
+        <Typography variant='overline'>{`${t('widget.dashboard.issuedAt')}`}: {dateFormatter(subject.createdAt)}</Typography>
       </Grid>
       <Grid item container px={1} mt={2} direction="row" justifyContent="space-between" alignItems="flex-end">
         <Grid item xs={7}>

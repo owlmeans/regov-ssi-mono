@@ -16,22 +16,26 @@
 
 import {
   addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails,
-  defaultBuildMethod, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME, 
-  RetreiveNameEventParams, isCredential, IncommigDocumentEventParams, 
-  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED
+  defaultBuildMethod, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME,
+  RetreiveNameEventParams, isCredential, IncommigDocumentEventParams, EXTENSION_TRIGGER_INIT_SENSETIVE,
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, REGISTRY_SECTION_OWN, InitSensetiveEventParams
 } from "@owlmeans/regov-ssi-core"
 import {
-  CredentialSubject, getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential 
+  getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
-import { IdentitySubject } from "./types"
+import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE, REGOV_IDENTITY_DEFAULT_TYPE } from "./types"
 import { makeRandomUuid } from "@owlmeans/regov-ssi-core"
 import { credIdToIdentityId } from "./helper"
+import en from './i18n/en.json'
+import ru from './i18n/ru.json'
+import by from './i18n/by.json'
 
 
 export const BASIC_IDENTITY_TYPE = 'Identity'
 
 export const buildIdentityExtension = (
-  type: string, params: BuildExtensionParams, details: ExtensionDetails
+  type: string, params: BuildExtensionParams, details: ExtensionDetails,
+  ns = REGOV_IDENTITY_DEFAULT_NAMESPACE
 ) => {
   const identityType = type || 'OwlMeans:Regov:Identity'
 
@@ -63,7 +67,7 @@ export const buildIdentityExtension = (
       selfIssuing: true,
       defaultSubject: {
         sourceApp: params.appName
-      } as unknown as CredentialSubject
+      }
     }
   })
 
@@ -73,15 +77,44 @@ export const buildIdentityExtension = (
   })
 
   schema = addObserverToSchema(schema, {
+    trigger: EXTENSION_TRIGGER_INIT_SENSETIVE,
+    filter: async (wallet) => {
+      const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+      const creds = await registry.lookupCredentials(
+        schema.details.defaultCredType || REGOV_IDENTITY_DEFAULT_TYPE,
+        REGISTRY_SECTION_OWN
+      )
+
+      return creds.length < 1
+    },
+    method: async (wallet, params: InitSensetiveEventParams) => {
+      const factory = extension.getFactory(
+        schema.details.defaultCredType || REGOV_IDENTITY_DEFAULT_TYPE
+      )
+      const unsigned = await factory.build(wallet, {
+        extensions: params.extensions, subjectData: {}
+      })
+      const identity = await factory.sign(wallet, { unsigned })
+
+      const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+      const item = await registry.addCredential(identity)
+      item.meta.title = 'Main ID'
+      registry.registry.rootCredential = identity.id
+
+      console.info('Sensetive: Identity initiated.')
+    }
+  })
+
+  schema = addObserverToSchema(schema, {
     trigger: EXTENSION_TRIGGER_RETRIEVE_NAME,
     filter: async (_, params: RetreiveNameEventParams) => {
       if (!params.credential.type || !Array.isArray(params.credential.type)) {
         return false
       }
-  
+
       return params.credential.type.includes(identityType)
     },
-    
+
     method: async (_, { credential, setName }: RetreiveNameEventParams) => {
       const subject = getCompatibleSubject<IdentitySubject>(credential)
       setName(`ID: ${subject.identifier}`)
@@ -94,11 +127,11 @@ export const buildIdentityExtension = (
       if (!isCredential(params.credential)) {
         return false
       }
-  
+
       if (!params.credential.type || !Array.isArray(params.credential.type)) {
         return false
       }
-  
+
       return params.credential.type.includes(identityType)
     },
   })
@@ -114,7 +147,7 @@ export const buildIdentityExtension = (
           sourceApp: inputData.sourceApp || (credSchema.defaultSubject as any).sourceApp,
           uuid: makeRandomUuid()
         }
-        
+
         const unsigned = await defaultBuildMethod(credSchema)(wallet, {
           ...params, subjectData: updatedSubjectData
         })
@@ -125,6 +158,11 @@ export const buildIdentityExtension = (
       }
     }
   })
+
+  extension.localization = { ns, translations: {} }
+  if (ns === REGOV_IDENTITY_DEFAULT_NAMESPACE) {
+    extension.localization.translations = { en, ru, be: by }
+  }
 
   return extension
 }

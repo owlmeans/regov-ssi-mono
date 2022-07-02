@@ -17,13 +17,13 @@
 
 require('dotenv').config()
 
-import { buildVCV1, buildVCV1Skeleton, buildVCV1Unsigned } from '@affinidi/vc-common'
 import util from 'util'
 import {
   COMMON_CRYPTO_ERROR_NOPUBKEY, nodeCryptoHelper, buildDidHelper, buildDidRegistryWarpper,
   buildDocumentLoader, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION,
   DID_REGISTRY_ERROR_NO_DID, VERIFICATION_KEY_HOLDER, buildKeyChain, buildSSICore
 } from '../index'
+import { UnsignedCredential } from '../vc'
 
 const jsigs = require('jsonld-signatures')
 
@@ -63,12 +63,11 @@ util.inspect.defaultOptions.depth = 8
         nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
         publicKeyBase58: { '@id': 'didx:publicKeyBase58', '@type': 'xsd:string' }
       })
+
     const did = await ssi.did.helper().signDID(key, didUnsigned)
 
-    console.log(did)
-
-    const skeleton = buildVCV1Skeleton({
-      context: {
+    const unsignedC: UnsignedCredential<typeof subject> = {
+      '@context': {
         '@version': 1.1,
         exam: 'https://example.org/vc-schema#',
         worker: { '@id': 'exam:worker', '@type': 'xsd:string' }
@@ -76,37 +75,14 @@ util.inspect.defaultOptions.depth = 8
       id: did.id,
       type: ['VerifiableCredential', 'TestCredential'],
       holder: did,
-      credentialSubject: subject as any,
-    })
-
-    const unsignedC = await buildVCV1Unsigned({
-      skeleton,
+      credentialSubject: subject,
       issuanceDate: (new Date).toISOString()
-    })
-
+    }
     console.log(unsignedC)
 
     const documentLoader = buildDocumentLoader(ssi.did)(() => did);
 
-    const signed = await buildVCV1({
-      unsigned: unsignedC,
-      issuer: {
-        did: did as any,
-        keyId: VERIFICATION_KEY_HOLDER,
-        privateKey: key.pk as string,
-        publicKey: key.pubKey
-      },
-      getSignSuite: (options) => {
-        return nodeCryptoHelper.buildSignSuite({
-          publicKey: <string>options.publicKey,
-          privateKey: options.privateKey,
-          id: `${(options.controller as any).id}#${options.keyId}`,
-          controller: options.controller
-        }) as any
-      },
-      documentLoader,
-      getProofPurposeOptions: undefined
-    })
+    const signed = await ssi.signCredential(unsignedC, did, { keyId: VERIFICATION_KEY_HOLDER })
 
     const getVerifySuite = (options: any) => {
       if (!key.pubKey) {
@@ -124,18 +100,7 @@ util.inspect.defaultOptions.depth = 8
       })
     }
 
-    const { AssertionProofPurpose } = jsigs.purposes
-
-    const res = await jsigs.verify(signed, {
-      suite: await getVerifySuite({
-        verificationMethod: signed.proof.verificationMethod,
-        controller: signed.issuer,
-        proofType: signed.proof.type,
-      }),
-      documentLoader,
-      purpose: new AssertionProofPurpose({}),
-      compactProof: false,
-    })
+    const res = await ssi.verifyCredential(signed)
 
     console.log(res)
   })()

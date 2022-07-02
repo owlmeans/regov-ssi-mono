@@ -29,7 +29,7 @@ import { CredentialHeader } from '../../component'
 
 export const WalletCredentialList = () => {
   const navigate = useNavigate()
-  const { tab, section, id } = useParams<{ tab: RegistryType, section: string, id?: string }>()
+  const { tab, section, id } = useParams<RegistryType | string>()
   const nav = useNavigator<CredentialListNavigator>({
     menu: async (location: string, params: CredentialListNavigatorParams) => {
       navigate(`/credential/list/${location}/${params.section || ''}`)

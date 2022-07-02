@@ -36,8 +36,8 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
     com: ComRenderer,
     renderer: FallbackRenderer
   }) => {
-    const { handler } = useRegov()
-    const Renderer = ComRenderer || FallbackRenderer
+    const { handler, extensions } = useRegov()
+    const Renderer: FunctionComponent<CredentialBuilderImplProps> = ComRenderer || FallbackRenderer
 
     if (!wallet) {
       return <Fragment />
@@ -79,7 +79,7 @@ export const CredentialBuilder: FunctionComponent<CredentialBuilderParams> =
           const type = findAppropriateCredentialType(ext, types, defaultType)
           const factory = ext.getFactory(type, defaultType)
           const unsigned = await factory.build(wallet, {
-            type: types,
+            type: types, extensions: extensions?.registry,
             subjectData: JSON.parse(data.builder.subject),
             context: JSON.parse(data.builder.context),
             evidence: data.builder.evidence === '' ? undefined : JSON.parse(data.builder.evidence),

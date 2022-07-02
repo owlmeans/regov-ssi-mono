@@ -14,18 +14,22 @@
  *  limitations under the License.
  */
 
-
 import React from 'react'
-import { Card, CardActions, CardContent, CardHeader, Grid, List } from '@mui/material'
 import { WrappedComponentProps } from '../../../../common'
 import { ButtonParams, FormMainButton } from '../button'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Grid from '@mui/material/Grid'
+import List from '@mui/material/List'
 
 
 export const SimpleList = (props: SimpleListProps) => {
   const { t, title, actions, children, headerAction } = props
 
   return <Card>
-    <CardHeader title={t(title)} action={headerAction} />
+    <CardHeader title={`${t(title)}`} action={headerAction} />
     <CardContent>
       <List>{children}</List>
     </CardContent>
