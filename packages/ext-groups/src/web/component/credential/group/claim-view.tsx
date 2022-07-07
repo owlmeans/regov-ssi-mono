@@ -104,6 +104,7 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
         if (!await connection.helper?.send(offer, conn)) {
           throw ERROR_COMM_SEND_FAILED
         }
+        close && close()
       }
     } catch (error) {
       console.error(error)

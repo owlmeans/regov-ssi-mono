@@ -177,7 +177,7 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
           type = [REGOV_GROUP_CHAINED_TYPE]
           depth = params.depth
           if (!depth) {
-            type = [REGOV_GROUP_LIMITED_TYPE]
+            type.push(REGOV_GROUP_LIMITED_TYPE)
           }
           break
         case REGOV_GROUP_LIMITED_TYPE:
