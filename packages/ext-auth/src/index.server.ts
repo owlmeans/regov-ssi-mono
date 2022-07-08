@@ -39,12 +39,7 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
         throw ERROR_NO_WALLET
       }
       
-      // console.log('Query', req.query)
-      // console.log('Params', req.params)
-      // console.log('Headers', req.headers)
-      // console.log('Body', req.body)
       const presentation: Presentation = req.body
-      // console.log(presentation)
       const credential = getAuthFromPresentation(presentation)
       if (!credential) {
         throw ERROR_NO_AUTHENTICATION_FROM_EXTERNAL_WALLET

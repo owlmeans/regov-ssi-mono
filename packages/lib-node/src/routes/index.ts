@@ -14,9 +14,45 @@
  *  limitations under the License.
  */
 
+import { Presentation, singleValue, Credential, VALIDATION_KIND_OFFER, ERROR_NO_EXTENSION } from '@owlmeans/regov-ssi-core'
 import { Router } from 'express'
+import { ERROR_NO_WALLET, getAppContext } from '../app'
+import { ERROR_NO_CREDENTIAL, SERVER_VALIDATE_OFFER } from '../types'
 
 
 export const buildRotuer = () => {
-  return Router()
+  const router = Router()
+
+  router.post(SERVER_VALIDATE_OFFER, async (req, res) => {
+    try {
+      const { handler, extensions } = getAppContext(req)
+      if (!handler.wallet) {
+        throw ERROR_NO_WALLET
+      }
+
+      const presentation: Presentation = req.body
+      const credential = singleValue(presentation.verifiableCredential)
+      if (!credential) {
+        throw ERROR_NO_CREDENTIAL
+      }
+
+      const extension = extensions.registry.getExtension(req.params.type)
+      if (!extension) {
+        throw ERROR_NO_EXTENSION
+      }
+      const factory = extension.getFactory(req.params.type)
+
+      const result = await factory.validate(handler.wallet, {
+        presentation, credential, 
+        extensions: extensions.registry,
+        kind: VALIDATION_KIND_OFFER
+      })
+
+      res.json(result)
+    } catch (e) {
+      res.status(500).send(`${e}`)
+    }
+  })
+
+  return router
 }
