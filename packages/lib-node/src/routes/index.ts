@@ -14,14 +14,29 @@
  *  limitations under the License.
  */
 
-import { Presentation, singleValue, Credential, VALIDATION_KIND_OFFER, ERROR_NO_EXTENSION } from '@owlmeans/regov-ssi-core'
+import { Presentation, singleValue, Credential, VALIDATION_KIND_OFFER, ERROR_NO_EXTENSION, REGISTRY_TYPE_IDENTITIES, REGISTRY_SECTION_PEER } from '@owlmeans/regov-ssi-core'
 import { Router } from 'express'
 import { ERROR_NO_WALLET, getAppContext } from '../app'
-import { ERROR_NO_CREDENTIAL, SERVER_VALIDATE_OFFER } from '../types'
+import { ERROR_NO_CREDENTIAL, SERVER_ALL_TRUSTED_VCS, SERVER_VALIDATE_OFFER } from '../types'
 
 
 export const buildRotuer = () => {
   const router = Router()
+
+  router.get(SERVER_ALL_TRUSTED_VCS, async (req, res) => {
+    try {
+      const { handler } = getAppContext(req)
+
+      const response = handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
+        .registry.credentials[REGISTRY_SECTION_PEER].map(
+          wrapper => wrapper.credential
+        ) || []
+
+        res.json(response)
+    } catch (e) {
+      res.status(500).send(`${e}`)
+    }
+  })
 
   router.post(SERVER_VALIDATE_OFFER, async (req, res) => {
     try {
@@ -43,7 +58,7 @@ export const buildRotuer = () => {
       const factory = extension.getFactory(req.params.type)
 
       const result = await factory.validate(handler.wallet, {
-        presentation, credential, 
+        presentation, credential,
         extensions: extensions.registry,
         kind: VALIDATION_KIND_OFFER
       })
