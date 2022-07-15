@@ -1,0 +1,23 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "didx": "https://owlmeans.com/schemas/did-schema.json#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "nonce": {
+      "@id": "didx:nonce",
+      "@type": "xsd:string"
+    },
+    "created": {
+      "@id": "didx:created",
+      "@type": "xsd:string"
+    },
+    "proofPurpose": {
+      "@id": "didx:proofPurpose",
+      "@type": "xsd:string"
+    },
+    "publicKeyBase58": {
+      "@id": "didx:publicKeyBase58",
+      "@type": "xsd:string"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "did": "https://www.w3.org/ns/did/v1#id",
+    "pinCode": "http://www.w3.org/2001/XMLSchema#string",
+    "createdAt": "http://www.w3.org/2001/XMLSchema#datetime"
+  }
+}

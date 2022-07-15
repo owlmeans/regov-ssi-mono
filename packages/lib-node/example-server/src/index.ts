@@ -25,6 +25,8 @@ import { buildIdentityExtensionServer } from "@owlmeans/regov-ext-identity/dist/
 import { authServerExtension } from "@owlmeans/regov-ext-auth/dist/index.server"
 import { groupsExtension } from "@owlmeans/regov-ext-groups/dist/ext"
 
+import './warmup'
+
 import util from 'util'
 import { Router } from "express"
 util.inspect.defaultOptions.depth = 8

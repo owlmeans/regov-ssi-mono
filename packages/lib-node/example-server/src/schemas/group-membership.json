@@ -1,0 +1,10 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "groupId": "http://www.w3.org/2001/XMLSchema#string",
+    "role": "http://www.w3.org/2001/XMLSchema#string",
+    "memberCode": "http://www.w3.org/2001/XMLSchema#string",
+    "description": "http://www.w3.org/2001/XMLSchema#string",
+    "createdAt": "http://www.w3.org/2001/XMLSchema#datetime"
+  }
+}
