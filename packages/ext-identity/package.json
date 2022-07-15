@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-identity",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Simple Identity Extension for Regov SSI",
   "keywords": [
     "Regov",
@@ -38,7 +38,7 @@
     "@mui/material": "*",
     "@owlmeans/regov-lib-node": "^0.1.10",
     "@owlmeans/regov-lib-react": "^0.2.6",
-    "@owlmeans/regov-ssi-core": "^0.6.7",
+    "@owlmeans/regov-ssi-core": "^0.6.8",
     "express": "^4.17.3",
     "i18next": "*",
     "react": "^17.0.0",

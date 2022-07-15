@@ -25,7 +25,7 @@ export const ValidationResultWidget: FunctionComponent<ResultWidgetParams> = wit
     const props = {
       t, i18n, result, reload
     }
-
+    
     return Renderer ? <Renderer {...props} /> : <Fragment />
   }
 )

@@ -31,7 +31,7 @@ let authExtensionSchema = buildExtensionSchema({
     requestType: REGOV_AUTH_REQUEST_TYPE,
     responseType: REGOV_AUTH_RESPONSE_TYPE,
     defaultNameKey: 'cred.auth.name',
-    contextUrl: 'https://owlmeans.com/schema/auth',
+    contextUrl: 'https://schema.owlmeans.com/auth.json',
     credentialContext: {
       '@version': 1.1,
       did: "https://www.w3.org/ns/did/v1#id",
@@ -46,7 +46,7 @@ let authExtensionSchema = buildExtensionSchema({
     responseType: REGOV_AUTH_RESPONSE_TYPE,
     mandatoryTypes: [REGOV_CREDENTIAL_TYPE_AUTH],
     defaultNameKey: 'request.auth.name',
-    contextUrl: 'https://owlmeans.com/schema/auth-request',
+    contextUrl: 'https://schema.owlmeans.com/auth-request.json',
     credentialContext: {
       '@version': 1.1,
       did: "https://www.w3.org/ns/did/v1#id",

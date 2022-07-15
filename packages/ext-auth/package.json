@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-auth",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Authentication widgets for Regov SSI",
   "keywords": [
     "Regov",
@@ -41,7 +41,7 @@
     "@owlmeans/regov-comm": "^0.2.7",
     "@owlmeans/regov-lib-node": "^0.1.10",
     "@owlmeans/regov-lib-react": "^0.2.6",
-    "@owlmeans/regov-ssi-core": "^0.6.7",
+    "@owlmeans/regov-ssi-core": "^0.6.8",
     "express": "^4.17.3",
     "i18next": "*",
     "react": "^17.0.0",

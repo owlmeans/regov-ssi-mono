@@ -57,7 +57,7 @@ export const buildDidHelper =
     }
 
     const baseSchemaUrl = /* options.baseSchemaUrl ||*/ buildOptions.baseSchemaUrl || DEFAULT_APP_SCHEMA_URL
-    const contextUrl = `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}#`
+    const contextUrl = `${baseSchemaUrl}${buildOptions.schemaPath ? `/${buildOptions.schemaPath}` : ''}`
 
     documentWarmer('https://w3id.org/did/v1', JSON.stringify(didContext))
     documentWarmer('https://w3id.org/security/v1', JSON.stringify(securityV1))
@@ -65,7 +65,7 @@ export const buildDidHelper =
     documentWarmer(contextUrl, JSON.stringify({
       '@context': {
         '@version': 1.1,
-        didx: contextUrl,
+        didx: `${contextUrl}#`,
         xsd: 'http://www.w3.org/2001/XMLSchema#',
         nonce: { '@id': 'didx:nonce', '@type': 'xsd:string' },
         created: { '@id': 'didx:created', '@type': 'xsd:string' },
