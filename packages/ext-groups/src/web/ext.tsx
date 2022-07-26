@@ -23,7 +23,7 @@ import {
   PurposeEvidenceWidgetParams, EXTENSION_ITEM_PURPOSE_VALIDATION, MainModalAuthenticatedEventParams,
 } from '@owlmeans/regov-lib-react'
 import {
-  RegovGroupExtensionTypes, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, 
+  RegovGroupExtensionTypes, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
   REGOV_OFFER_TYPE, REGOV_GROUP_CLAIM_TYPE
 } from '../types'
 import { groupsExtension } from '../ext'
@@ -36,7 +36,7 @@ import {
 } from './component'
 import {
   addObserverToSchema, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams,
-  EXTENSION_TRIGGER_AUTHENTICATED
+  EXTENSION_TRIGGER_AUTHENTICATED,
 } from '@owlmeans/regov-ssi-core'
 import {
   Credential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES, WalletWrapper
@@ -133,11 +133,19 @@ if (groupsExtension.schema.events) {
           }
 
           if (isPresentation(doc)) {
-            console.log('INCOMING CLAIM', doc)
             if (doc.type.includes(REGOV_GROUP_CLAIM_TYPE)) {
+              console.log('INCOMING GROUP CLAIM', doc)
               modalHandler.getContent = () =>
-                <GroupClaimView close={close} credential={doc} ext={groupsExtension} conn={conn} 
-                  connection={statusHandle}/>
+                <GroupClaimView close={close} credential={doc} ext={groupsExtension} conn={conn}
+                  connection={statusHandle} />
+
+              modalHandler.setOpen && modalHandler.setOpen(true)
+            } else if (doc.type.includes(REGOV_CLAIM_TYPE)) {
+              console.log('INCOMING MEMBERSHIP CLAIM', doc)
+
+              modalHandler.getContent = () =>
+                <MembershipOffer close={close} credential={doc} ext={groupsExtension} conn={conn}
+                  connection={statusHandle} />
 
               modalHandler.setOpen && modalHandler.setOpen(true)
             }

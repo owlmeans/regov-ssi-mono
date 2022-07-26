@@ -87,11 +87,15 @@ export const IntegratedDIDBasedAuth: FunctionComponent<IntegratedDIDBasedAuthPar
                 if (!handler.wallet?.did.helper().isDIDDocument(sender)) {
                   throw ERROR_NO_IDENTITY
                 }
+                let onceDone: boolean = false
                 const listner: DIDCommListner = {
                   established: async (conn) => {
-                    const sent = await helper.send(didAuth, conn)
-                    if (!sent) {
-                      throw ERROR_COMM_CANT_SEND
+                    if (!onceDone) {
+                      onceDone = true
+                      const sent = await helper.send(didAuth, conn)
+                      if (!sent) {
+                        throw ERROR_COMM_CANT_SEND
+                      }
                     }
                   },
                   receive: async (_, doc) => {

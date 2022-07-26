@@ -16,14 +16,18 @@
 
 import {
   GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CLAIM_TYPE,
-  REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE, REGOV_OFFER_TYPE
+  REGOV_CREDENTIAL_TYPE_GROUP,
+  REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_CHAINED_TYPE, REGOV_OFFER_TYPE
 } from '../../../../types'
 import {
   getGroupFromMembershipClaimPresentation, getMembershipClaim, getMembershipClaimHolder,
 } from '../../../../util'
 import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
-import { getCompatibleSubject, Presentation, Credential } from '@owlmeans/regov-ssi-core'
+import {
+  getCompatibleSubject, Presentation, Credential, normalizeValue, REGISTRY_SECTION_OWN,
+  REGISTRY_TYPE_IDENTITIES
+} from '@owlmeans/regov-ssi-core'
 import {
   AlertOutput, CredentialActionGroup, dateFormatter, LongTextInput, MainTextInput, MainTextOutput,
   PrimaryForm, WalletFormProvider
@@ -31,18 +35,37 @@ import {
 import { useForm } from 'react-hook-form'
 import { ERROR_MEMBERSHIP_READYTO_CLAIM, ERROR_WIDGET_AUTHENTICATION } from '../../types'
 import { EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams } from '@owlmeans/regov-ssi-core'
-import { singleValue } from '@owlmeans/regov-ssi-core'
+import { singleValue, addToValue } from '@owlmeans/regov-ssi-core'
 import Button from '@mui/material/Button'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
+import { CommConnectionStatusHandler, DIDCommConnectMeta, ERROR_COMM_SEND_FAILED } from '@owlmeans/regov-comm'
 
 
 export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withRegov<MembershipOfferProps>(
   { namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
-    const { credential: presentation, navigator, ext, close, t, i18n } = props
+    const { credential: presentation, navigator, ext, close, t, i18n, conn, connection } = props
     const { handler, extensions } = useRegov()
+    let group: Credential
 
-    const group = getGroupFromMembershipClaimPresentation(presentation) as Credential
+    const membershipClaim = normalizeValue(presentation.verifiableCredential)
+      .find(credential => credential.type.includes(
+        REGOV_CREDENTIAL_TYPE_MEMBERSHIP
+      ))
+
+    group = normalizeValue(membershipClaim?.evidence).find(
+      evidence => (evidence as Credential).type.includes(REGOV_GROUP_CHAINED_TYPE)
+    ) as Credential
+    if (group) {
+      group = getGroupFromMembershipClaimPresentation(presentation) as Credential
+    } else if (conn) {
+      const ownerMembership = handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
+        .getCredential(conn.sender.id, REGISTRY_SECTION_OWN)
+      group = normalizeValue(ownerMembership?.credential.evidence)
+        .find(
+          evidence => (evidence as Credential).type.includes(REGOV_CREDENTIAL_TYPE_GROUP)
+        ) as Credential
+    }
     const credential = presentation.verifiableCredential[0]
     const groupSubject = getCompatibleSubject<GroupSubject>(group)
     const subject = getCompatibleSubject<MembershipSubject>(credential)
@@ -73,10 +96,23 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
         const subject = data.membership.offer as any
         delete subject.alert
 
+        const unsignedMembership = JSON.parse(JSON.stringify(
+          getMembershipClaim(presentation)
+        )) as Credential<MembershipSubject>
+        if (
+          !normalizeValue(unsignedMembership.evidence)
+            .find(evidence => (evidence as Credential).type.includes(
+              REGOV_CREDENTIAL_TYPE_GROUP
+            ))
+        ) {
+          unsignedMembership.evidence = addToValue(unsignedMembership.evidence, group)
+          unsignedMembership.credentialSubject.groupId = group.id
+        }
+
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
         const offer = await factory.offer(handler.wallet, {
           claim: presentation,
-          credential: getMembershipClaim(presentation) as Credential,
+          credential: unsignedMembership,
           holder: getMembershipClaimHolder(presentation),
           cryptoKey: await handler.wallet.keys.getCryptoKey(),
           claimType: REGOV_CLAIM_TYPE,
@@ -144,6 +180,15 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
       }
     }
 
+    const send = async () => {
+      if (conn && connection && offer) {
+        if (!await connection.helper?.send(offer, conn)) {
+          throw ERROR_COMM_SEND_FAILED
+        }
+        close && close()
+      }
+    }
+
     return <Fragment>
       {!offer
         ? <Fragment>
@@ -181,6 +226,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           </DialogContent>
           <DialogActions>
             <CredentialActionGroup prettyOutput content={offer} exportTitle={name} />
+            {conn && <Button onClick={send}>{`${t('membership.offer.send')}`}</Button>}
             <Button onClick={close}>{`${t('membership.offer.close')}`}</Button>
           </DialogActions>
         </Fragment>}
@@ -190,6 +236,8 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
 export type MembershipOfferParams = EmptyProps & {
   ext: RegovGroupExtension
   credential: Presentation
+  conn?: DIDCommConnectMeta
+  connection?: CommConnectionStatusHandler
   close?: () => void
 }
 

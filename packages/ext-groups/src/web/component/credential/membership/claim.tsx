@@ -122,7 +122,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
       }
 
       if (group) {
-        unsignedMemberhip.evidence = addToValue(unsignedMemberhip.evidence ,group)
+        unsignedMemberhip.evidence = addToValue(unsignedMemberhip.evidence, group)
       }
       const factory = ext.getFactory(unsignedMemberhip.type)
       const claim = await factory.claim(handler.wallet, { unsignedClaim: unsignedMemberhip })
