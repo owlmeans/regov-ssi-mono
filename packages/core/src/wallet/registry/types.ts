@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import { MaybeArray } from "../../common"
 import { Credential, Presentation, UnsignedCredential, } from "../../vc/types"
 
 

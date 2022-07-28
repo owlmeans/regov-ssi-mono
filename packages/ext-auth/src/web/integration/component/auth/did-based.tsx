@@ -166,7 +166,7 @@ export const IntegratedDIDBasedAuth: FunctionComponent<IntegratedDIDBasedAuthPar
     }
   )
 
-type AuthIntengratedServerResponse = {
+export type AuthIntengratedServerResponse = {
   token?: string
 } | ValidationResult
 

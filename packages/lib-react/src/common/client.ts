@@ -26,6 +26,13 @@ export const buildServerClient = (config: ServerClientConfig) => {
       return result.json()
     },
 
+    getVCs: async (uri) => {
+      const [url] = uriToUrlAndConfig(uri, config)
+      const result = await fetch(url)
+
+      return result.json()
+    },
+
     sendVC: async (uri, cred) => {
       const [url] = uriToUrlAndConfig(uri, config)
       const result = await fetch(
@@ -58,6 +65,10 @@ const uriToUrlAndConfig = (uri: string | ServierClientRequest, config: ServerCli
 
 export type ServerClient = {
   getVC: <Type extends Credential | Presentation = Presentation>(
+    uri: string | ServierClientRequest
+  ) => Promise<Type>
+
+  getVCs: <Type extends Credential[] = Credential[]>(
     uri: string | ServierClientRequest
   ) => Promise<Type>
 
