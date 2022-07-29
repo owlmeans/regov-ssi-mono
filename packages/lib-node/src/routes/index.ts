@@ -14,14 +14,36 @@
  *  limitations under the License.
  */
 
-import { Presentation, singleValue, Credential, VALIDATION_KIND_OFFER, ERROR_NO_EXTENSION, REGISTRY_TYPE_IDENTITIES, REGISTRY_SECTION_PEER } from '@owlmeans/regov-ssi-core'
+import { Presentation, singleValue, Credential, VALIDATION_KIND_OFFER, ERROR_NO_EXTENSION, REGISTRY_TYPE_IDENTITIES, REGISTRY_SECTION_PEER, RegistryType, REGISTRY_TYPE_CREDENTIALS } from '@owlmeans/regov-ssi-core'
 import { Router } from 'express'
 import { ERROR_NO_WALLET, getAppContext } from '../app'
-import { ERROR_NO_CREDENTIAL, SERVER_ALL_TRUSTED_VCS, SERVER_VALIDATE_OFFER } from '../types'
+import { ERROR_NO_CREDENTIAL, SERVER_ALL_TRUSTED_TYPES, SERVER_ALL_TRUSTED_VCS, SERVER_ALL_TYPE_CREDENTIALS, SERVER_VALIDATE_OFFER } from '../types'
 
 
 export const buildRotuer = () => {
   const router = Router()
+
+  router.get(SERVER_ALL_TRUSTED_TYPES, async (req, res) => {
+    try {
+      const { handler } = getAppContext(req)
+
+      let type: RegistryType = REGISTRY_TYPE_IDENTITIES
+      let section: string = REGISTRY_SECTION_PEER
+      switch (req.params.type) {
+        case SERVER_ALL_TYPE_CREDENTIALS:
+          type = REGISTRY_TYPE_CREDENTIALS
+      }
+
+      const response = handler.wallet?.getRegistry(type)
+        .registry.credentials[section].map(
+          wrapper => wrapper.credential
+        ) || []
+
+        res.json(response)
+    } catch (e) {
+      res.status(500).send(`${e}`)
+    }
+  })
 
   router.get(SERVER_ALL_TRUSTED_VCS, async (req, res) => {
     try {
