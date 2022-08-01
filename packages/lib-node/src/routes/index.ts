@@ -80,9 +80,8 @@ export const buildRotuer = () => {
       const factory = extension.getFactory(req.params.type)
 
       const result = await factory.validate(handler.wallet, {
-        presentation, credential,
-        extensions: extensions.registry,
-        kind: VALIDATION_KIND_OFFER
+        presentation, credential, extensions: extensions.registry,
+        // kind: VALIDATION_KIND_OFFER @TODO we don't have claim on server side
       })
 
       res.json(result)

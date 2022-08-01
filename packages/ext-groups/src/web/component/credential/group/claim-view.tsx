@@ -79,15 +79,16 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
     })()
   }, [presentation.id])
 
-  const produce = async (_: GroupClaimViewFields) => {
+  const produce = async (fields: GroupClaimViewFields) => {
     const loader = await navigator?.invokeLoading()
     try {
       const credential = JSON.parse(JSON.stringify(singleValue(presentation.verifiableCredential)))
 
       if (handler.wallet && credential) {
         credential.evidence = signatures.find(
-          signature => signature.credential.id === defaultId
+          signature => signature.credential.id === fields.group.offer.identity
         )?.credential
+
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
         const offer = await factory.offer(handler.wallet, {
           claim: presentation,
