@@ -46,17 +46,16 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
   { namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
     const { credential: presentation, navigator, ext, close, t, i18n, conn, connection } = props
     const { handler, extensions } = useRegov()
-    let group: Credential
 
     const membershipClaim = normalizeValue(presentation.verifiableCredential)
       .find(credential => credential.type.includes(
         REGOV_CREDENTIAL_TYPE_MEMBERSHIP
       ))
 
-    group = normalizeValue(membershipClaim?.evidence).find(
+    let group: Credential = normalizeValue(membershipClaim?.evidence).find(
       evidence => (evidence as Credential).type.includes(REGOV_GROUP_CHAINED_TYPE)
     ) as Credential
-    if (group) {
+    if (!group) {
       group = getGroupFromMembershipClaimPresentation(presentation) as Credential
     } else if (conn) {
       const ownerMembership = handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
