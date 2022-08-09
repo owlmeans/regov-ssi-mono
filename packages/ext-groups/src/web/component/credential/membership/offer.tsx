@@ -55,9 +55,12 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
     let group: Credential = normalizeValue(membershipClaim?.evidence).find(
       evidence => (evidence as Credential).type.includes(REGOV_GROUP_CHAINED_TYPE)
     ) as Credential
+
     if (!group) {
       group = getGroupFromMembershipClaimPresentation(presentation) as Credential
-    } else if (conn) {
+    }
+
+    if (!group && conn) {
       const ownerMembership = handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
         .getCredential(conn.sender.id, REGISTRY_SECTION_OWN)
       group = normalizeValue(ownerMembership?.credential.evidence)
@@ -98,6 +101,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
         const unsignedMembership = JSON.parse(JSON.stringify(
           getMembershipClaim(presentation)
         )) as Credential<MembershipSubject>
+        console.log('loading...')
         if (
           !normalizeValue(unsignedMembership.evidence)
             .find(evidence => (evidence as Credential).type.includes(
@@ -106,6 +110,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
         ) {
           unsignedMembership.evidence = addToValue(unsignedMembership.evidence, group)
           unsignedMembership.credentialSubject.groupId = group.id
+          methods.setValue('membership.offer.groupId', group.id)
         }
 
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
@@ -195,7 +200,8 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
             <WalletFormProvider {...methods}>
               <PrimaryForm {..._props} title="membership.offer.title">
                 {groupSubject && <MainTextOutput {..._props} field="membership.group.name" showHint />}
-                <MainTextOutput {..._props} field="membership.offer.groupId" showHint />
+                {subject.groupId && subject.groupId !== ''
+                  && <MainTextOutput {..._props} field="membership.offer.groupId" showHint />}
                 <MainTextInput {..._props} field="membership.offer.role" />
                 <LongTextInput {..._props} field="membership.offer.description" />
                 <MainTextInput {..._props} field="membership.offer.memberCode" />

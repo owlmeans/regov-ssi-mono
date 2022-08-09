@@ -65,6 +65,32 @@
         "uuid": "Group ID",
         "createdAt": "Creation date:"
       }
+    },
+    "groupClaim": {
+      "extraField": "Vendor extra field — {key}",
+      "name": {
+        "hint": "Name"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "uuid": {
+        "hint": "Public unique identifier"
+      },
+      "createdAt": {
+        "hint": "Creation date"
+      }
+    },
+    "offer": {
+      "identity": {
+        "hint": "Choose parent trusted group owner credential to sign a dependent group credential",
+        "noItems": "No ownership of trusted groups to sign a dependent group credential"
+      }
+    },
+    "claimView": {
+      "title": "New dependent group claim",
+      "offer": "Issue credential",
+      "close": "Close"
     }
   },
   "widget": {
@@ -132,6 +158,7 @@
       "title": "Membership claim review",
       "close": "Close",
       "proceed": "Issue",
+      "send": "Send",
       "groupId": {
         "label": "Group ID",
         "hint": "Membership is request from a group with ID"
