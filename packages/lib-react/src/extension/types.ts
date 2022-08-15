@@ -25,6 +25,7 @@ export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_ITEM
   | typeof EXTENSION_ITEM_PURPOSE_VALIDATION
   | typeof EXTENSION_ITEM_PURPOSE_CREATION
   | typeof EXTENSION_ITEM_PURPOSE_REQUEST
+  | typeof EXTENSION_ITEM_PURPOSE_TOP_ACTION
   | string
 
 export const EXTENSION_ITEM_PURPOSE_ITEM = 'item'
@@ -35,6 +36,7 @@ export const EXTENSION_ITEM_PURPOSE_EVIDENCE = 'evidence'
 export const EXTENSION_ITEM_PURPOSE_VALIDATION = 'validation'
 export const EXTENSION_ITEM_PURPOSE_CREATION = 'creation'
 export const EXTENSION_ITEM_PURPOSE_REQUEST = 'request'
+export const EXTENSION_ITEM_PURPOSE_TOP_ACTION = 'top_action'
 
 
 

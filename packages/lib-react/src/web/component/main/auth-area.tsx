@@ -16,7 +16,7 @@
 
 import React, { Fragment } from 'react'
 import { Outlet } from 'react-router-dom'
-import { MainAuthAreaImplProps, MainFooter } from '../../../common'
+import { EXTENSION_ITEM_PURPOSE_TOP_ACTION, MainAuthAreaImplProps, MainFooter } from '../../../common'
 import { useRegov } from '../../../common/context'
 import MenuIcon from '@mui/icons-material/Menu'
 import AppBar from '@mui/material/AppBar'
@@ -32,6 +32,7 @@ import IconButton from '@mui/material/IconButton'
 const drawerWidth = 240;
 
 export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
+  const { extensions } = useRegov()
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const { config } = useRegov()
 
@@ -39,9 +40,21 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
     setMobileOpen(!mobileOpen)
   }
 
+  const TopButtons = () =>
+    <Fragment>
+      {extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_TOP_ACTION).map(
+        ext => <ext.com />
+      )}
+    </Fragment>
+
   const drawer = (
     <Fragment>
-      <Toolbar />
+      <Toolbar>
+        <div style={{ flexGrow: 1 }}>
+          {config.logo}
+        </div>
+        <TopButtons />
+      </Toolbar>
       {menu}
     </Fragment>
   )
@@ -61,7 +74,8 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
             <MenuIcon />
           </IconButton>
           {config.logo}
-          <Typography variant="h6" noWrap component="div">{name}</Typography>
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>{name}</Typography>
+          <TopButtons />
         </Toolbar>
       </AppBar>
       <Box
@@ -81,7 +95,12 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
-          {drawer}
+          <Fragment>
+            <Toolbar>
+              {config.logo}
+            </Toolbar>
+            {menu}
+          </Fragment>
         </Drawer>
         <Drawer
           variant="permanent"

@@ -13,11 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { EVENT_INIT_CONNECTION, InitCommEventParams } from "@owlmeans/regov-comm"
-import { buildUIExtension } from "@owlmeans/regov-lib-react"
+import { 
+  buildUIExtension, ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_TOP_ACTION, UIExtensionFactoryProduct 
+} from "@owlmeans/regov-lib-react"
 import { buildCommExtension } from "../ext"
 import { CommExtConfig } from "../types"
+import { InboxButton } from './component'
 
 
 export const buildCommUIExtension = (config: CommExtConfig) => {
@@ -45,7 +47,16 @@ export const buildCommUIExtension = (config: CommExtConfig) => {
     }
   }
 
-  return buildUIExtension(commExtension, (_) => {
-    return []
+  return buildUIExtension(commExtension, (purpose: ExtensionItemPurpose) => {
+    switch (purpose) {
+      case EXTENSION_ITEM_PURPOSE_TOP_ACTION:
+        return [{
+          com: InboxButton(commExtension),
+          extensionCode: `${commExtension.schema.details.code}InboxButton`,
+          params: {},
+          order: 0
+        }] as UIExtensionFactoryProduct[]
+    }
+    return [] as UIExtensionFactoryProduct<{}>[]
   })
 }
