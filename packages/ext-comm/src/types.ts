@@ -31,3 +31,5 @@ export type CommExtension = Extension & {
 export const DEFAULT_SERVER_ALIAS = 'default'
 
 export const BASIC_IDENTITY_TYPE = 'Identity'
+
+export const REGISTRY_TYPE_INBOX = 'inbox'

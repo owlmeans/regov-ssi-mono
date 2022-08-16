@@ -5,11 +5,11 @@ import {
   RegovComponentProps, useRegov, WalletFormProvider, withRegov, dateFormatter
 } from "@owlmeans/regov-lib-react"
 import {
-  Extension, getCompatibleSubject, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, singleValue,
-  Credential, CredentialWrapper, REGISTRY_TYPE_IDENTITIES, DIDDocument,
+  Extension, getCompatibleSubject, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, 
+  singleValue, Credential, CredentialWrapper, REGISTRY_TYPE_IDENTITIES, DIDDocument,
 } from "@owlmeans/regov-ssi-core"
 import {
-  GroupSubject, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
+  GroupSubject, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
   REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_OFFER_TYPE
 } from "../../../../types"
 import DialogContent from "@mui/material/DialogContent"
@@ -52,28 +52,7 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
     (async () => {
       const identities = (await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
         .lookupCredentials(REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGISTRY_SECTION_OWN))
-        ?.filter(identity => {
-          return identity.credential.id === conn.sender.id
-          // const identityMethod = handler.wallet?.did.helper().expandVerificationMethod(
-          //   identity.credential.issuer as DIDDocument, DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_HOLDER
-          // )
-          // const group = normalizeValue(identity.credential.evidence)
-          //   .find(evidence => evidence?.type.includes(REGOV_GROUP_CHAINED_TYPE))
-
-          // console.log(identityMethod, group)
-          // if (group) {
-          //   const groupMethod = handler.wallet?.did.helper().expandVerificationMethod(
-          //     (group as Credential).issuer as DIDDocument,
-          //     DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_HOLDER
-          //   )
-
-          //   console.log(identityMethod?.publicKeyBase58, groupMethod?.publicKeyBase58)
-
-          //   return identityMethod?.publicKeyBase58 === groupMethod?.publicKeyBase58
-          // }
-
-          // return false
-        })
+        ?.filter(identity => identity.credential.id === conn.sender.id)
 
       if (identities && identities.length) {
         setSignatures(identities)
@@ -81,8 +60,6 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
       }
     })()
   }, [presentation.id])
-
-
 
   const produce = async (fields: GroupClaimViewFields) => {
     const loader = await navigator?.invokeLoading()
@@ -105,6 +82,7 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
           challenge: presentation.proof.challenge || '',
           domain: presentation.proof.domain || '',
           cryptoKey: await handler.wallet.keys.getCryptoKey(),
+          claimType: REGOV_CLAIM_TYPE
         })
 
         if (!await connection.helper?.send(offer, conn)) {
@@ -156,8 +134,7 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
       <Button onClick={close}>{`${t('group.claimView.close')}`}</Button>
     </DialogActions>
   </Fragment>
-}
-)
+})
 
 export type GroupClaimViewParams = EmptyProps & {
   ext: Extension

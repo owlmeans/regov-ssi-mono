@@ -111,8 +111,8 @@ export type InitCommEventParams = EventParams & {
   alias?: string
   statusHandle: CommConnectionStatusHandler
   trigger?: (conn: DIDCommConnectMeta, doc: Credential | Presentation) => Promise<void>
-  resolveConnection: (helper: DIDCommHelper) => Promise<void>
-  rejectConnection: (err: any) => Promise<void>
+  resolveConnection?: (helper: DIDCommHelper) => Promise<void>
+  rejectConnection?: (err: any) => Promise<void>
 }
 
 export type CommConnectionStatusHandler = { 

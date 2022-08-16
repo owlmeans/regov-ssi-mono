@@ -31,6 +31,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import Grid3x3Icon from '@mui/icons-material/Grid3x3';
 
 
 export const ItemMenu = ({ i18n, meta, handle, content, prettyOutput, exportTitle, children }: ItemMenuParams) => {
@@ -83,6 +84,18 @@ export const ItemMenu = ({ i18n, meta, handle, content, prettyOutput, exportTitl
         </ListItemIcon>
         <ListItemText primary={t('menu.action.copy.title')} />
       </MenuItem>
+      {meta && <MenuItem onClick={() => {
+        copy(meta.id, {
+          message: t([`widget.dashboard.clipboard.copyhint`, 'clipboard.copyhint']),
+          format: 'text/plain'
+        })
+        handle.handler?.close()
+      }}>
+        <ListItemIcon>
+          <Grid3x3Icon fontSize="medium" />
+        </ListItemIcon>
+        <ListItemText primary={t('menu.action.copyId.title')} />
+      </MenuItem>}
       {exportTitle &&
         <MenuItem onClick={() => {
           saveAs(new Blob([_content], { type: "text/plain;charset=utf-8" }), `${exportTitle}.json`)

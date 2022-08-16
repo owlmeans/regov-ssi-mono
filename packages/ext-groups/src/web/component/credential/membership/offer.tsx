@@ -15,9 +15,9 @@
  */
 
 import {
-  GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CLAIM_TYPE,
-  REGOV_CREDENTIAL_TYPE_GROUP,
-  REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_CHAINED_TYPE, REGOV_OFFER_TYPE
+  GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CREDENTIAL_TYPE_GROUP,
+  REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_CHAINED_TYPE, 
+  REGOV_GROUP_CLAIM_TYPE, REGOV_OFFER_TYPE
 } from '../../../../types'
 import {
   getGroupFromMembershipClaimPresentation, getMembershipClaim, getMembershipClaimHolder,
@@ -119,12 +119,12 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           credential: unsignedMembership,
           holder: getMembershipClaimHolder(presentation),
           cryptoKey: await handler.wallet.keys.getCryptoKey(),
-          claimType: REGOV_CLAIM_TYPE,
+          claimType: REGOV_GROUP_CLAIM_TYPE,
           offerType: REGOV_OFFER_TYPE,
           subject,
           id: presentation.id as string,
           challenge: presentation.proof.challenge || '',
-          domain: presentation.proof.domain || ''
+          domain: presentation.proof.domain || '',
         })
 
         setOffer(offer)

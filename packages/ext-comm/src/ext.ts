@@ -24,7 +24,9 @@ import {
   REGISTRY_SECTION_OWN, ExtensionEventAfterBuildingDid
 } from '@owlmeans/regov-ssi-core'
 import { localizations } from './i18n'
-import { CommExtConfig, DEFAULT_SERVER_ALIAS, REGOV_EXT_COMM_NAMESPACE, CommExtension, BASIC_IDENTITY_TYPE } from './types'
+import {
+  CommExtConfig, DEFAULT_SERVER_ALIAS, REGOV_EXT_COMM_NAMESPACE, CommExtension, BASIC_IDENTITY_TYPE
+} from './types'
 
 
 export const buildCommExtension = (config: CommExtConfig) => {
@@ -58,25 +60,37 @@ export const buildCommExtension = (config: CommExtConfig) => {
           if (!_channels[combined]) {
             _channels[combined] = {
               code: '',
-              init: async (_) => {},
+              init: async (_) => { },
               send: async (_, __) => false,
-              close: async () => {}
+              close: async () => { }
             }
             _channels[combined] = await createWSChannel(cfg)
             await helper.addChannel(_channels[combined])
           }
           params.statusHandle.established = true
           params.statusHandle.helper = helper
-          await params.resolveConnection(helper)
+          params.resolveConnection && await params.resolveConnection(helper)
+
+          if (params.trigger) {
+            params.statusHandle.defaultListener = {
+              accept: async conn => { await helper.accept(conn) },
+              receive: async (conn, cred) => {
+                params.trigger && params.trigger(conn, cred)
+              }
+            }
+            await helper.addListener(params.statusHandle.defaultListener)
+          } else {
+            await helper.addListener({ accept: async conn => { await helper.accept(conn) } })
+          }
           console.info('COMM CONNECTED')
           /**
-           * @TODO Process logout
+           * @TODO Process logout and unregister everything
            */
         } else {
-          await params.rejectConnection(ERROR_COMM_CONNECTION_UNKNOWN)
+          params.rejectConnection && await params.rejectConnection(ERROR_COMM_CONNECTION_UNKNOWN)
         }
       } catch (err) {
-        await params.rejectConnection(err)
+        params.rejectConnection && await params.rejectConnection(err)
       }
     }
   })

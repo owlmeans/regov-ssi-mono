@@ -43,7 +43,7 @@ export const MainAuthAreaWeb = ({ name, menu }: MainAuthAreaImplProps) => {
   const TopButtons = () =>
     <Fragment>
       {extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_TOP_ACTION).map(
-        ext => <ext.com />
+        ext => <ext.com key={ext.extensionCode}/>
       )}
     </Fragment>
 

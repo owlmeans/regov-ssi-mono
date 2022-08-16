@@ -6,7 +6,8 @@
     "action": {
       "copy": { "title": "Copy" },
       "export": { "title": "Export" },
-      "delete": {"title": "Delete"}
+      "delete": {"title": "Delete"},
+      "copyId": {"title": "Copy DID"}
     }
   },
   "footer": {
