@@ -13,18 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { 
-  buildUIExtension, ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_TOP_ACTION, UIExtensionFactoryProduct 
+import React from 'react'
+import {
+  buildUIExtension, castMainModalHandler, ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_TOP_ACTION, 
+  UIExtensionFactoryProduct
 } from "@owlmeans/regov-lib-react"
+import { addObserverToSchema, EventParams } from "@owlmeans/regov-ssi-core"
 import { buildCommExtension } from "../ext"
 import { CommExtConfig } from "../types"
-import { InboxButton } from './component'
+import { InboxButton, InboxWidget } from './component'
+import { EXTENSION_TRIGGER_OPEN_INBOX } from "./types"
 
 
 export const buildCommUIExtension = (config: CommExtConfig) => {
   const commExtension = buildCommExtension(config)
 
-  return buildUIExtension(commExtension, (purpose: ExtensionItemPurpose) => {
+  const uiExtension = buildUIExtension(commExtension, (purpose: ExtensionItemPurpose) => {
     switch (purpose) {
       case EXTENSION_ITEM_PURPOSE_TOP_ACTION:
         return [{
@@ -36,4 +40,24 @@ export const buildCommUIExtension = (config: CommExtConfig) => {
     }
     return [] as UIExtensionFactoryProduct<{}>[]
   })
+
+  const modalHandler = castMainModalHandler(commExtension)
+
+  commExtension.schema = addObserverToSchema(commExtension.schema, {
+    trigger: EXTENSION_TRIGGER_OPEN_INBOX,
+    method: async (_, __: EventParams) => {
+      const close = () => {
+        modalHandler.handle && modalHandler.handle.setOpen && modalHandler.handle.setOpen(false)
+      }
+
+      if (modalHandler.handle) {
+        const Widget = InboxWidget(commExtension)
+
+        modalHandler.handle.getContent = () => <Widget close={close}/>
+        modalHandler.handle.setOpen && modalHandler.handle.setOpen(true)
+      }
+    }
+  })
+
+  return uiExtension
 }

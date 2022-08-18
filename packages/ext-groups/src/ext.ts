@@ -92,6 +92,10 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
   [REGOV_CLAIM_TYPE]: {
     mainType: REGOV_CLAIM_TYPE,
     credentialContext: {}
+  },
+  [REGOV_GROUP_CLAIM_TYPE]: {
+    mainType: REGOV_GROUP_CLAIM_TYPE,
+    credentialContext: {}
   }
 })
 
@@ -307,7 +311,8 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
       return result
     }
   },
-  [REGOV_CLAIM_TYPE]: {}
+  [REGOV_CLAIM_TYPE]: {},
+  [REGOV_GROUP_CLAIM_TYPE]: {}
 })
 
 groupsExtension.localization = {
