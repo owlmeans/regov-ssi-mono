@@ -19,8 +19,10 @@ import { BuildMethodParams, Extension } from "@owlmeans/regov-ssi-core"
 export type RegovGroupCredential = typeof REGOV_CREDENTIAL_TYPE_GROUP
 export type RegovGroupMembershipCredential = typeof REGOV_CREDENTIAL_TYPE_MEMBERSHIP
 export type RegovGroupClaim = typeof REGOV_CLAIM_TYPE
+export type RegovGroupCredentialClaim = typeof REGOV_GROUP_CLAIM_TYPE
 
-export type RegovGroupExtensionTypes = RegovGroupCredential | RegovGroupMembershipCredential | RegovGroupClaim
+export type RegovGroupExtensionTypes = RegovGroupCredential | RegovGroupMembershipCredential 
+  | RegovGroupClaim | RegovGroupCredentialClaim
 
 export type GroupSubject = {
   uuid: string

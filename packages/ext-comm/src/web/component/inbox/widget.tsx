@@ -6,15 +6,15 @@ import { REGISTRY_TYPE_INBOX } from "../../../types"
 
 export const InboxWidget = (ext: Extension): FunctionComponent<InboxWidgetParams> =>
   withRegov<InboxWidgetProps>({ namespace: ext.localization?.ns }, _ => {
-
+    
     return <CredentialList tab={REGISTRY_TYPE_INBOX} section={REGISTRY_SECTION_PEER} tabs={[{
-      name: REGISTRY_TYPE_INBOX,
-      registry: {
-        type: REGISTRY_TYPE_INBOX,
-        defaultSection: REGISTRY_SECTION_PEER,
-        allowPeer: false,
-      }
-    }]}/>
+        name: REGISTRY_TYPE_INBOX,
+        registry: {
+          type: REGISTRY_TYPE_INBOX,
+          defaultSection: REGISTRY_SECTION_PEER,
+          allowPeer: false,
+        }
+      }]} ns={ext.localization?.ns} />
   })
 
 

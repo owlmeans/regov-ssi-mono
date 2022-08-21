@@ -44,6 +44,7 @@ import {
 import { MembershipClaimOffer } from './component/credential/membership/claim-offer'
 import { EVENT_INIT_CONNECTION, InitCommEventParams } from '@owlmeans/regov-comm'
 import { GroupClaimView } from './component/credential/group/claim-view'
+import { GroupClaimItem } from './component/credential/group/claim-item'
 
 
 if (groupsExtension.schema.events) {
@@ -195,6 +196,13 @@ export const groupsUIExtension = buildUIExtension(groupsExtension,
             return [{
               com: MembershipItem(groupsExtension) as unknown as FunctionComponent<PurposeListItemParams>,
               extensionCode: `${groupsExtension.schema.details.code}MembershipItem`,
+              params: {},
+              order: 0
+            }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
+          case REGOV_GROUP_CLAIM_TYPE:
+            return [{
+              com: GroupClaimItem(groupsExtension) as unknown as FunctionComponent<PurposeListItemParams>,
+              extensionCode: `${groupsExtension.schema.details.code}GroupClaimItem`,
               params: {},
               order: 0
             }] as UIExtensionFactoryProduct<PurposeListItemParams>[]

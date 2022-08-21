@@ -1,1 +1,19 @@
-{}
+{
+  "list": {
+    "item": {
+      "unknown": "Unknown document type"
+    },
+    "header": {
+      "inbox": {
+        "peer": {
+          "title": "Incomming documents"
+        }
+      }
+    },
+    "tab": {
+      "inbox": {
+        "label": "DIDComm Inbox"
+      }
+    }
+  }
+}

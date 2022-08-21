@@ -126,7 +126,7 @@ type PresentationSubmissionV1 = {
   descriptor_map: PresentationSubmissionDescriptorV1[];
 }
 
-export type UnsignedPresentation<CredentialT extends Credential = Credential> = {
+export type UnsignedPresentation<CredentialT extends UnsignedCredential = Credential> = {
   '@context': MultiSchema
   id?: string
   type: PresentationType
@@ -135,7 +135,7 @@ export type UnsignedPresentation<CredentialT extends Credential = Credential> = 
   presentation_submission?: PresentationSubmissionV1
 }
 
-export type Presentation<CredentialT extends Credential = Credential> = UnsignedPresentation<CredentialT>
+export type Presentation<CredentialT extends UnsignedCredential = Credential> = UnsignedPresentation<CredentialT>
   & {
     proof: Proof
   }

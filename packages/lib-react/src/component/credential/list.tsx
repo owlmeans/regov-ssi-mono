@@ -27,12 +27,12 @@ import {
 export const CredentialList: FunctionComponent<CredentialListParams> = withRegov<
   CredentialListProps, CredentialListNavigator
 >('CredentialList',
-  ({ t, i18n, credentials, tab, section, id, tabs, navigator, renderer: Renderer }) => {
+  ({ t, i18n, credentials, tab, section, id, tabs, navigator, renderer: Renderer, ns }) => {
     const currentTab = tab || tabs[0].registry.type || REGISTRY_TYPE_CREDENTIALS
     const currentSection = section || REGISTRY_SECTION_OWN
 
     const _props: CredentialListImplProps = {
-      t, i18n, tabs, id,
+      t, i18n, tabs, id, ns,
       tab: currentTab,
       section: currentSection,
       credentials: credentials,
@@ -56,7 +56,7 @@ export const CredentialList: FunctionComponent<CredentialListParams> = withRegov
       }
     }
 
-    return <Renderer {..._props} />
+    return <Renderer {..._props}  />
   },
   {
     namespace: 'regov-wallet-credential', transformer: (wallet, { tab, section }: CredentialListProps) => {
@@ -99,7 +99,7 @@ export type CredentialListImplProps = WrappedComponentProps<
   CredentialListImplParams, CredentialListState
 >
 
-export type CredentialListImplParams = {
+export type CredentialListImplParams = EmptyProps & {
   tabs: CredentialListTab[]
   tab?: RegistryType
   section?: string
