@@ -16,27 +16,6 @@
 
 import { BuildMethodParams, Extension } from "@owlmeans/regov-ssi-core"
 
-export const REGOV_CREDENTIAL_TYPE_GROUP = 'OwlMeans:Regov:Group'
-
-export const REGOV_CREDENTIAL_TYPE_MEMBERSHIP = 'OwlMeans:Regov:Group:Membership'
-
-export const REGOV_GROUP_CLAIM_TYPE = 'OwlMeans:Regov:Group:Entity:Claim'
-
-export const REGOV_GROUP_OFFER_TYPE = 'OwlMeans:Regov:Group:Entity:Offer'
-
-export const REGOV_GROUP_CHAINED_TYPE = 'OwlMeans:Regov:Group:Chained'
-
-export const REGOV_GROUP_LIMITED_TYPE = 'OwlMeans:Regov:Group:Limited'
-
-export const REGOV_GROUP_ROOT_TYPE = 'OwlMeans:Regov:Group:Root'
-
-export const REGOV_CLAIM_TYPE = 'OwlMeans:Regov:Group:Claim'
-export const REGOV_OFFER_TYPE = 'OwlMeans:Regov:Group:Offer'
-
-export const BASIC_IDENTITY_TYPE = 'Identity'
-
-export const REGOV_EXT_GROUP_NAMESPACE = 'owlmeans-regov-ext-groups'
-
 export type RegovGroupCredential = typeof REGOV_CREDENTIAL_TYPE_GROUP
 export type RegovGroupMembershipCredential = typeof REGOV_CREDENTIAL_TYPE_MEMBERSHIP
 export type RegovGroupClaim = typeof REGOV_CLAIM_TYPE
@@ -69,3 +48,26 @@ export type GroupBuildMethodParams = BuildMethodParams & {
   chainedType?: ChainedType
   depth?: number
 }
+
+export const REGOV_CREDENTIAL_TYPE_GROUP = 'OwlMeans:Regov:Group'
+
+export const REGOV_CREDENTIAL_TYPE_MEMBERSHIP = 'OwlMeans:Regov:Group:Membership'
+
+export const REGOV_GROUP_CLAIM_TYPE = 'OwlMeans:Regov:Group:Entity:Claim'
+
+export const REGOV_GROUP_OFFER_TYPE = 'OwlMeans:Regov:Group:Entity:Offer'
+
+export const REGOV_GROUP_CHAINED_TYPE = 'OwlMeans:Regov:Group:Chained'
+
+export const REGOV_GROUP_LIMITED_TYPE = 'OwlMeans:Regov:Group:Limited'
+
+export const REGOV_GROUP_ROOT_TYPE = 'OwlMeans:Regov:Group:Root'
+
+export const REGOV_CLAIM_TYPE = 'OwlMeans:Regov:Group:Claim'
+export const REGOV_OFFER_TYPE = 'OwlMeans:Regov:Group:Offer'
+
+export const BASIC_IDENTITY_TYPE = 'Identity'
+
+export const REGOV_EXT_GROUP_NAMESPACE = 'owlmeans-regov-ext-groups'
+
+export const SERVER_IS_GROUP_OWNER = '/regov-groups/membership/isOwner'

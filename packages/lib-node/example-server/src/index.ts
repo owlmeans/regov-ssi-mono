@@ -23,12 +23,11 @@ import {
 import { createWalletHandler } from "@owlmeans/regov-ssi-core"
 import { buildIdentityExtensionServer } from "@owlmeans/regov-ext-identity/dist/index.server"
 import { authServerExtension } from "@owlmeans/regov-ext-auth/dist/index.server"
-import { groupsExtension } from "@owlmeans/regov-ext-groups/dist/ext"
+import { groupsServerExtension } from "@owlmeans/regov-ext-groups/dist/index.server"
 
 import './warmup'
 
 import util from 'util'
-import { Router } from "express"
 util.inspect.defaultOptions.depth = 8
 
 
@@ -58,7 +57,7 @@ const identity = buildIdentityExtensionServer(
 const registry = buildServerExtensionRegistry()
 registry.registerSync(identity)
 registry.registerSync(authServerExtension)
-registry.registerSync(buildServerExtension(groupsExtension, () => Router()))
+registry.registerSync(groupsServerExtension)
 
 
 buildApp({
