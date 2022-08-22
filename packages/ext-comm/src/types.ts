@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import { DIDCommHelper, WSClientConfig } from "@owlmeans/regov-comm"
-import { Extension } from "@owlmeans/regov-ssi-core"
+import { DIDCommConnectMeta, DIDCommHelper, WSClientConfig } from "@owlmeans/regov-comm"
+import { Extension, Presentation, Credential, CredentialWrapperMetadata, CredentialWrapper } from "@owlmeans/regov-ssi-core"
 
 
 export const REGOV_EXT_COMM_NAMESPACE = 'owlmeans-regov-ext-comm'
@@ -33,3 +33,12 @@ export const DEFAULT_SERVER_ALIAS = 'default'
 export const BASIC_IDENTITY_TYPE = 'Identity'
 
 export const REGISTRY_TYPE_INBOX = 'inbox'
+
+export type IcommingWrapper = CredentialWrapper<
+  IncommingCrednetialSubject, IncommingPresentation, IncommingMeta
+>
+export type IncommingCrednetialSubject = {}
+export type IncommingPresentation = Presentation<Credential<IncommingCrednetialSubject>>
+export type IncommingMeta = CredentialWrapperMetadata & {
+  conn: DIDCommConnectMeta
+}

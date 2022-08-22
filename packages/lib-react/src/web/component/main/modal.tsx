@@ -22,7 +22,11 @@ import Dialog from '@mui/material/Dialog'
 export const MainModalWeb: FunctionComponent<MainModalImplProps> = props => {
   const { handle } = props
   const [isOpened, setOpen] = useState<boolean>(false)
-  handle.setOpen = setOpen
+  const [counter, setCounter] = useState(0)
+  handle.setOpen = (value: boolean) => {
+    setCounter(counter + 1)
+    setOpen(value)
+  }
 
   return <Dialog open={isOpened} onClose={() => setOpen(false)} scroll="paper" fullWidth maxWidth="xl">
     {handle.getContent ? handle.getContent() : undefined}

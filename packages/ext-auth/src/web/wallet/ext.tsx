@@ -15,12 +15,13 @@
  */
 
 import React from "react"
-import { buildUIExtension, castMainModalHandler, MainModalAuthenticatedEventParams } from "@owlmeans/regov-lib-react"
+import { buildUIExtension, castMainModalHandler, ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_ITEM, MainModalAuthenticatedEventParams, PurposeListItemParams, UIExtensionFactoryProduct } from "@owlmeans/regov-lib-react"
 import { addObserverToSchema, EXTENSION_TRIGGER_AUTHENTICATED, isPresentation } from "@owlmeans/regov-ssi-core"
 import { authExtension } from "../../ext"
 import { DIDAuthResponse } from './component'
 import { REGOV_AUTH_REQUEST_TYPE } from "../../types"
 import { EVENT_INIT_CONNECTION, InitCommEventParams } from "@owlmeans/regov-comm"
+import { AuthRequestItem } from "../component"
 
 
 const modalHandler = castMainModalHandler(authExtension)
@@ -60,6 +61,20 @@ authExtension.schema = addObserverToSchema(authExtension.schema, {
   }
 })
 
-export const authUIExtension = buildUIExtension(authExtension, (_) => {
-  return []
-})
+export const authUIExtension = buildUIExtension(authExtension,
+  (purpose: ExtensionItemPurpose, type?: string) => {
+    switch (purpose) {
+      case EXTENSION_ITEM_PURPOSE_ITEM:
+        switch (type) {
+          case REGOV_AUTH_REQUEST_TYPE:
+            return [{
+              com: AuthRequestItem(authExtension),
+              extensionCode: `${authExtension.schema.details.code}AuthRequestItem`,
+              params: {},
+              order: 0
+            }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
+        }
+    }
+    return [] as UIExtensionFactoryProduct<{}>[]
+  }
+)

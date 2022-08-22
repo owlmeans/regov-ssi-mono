@@ -6,14 +6,20 @@
     "header": {
       "inbox": {
         "peer": {
-          "title": "Incomming documents"
+          "title": "Documents"
         }
       }
     },
     "tab": {
       "inbox": {
-        "label": "DIDComm Inbox"
+        "label": "Incomming"
       }
+    }
+  },
+  "inbox": {
+    "widget": {
+      "title": "DIDComm Inbox",
+      "close": "Close"
     }
   }
 }

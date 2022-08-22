@@ -52,7 +52,7 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
     (async () => {
       const identities = (await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
         .lookupCredentials(REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGISTRY_SECTION_OWN))
-        ?.filter(identity => identity.credential.id === conn.sender.id)
+        ?.filter(identity => identity.credential.id === conn?.sender.id)
 
       if (identities && identities.length) {
         setSignatures(identities)
@@ -85,7 +85,7 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
           claimType: REGOV_CLAIM_TYPE
         })
 
-        if (!await connection.helper?.send(offer, conn)) {
+        if (!conn || !await connection?.helper?.send(offer, conn)) {
           throw ERROR_COMM_SEND_FAILED
         }
         close && close()
@@ -139,8 +139,8 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
 export type GroupClaimViewParams = EmptyProps & {
   ext: Extension
   credential: Presentation
-  conn: DIDCommConnectMeta
-  connection: CommConnectionStatusHandler
+  conn?: DIDCommConnectMeta
+  connection?: CommConnectionStatusHandler
   close?: () => void
 }
 

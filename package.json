@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "watch": "lerna run build:watch --parallel",
+    "dev": "lerna run build:watch --parallel",
     "build": "lerna run build",
     "start": "cd ./packages/lib-react/example-web/ && yarn start"
   },

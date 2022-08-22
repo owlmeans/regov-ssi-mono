@@ -24,7 +24,7 @@ import {
   isPresentation
 } from '@owlmeans/regov-ssi-core'
 import {
-  BASIC_IDENTITY_TYPE, ChainedType, GroupBuildMethodParams, GroupSubject, MembershipSubject, 
+  BASIC_IDENTITY_TYPE, ChainedType, GroupBuildMethodParams, GroupSubject, MembershipSubject,
   REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE,
   REGOV_GROUP_CHAINED_TYPE, RegovGroupExtensionTypes, REGOV_CLAIM_TYPE, REGOV_GROUP_CLAIM_TYPE,
   REGOV_GROUP_LIMITED_TYPE, REGOV_GROUP_ROOT_TYPE, REGOV_OFFER_TYPE
@@ -103,7 +103,8 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   filter: async (_, params: IncommigDocumentEventParams) => {
     if (isPresentation(params.credential)) {
-      if ([REGOV_CLAIM_TYPE, REGOV_OFFER_TYPE].some(type => params.credential.type.includes(type))) {
+      if ([REGOV_CLAIM_TYPE, REGOV_GROUP_CLAIM_TYPE, REGOV_OFFER_TYPE]
+        .some(type => params.credential.type.includes(type))) {
         return true
       }
     }
@@ -213,7 +214,7 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
       const membershipEvidence = normalizeValue(result.evidence).find(
         evidence => evidence.instance?.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
       )
-    
+
       if (params.credential.type.includes(REGOV_GROUP_ROOT_TYPE)) {
         if (membershipEvidence) {
           result.valid = false

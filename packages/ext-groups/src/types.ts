@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-import { BuildMethodParams, Extension } from "@owlmeans/regov-ssi-core"
+import { DIDCommConnectMeta } from "@owlmeans/regov-comm"
+import { BuildMethodParams, Extension, IncommigDocumentEventParams } from "@owlmeans/regov-ssi-core"
 
 export type RegovGroupCredential = typeof REGOV_CREDENTIAL_TYPE_GROUP
 export type RegovGroupMembershipCredential = typeof REGOV_CREDENTIAL_TYPE_MEMBERSHIP
@@ -49,6 +50,10 @@ export type ChainedType = typeof REGOV_GROUP_CHAINED_TYPE
 export type GroupBuildMethodParams = BuildMethodParams & {
   chainedType?: ChainedType
   depth?: number
+}
+
+export type IncommigDocumentWithConn = IncommigDocumentEventParams & {
+  conn?: DIDCommConnectMeta
 }
 
 export const REGOV_CREDENTIAL_TYPE_GROUP = 'OwlMeans:Regov:Group'

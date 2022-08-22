@@ -20,11 +20,12 @@ import { buildKeyChain } from "../keys"
 import { buildStore } from "../store/store"
 import { SecureStore } from "../store/types"
 import {
-  CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, RegistryItem,
+  CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, CredentialWrapperMetadata, RegistryItem,
   REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES
 } from "./registry"
 import { GetRegistryMethod, WalletWrapper, WalletWrapperBuilder } from "./types"
 import { CredentialEventParams, EXTENSION_TRIGGER_ADD_CREDENTIAL } from "../extension"
+import { MaybeArray } from "../common/types"
 
 
 export const buildWalletWrapper: WalletWrapperBuilder =
@@ -70,18 +71,22 @@ export const buildWalletWrapper: WalletWrapperBuilder =
         _registryWrappers[type] = {
           registry: _registry,
 
-          addCredential: async (credential, section?: string) => {
-            const wrappedCred = {
-              credential,
+          addCredential: async <
+            Subject extends MaybeArray<{}> = {},
+            Type extends RegistryItem<Subject> = Credential<Subject>,
+            Meta extends CredentialWrapperMetadata = CredentialWrapperMetadata
+          >(credential: Type, section?: string) => {
+            const wrappedCred: CredentialWrapper<Subject, Type, Meta> = {
+              credential: credential,
               meta: {
                 secure: false,
-              }
+              } as Meta
             }
             if (section && !_registry.credentials[section]) {
               _registry.credentials[section] = []
             }
             _registry.credentials[section || _registry.defaultSection].push(
-              wrappedCred as CredentialWrapper<{}>
+              wrappedCred as CredentialWrapper
             )
 
             dependencies.extensions?.triggerEvent<CredentialEventParams>(

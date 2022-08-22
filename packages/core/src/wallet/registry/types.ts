@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import { MaybeArray } from "../../common"
 import { Credential, Presentation, UnsignedCredential, } from "../../vc/types"
 
 
@@ -45,16 +46,17 @@ export type RemoveCredentialMethod =
   ) => Promise<CredentialWrapper>
 
 export type AddCredentialMethod = <
-  Subject extends {} = {},
-  Type extends RegistryItem<Subject> = Credential<Subject>
+  Subject extends MaybeArray<{}> = {},
+  Type extends RegistryItem<Subject> = Credential<Subject>,
+  Meta extends CredentialWrapperMetadata = CredentialWrapperMetadata
   >(
   credential: Type,
   section?: string
-) => Promise<CredentialWrapper<Subject, Type>>
+) => Promise<CredentialWrapper<Subject, Type, Meta>>
 
 export type RegistryItem<
   Subject extends {} = {},
-  PresentationT extends Presentation = Presentation
+  PresentationT extends Presentation<UnsignedCredential<Subject>> = Presentation<UnsignedCredential<Subject>>
   > =
   Credential<Subject> | UnsignedCredential<Subject> | PresentationT
 
@@ -92,10 +94,11 @@ export const REGISTRY_SECTION_PEER = 'peer'
 
 export type CredentialWrapper<
   Subject extends {} = {},
-  Type extends RegistryItem<Subject> = Credential<Subject>
+  Type extends RegistryItem<Subject> = Credential<Subject>,
+  Meta extends CredentialWrapperMetadata = CredentialWrapperMetadata
   > = {
     credential: Type
-    meta: CredentialWrapperMetadata
+    meta: Meta
   }
 
 export type CredentialWrapperMetadata = {

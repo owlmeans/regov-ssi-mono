@@ -25,6 +25,15 @@
         }
       }
     },
+    "request": {
+      "list": {
+        "item": {
+          "unknown": "Untitled auth request",
+          "type": "External authentication request",
+          "title": "Request auth from: {{did}}"
+        }
+      }
+    },
     "main": "Request Auth"
   },
   "authResponse": {
