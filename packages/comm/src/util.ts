@@ -16,9 +16,14 @@
 
 import { generateKeyPairFromSeed } from '@stablelib/x25519'
 import {
-  CryptoKey, DIDDocument, DIDHelper, DIDPURPOSE_AGREEMENT, KEYCHAIN_ERROR_NO_KEY, KeyPairToCryptoKeyOptions
+  CryptoKey, DIDDocument, DIDHelper, DIDPURPOSE_AGREEMENT, ExtensionRegistry, KEYCHAIN_ERROR_NO_KEY,
+  KeyPairToCryptoKeyOptions, Credential, Presentation, WalletWrapper, ERROR_NO_IDENTITY
 } from "@owlmeans/regov-ssi-core"
-import { CommKey, COMM_DID_AGREEMENT_KEY_DEFAULT, connectionFieldList, DIDCommConnectMeta, ERROR_COMM_DID_NOKEY, ERROR_COMM_NO_RECIPIENT } from "./types"
+import {
+  CommKey, COMM_DID_AGREEMENT_KEY_DEFAULT, connectionFieldList, DIDCommConnectMeta,
+  DIDCommHelper, DIDCommListner, ERROR_COMM_CANT_SEND, ERROR_COMM_DID_NOKEY, ERROR_COMM_NO_RECIPIENT,
+  ERROR_COMM_WS_UNKNOWN, EVENT_INIT_CONNECTION, InitCommEventParams
+} from "./types"
 import { JWE } from 'did-jwt'
 
 
@@ -80,3 +85,50 @@ export const didDocToCommKeyBuilder = (helper: DIDHelper) =>
       pubKey: helper.getCrypto().base58().decode(agreement.publicKeyBase58)
     }
   }
+
+export const getDIDCommUtils = (wallet: WalletWrapper) => {
+  return {
+    send: async (
+      conn: DIDCommConnectMeta, doc?: Credential | Presentation,
+      listener?: (helper: DIDCommHelper) => DIDCommListner
+    ): Promise<DIDCommHelper> => {
+      const ext = wallet.getExtensions()
+      if (!ext) {
+        throw ERROR_COMM_WS_UNKNOWN
+      }
+
+      console.log('BEFORE PROMISE')
+      return await new Promise(async (resolve) => {
+        resolve(await new Promise(async (resolve, reject) => {
+          await ext.triggerEvent<InitCommEventParams>(wallet, EVENT_INIT_CONNECTION, {
+            statusHandle: { established: false },
+            resolveConnection: async (helper) => {
+              console.log('TRY CONNECTION', conn)
+              if (!wallet.did.helper().isDIDDocument(conn.sender)) {
+                throw ERROR_NO_IDENTITY
+              }
+
+              if (listener) {
+                const toReturn = listener(helper)
+                await helper.addListener(toReturn)
+              }
+
+              if (doc) {
+                if (!await helper.send(doc, conn)) {
+                  reject(ERROR_COMM_CANT_SEND)
+                }
+              }
+
+              resolve(helper)
+            },
+            rejectConnection: async (err) => {
+              console.error(err)
+              reject(err)
+            }
+          })
+        }))
+      })
+    }
+  }
+}
+

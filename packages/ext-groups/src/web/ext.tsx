@@ -62,7 +62,6 @@ if (groupsExtension.schema.events) {
     if (modalHandler) {
       if (isPresentation(params.credential)) {
         if (params.credential.type.includes(REGOV_GROUP_CLAIM_TYPE)) {
-          console.log(params)
           modalHandler.getContent = () =>
             <GroupClaimView close={close} credential={params.credential as Presentation}
               ext={groupsExtension} conn={params.conn} />

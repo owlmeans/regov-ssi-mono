@@ -40,7 +40,6 @@ export const GroupClaimItem = (ext: Extension): FunctionComponent<ClaimGroupItem
   withRegov<ClaimGroupItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, action }) => {
     const presentationWrapper = wrapper as unknown as 
       CredentialWrapper<GroupSubject, Presentation<UnsignedCredential<GroupSubject>>>
-    console.log(presentationWrapper)
 
     const groupClaim = normalizeValue(
       presentationWrapper.credential.verifiableCredential

@@ -83,6 +83,8 @@ export type WalletWrapper = {
   export: (_password?: string) => Promise<EncryptedStore>
 
   getConfig: () => WalletOptions
+
+  getExtensions: () => ExtensionRegistry | undefined
 }
 
 export type GetRegistryMethod = (type?: RegistryType) => CredentialsRegistryWrapper

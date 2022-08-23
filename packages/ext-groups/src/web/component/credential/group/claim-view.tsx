@@ -5,8 +5,8 @@ import {
   RegovComponentProps, useRegov, WalletFormProvider, withRegov, dateFormatter
 } from "@owlmeans/regov-lib-react"
 import {
-  Extension, getCompatibleSubject, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, 
-  singleValue, Credential, CredentialWrapper, REGISTRY_TYPE_IDENTITIES, DIDDocument,
+  Extension, getCompatibleSubject, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS,
+  singleValue, Credential, CredentialWrapper, REGISTRY_TYPE_IDENTITIES, DIDDocument
 } from "@owlmeans/regov-ssi-core"
 import {
   GroupSubject, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
@@ -16,14 +16,14 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
 import Button from "@mui/material/Button"
 import { useForm } from "react-hook-form"
-import { CommConnectionStatusHandler, DIDCommConnectMeta, ERROR_COMM_SEND_FAILED } from "@owlmeans/regov-comm"
+import { CommConnectionStatusHandler, DIDCommConnectMeta, getDIDCommUtils } from "@owlmeans/regov-comm"
 import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
 
 
 export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov<GroupClaimViewProps>(
   { namespace: REGOV_EXT_GROUP_NAMESPACE }, ({
-    credential: presentation, navigator, t, i18n, close, ext, conn, connection
+    credential: presentation, navigator, t, i18n, close, ext, conn
   }) => {
   const { handler } = useRegov()
   const groupSubject = getCompatibleSubject<GroupSubject>(
@@ -85,8 +85,8 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
           claimType: REGOV_CLAIM_TYPE
         })
 
-        if (!conn || !await connection?.helper?.send(offer, conn)) {
-          throw ERROR_COMM_SEND_FAILED
+        if (conn) {
+          await getDIDCommUtils(handler.wallet).send(conn, offer)
         }
         close && close()
       }

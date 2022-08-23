@@ -220,7 +220,9 @@ export const buildWalletWrapper: WalletWrapperBuilder =
 
       getConfig: () => {
         return options || {}
-      }
+      },
+
+      getExtensions: () => dependencies.extensions
     }
 
     return _wallet
