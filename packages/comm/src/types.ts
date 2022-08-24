@@ -27,6 +27,7 @@ export type CommKey = {
 }
 
 export type DIDCommHelper = {
+  cleanup: () => Promise<void>
   pack: (doc: Presentation | Credential, connection: DIDCommConnectMeta) => Promise<JWE>
   unpack?: (jwe: JWE) => Promise<[Presentation | Credential, DIDDocument]>
   /**

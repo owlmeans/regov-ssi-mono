@@ -34,7 +34,7 @@ export const WalletMainMenu = () => {
       {
         title: 'menu.logout', action: async () => {
           const loading = await nav.invokeLoading()
-          await handler.loadStore(async () => undefined)
+          await handler.logout()
           await loading.finish()
         }
       },

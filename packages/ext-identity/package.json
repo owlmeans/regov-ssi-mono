@@ -36,7 +36,7 @@
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-lib-node": "^0.1.13",
+    "@owlmeans/regov-lib-node": "^0.1.14",
     "@owlmeans/regov-lib-react": "^0.2.9",
     "@owlmeans/regov-ssi-core": "^0.6.9",
     "express": "^4.17.3",

@@ -157,7 +157,6 @@ if (groupsExtension.schema.events) {
             }
           }
         },
-        resolveConnection: async (_) => { },
         rejectConnection: async (err) => {
           console.error(err)
         }

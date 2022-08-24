@@ -39,7 +39,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
   const _channels: DIDCommChannel[] = []
 
-  let _defaultChannel: DIDCommChannel
+  let _defaultChannel: DIDCommChannel | undefined
 
   const _listeners: DIDCommListner[] = []
 
@@ -64,7 +64,8 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
     return ES256KSigner(wallet.crypto.base58().decode(cryptoKey.pk))
   }
 
-  const _helper: DIDCommHelper = {
+  const _helper: DIDCommHelper = 
+  {
     pack: async (doc, connection) => {
       if (!connection.recipient) {
         throw new Error(ERROR_COMM_NODID)
@@ -81,6 +82,14 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
         [encrypter],
         connection
       )
+    },
+
+    cleanup: async () => {
+      _defaultChannel = undefined
+      _listeners.splice(0)
+      _didsToListen.splice(0)
+      await Promise.all(_channels.map(channel => channel.close()))
+      _channels.splice(0)
     },
 
     connect: async (options, recipient?, did?) => {
@@ -108,7 +117,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
         if (connection.channel === COMM_CHANNEL_BROADCAST) {
           _channels.forEach(_channel => channels.push(_channel))
         } else if (connection.channel === COMM_CHANNEL_DEFAULT) {
-          _channels.push(_defaultChannel)
+          _defaultChannel && _channels.push(_defaultChannel)
         } else {
           const channel = _channels.find(channel => channel.code === connection.channel)
           if (channel) {
@@ -116,7 +125,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
           }
         }
       } else {
-        channels.push(_defaultChannel)
+        _defaultChannel && channels.push(_defaultChannel)
       }
 
       channels.forEach(channel => channel.send(jwt))

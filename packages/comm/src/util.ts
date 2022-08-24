@@ -97,26 +97,33 @@ export const getDIDCommUtils = (wallet: WalletWrapper) => {
         throw ERROR_COMM_WS_UNKNOWN
       }
 
-      console.log('BEFORE PROMISE')
       return await new Promise(async (resolve) => {
         resolve(await new Promise(async (resolve, reject) => {
+          let sentOnce = false
           await ext.triggerEvent<InitCommEventParams>(wallet, EVENT_INIT_CONNECTION, {
             statusHandle: { established: false },
             resolveConnection: async (helper) => {
+              if (sentOnce) {
+                return
+              }
+              sentOnce = true
               console.log('TRY CONNECTION', conn)
               if (!wallet.did.helper().isDIDDocument(conn.sender)) {
                 throw ERROR_NO_IDENTITY
               }
 
+              let toReturn: DIDCommListner | undefined = undefined
               if (listener) {
-                const toReturn = listener(helper)
+                toReturn = listener(helper)
                 await helper.addListener(toReturn)
               }
 
               if (doc) {
                 if (!await helper.send(doc, conn)) {
+                  toReturn && await helper.removeListener(toReturn)
                   reject(ERROR_COMM_CANT_SEND)
                 }
+                toReturn && await helper.removeListener(toReturn)
               }
 
               resolve(helper)

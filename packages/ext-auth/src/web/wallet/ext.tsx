@@ -53,7 +53,6 @@ authExtension.schema = addObserverToSchema(authExtension.schema, {
           }
         }
       },
-      resolveConnection: async (_) => { },
       rejectConnection: async (err) => {
         console.error(err)
       }

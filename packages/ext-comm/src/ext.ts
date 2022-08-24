@@ -21,7 +21,7 @@ import {
 import {
   addObserverToSchema, buildExtension, buildExtensionSchema, EXTENSION_TRIGGER_ADD_CREDENTIAL,
   CredentialEventParams, EVENT_EXTENSION_AFTER_BULIDING_DID, REGISTRY_TYPE_IDENTITIES,
-  REGISTRY_SECTION_OWN, ExtensionEventAfterBuildingDid
+  REGISTRY_SECTION_OWN, ExtensionEventAfterBuildingDid, EXTENSION_TRIGGER_UNAUTHENTICATED
 } from '@owlmeans/regov-ssi-core'
 import { localizations } from './i18n'
 import {
@@ -92,6 +92,29 @@ export const buildCommExtension = (config: CommExtConfig) => {
       } catch (err) {
         params.rejectConnection && await params.rejectConnection(err)
       }
+    }
+  })
+
+  let _unauthenticationStarted = false
+
+  commExtensionSchema = addObserverToSchema(commExtensionSchema, {
+    trigger: EXTENSION_TRIGGER_UNAUTHENTICATED,
+    filter: async _ => {
+      return _unauthenticationStarted = !_unauthenticationStarted && Object.keys(_didComm).length > 0
+    },
+    method: async wallet => {
+
+      if (_didComm[wallet.store.alias]) {
+        console.log('DISCONNECT FROM COMM: ', wallet.store.alias)
+        await _didComm[wallet.store.alias].cleanup()
+        await Promise.all(Object.keys(_channels).map(
+          async key => key.startsWith(wallet.store.alias + ':') && delete _channels[key]
+        ))
+
+        delete _didComm[wallet.store.alias]
+      }
+
+      _unauthenticationStarted = false
     }
   })
 

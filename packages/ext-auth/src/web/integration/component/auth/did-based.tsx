@@ -27,7 +27,7 @@ import {
   SERVER_INTEGRATION_ALIAS, SERVER_PROVIDE_AUTH
 } from '../../../../types'
 import {
-  EVENT_INIT_CONNECTION, ERROR_COMM_CANT_SEND, InitCommEventParams, DIDCommListner
+  EVENT_INIT_CONNECTION, ERROR_COMM_CANT_SEND, InitCommEventParams, DIDCommListner, CommConnectionStatusHandler
 } from '@owlmeans/regov-comm'
 import { DIDDocument, ERROR_NO_IDENTITY, Presentation, ValidationResult } from '@owlmeans/regov-ssi-core'
 import { ERROR_INTEGRATED_AUTH_WRONG_PIN, ERROR_INTEGRATED_SERVER_CANT_LOGIN } from '../../types'
@@ -81,8 +81,11 @@ export const IntegratedDIDBasedAuth: FunctionComponent<IntegratedDIDBasedAuthPar
               identity: senderIdentity
             })
 
+            const statusHandle: CommConnectionStatusHandler = { established: false }
+
+
             await extensions.triggerEvent<InitCommEventParams>(handler.wallet, EVENT_INIT_CONNECTION, {
-              statusHandle: { established: false },
+              statusHandle,
               resolveConnection: async (helper) => {
                 if (!handler.wallet?.did.helper().isDIDDocument(sender)) {
                   throw ERROR_NO_IDENTITY
@@ -134,6 +137,7 @@ export const IntegratedDIDBasedAuth: FunctionComponent<IntegratedDIDBasedAuthPar
                       methods.setError('auth.alert', { type: 'wrong', message: e.message || e })
                     } finally {
                       helper.removeListener(listner)
+                      statusHandle.defaultListener && helper.removeListener(statusHandle.defaultListener)
                       loading?.finish()
                     }
                   }

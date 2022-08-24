@@ -59,8 +59,7 @@ export const DIDAuthResponse: FunctionComponent<DIDAuthResponseParams> = withReg
         if (!handler?.wallet || !extensions) {
           throw ERROR_NO_WALLET_HANDLER_AUTH
         }
-        const identity = handler.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
-          .getCredential(subject.did)
+        const identity = handler.wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(subject.did)
         if (!identity) {
           throw ERROR_NO_REQUESTED_IDENTITY
         }
