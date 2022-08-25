@@ -15,7 +15,6 @@
  */
 
 import { addToValue, MaybeArray, normalizeValue } from "../../common"
-import { documentWarmer } from "../../did"
 import { CredentialDescription, ExtensionDetails, ExtensionEvent, ExtensionSchema } from "./types"
 
 
@@ -26,15 +25,6 @@ export const buildExtensionSchema = <CredType extends string>(
   const _schema = {
     details,
     credentials: Object.entries<CredentialDescription>(credentials).reduce((creds, [key, cred]) => {
-      // if (cred.contextUrl) {
-      //   documentWarmer(
-      //     cred.contextUrl,
-      //     JSON.stringify({
-      //       '@context': cred.credentialContext
-      //     })
-      //   )
-      // }
-
       return {
         ...creds,
         [key]: {

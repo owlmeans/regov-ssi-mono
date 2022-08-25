@@ -16,7 +16,7 @@
 
 import { BASE_CREDENTIAL_TYPE } from "../../vc"
 import { 
-  CredentialService, CredentialServiceBuilder, Extension, ExtensionService, ExtensionServiceBuilder 
+  CredentialService, Extension, ExtensionService, ExtensionServiceBuilder 
 } from "./types"
 import { ExtensionSchema } from "../schema"
 import { findAppropriateCredentialType } from "../util"

@@ -78,8 +78,11 @@ export const WalletIntegrationReact = (
     )
 
     return () => {
-      console.info('STORE DETACHED')
-      storage.detach()
+      console.info('STORE DETACHED');
+      (async () => {
+        await handler.logout()
+        storage.detach()
+      })()
     }
   }, [storage])
   

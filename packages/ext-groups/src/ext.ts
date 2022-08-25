@@ -27,7 +27,7 @@ import {
   BASIC_IDENTITY_TYPE, ChainedType, GroupBuildMethodParams, GroupSubject, MembershipSubject,
   REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE,
   REGOV_GROUP_CHAINED_TYPE, RegovGroupExtensionTypes, REGOV_CLAIM_TYPE, REGOV_GROUP_CLAIM_TYPE,
-  REGOV_GROUP_LIMITED_TYPE, REGOV_GROUP_ROOT_TYPE, REGOV_OFFER_TYPE
+  REGOV_GROUP_LIMITED_TYPE, REGOV_GROUP_ROOT_TYPE, REGOV_OFFER_TYPE, REGOV_GROUP_OFFER_TYPE
 } from "./types"
 import { makeRandomUuid, normalizeValue } from "@owlmeans/regov-ssi-core"
 import { localization } from "./i18n"
@@ -95,6 +95,14 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
   },
   [REGOV_GROUP_CLAIM_TYPE]: {
     mainType: REGOV_GROUP_CLAIM_TYPE,
+    credentialContext: {}
+  },
+  [REGOV_OFFER_TYPE]: {
+    mainType: REGOV_OFFER_TYPE,
+    credentialContext: {}
+  },
+  [REGOV_GROUP_OFFER_TYPE]: {
+    mainType: REGOV_GROUP_OFFER_TYPE,
     credentialContext: {}
   }
 })
@@ -313,7 +321,9 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
     }
   },
   [REGOV_CLAIM_TYPE]: {},
-  [REGOV_GROUP_CLAIM_TYPE]: {}
+  [REGOV_GROUP_CLAIM_TYPE]: {},
+  [REGOV_OFFER_TYPE]: {},
+  [REGOV_GROUP_OFFER_TYPE]: {}
 })
 
 groupsExtension.localization = {
