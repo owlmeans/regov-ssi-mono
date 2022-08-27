@@ -21,11 +21,12 @@ import {
   AlertOutput, EmptyProps, ERROR_NO_WALLET_HANDLER_AUTH, FormMainAction, MainTextInput, MainTextOutput,
   PrimaryForm, RegovComponentProps, withRegov
 } from "@owlmeans/regov-lib-react"
-import { Presentation, REGISTRY_TYPE_IDENTITIES } from "@owlmeans/regov-ssi-core"
+import { Presentation, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from "@owlmeans/regov-ssi-core"
 import { ERROR_NO_CONNECTION, REGOV_CREDENTIAL_TYPE_AUTH, REGOV_EXT_ATUH_NAMESPACE } from "../../../../types"
 import { FormProvider, UseFormProps, useForm, UseFormReturn } from "react-hook-form"
 import { getAuthFromPresentation, getAuthSubject, pinValidation } from "../../../../util"
 import { ERROR_NO_AUTH_REQUEST, ERROR_NO_REQUESTED_IDENTITY } from "../../types"
+import { REGISTRY_TYPE_INBOX } from "@owlmeans/regov-ext-comm"
 
 
 export const DIDAuthResponse: FunctionComponent<DIDAuthResponseParams> = withRegov<DIDAuthResponseProps>(
@@ -79,6 +80,12 @@ export const DIDAuthResponse: FunctionComponent<DIDAuthResponseParams> = withReg
         if (!await connection.helper.send(response, conn)) {
           throw ERROR_COMM_SEND_FAILED
         }
+
+        await handler.wallet.getRegistry(REGISTRY_TYPE_INBOX).removeCredential(
+          request, REGISTRY_SECTION_PEER
+        )
+
+        handler.notify()
         
         close()
       } catch (e) {

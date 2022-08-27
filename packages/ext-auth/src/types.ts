@@ -14,6 +14,9 @@
  *  limitations under the License.
  */
 
+import { Credential, Presentation } from '@owlmeans/regov-ssi-core'
+
+
 export const REGOV_EXT_ATUH_NAMESPACE = 'owlmeans-regov-ext-auth'
 
 export const REGOV_CREDENTIAL_TYPE_AUTH = 'OwlMeans:Regov:Auth'
@@ -37,3 +40,6 @@ export type AuthSubject = {
   pinCode?: string,
   createdAt: string,
 }
+
+export type AuthCredential = Credential<AuthSubject>
+export type AuthRequest = Presentation<AuthCredential>
