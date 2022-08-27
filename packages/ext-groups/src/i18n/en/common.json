@@ -9,8 +9,8 @@
     "claim": {
       "list": {
         "item": {
-          "type": "Membership claim",
-          "unknown": "Untitled membership claim"
+          "type": "Group claim",
+          "unknown": "Untitled group claim"
         }
       }
     },
