@@ -14,19 +14,18 @@
  *  limitations under the License.
  */
 
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
+
 import {
   GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CREDENTIAL_TYPE_GROUP,
-  REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_CHAINED_TYPE, 
+  REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_CHAINED_TYPE,
   REGOV_GROUP_CLAIM_TYPE, REGOV_OFFER_TYPE
 } from '../../../../types'
-import {
-  getGroupFromMembershipClaimPresentation, getMembershipClaim, getMembershipClaimHolder,
-} from '../../../../util'
+import { getGroupFromMembershipClaimPresentation, getMembershipClaim, getMembershipClaimHolder } from '../../../../util'
 import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import {
   getCompatibleSubject, Presentation, Credential, normalizeValue, REGISTRY_SECTION_OWN,
-  REGISTRY_TYPE_IDENTITIES
+  REGISTRY_TYPE_IDENTITIES, REGISTRY_SECTION_PEER
 } from '@owlmeans/regov-ssi-core'
 import {
   AlertOutput, CredentialActionGroup, dateFormatter, LongTextInput, MainTextInput, MainTextOutput,
@@ -36,15 +35,17 @@ import { useForm } from 'react-hook-form'
 import { ERROR_MEMBERSHIP_READYTO_CLAIM, ERROR_WIDGET_AUTHENTICATION } from '../../types'
 import { EXTENSION_TRIGGER_RETRIEVE_NAME, RetreiveNameEventParams } from '@owlmeans/regov-ssi-core'
 import { singleValue, addToValue } from '@owlmeans/regov-ssi-core'
+
 import Button from '@mui/material/Button'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-import { CommConnectionStatusHandler, DIDCommConnectMeta, ERROR_COMM_SEND_FAILED } from '@owlmeans/regov-comm'
+import { CommConnectionStatusHandler, DIDCommConnectMeta, getDIDCommUtils } from '@owlmeans/regov-comm'
+import { REGISTRY_TYPE_INBOX } from '@owlmeans/regov-ext-comm'
 
 
 export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withRegov<MembershipOfferProps>(
   { namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
-    const { credential: presentation, navigator, ext, close, t, i18n, conn, connection } = props
+    const { credential: presentation, navigator, ext, close, t, i18n, conn } = props
     const { handler, extensions } = useRegov()
 
     const membershipClaim = normalizeValue(presentation.verifiableCredential)
@@ -185,10 +186,10 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
     }
 
     const send = async () => {
-      if (conn && connection && offer) {
-        if (!await connection.helper?.send(offer, conn)) {
-          throw ERROR_COMM_SEND_FAILED
-        }
+      if (conn && offer && handler.wallet) {
+        await getDIDCommUtils(handler.wallet).send(conn, offer)
+
+        handler.wallet.getRegistry(REGISTRY_TYPE_INBOX).removeCredential(presentation, REGISTRY_SECTION_PEER)
         close && close()
       }
     }

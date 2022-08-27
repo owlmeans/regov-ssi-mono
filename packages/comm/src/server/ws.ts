@@ -114,6 +114,9 @@ export const startWSServer = async (
         console.log('Sent to ' + uuid + ': ' + code)
       } catch (err) {
         console.error(`Crash from ${uuid}: ${err}`)
+        if (!_messages[did]) {
+          _messages[did] = []
+        }
         _messages[did].unshift(msg)
         if (client.connection.connected) {
           client.connection.drop()

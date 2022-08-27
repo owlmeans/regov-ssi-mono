@@ -66,7 +66,7 @@ if (groupsExtension.schema.events) {
             <GroupClaimView close={close} credential={params.credential as Presentation}
               ext={groupsExtension} conn={params.conn} />
 
-          modalHandler.setOpen && modalHandler.setOpen(true)
+          params.statusHandler.successful = true
         } else if (params.credential.type.includes(REGOV_CLAIM_TYPE)) {
           let isOwner = false
           const group = getGroupFromMembershipClaimPresentation(params.credential)
@@ -74,16 +74,22 @@ if (groupsExtension.schema.events) {
             const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
             const owner = getGroupOwnerIdentity(group)
             isOwner = !!registry.getCredential(owner?.id)
-          }
 
-          if (isOwner) {
-            modalHandler.getContent = () => <MembershipOffer ext={groupsExtension} close={close}
-              credential={params.credential as Presentation} />
+            if (isOwner) {
+              modalHandler.getContent = () => <MembershipOffer ext={groupsExtension} close={close}
+                credential={params.credential as Presentation} />
 
-            params.statusHandler.successful = true
+              params.statusHandler.successful = true
+            } else {
+              modalHandler.getContent = () => <MembershipClaimView ext={groupsExtension} close={close}
+                credential={params.credential as Presentation} />
+
+              params.statusHandler.successful = true
+            }
           } else {
-            modalHandler.getContent = () => <MembershipClaimView ext={groupsExtension} close={close}
-              credential={params.credential as Presentation} />
+            modalHandler.getContent = () =>
+              <MembershipOffer close={close} credential={params.credential as Presentation}
+                ext={groupsExtension} conn={params.conn} />
 
             params.statusHandler.successful = true
           }

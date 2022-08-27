@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
-import { MembershipSubject } from '../../../../types'
-import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams } from '@owlmeans/regov-ssi-core'
-import { CredentialWrapper, getCompatibleSubject, Presentation } from '@owlmeans/regov-ssi-core'
+import React, { Fragment, FunctionComponent, useMemo } from 'react'
+import { IncommigDocumentWithConn, MembershipSubject, REGOV_CREDENTIAL_TYPE_MEMBERSHIP } from '../../../../types'
+import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, normalizeValue, UnsignedCredential } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, Presentation } from '@owlmeans/regov-ssi-core'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
 import Person from '@mui/icons-material/Person'
@@ -31,27 +31,30 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 
 
-export const MembershipClaimItem = (ext: Extension): FunctionComponent<ClaimItemParams> =>
-  withRegov<ClaimItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, trigger, action }) => {
+export const MembershipClaimItem = (ext: Extension): FunctionComponent<MembershipClaimItemParams> =>
+  withRegov<MembershipClaimItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, action }) => {
+    const membershipClaim = normalizeValue(
+      wrapper.credential.verifiableCredential
+    ).find(
+      cred => cred.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
+    )
+    const subject = membershipClaim?.credentialSubject as MembershipSubject
     const { extensions, handler } = useRegov()
-    const presentation = wrapper.credential as Presentation
-    const subject = getCompatibleSubject<MembershipSubject>(presentation.verifiableCredential[0])
 
-    const handle: ItemMenuHandle = useMemo(() => ({ handler: undefined }), [presentation.id])
+    const handle: ItemMenuHandle = useMemo(() => ({ handler: undefined }), [wrapper.credential.id])
 
     action = action || (async () => {
       if (!extensions || !handler.wallet) {
         return
       }
 
-      await extensions.triggerEvent<IncommigDocumentEventParams>(
+      await extensions.triggerEvent<IncommigDocumentWithConn>(
         handler.wallet, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, {
-        credential: wrapper.credential, statusHandler: { successful: false },
+        credential: wrapper.credential as any, statusHandler: { successful: false },
+        conn: (wrapper.meta as unknown as IncommigDocumentWithConn).conn,
         cleanUp: () => undefined
       })
     })
-
-    useEffect(() => { trigger && action && action() }, [trigger, wrapper.credential.id])
 
     return <ListItem>
       <ListItemButton onClick={action}>
@@ -72,16 +75,15 @@ export const MembershipClaimItem = (ext: Extension): FunctionComponent<ClaimItem
       <ListItemIcon>
         <MenuIconButton handle={handle} />
         <ItemMenu handle={handle} content={wrapper.credential} i18n={i18n} prettyOutput
-          exportTitle={`${wrapper.meta.title}.group`} meta={meta}/>
+          exportTitle={`${wrapper.meta.title}.membership`} meta={meta}/>
       </ListItemIcon>
     </ListItem>
   })
 
-export type ClaimItemParams = EmptyProps & {
-  wrapper: CredentialWrapper<{}, Presentation>
+export type MembershipClaimItemParams = EmptyProps & {
+  wrapper: CredentialWrapper<MembershipSubject, Presentation<UnsignedCredential<MembershipSubject>>>
   action?: () => void
-  trigger?: boolean
   meta?: ListItemMeta
 }
 
-export type ClaimItemProps = RegovComponentProps<ClaimItemParams>
+export type MembershipClaimItemProps = RegovComponentProps<MembershipClaimItemParams>

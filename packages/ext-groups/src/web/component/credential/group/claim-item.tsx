@@ -16,14 +16,9 @@
 
 import React, { Fragment, FunctionComponent, useMemo } from 'react'
 import { GroupSubject, IncommigDocumentWithConn, REGOV_CREDENTIAL_TYPE_GROUP } from '../../../../types'
-import { 
-  EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta 
-} from '@owlmeans/regov-lib-react'
-import {
-  Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, Presentation,
-  normalizeValue, UnsignedCredential
-} from '@owlmeans/regov-ssi-core'
-import { CredentialWrapper, Credential } from '@owlmeans/regov-ssi-core'
+import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
+import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, Presentation, normalizeValue } from '@owlmeans/regov-ssi-core'
+import { CredentialWrapper, UnsignedCredential } from '@owlmeans/regov-ssi-core'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
 import Groups from '@mui/icons-material/Groups'
 
@@ -38,15 +33,12 @@ import Typography from '@mui/material/Typography'
 
 export const GroupClaimItem = (ext: Extension): FunctionComponent<ClaimGroupItemParams> =>
   withRegov<ClaimGroupItemProps>({ namespace: ext.localization?.ns }, ({ t, i18n, meta, wrapper, action }) => {
-    const presentationWrapper = wrapper as unknown as 
-      CredentialWrapper<GroupSubject, Presentation<UnsignedCredential<GroupSubject>>>
-
     const groupClaim = normalizeValue(
-      presentationWrapper.credential.verifiableCredential
+      wrapper.credential.verifiableCredential
     ).find(
       cred => cred.type.includes(REGOV_CREDENTIAL_TYPE_GROUP)
-    ) as unknown as UnsignedCredential<GroupSubject>
-    const subject = groupClaim.credentialSubject as GroupSubject
+    )
+    const subject = groupClaim?.credentialSubject as GroupSubject
     const { extensions, handler } = useRegov()
 
     const handle: ItemMenuHandle = useMemo(() => ({ handler: undefined }), [wrapper.credential.id])
@@ -58,7 +50,7 @@ export const GroupClaimItem = (ext: Extension): FunctionComponent<ClaimGroupItem
 
       await extensions.triggerEvent<IncommigDocumentWithConn>(
         handler.wallet, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, {
-        credential: wrapper.credential, statusHandler: { successful: false },
+        credential: wrapper.credential as any, statusHandler: { successful: false },
         conn: (wrapper.meta as unknown as IncommigDocumentWithConn).conn,
         cleanUp: () => undefined
       })
@@ -71,12 +63,12 @@ export const GroupClaimItem = (ext: Extension): FunctionComponent<ClaimGroupItem
             <Groups />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={wrapper.meta.title || `${t('group.list.item.unknown')}`}
+        <ListItemText primary={wrapper.meta.title || `${t('group.claim.list.item.unknown')}`}
           secondary={
             <Fragment>
               <Typography variant="body2" component="span">{subject.name}</Typography>
               <br />
-              <Typography variant="caption" component="span">{`${t('group.list.item.type')}`}</Typography>
+              <Typography variant="caption" component="span">{`${t('group.claim.list.item.type')}`}</Typography>
             </Fragment>
           } />
       </ListItemButton>
@@ -89,10 +81,9 @@ export const GroupClaimItem = (ext: Extension): FunctionComponent<ClaimGroupItem
   })
 
 export type ClaimGroupItemParams = EmptyProps & {
-  wrapper: CredentialWrapper<{}, Credential>
+  wrapper: CredentialWrapper<GroupSubject, Presentation<UnsignedCredential<GroupSubject>>>
   action?: () => void
   meta?: ListItemMeta
 }
 
 export type ClaimGroupItemProps = RegovComponentProps<ClaimGroupItemParams>
-

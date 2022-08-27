@@ -6,6 +6,14 @@
   },
   "group": {
     "title": "Decentralized Group Credential",
+    "claim": {
+      "list": {
+        "item": {
+          "type": "Membership claim",
+          "unknown": "Untitled membership claim"
+        }
+      }
+    },
     "view": {
       "title": "Decentralized group: \"{{name}}\"",
       "claimMembership": "Claim Membership"

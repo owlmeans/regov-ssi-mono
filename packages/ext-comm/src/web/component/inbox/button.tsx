@@ -10,10 +10,12 @@ import { handleIncommingCommDocuments } from '../../../utils'
 
 
 export const InboxButton = (ext: Extension): FunctionComponent<InboxButtonParams> =>
-  withRegov<InboxButtonProps>({ namespace: ext.localization?.ns }, props => {
-    const { extensions, handler } = props
-
-    const registry = handler?.wallet?.getRegistry(REGISTRY_TYPE_INBOX)
+  withRegov<InboxButtonProps>({
+    namespace: ext.localization?.ns, transformer: (wallet) => {
+      return { count: wallet?.getRegistry(REGISTRY_TYPE_INBOX).registry.credentials[REGISTRY_SECTION_PEER].length }
+    }
+  }, props => {
+    const { extensions, handler, count } = props
 
     useEffect(() => {
       let statusHandle = handleIncommingCommDocuments(handler, extensions?.registry)
@@ -26,7 +28,7 @@ export const InboxButton = (ext: Extension): FunctionComponent<InboxButtonParams
     return <IconButton onClick={() => handler?.wallet && extensions?.triggerEvent(
       handler.wallet, EXTENSION_TRIGGER_OPEN_INBOX, {}
     )}>
-      <Badge badgeContent={registry?.registry.credentials[REGISTRY_SECTION_PEER].length}>
+      <Badge badgeContent={count}>
         <MailIcon />
       </Badge>
     </IconButton>
@@ -35,4 +37,4 @@ export const InboxButton = (ext: Extension): FunctionComponent<InboxButtonParams
 
 export type InboxButtonParams = EmptyProps & {}
 
-export type InboxButtonProps = RegovComponentProps<InboxButtonParams>
+export type InboxButtonProps = RegovComponentProps<InboxButtonParams, {}, { count: number }>

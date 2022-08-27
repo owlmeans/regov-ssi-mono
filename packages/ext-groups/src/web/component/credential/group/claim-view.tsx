@@ -1,3 +1,19 @@
+/**
+ *  Copyright 2022 OwlMeans
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 import React, { Fragment, FunctionComponent, useEffect, useState } from "react"
 
 import {
@@ -6,7 +22,7 @@ import {
 } from "@owlmeans/regov-lib-react"
 import {
   Extension, getCompatibleSubject, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS,
-  singleValue, Credential, CredentialWrapper, REGISTRY_TYPE_IDENTITIES, DIDDocument
+  singleValue, Credential, CredentialWrapper, REGISTRY_TYPE_IDENTITIES, DIDDocument, REGISTRY_SECTION_PEER
 } from "@owlmeans/regov-ssi-core"
 import {
   GroupSubject, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
@@ -19,6 +35,7 @@ import { useForm } from "react-hook-form"
 import { CommConnectionStatusHandler, DIDCommConnectMeta, getDIDCommUtils } from "@owlmeans/regov-comm"
 import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
+import { REGISTRY_TYPE_INBOX } from '@owlmeans/regov-ext-comm'
 
 
 export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov<GroupClaimViewProps>(
@@ -87,8 +104,10 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
 
         if (conn) {
           await getDIDCommUtils(handler.wallet).send(conn, offer)
+
+          handler.wallet.getRegistry(REGISTRY_TYPE_INBOX).removeCredential(presentation, REGISTRY_SECTION_PEER)
+          close && close()
         }
-        close && close()
       }
     } catch (error) {
       console.error(error)
