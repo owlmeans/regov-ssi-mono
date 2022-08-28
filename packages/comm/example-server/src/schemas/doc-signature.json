@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "name": "http://www.w3.org/2001/XMLSchema#string",
+    "description": "http://www.w3.org/2001/XMLSchema#string",
+    "documentHash": "http://www.w3.org/2001/XMLSchema#string",
+    "docType": "http://www.w3.org/2001/XMLSchema#string",
+    "filename": "http://www.w3.org/2001/XMLSchema#string",
+    "url": "http://www.w3.org/2001/XMLSchema#string",
+    "creationDate": "http://www.w3.org/2001/XMLSchema#datetime",
+    "version": "http://www.w3.org/2001/XMLSchema#string",
+    "author": "http://www.w3.org/2001/XMLSchema#string",
+    "authorId": "http://www.w3.org/2001/XMLSchema#string",
+    "signedAt": "http://www.w3.org/2001/XMLSchema#datetime"
+  }
+}

@@ -135,6 +135,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
       if (connection.allowAsync) {
         if (_didDocs[connection.recipientId]) {
           connection.recipient = _didDocs[connection.recipientId]
+          connection.channel = channels[0].code
           _listeners.forEach(listener => listener.established && listener.established(connection))
 
           return connection
@@ -144,6 +145,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
         }
         const receive = async (doc: DIDDocument) => {
           connection.recipient = _didDocs[doc.id] = doc
+          connection.channel = channels[0].code
           _listeners.forEach(listener => listener.established && listener.established(connection))
           const idx = _recipientWaiters[connection.recipientId].findIndex(receiver => receiver === receive)
           if (idx > -1) {
@@ -227,20 +229,22 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
         console.log('Receive: ' + datagram)
         return
       }
-      if (datagram.startsWith('{') && datagram.endsWith('}')) {
+      if ('did' === id) {
         try {
-          const doc = wallet.did.helper().parseLongForm(datagram)
+          const doc = wallet.did.helper().parseLongForm(_datagram)
           if (wallet.did.helper().isDIDDocument(doc)) {
             _didDocs[doc.id] = doc
             if (_recipientWaiters[doc.id]) {
               _recipientWaiters[doc.id].forEach(receive => receive(doc))
             }
-            return
           }
         } catch (e) {
           console.log('check long format message - failed')
         }
 
+        return
+      }
+      if (datagram.startsWith('{') && datagram.endsWith('}')) {
         try {
           const jwe = parseJWE(datagram)
           if (!jwe?.protected) {
@@ -396,7 +400,12 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
               doc = cred.credential.holder
             }
           }
+        }
 
+        if (cred && !doc && wallet.did.helper().isDIDDocument(cred.credential.issuer)) {
+          if (cred.credential.issuer.keyAgreement) {
+            doc = cred.credential.issuer
+          }
         }
 
         if (!doc) {

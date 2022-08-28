@@ -1,0 +1,9 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "identifier": "http://www.w3.org/2001/XMLSchema#string",
+    "sourceApp": "http://www.w3.org/2001/XMLSchema#string",
+    "uuid": "http://www.w3.org/2001/XMLSchema#string",
+    "createdAt": "http://www.w3.org/2001/XMLSchema#datetime"
+  }
+}

@@ -122,6 +122,7 @@ export const getDIDCommUtils = (wallet: WalletWrapper) => {
                 if (!await helper.send(doc, conn)) {
                   toReturn && await helper.removeListener(toReturn)
                   reject(ERROR_COMM_CANT_SEND)
+                  return
                 }
                 toReturn && await helper.removeListener(toReturn)
               }
