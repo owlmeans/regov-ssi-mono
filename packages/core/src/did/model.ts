@@ -18,7 +18,6 @@ import {
   CryptoKey, CryptoHelper, extractId, Idish, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY,
   COMMON_CRYPTO_ERROR_NOID, normalizeValue, addToValue
 } from '../common'
-import { URLSearchParams } from 'url'
 import { QueryDict, DEFAULT_VERIFICATION_KEY, VERIFICATION_KEY_HOLDER, DID_ERROR_MUST_BE_LONG_FORM, } from './types'
 import {
   DIDDocument, DIDPURPOSE_VERIFICATION, DIDHelper, DEFAULT_APP_SCHEMA_URL, DEFAULT_DID_PREFIX,
@@ -36,6 +35,8 @@ const jldsign = require('jsonld-signatures')
 
 const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
 // const SIGNATURE_METHOD = 'EcdsaSecp256k1Signature2019'
+
+global.URLSearchParams = URLSearchParams || require('url').URLSearchParams
 
 /**
  * @TODO Verify DID fully:
@@ -500,9 +501,14 @@ export const buildDidHelper =
         const expand = _parseDIDId(did)
         if (expand.query && expand.query['initialState'] && !Array.isArray(expand.query['initialState'])) {
 
-          console.log("PARESE LONG FORMAT", crypto.base58().decode(expand.query['initialState']).toLocaleString())
+          console.log(
+            "PARESE LONG FORMAT", 
+            Buffer.from(crypto.base58().decode(expand.query['initialState'])).toString('utf8')
+          )
           
-          const doc = JSON.parse(crypto.base58().decode(expand.query['initialState']).toLocaleString())
+          const doc = JSON.parse(
+            Buffer.from(crypto.base58().decode(expand.query['initialState'])).toString('utf8')
+          )
           if (_isDIDDocument(doc)) {
             return doc
           }
