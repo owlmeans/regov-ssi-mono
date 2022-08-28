@@ -54,6 +54,7 @@ export type DIDCommConnectMeta = {
   sender: DIDDocument
   recipient?: DIDDocument
   channel?: string
+  allowAsync?: boolean
 }
 
 export type DIDCommConnectMetaKeys = keyof DIDCommConnectMeta
@@ -94,6 +95,7 @@ export const COMM_CHANNEL_BROADCAST = '__broadcast'
 export const COMM_WS_SUBPROTOCOL = 'owlmeans-regov-ws-did-com'
 
 export const COMM_WS_PREFIX_CONFIRMED = 'ok'
+export const COMM_WS_PREFIX_DIDDOC = 'diddoc'
 export const COMM_WS_PREFIX_ERROR = 'error'
 
 export const ERROR_COMM_WS_DID_REGISTERED = 'ERROR_COMM_WS_DID_REGISTERED'

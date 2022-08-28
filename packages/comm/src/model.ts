@@ -39,6 +39,10 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
   const _channels: DIDCommChannel[] = []
 
+  const _didDocs: { [key: string]: DIDDocument } = {}
+
+  const _recipientWaiters: { [key: string]: ((doc: DIDDocument) => Promise<void>)[] } = {}
+
   let _defaultChannel: DIDCommChannel | undefined
 
   const _listeners: DIDCommListner[] = []
@@ -64,7 +68,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
     return ES256KSigner(wallet.crypto.base58().decode(cryptoKey.pk))
   }
 
-  const _helper: DIDCommHelper = 
+  const _helper: DIDCommHelper =
   {
     pack: async (doc, connection) => {
       if (!connection.recipient) {
@@ -126,6 +130,27 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
         }
       } else {
         _defaultChannel && channels.push(_defaultChannel)
+      }
+
+      if (connection.allowAsync) {
+        if (_didDocs[connection.recipientId]) {
+          connection.recipient = _didDocs[connection.recipientId]
+          _listeners.forEach(listener => listener.established && listener.established(connection))
+
+          return connection
+        }
+        if (!_recipientWaiters[connection.recipientId]) {
+          _recipientWaiters[connection.recipientId] = []
+        }
+        const receive = async (doc: DIDDocument) => {
+          connection.recipient = _didDocs[doc.id] = doc
+          _listeners.forEach(listener => listener.established && listener.established(connection))
+          const idx = _recipientWaiters[connection.recipientId].findIndex(receiver => receiver === receive)
+          if (idx > -1) {
+            _recipientWaiters[connection.recipientId].splice(idx, 1)
+          }
+        }
+        _recipientWaiters[connection.recipientId].push(receive)
       }
 
       channels.forEach(channel => channel.send(jwt))
@@ -203,6 +228,19 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
         return
       }
       if (datagram.startsWith('{') && datagram.endsWith('}')) {
+        try {
+          const doc = wallet.did.helper().parseLongForm(datagram)
+          if (wallet.did.helper().isDIDDocument(doc)) {
+            _didDocs[doc.id] = doc
+            if (_recipientWaiters[doc.id]) {
+              _recipientWaiters[doc.id].forEach(receive => receive(doc))
+            }
+            return
+          }
+        } catch (e) {
+          console.log('check long format message - failed')
+        }
+
         try {
           const jwe = parseJWE(datagram)
           if (!jwe?.protected) {
@@ -343,10 +381,33 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
     listen: async (did) => {
       if (typeof did === 'string') {
-        _didsToListen.push(did)
-        return (
-          await Promise.allSettled(_channels.map(async channel => channel.send(did)))
-        ).some(result => typeof result === 'boolean' && result)
+        const cred = wallet.findCredential(did, REGISTRY_SECTION_OWN)
+        let doc: DIDDocument | undefined
+
+        if (cred) {
+          if (wallet.did.helper().isDIDDocument(cred.credential.holder)) {
+            if (!cred.credential.holder.keyAgreement) {
+              if (wallet.did.helper().isDIDDocument(cred.credential.issuer)) {
+                if (cred.credential.issuer.keyAgreement) {
+                  doc = cred.credential.issuer
+                }
+              }
+            } else {
+              doc = cred.credential.holder
+            }
+          }
+
+        }
+
+        if (!doc) {
+          return false
+        }
+
+        const long = await wallet.did.helper().didToLongForm(doc)
+        _didsToListen.push(long)
+        return (await Promise.allSettled(_channels.map(
+          async channel => channel.send(long)
+        ))).some(result => typeof result === 'boolean' && result)
       }
       return (await Promise.allSettled(did.getRegistry(REGISTRY_TYPE_IDENTITIES)
         .registry.credentials[REGISTRY_SECTION_OWN].map(cred => _helper.listen(cred.credential.id))

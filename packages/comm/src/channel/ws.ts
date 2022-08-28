@@ -39,6 +39,7 @@ export const createWSChannel = async (config: WSClientConfig): Promise<DIDCommCh
       if (typeof params?.ok === 'boolean') {
         message = (params.ok ? COMM_WS_PREFIX_CONFIRMED : COMM_WS_PREFIX_ERROR) + ':' + message
       }
+      
       return await client.send(message, params?.id)
     },
 

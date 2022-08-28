@@ -18,11 +18,13 @@ import { server as WSServer, connection as WSConnection } from 'websocket'
 import { Server as HttpServer } from 'http'
 import { ServerConfig } from './types'
 import {
-  COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, DIDCommConnectMeta,
+  COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_DIDDOC, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, DIDCommConnectMeta,
   ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD, ERROR_COMM_NO_CONNECTION,
   ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER, ERROR_COMM_WS_DID_REGISTERED, ERROR_COMM_WS_TIMEOUT
 } from '../types'
-import { buildWalletWrapper, ExtensionRegistry, makeRandomUuid, nodeCryptoHelper } from '@owlmeans/regov-ssi-core'
+import {
+  buildWalletWrapper, ExtensionRegistry, makeRandomUuid, nodeCryptoHelper, DIDDocument
+} from '@owlmeans/regov-ssi-core'
 import { parseJWE } from '../util'
 import { decodeJWT } from 'did-jwt'
 
@@ -47,6 +49,7 @@ export const startWSServer = async (
   const _clientList: { [uuid: string]: Client } = {}
   const _didToClient: { [did: string]: string } = {}
   const _messages: { [did: string]: Message[] } = {}
+  const _didDocs: { [did: string]: DIDDocument } = {}
 
   setInterval(() => {
     Object.entries(_messages).forEach(([did, messages]) => {
@@ -200,6 +203,14 @@ export const startWSServer = async (
             return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_DID_REGISTERED)
           }
 
+          try {
+            if (didInfo.query && didInfo.query['initialState']) {
+              _didDocs[did] = serverWallet.did.helper().parseLongForm(data)
+            }
+          } catch (e) {
+            console.error('Issue with long format', e)
+          }
+
           _didToClient[did] = uuid
           client.dids.push(did)
           _pokeDid(did)
@@ -238,6 +249,13 @@ export const startWSServer = async (
           }
           console.log('JWT from: ' + commConn.sender.id + ' - to: ' + commConn.recipientId)
           _addMessage(commConn.recipientId, id + ':' + data)
+          if (_didDocs[commConn.recipientId]) {
+            await _send(
+              id + ':' + COMM_WS_PREFIX_DIDDOC + ':' + await serverWallet.did.helper()
+                .didToLongForm(_didDocs[commConn.recipientId])
+            )
+          }
+          
           return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + commConn.recipientId)
         } catch (err) {
           return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_INVALID_PAYLOAD)

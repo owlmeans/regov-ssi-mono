@@ -17,7 +17,7 @@
 import { makeRandomUuid } from '@owlmeans/regov-ssi-core'
 import { client as WSClient, connection as WSConnection, w3cwebsocket as BrowserClient } from 'websocket'
 import {
-  COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, ERROR_COMM_WS_TIMEOUT
+  COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_DIDDOC, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, ERROR_COMM_WS_TIMEOUT
 } from '../types'
 import { CommWSClient, Receiver, WSClientConfig } from './types'
 
@@ -27,7 +27,12 @@ const messages: { [key: string]: Message } = {}
 const _processMessage = (_data: string, receive?: Receiver) => {
   const [id, ...splitedData] = _data.split(':')
   const data = splitedData.join(':')
-  if (messages[id] && data.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')) {
+  if (messages[id] && data.startsWith(COMM_WS_PREFIX_DIDDOC + ':')) {
+    const code = data.substring(data.search(':') + 1)
+    if (receive) {
+      receive(code)
+    } 
+  } else if (messages[id] && data.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')) {
     const code = data.substring(data.search(':') + 1)
     const resolve = messages[id].resolve
     resolve && resolve(code)
