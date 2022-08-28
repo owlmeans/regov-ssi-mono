@@ -26,8 +26,8 @@ import {
 import {
   BASIC_IDENTITY_TYPE, ChainedType, GroupBuildMethodParams, GroupSubject, MembershipSubject,
   REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE,
-  REGOV_GROUP_CHAINED_TYPE, RegovGroupExtensionTypes, REGOV_CLAIM_TYPE, REGOV_GROUP_CLAIM_TYPE,
-  REGOV_GROUP_LIMITED_TYPE, REGOV_GROUP_ROOT_TYPE, REGOV_OFFER_TYPE, REGOV_GROUP_OFFER_TYPE
+  REGOV_GROUP_CHAINED_TYPE, RegovGroupExtensionTypes, REGOV_MEMBERSHIP_CLAIM_TYPE, REGOV_GROUP_CLAIM_TYPE,
+  REGOV_GROUP_LIMITED_TYPE, REGOV_GROUP_ROOT_TYPE, REGOV_MEMBERSHIP_OFFER_TYPE, REGOV_GROUP_OFFER_TYPE
 } from "./types"
 import { makeRandomUuid, normalizeValue } from "@owlmeans/regov-ssi-core"
 import { localization } from "./i18n"
@@ -37,7 +37,8 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
   name: 'extension.details.name',
   code: 'owlmeans-regov-groups',
   types: {
-    claim: REGOV_CLAIM_TYPE
+    claim: REGOV_MEMBERSHIP_CLAIM_TYPE,
+    offer: REGOV_MEMBERSHIP_OFFER_TYPE
   }
 }, {
   [REGOV_CREDENTIAL_TYPE_GROUP]: {
@@ -75,6 +76,7 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
       description: "http://www.w3.org/2001/XMLSchema#string",
       createdAt: "http://www.w3.org/2001/XMLSchema#datetime",
     },
+    claimType: REGOV_MEMBERSHIP_CLAIM_TYPE,
     registryType: REGISTRY_TYPE_IDENTITIES,
     selfIssuing: false,
     claimable: true,
@@ -89,16 +91,16 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
       }
     ]
   },
-  [REGOV_CLAIM_TYPE]: {
-    mainType: REGOV_CLAIM_TYPE,
+  [REGOV_MEMBERSHIP_CLAIM_TYPE]: {
+    mainType: REGOV_MEMBERSHIP_CLAIM_TYPE,
     credentialContext: {}
   },
   [REGOV_GROUP_CLAIM_TYPE]: {
     mainType: REGOV_GROUP_CLAIM_TYPE,
     credentialContext: {}
   },
-  [REGOV_OFFER_TYPE]: {
-    mainType: REGOV_OFFER_TYPE,
+  [REGOV_MEMBERSHIP_OFFER_TYPE]: {
+    mainType: REGOV_MEMBERSHIP_OFFER_TYPE,
     credentialContext: {}
   },
   [REGOV_GROUP_OFFER_TYPE]: {
@@ -111,7 +113,7 @@ groupsExtensionSchema = addObserverToSchema(groupsExtensionSchema, {
   trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   filter: async (_, params: IncommigDocumentEventParams) => {
     if (isPresentation(params.credential)) {
-      if ([REGOV_CLAIM_TYPE, REGOV_GROUP_CLAIM_TYPE, REGOV_OFFER_TYPE]
+      if ([REGOV_MEMBERSHIP_CLAIM_TYPE, REGOV_GROUP_CLAIM_TYPE, REGOV_MEMBERSHIP_OFFER_TYPE]
         .some(type => params.credential.type.includes(type))) {
         return true
       }
@@ -320,9 +322,9 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
       return result
     }
   },
-  [REGOV_CLAIM_TYPE]: {},
+  [REGOV_MEMBERSHIP_CLAIM_TYPE]: {},
   [REGOV_GROUP_CLAIM_TYPE]: {},
-  [REGOV_OFFER_TYPE]: {},
+  [REGOV_MEMBERSHIP_OFFER_TYPE]: {},
   [REGOV_GROUP_OFFER_TYPE]: {}
 })
 

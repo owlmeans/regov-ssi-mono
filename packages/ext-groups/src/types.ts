@@ -19,7 +19,7 @@ import { BuildMethodParams, Extension, IncommigDocumentEventParams } from "@owlm
 
 export type RegovGroupCredential = typeof REGOV_CREDENTIAL_TYPE_GROUP
 export type RegovGroupMembershipCredential = typeof REGOV_CREDENTIAL_TYPE_MEMBERSHIP
-export type RegovGroupClaim = typeof REGOV_CLAIM_TYPE
+export type RegovGroupClaim = typeof REGOV_MEMBERSHIP_CLAIM_TYPE
 export type RegovGroupCredentialClaim = typeof REGOV_GROUP_CLAIM_TYPE
 
 export type RegovGroupExtensionTypes = RegovGroupCredential | RegovGroupMembershipCredential 
@@ -70,8 +70,9 @@ export const REGOV_GROUP_LIMITED_TYPE = 'OwlMeans:Regov:Group:Limited'
 
 export const REGOV_GROUP_ROOT_TYPE = 'OwlMeans:Regov:Group:Root'
 
-export const REGOV_CLAIM_TYPE = 'OwlMeans:Regov:Group:Claim'
-export const REGOV_OFFER_TYPE = 'OwlMeans:Regov:Group:Offer'
+export const REGOV_MEMBERSHIP_CLAIM_TYPE = 'OwlMeans:Regov:Group:Claim'
+
+export const REGOV_MEMBERSHIP_OFFER_TYPE = 'OwlMeans:Regov:Group:Offer'
 
 export const BASIC_IDENTITY_TYPE = 'Identity'
 

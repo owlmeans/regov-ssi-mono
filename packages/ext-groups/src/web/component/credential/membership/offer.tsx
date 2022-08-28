@@ -19,7 +19,7 @@ import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import {
   GroupSubject, MembershipSubject, RegovGroupExtension, REGOV_CREDENTIAL_TYPE_GROUP,
   REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_CHAINED_TYPE,
-  REGOV_GROUP_CLAIM_TYPE, REGOV_OFFER_TYPE
+  REGOV_GROUP_CLAIM_TYPE, REGOV_MEMBERSHIP_OFFER_TYPE
 } from '../../../../types'
 import { getGroupFromMembershipClaimPresentation, getMembershipClaim, getMembershipClaimHolder } from '../../../../util'
 import { EmptyProps, generalNameVlidation, RegovComponentProps, useRegov, withRegov } from '@owlmeans/regov-lib-react'
@@ -121,7 +121,7 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           holder: getMembershipClaimHolder(presentation),
           cryptoKey: await handler.wallet.keys.getCryptoKey(),
           claimType: REGOV_GROUP_CLAIM_TYPE,
-          offerType: REGOV_OFFER_TYPE,
+          offerType: REGOV_MEMBERSHIP_OFFER_TYPE,
           subject,
           id: presentation.id as string,
           challenge: presentation.proof.challenge || '',

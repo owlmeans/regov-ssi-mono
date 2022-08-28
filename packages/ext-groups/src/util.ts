@@ -18,13 +18,13 @@ import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-core"
 import { Presentation, Credential } from "@owlmeans/regov-ssi-core"
 import { DIDDocument } from "@owlmeans/regov-ssi-core"
 import {
-  REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_CLAIM_TYPE,
-  BASIC_IDENTITY_TYPE, REGOV_OFFER_TYPE
+  REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP, REGOV_MEMBERSHIP_CLAIM_TYPE,
+  BASIC_IDENTITY_TYPE, REGOV_MEMBERSHIP_OFFER_TYPE
 } from "./types"
 
 
 export const getGroupFromMembershipClaimPresentation = (presentation: Presentation) => {
-  if (!presentation.type.includes(REGOV_CLAIM_TYPE)) {
+  if (!presentation.type.includes(REGOV_MEMBERSHIP_CLAIM_TYPE)) {
     return undefined
   }
 
@@ -63,7 +63,7 @@ export const getMembershipClaim = (presentation: Presentation) => {
 }
 
 export const getGroupFromMembershipOfferPresentation = (presentation: Presentation) => {
-  if (!presentation.type.includes(REGOV_OFFER_TYPE)) {
+  if (!presentation.type.includes(REGOV_MEMBERSHIP_OFFER_TYPE)) {
     return undefined
   }
 

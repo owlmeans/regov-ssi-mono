@@ -25,7 +25,7 @@ import {
   singleValue, Credential, CredentialWrapper, REGISTRY_TYPE_IDENTITIES, DIDDocument, REGISTRY_SECTION_PEER
 } from "@owlmeans/regov-ssi-core"
 import {
-  GroupSubject, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
+  GroupSubject, REGOV_MEMBERSHIP_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
   REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_OFFER_TYPE
 } from "../../../../types"
 import DialogContent from "@mui/material/DialogContent"
@@ -99,7 +99,7 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
           challenge: presentation.proof.challenge || '',
           domain: presentation.proof.domain || '',
           cryptoKey: await handler.wallet.keys.getCryptoKey(),
-          claimType: REGOV_CLAIM_TYPE
+          claimType: REGOV_MEMBERSHIP_CLAIM_TYPE
         })
 
         if (conn) {

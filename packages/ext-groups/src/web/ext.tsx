@@ -23,8 +23,8 @@ import {
   PurposeEvidenceWidgetParams, EXTENSION_ITEM_PURPOSE_VALIDATION, MainModalAuthenticatedEventParams,
 } from '@owlmeans/regov-lib-react'
 import {
-  RegovGroupExtensionTypes, REGOV_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
-  REGOV_OFFER_TYPE, REGOV_GROUP_CLAIM_TYPE, IncommigDocumentWithConn
+  RegovGroupExtensionTypes, REGOV_MEMBERSHIP_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
+  REGOV_MEMBERSHIP_OFFER_TYPE, REGOV_GROUP_CLAIM_TYPE, IncommigDocumentWithConn
 } from '../types'
 import { groupsExtension } from '../ext'
 import { getGroupFromMembershipClaimPresentation, getGroupOwnerIdentity } from '../util'
@@ -67,7 +67,7 @@ if (groupsExtension.schema.events) {
               ext={groupsExtension} conn={params.conn} />
 
           params.statusHandler.successful = true
-        } else if (params.credential.type.includes(REGOV_CLAIM_TYPE)) {
+        } else if (params.credential.type.includes(REGOV_MEMBERSHIP_CLAIM_TYPE)) {
           let isOwner = false
           const group = getGroupFromMembershipClaimPresentation(params.credential)
           if (group) {
@@ -93,7 +93,7 @@ if (groupsExtension.schema.events) {
 
             params.statusHandler.successful = true
           }
-        } else if (params.credential.type.includes(REGOV_OFFER_TYPE)) {
+        } else if (params.credential.type.includes(REGOV_MEMBERSHIP_OFFER_TYPE)) {
           modalHandler.getContent = () => <MembershipClaimOffer ext={groupsExtension} close={close}
             credential={params.credential as Presentation} />
 
@@ -152,7 +152,7 @@ if (groupsExtension.schema.events) {
                   connection={statusHandle} />
 
               modalHandler.setOpen && modalHandler.setOpen(true)
-            } else if (doc.type.includes(REGOV_CLAIM_TYPE)) {
+            } else if (doc.type.includes(REGOV_MEMBERSHIP_CLAIM_TYPE)) {
               console.log('INCOMING MEMBERSHIP CLAIM', doc)
 
               modalHandler.getContent = () =>
@@ -195,7 +195,7 @@ export const groupsUIExtension = buildUIExtension(groupsExtension,
               params: {},
               order: 0
             }] as UIExtensionFactoryProduct<PurposeListItemParams>[]
-          case REGOV_CLAIM_TYPE:
+          case REGOV_MEMBERSHIP_CLAIM_TYPE:
             return [{
               com: MembershipClaimItem(groupsExtension) as unknown as FunctionComponent<PurposeListItemParams>,
               extensionCode: `${groupsExtension.schema.details.code}MembershipClaimItem`,
