@@ -73,8 +73,6 @@ export const defaultValidateMethod: ValidateMethodBuilder = schema =>
       verifySchema: true
     })
 
-    // console.log('Credential verification: ', result, info, !result && credential)
-
     const evidence = normalizeValue(credential.evidence) as Credential[]
     const evidenceValidation = schema.evidence ? await Promise.all(normalizeValue(schema.evidence).map(
       async (evidenceSchema): Promise<EvidenceValidationResult> => {
@@ -125,8 +123,6 @@ export const defaultValidateMethod: ValidateMethodBuilder = schema =>
         const result = await factory.validate(wallet, {
           credential: currentEvidence, extensions
         })
-
-        // console.log('Evidance validation:', result)
 
         return {
           type: credInfo.mainType,

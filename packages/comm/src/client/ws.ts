@@ -96,7 +96,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
                 console.log('Sent', msg.substring(0, 16) + '...', code)
               }
             } catch (err) {
-              console.log(err)
+              console.error(err)
               if (_conn.connected) {
                 _conn.drop()
               }

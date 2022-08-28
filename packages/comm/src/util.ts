@@ -107,7 +107,6 @@ export const getDIDCommUtils = (wallet: WalletWrapper) => {
                 return
               }
               sentOnce = true
-              console.log('TRY CONNECTION', conn)
               if (!wallet.did.helper().isDIDDocument(conn.sender)) {
                 throw ERROR_NO_IDENTITY
               }

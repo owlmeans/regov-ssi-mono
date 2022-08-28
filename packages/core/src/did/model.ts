@@ -500,12 +500,6 @@ export const buildDidHelper =
       parseLongForm: (did) => {
         const expand = _parseDIDId(did)
         if (expand.query && expand.query['initialState'] && !Array.isArray(expand.query['initialState'])) {
-
-          console.log(
-            "PARESE LONG FORMAT", 
-            Buffer.from(crypto.base58().decode(expand.query['initialState'])).toString('utf8')
-          )
-          
           const doc = JSON.parse(
             Buffer.from(crypto.base58().decode(expand.query['initialState'])).toString('utf8')
           )
