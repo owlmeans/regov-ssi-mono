@@ -19,7 +19,7 @@ import {
   COMMON_CRYPTO_ERROR_NOID, normalizeValue, addToValue
 } from '../common'
 import { URLSearchParams } from 'url'
-import { QueryDict, DEFAULT_VERIFICATION_KEY, VERIFICATION_KEY_HOLDER, } from './types'
+import { QueryDict, DEFAULT_VERIFICATION_KEY, VERIFICATION_KEY_HOLDER, DID_ERROR_MUST_BE_LONG_FORM, } from './types'
 import {
   DIDDocument, DIDPURPOSE_VERIFICATION, DIDHelper, DEFAULT_APP_SCHEMA_URL, DEFAULT_DID_PREFIX,
   DEFAULT_DID_SCHEMA_PATH, MakeDIDIdOptions, BuildDIDHelperOptions, DIDDocumentPayload,
@@ -493,7 +493,22 @@ export const buildDidHelper =
           'utf8'
         ))
 
-        return `${did.id};${buildOptions.prefix}:state=${compressed}`
+        return `${did.id}?initialState=${compressed}`
+      },
+
+      parseLongForm: (did) => {
+        const expand = _parseDIDId(did)
+        if (expand.query && expand.query['initialState'] && !Array.isArray(expand.query['initialState'])) {
+
+          console.log("PARESE LONG FORMAT", crypto.base58().decode(expand.query['initialState']).toLocaleString())
+          
+          const doc = JSON.parse(crypto.base58().decode(expand.query['initialState']).toLocaleString())
+          if (_isDIDDocument(doc)) {
+            return doc
+          }
+        }
+
+        throw DID_ERROR_MUST_BE_LONG_FORM
       },
 
       extractKey: _extractKey,

@@ -46,6 +46,7 @@ export type DIDHelper = {
   isDIDUnsigned: (obj: Object) => obj is DIDDocumentUnsinged
 
   didToLongForm: (did: DIDDocument) => Promise<string>
+  parseLongForm: (did: string) => DIDDocument
   extractKey: ExtractKeyMethod
   extractKeyId: (key: string) => string
   setupDocumentLoader: (loader: BuildDocumentLoader) => void
@@ -214,6 +215,7 @@ export type LoadedDocument<Type extends {} = {}> = {
 
 export const DID_ERROR_NOVERIFICATION_METHOD = 'DID_ERROR_NOVERIFICATION_METHOD'
 export const DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS = 'DID_ERROR_VERIFICATION_METHOD_AMBIGUOUS'
+export const DID_ERROR_MUST_BE_LONG_FORM = 'DID_ERROR_MUST_BE_LONG_FORM'
 
 export const DID_ERROR_VERIFICATION_METHOD_LOOKUP = 'DID_ERROR_VERIFICATION_METHOD_LOOKUP'
 export const DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD = 'DID_ERROR_VERIFICATION_NO_VERIFICATION_METHOD'
