@@ -26,9 +26,12 @@ export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_ITEM
   | typeof EXTENSION_ITEM_PURPOSE_CREATION
   | typeof EXTENSION_ITEM_PURPOSE_REQUEST
   | typeof EXTENSION_ITEM_PURPOSE_TOP_ACTION
+  | typeof EXRENSION_ITEM_PURPOSE_INPUT_ITEM
   | string
 
 export const EXTENSION_ITEM_PURPOSE_ITEM = 'item'
+export const EXRENSION_ITEM_PURPOSE_INPUT_ITEM = 'input:item'
+export const EXRENSION_ITEM_PURPOSE_INPUT_DETAILS = 'input:details'
 export const EXTENSION_ITEM_PURPOSE_ROUTE = 'route'
 export const EXTENSION_ITEM_PURPOSE_DASHBOARD = 'dashboard'
 export const EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET = 'dashboard_widget'

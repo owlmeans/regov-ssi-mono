@@ -16,10 +16,11 @@
 
 import { generateKeyPairFromSeed } from '@stablelib/x25519'
 import {
-  CryptoKey, DIDDocument, DIDHelper, DIDPURPOSE_AGREEMENT, ExtensionRegistry, KEYCHAIN_ERROR_NO_KEY,
+  CryptoKey, DIDDocument, DIDHelper, DIDPURPOSE_AGREEMENT, KEYCHAIN_ERROR_NO_KEY,
   KeyPairToCryptoKeyOptions, Credential, Presentation, WalletWrapper, ERROR_NO_IDENTITY
 } from "@owlmeans/regov-ssi-core"
 import {
+  CommConnectionStatusHandler,
   CommKey, COMM_DID_AGREEMENT_KEY_DEFAULT, connectionFieldList, DIDCommConnectMeta,
   DIDCommHelper, DIDCommListner, ERROR_COMM_CANT_SEND, ERROR_COMM_DID_NOKEY, ERROR_COMM_NO_RECIPIENT,
   ERROR_COMM_WS_UNKNOWN, EVENT_INIT_CONNECTION, InitCommEventParams
@@ -88,6 +89,36 @@ export const didDocToCommKeyBuilder = (helper: DIDHelper) =>
 
 export const getDIDCommUtils = (wallet: WalletWrapper) => {
   return {
+    connect: async (conn: DIDCommConnectMeta) => {
+      const statusHandle: CommConnectionStatusHandler = { established: false };
+      const resultConn = new Promise<DIDCommConnectMeta>(async (resolve, reject) => {
+        await wallet.getExtensions()?.triggerEvent<InitCommEventParams>(wallet, EVENT_INIT_CONNECTION, {
+          statusHandle,
+          resolveConnection: async helper => {
+            if (conn.recipient) {
+              resolve(conn)
+              return
+            }
+            const listener: DIDCommListner = {
+              established: async (conn) => {
+                resolve(conn)
+                statusHandle.defaultListener && helper.removeListener(statusHandle.defaultListener)
+                helper.removeListener(listener)
+              }
+            }
+            helper.addListener(listener)
+            helper.connect(conn)
+          },
+          rejectConnection: async err => {
+            console.error(err)
+            reject(err)
+          }
+        })
+      })
+
+      return resultConn
+    },
+
     send: async (
       conn: DIDCommConnectMeta, doc?: Credential | Presentation,
       listener?: (helper: DIDCommHelper) => DIDCommListner

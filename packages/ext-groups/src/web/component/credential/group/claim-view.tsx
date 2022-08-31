@@ -17,16 +17,17 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from "react"
 
 import {
-  CredentialActionGroup, CredentialSelector, EmptyProps, MainTextOutput, PrimaryForm,
-  RegovComponentProps, useRegov, WalletFormProvider, withRegov, dateFormatter
+  CredentialActionGroup, CredentialSelector, EmptyProps, MainTextOutput, PrimaryForm, MainTextInput,
+  RegovComponentProps, useRegov, WalletFormProvider, withRegov, dateFormatter, PrimaryFormProps
 } from "@owlmeans/regov-lib-react"
 import {
   Extension, getCompatibleSubject, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS,
-  singleValue, Credential, CredentialWrapper, REGISTRY_TYPE_IDENTITIES, DIDDocument, REGISTRY_SECTION_PEER
+  singleValue, Credential, CredentialWrapper, REGISTRY_TYPE_IDENTITIES, DIDDocument, REGISTRY_SECTION_PEER,
+  normalizeValue
 } from "@owlmeans/regov-ssi-core"
 import {
   GroupSubject, REGOV_MEMBERSHIP_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
-  REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_OFFER_TYPE
+  REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_OFFER_TYPE, REGOV_GROUP_CHAINED_TYPE
 } from "../../../../types"
 import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
@@ -43,11 +44,10 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
     credential: presentation, navigator, t, i18n, close, ext, conn
   }) => {
   const { handler } = useRegov()
-  const groupSubject = getCompatibleSubject<GroupSubject>(
-    singleValue(presentation.verifiableCredential) as Credential
-  )
+  const cred = singleValue(presentation.verifiableCredential) as Credential
+  const groupSubject = getCompatibleSubject<GroupSubject>(cred)
 
-  const _props = { t, i18n }
+  const _props: PrimaryFormProps = { t, i18n, title: '' }
 
   const wrapper = handler.wallet?.getRegistry(REGISTRY_TYPE_CLAIMS)
     .getCredential(presentation.id, REGISTRY_SECTION_OWN)
@@ -78,15 +78,31 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
     })()
   }, [presentation.id])
 
-  const produce = async (fields: GroupClaimViewFields) => {
+  const identity = signatures.find(
+    signature => signature.credential.id === methods.getValues('group.offer.identity') || defaultId
+  )?.credential
+
+  let maxDepth = 0
+  if (identity) {
+    const parentGroup = normalizeValue(identity.evidence).find(
+      evidence => evidence?.type.includes(REGOV_GROUP_CHAINED_TYPE)
+    ) as Credential<GroupSubject> | undefined
+    if (parentGroup) {
+      maxDepth = Math.max(0, (parentGroup.credentialSubject.depth || 0) - 1)
+      _props.rules = {
+        ..._props.rules, 'group.groupClaim.depth': { min: 0, max: maxDepth, valueAsNumber: true }
+      }
+      methods.setValue('group.groupClaim.depth', maxDepth)
+    }
+  }
+
+  const produce = async () => {
     const loader = await navigator?.invokeLoading()
     try {
-      const credential = JSON.parse(JSON.stringify(singleValue(presentation.verifiableCredential)))
+      const credential = JSON.parse(JSON.stringify(cred))
 
       if (handler.wallet && credential) {
-        credential.evidence = signatures.find(
-          signature => signature.credential.id === fields.group.offer.identity
-        )?.credential
+        credential.evidence = identity
 
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
         const offer = await factory.offer(handler.wallet, {
@@ -132,6 +148,7 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
           <MainTextOutput {..._props} field="group.groupClaim.uuid" showHint />
           <MainTextOutput {..._props} field="group.groupClaim.createdAt" showHint
             formatter={dateFormatter} />
+          {maxDepth > 0 && <MainTextInput {..._props} field="group.groupClaim.depth" />}
           <Grid item container border={1} borderColor="info.dark" borderRadius={2} px={2}
             direction="column" my={2}>
             {Object.entries(extraFields).map(([key, value]) => <Grid item key={key} my={1}>

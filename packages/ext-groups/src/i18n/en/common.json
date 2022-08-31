@@ -52,6 +52,10 @@
       "title": "Create a new decentralized group",
       "create": "Create",
       "success": "Congratulation! The group credential is successfully created!",
+      "root": {
+        "label": "Chained group",
+        "hint": "Does this group allow to produce dependable groups, that will be trusted by those who trust the created group."
+      },
       "credentialName": {
         "label": "Credentail title",
         "hint": "Nobody will see this name except you. It's required to easier find the credential in lists.",
@@ -60,6 +64,10 @@
           "pattern": "Credential name contains prohibited symbols"
         }
       }
+    },
+    "depth": {
+      "label": "Group level",
+      "hint": "Level 2 means, that if the owner of this group issues a dependent group A, the group A owner can issue dependalbe group B too. But the owner of the group B can't issue groups."
     },
     "widget": {
       "validation": {
@@ -75,7 +83,7 @@
       }
     },
     "groupClaim": {
-      "extraField": "Vendor extra field — {key}",
+      "extraField": "Vendor extra field — {{key}}",
       "name": {
         "hint": "Name"
       },
@@ -87,6 +95,10 @@
       },
       "createdAt": {
         "hint": "Creation date"
+      },
+      "depth": {
+        "label": "Group level",
+        "hint": "Level 2 means, that if the owner of this group issues a dependent group A, the group A owner can issue dependalbe group B too. But the owner of the group B can't issue groups."
       }
     },
     "offer": {
