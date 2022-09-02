@@ -5,7 +5,9 @@
     "wallet": "Кашалёк пасведчанняў",
     "action": {
       "copy": { "title": "Капіяаваць" },
-      "export": { "title": "Экспарт" }
+      "export": { "title": "Экспарт" },
+      "delete": {"title": "Выдаліць"},
+      "copyId": {"title": "Капіяваць DID"}
     }
   },
   "footer": {

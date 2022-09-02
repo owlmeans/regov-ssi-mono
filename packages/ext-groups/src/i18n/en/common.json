@@ -54,7 +54,7 @@
       "success": "Congratulation! The group credential is successfully created!",
       "root": {
         "label": "Chained group",
-        "hint": "Does this group allow to produce dependable groups, that will be trusted by those who trust the created group."
+        "hint": "This group allow to produce dependable groups, that will be trusted by those who trust the created group."
       },
       "credentialName": {
         "label": "Credentail title",
@@ -174,7 +174,7 @@
       "role": {
         "hint": "Role you claim"
       }
-    }, 
+    },
     "offer": {
       "title": "Membership claim review",
       "close": "Close",
