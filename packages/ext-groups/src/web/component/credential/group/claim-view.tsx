@@ -27,7 +27,7 @@ import {
 } from "@owlmeans/regov-ssi-core"
 import {
   GroupSubject, REGOV_MEMBERSHIP_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
-  REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_OFFER_TYPE, REGOV_GROUP_CHAINED_TYPE
+  REGOV_EXT_GROUP_NAMESPACE, REGOV_GROUP_OFFER_TYPE, REGOV_GROUP_CHAINED_TYPE, REGOV_GROUP_LIMITED_TYPE
 } from "../../../../types"
 import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
@@ -96,21 +96,30 @@ export const GroupClaimView: FunctionComponent<GroupClaimViewParams> = withRegov
     }
   }
 
-  const produce = async () => {
+  const produce = async (data: GroupClaimViewFields) => {
     const loader = await navigator?.invokeLoading()
     try {
-      const credential = JSON.parse(JSON.stringify(cred))
+      const credential = JSON.parse(JSON.stringify(cred)) as Credential<GroupSubject>
 
       if (handler.wallet && credential) {
         credential.evidence = identity
 
+        const cred = JSON.parse(JSON.stringify(credential)) as typeof credential
+
+        if (maxDepth > 0 && cred.type.includes(REGOV_GROUP_LIMITED_TYPE)) {
+          cred.type.splice(cred.type.findIndex(t => t === REGOV_GROUP_LIMITED_TYPE), 1)
+        }
+
         const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_GROUP)
         const offer = await factory.offer(handler.wallet, {
           claim: presentation,
-          credential: credential as Credential,
+          credential: cred,
           holder: credential.issuer as DIDDocument,
           offerType: REGOV_GROUP_OFFER_TYPE,
-          subject: credential.credentialSubject,
+          subject: {
+            ...credential.credentialSubject,
+            ...(maxDepth > 0 ? { depth: data.group.groupClaim.depth } : {})
+          },
           id: presentation.id || '',
           challenge: presentation.proof.challenge || '',
           domain: presentation.proof.domain || '',

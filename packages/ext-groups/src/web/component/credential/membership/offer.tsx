@@ -96,8 +96,8 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           throw ERROR_MEMBERSHIP_READYTO_CLAIM
         }
 
-        const subject = data.membership.offer as any
-        delete subject.alert
+        const subject = data.membership.offer
+        delete (subject as any).alert
 
         const unsignedMembership = JSON.parse(JSON.stringify(
           getMembershipClaim(presentation)
@@ -122,7 +122,11 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
           cryptoKey: await handler.wallet.keys.getCryptoKey(),
           claimType: REGOV_GROUP_CLAIM_TYPE,
           offerType: REGOV_MEMBERSHIP_OFFER_TYPE,
-          subject,
+          subject: {
+            ...subject, ...(
+              subject.groupId ? { groupId: subject.groupId } : { groupId: group.id }
+            )
+          },
           id: presentation.id as string,
           challenge: presentation.proof.challenge || '',
           domain: presentation.proof.domain || '',
