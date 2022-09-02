@@ -61,7 +61,8 @@
       },
       "description": {
         "label": "Document description",
-        "hint": "Usefull information about the document"
+        "hint": "Usefull information about the document",
+        "copy": "Copy"
       },
       "url": {
         "label": "Document URL",
