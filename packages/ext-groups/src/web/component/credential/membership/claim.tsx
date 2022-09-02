@@ -20,7 +20,7 @@ import {
   Credential, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, UnsignedCredential
 } from '@owlmeans/regov-ssi-core'
 import {
-  CredentialListInput, EmptyProps, generalNameVlidation, RegovComponentProps, useNavigator, useRegov, withRegov
+  EmptyProps, generalNameVlidation, RegovComponentProps, useNavigator, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
   RegovGroupExtension, REGOV_EXT_GROUP_NAMESPACE, MembershipSubject, GroupSubject,
@@ -40,7 +40,7 @@ import DialogContent from '@mui/material/DialogContent'
 export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withRegov<
   MembershipClaimProps, ListNavigator
 >({ namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
-  const { group, t, i18n, ext, ns } = props
+  const { group, t, i18n, ext } = props
   const { handler, extensions } = useRegov()
   const navigate = useNavigate()
   const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
@@ -167,10 +167,10 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
           <MainTextOutput {..._props} field="membership.claim.groupId" showHint />
           <MainTextInput {..._props} field="membership.claim.role" />
           <MainTextInput {..._props} field="membership.claim.description" />
-          <CredentialListInput ns={ns} config={{
+          {/*<CredentialListInput ns={ns} config={{
             // prefix: 'claim',
             items: [{ type: '', plural: true, max: 5, field: 'evidence' }]
-          }} />
+          }} />*/}
           <MainTextOutput {...props} field="membership.claim.createdAt" showHint formatter={dateFormatter} />
           <AlertOutput {...props} field="membership.claim.alert" />
           <FormMainAction {...props} title="membership.claim.create" action={methods.handleSubmit(claim)} />
