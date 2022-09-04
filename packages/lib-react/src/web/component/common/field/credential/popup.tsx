@@ -1,7 +1,6 @@
 import React, { FunctionComponent, ReactNode, useState } from "react"
 import { CredentialListInputPopupProps } from "./types"
 import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
 
 
 export const CredentialListInputPopup: FunctionComponent<CredentialListInputPopupProps> = ({ control }) => {
@@ -12,6 +11,5 @@ export const CredentialListInputPopup: FunctionComponent<CredentialListInputPopu
   
   return <Dialog open={open} onClose={() => control.closeDetails()}>
     {content}
-    <DialogActions></DialogActions>
   </Dialog>
 }

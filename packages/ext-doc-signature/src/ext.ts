@@ -19,8 +19,9 @@ import {
   IncommigDocumentEventParams
 } from "@owlmeans/regov-ssi-core"
 import {
-  BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE,
-  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE
+  BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_PRESONALID, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE,
+  REGOV_CRED_PERSONALID,
+  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_OFFER_PRESONALID, REGOV_OFFER_TYPE_SIGNATURE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE
 } from "./types"
 import { isCredential, isPresentation, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'
@@ -33,7 +34,8 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
   name: 'extension.details.name',
   code: 'owlmeans-regov-doc-signature',
   types: {
-    claim: REGOV_CLAIM_TYPE_SIGNATURE
+    claim: REGOV_CLAIM_TYPE_SIGNATURE,
+    offer: REGOV_OFFER_TYPE_SIGNATURE
   }
 }, {
   [REGOV_CREDENTIAL_TYPE_SIGNATURE]: {
@@ -62,8 +64,7 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
     registryType: REGISTRY_TYPE_CREDENTIALS,
     selfIssuing: true,
     claimable: false,
-    listed: true,
-    arbitraryEvidence: true,
+    listed: true
   },
   [REGOV_SIGNATURE_REQUEST_TYPE]: {
     mainType: REGOV_SIGNATURE_REQUEST_TYPE,
@@ -88,6 +89,43 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
     mainType: REGOV_SIGNATURE_RESPONSE_TYPE,
     responseType: REGOV_SIGNATURE_RESPONSE_TYPE,
     credentialContext: {}
+  },
+  [REGOV_CRED_PERSONALID]: {
+    mainType: REGOV_CRED_PERSONALID,
+    mandatoryTypes: [REGOV_CREDENTIAL_TYPE_SIGNATURE],
+    defaultNameKey: 'std.personalid.label',
+    contextUrl: 'https://schema.owlmeans.com/std/personal-id.json',
+    credentialContext: {
+      '@version': 1.1,
+      scm: 'https://schema.org/Person',
+      scma: 'https://schema.org/GovernmentPermit',
+      addr: 'https://schema.org/PostalAddress',
+      name: { '@id': 'scma:name', '@type': 'scma:name' },
+      identifier: { '@id': 'scma:identifier', '@type': 'scma:identifier' },
+      country: { '@id': 'addr:addressCountry', '@type': 'addr:addressCountry' },
+      gender: { '@id': 'scm:gender', '@type': 'scm:gender' },
+      givenName: { '@id': 'scm:givenName', '@type': 'scm:givenName' },
+      familyName: { '@id': 'scm:familyName', '@type': 'scm:familyName' },
+      additionalName: { '@id': 'scm:additionalName', '@type': 'scm:additionalName' },
+      birthDate: { '@id': 'scm:birthDate', '@type': 'scm:birthDate' },
+      validFrom: {'@id': 'scma:validFrom', '@type': 'scma:validFrom'},
+      validUntil: {'@id': 'scma:validUntil', '@type': 'scma:validUntil'}
+    },
+    registryType: REGISTRY_TYPE_CREDENTIALS,
+    claimType: REGOV_CLAIM_PRESONALID,
+    offerType: REGOV_OFFER_PRESONALID,
+    selfIssuing: false,
+    claimable: true,
+    listed: true,
+    arbitraryEvidence: true
+  },
+  [REGOV_CLAIM_PRESONALID]: {
+    mainType: REGOV_CLAIM_PRESONALID,
+    credentialContext: {}
+  },
+  [REGOV_OFFER_PRESONALID]: {
+    mainType: REGOV_OFFER_PRESONALID,
+    credentialContext: {}
   }
 })
 
@@ -111,7 +149,10 @@ export const signatureExtension = buildExtension(
   signatureExtensionSchema, {
   [REGOV_CREDENTIAL_TYPE_SIGNATURE]: {},
   [REGOV_SIGNATURE_REQUEST_TYPE]: {},
-  [REGOV_SIGNATURE_RESPONSE_TYPE]: {}
+  [REGOV_SIGNATURE_RESPONSE_TYPE]: {},
+  [REGOV_CRED_PERSONALID]: {},
+  [REGOV_CLAIM_PRESONALID]: {},
+  [REGOV_OFFER_PRESONALID]: {}
 })
 signatureExtension.localization = {
   ns: REGOV_EXT_SIGNATURE_NAMESPACE,

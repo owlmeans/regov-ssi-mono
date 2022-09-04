@@ -1,7 +1,5 @@
 import React, { FunctionComponent } from "react"
-import {
-  CredentialListItemInputProps, CredentialListItemInputRendererProps
-} from "./types"
+import { CredentialListItemInputProps, CredentialListItemInputRendererProps } from "./types"
 import { EXRENSION_ITEM_PURPOSE_INPUT_ITEM, UIExtensionFactoryProduct, useRegov } from "../../../../../common"
 import { CredentialListItemInputSimpleRenderer } from "./item/simple"
 import { CredentialListItemTypeSelector } from "./item/selector"
@@ -21,7 +19,7 @@ export const CredentialListItemInput: FunctionComponent<CredentialListItemInputP
   const coms = extensions?.produceComponent(
     EXRENSION_ITEM_PURPOSE_INPUT_ITEM, model.getType()
   ) as UIExtensionFactoryProduct<CredentialListItemInputRendererProps>[]
-  const props = { config, control, ns }
+  const props = { config, control, ns, index }
   if (coms.length) {
     const Renderer = coms[0].com
     if (Renderer) {

@@ -26,7 +26,10 @@ import { OfferMethodBuilder } from "../types"
 export const defaultOfferMethod: OfferMethodBuilder = schema => async (wallet, params) => {
   const {
     claim, credential, holder, subject, cryptoKey, claimType, offerType, id, challenge, domain
-  } = params
+  }: typeof params = {
+    ...params, ...(!params.claimType && schema.claimType ? { claimType: schema.claimType } : {}),
+    ...(!params.offerType && schema.offerType ? { offerType: schema.offerType } : {})
+  }
 
   const [isValid, result] = await wallet.ssi.verifyPresentation(claim, undefined, {
     testEvidence: true, nonStrictEvidence: true, localLoader: buildWalletLoader(wallet)

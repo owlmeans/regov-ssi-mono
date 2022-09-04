@@ -1,9 +1,10 @@
-import { MaybeArray } from "@owlmeans/regov-ssi-core"
+import { MaybeArray, RegistryItem } from "@owlmeans/regov-ssi-core"
 import { ReactNode, FunctionComponent } from "react"
 import { EmptyProps } from "../../../../../common"
 
 
 export type CredentialListInputProps = EmptyProps & {
+  field: string
   config: CredentialListConfig | CredentialListControl
 }
 
@@ -26,17 +27,25 @@ export type CredentialListItemControl = {
   field: string
   index?: number
   type?: MaybeArray<string>
+  value?: RegistryItem
   getMainConfig: () => CredentialListConfig
   getType: () => undefined | MaybeArray<string>
   setType: (type: MaybeArray<string>) => void
+  setValue: (value: RegistryItem) => void
 }
 
-export type CredentialListInputDetailsProps = EmptyProps & {
+export type CredentialListInputDetailsProps<Item extends RegistryItem = RegistryItem> = EmptyProps & {
   config: CredentialListItemConfig
   control: CredentialListControl
+  index?: number
+  close?: () => void
+  finish?: (claim: Item) => void
 }
 
-export type CredentialListInputDetails = FunctionComponent<CredentialListInputDetailsProps>
+export type CredentialListInputDetails<
+  Item extends RegistryItem = RegistryItem,
+  Props extends CredentialListInputDetailsProps<Item> = CredentialListInputDetailsProps<Item>
+> = FunctionComponent<Props>
 
 export type CredentialListItemInputProps = EmptyProps & {
   index?: number
@@ -54,10 +63,11 @@ export type CredentialListControl = {
   renderFields: (ns?: string) => ReactNode[]
   setOpenDialogProvider: (callback: (open: boolean) => void) => void
   setDialogContentProvider: (callback: (content: ReactNode) => void) => void
-  openDetails: (field: string | CredentialListItemConfig, ns?: string) => void
+  openDetails: (field: string | CredentialListItemConfig, index?: number, ns?: string) => void
   closeDetails: () => void
   getItemControl: (field: string, index?: number) => CredentialListItemControl
   setNotifier: (notifier: () => void) => void
+  getValues: () => { [key: string]: MaybeArray<RegistryItem> }
 }
 
 export const isCredentialListControl = (obj: Object): obj is CredentialListControl => obj && 'renderFields' in obj
@@ -71,6 +81,5 @@ export type CredentialListItemInputRendererProps = EmptyProps & CredentialListIt
 export type CredentialListInputPopupProps = {
   control: CredentialListControl
 }
-
 
 export const ERROR_CREDENTIAL_INPUT_NO_FIELD = 'ERROR_CREDENTIAL_INPUT_NO_FIELD'

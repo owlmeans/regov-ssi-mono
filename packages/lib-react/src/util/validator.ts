@@ -68,6 +68,7 @@ export const generalNameVlidation = (required: boolean = true) => ({
     pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
   }
 })
+
 export const generalIdVlidation = (required: boolean = true) => ({
   required,
   maxLength: 1024

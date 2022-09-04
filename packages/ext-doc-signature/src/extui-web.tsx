@@ -15,7 +15,7 @@
  */
 
 import {
-  buildUIExtension, EXTENSION_ITEM_PURPOSE_CREATION, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
+  buildUIExtension, EXRENSION_ITEM_PURPOSE_INPUT_DETAILS, EXTENSION_ITEM_PURPOSE_CREATION, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
   EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_REQUEST, EXTENSION_ITEM_PURPOSE_VALIDATION, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,
   MainModalHandle, MainModalShareEventParams, PurposeListItemParams, UIExtensionFactoryProduct
 } from "@owlmeans/regov-lib-react"
@@ -30,10 +30,11 @@ import {
 import React from "react"
 import {
   SignatureCreationWeb, SignatureItemWeb, SignatureView, SignatureRequestWeb, DashboardWidgetWeb,
-  SignatureRequestItemWeb, SignatureRequestViewWeb, SignatureResponseWeb, SignatureRequestResponseWeb, ValidationWidget
+  SignatureRequestItemWeb, SignatureRequestViewWeb, SignatureResponseWeb, SignatureRequestResponseWeb, ValidationWidget, 
+  PersonalIdClaim
 } from "./component"
 import { signatureExtension } from "./ext"
-import { REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE } from "./types"
+import { REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_CRED_PERSONALID, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE } from "./types"
 import { getSignatureRequestFromPresentation, getSignatureRequestOwner } from "./util"
 
 
@@ -156,6 +157,16 @@ export const signatureWebExtension = buildUIExtension(signatureExtension, (purpo
           return [{
             com: ValidationWidget(signatureExtension),
             extensionCode: `${signatureExtension.schema.details.code}ValidationWidget`,
+            params: {},
+            order: 0
+          }]
+      }
+    case EXRENSION_ITEM_PURPOSE_INPUT_DETAILS:
+      switch (type) {
+        case REGOV_CRED_PERSONALID:
+          return [{
+            com: PersonalIdClaim(signatureExtension),
+            extensionCode: `${signatureExtension.schema.details.code}PersonalIdClaim`,
             params: {},
             order: 0
           }]

@@ -54,6 +54,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
     defaultValues: {
       membership: {
         group: groupSubjet,
+        evidences: {},
         claim: {
           groupId: group ? group.id : '',
           role: '',
@@ -168,9 +169,8 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
           <MainTextOutput {..._props} field="membership.claim.groupId" showHint />
           <MainTextInput {..._props} field="membership.claim.role" />
           <MainTextInput {..._props} field="membership.claim.description" />
-          <CredentialListInput ns={ns} config={{
-            // prefix: 'claim',
-            items: [{ plural: true, max: 5, field: 'evidence', arbitraryEvidence: true }]
+          <CredentialListInput ns={ns} field="membership.evidences" config={{
+            prefix: 'claim', items: [{ plural: true, max: 5, field: 'evidence', arbitraryEvidence: true }]
           }} />
           <MainTextOutput {...props} field="membership.claim.createdAt" showHint formatter={dateFormatter} />
           <AlertOutput {...props} field="membership.claim.alert" />
@@ -193,6 +193,7 @@ export type MembershipClaimProps = RegovComponentProps<MembershipClaimParams>
 export type MembershipClaimFields = {
   membership: {
     group: GroupSubject | undefined
+    evidences: { evidence: unknown[] }
     claim: MembershipSubject & {
       alert?: string
     }

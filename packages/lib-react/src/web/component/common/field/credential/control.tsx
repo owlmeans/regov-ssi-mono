@@ -1,11 +1,13 @@
 import React, { Fragment } from "react"
+
 import { useTranslation } from "react-i18next"
 import {
   EXRENSION_ITEM_PURPOSE_INPUT_DETAILS, UIExtensionFactoryProduct, UIExtensionRegistry
 } from "../../../../../extension"
 import { CredentialListItemInput } from "./item"
 import {
-  CredentialListConfig, CredentialListControl, CredentialListInputDetailsProps, CredentialListItemConfig, CredentialListItemControl, ERROR_CREDENTIAL_INPUT_NO_FIELD
+  CredentialListConfig, CredentialListControl, CredentialListInputDetailsProps, CredentialListItemConfig,
+  CredentialListItemControl, ERROR_CREDENTIAL_INPUT_NO_FIELD
 } from "./types"
 
 
@@ -28,15 +30,27 @@ export const buildCredentialListControl = (config: CredentialListConfig, extensi
       })
     },
 
-    openDetails: (field, ns) => {
+    openDetails: (field, index, ns) => {
       const _field = typeof field === 'string' ? config.items.find(item => item.field === field) : field
       if (!_field) {
         throw new Error(ERROR_CREDENTIAL_INPUT_NO_FIELD)
       }
+
+      const fieldControl = control.getItemControl(_field.field, index)
+
+      const props: CredentialListInputDetailsProps = {
+        config: _field, control, index, ns,
+        close: () => control.closeDetails(),
+        finish: cred => {
+          fieldControl.setValue(cred)
+          control.closeDetails()
+        }
+      }
+
       const coms = extensions?.produceComponent(
-        EXRENSION_ITEM_PURPOSE_INPUT_DETAILS, _field.type
+        EXRENSION_ITEM_PURPOSE_INPUT_DETAILS, fieldControl.getType()
       ) as UIExtensionFactoryProduct<CredentialListInputDetailsProps>[]
-      const props = { config: _field, control, ns }
+
       if (coms.length) {
         const Renderer = coms[0].com
 
@@ -67,6 +81,10 @@ export const buildCredentialListControl = (config: CredentialListConfig, extensi
           setType: type => {
             _items[key].type = type
             _notify && _notify()
+          },
+          setValue: value => {
+            _items[key].value = value
+            _notify && _notify()
           }
         }
       }
@@ -80,7 +98,19 @@ export const buildCredentialListControl = (config: CredentialListConfig, extensi
 
     setDialogContentProvider: callback => control.setContent = callback,
 
-    setNotifier: notifier => _notify = notifier
+    setNotifier: notifier => _notify = notifier,
+
+    getValues: () => config.items.reduce(
+      (result, item) => {
+        return {
+          ...result,
+          [item.field]: item.plural
+            ? Object.entries(_items).filter(([, ctrl]) => ctrl.field === item.field)
+              .map(([, ctrl]) => ctrl.value)
+            : _items[item.field].value
+        }
+      }, {}
+    )
   }
 
   return control
