@@ -69,12 +69,12 @@ export const defaultSignMethod: SignMethodBuilder = schema =>
       if (!signerKey) {
         throw ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED
       }
-    await params.extensions?.triggerEvent<ExtensionEventBeforeSigningDid>(
-      wallet, EVENT_EXTENSION_BEFORE_SIGNING_DID, {
-      unsigned: unsignedDid,
-      cred: unsigned,
-      key: signerKey
-    })
+      await params.extensions?.triggerEvent<ExtensionEventBeforeSigningDid>(
+        wallet, EVENT_EXTENSION_BEFORE_SIGNING_DID, {
+        unsigned: unsignedDid,
+        cred: unsigned,
+        key: signerKey
+      })
       unsigned.holder = await wallet.ssi.did.helper().signDID(
         signerKey, unsignedDid, VERIFICATION_KEY_CONTROLLER
       )

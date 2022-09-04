@@ -170,7 +170,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
           <MainTextInput {..._props} field="membership.claim.description" />
           <CredentialListInput ns={ns} config={{
             // prefix: 'claim',
-            items: [{ type: '', plural: true, max: 5, field: 'evidence' }]
+            items: [{ plural: true, max: 5, field: 'evidence', arbitraryEvidence: true }]
           }} />
           <MainTextOutput {...props} field="membership.claim.createdAt" showHint formatter={dateFormatter} />
           <AlertOutput {...props} field="membership.claim.alert" />

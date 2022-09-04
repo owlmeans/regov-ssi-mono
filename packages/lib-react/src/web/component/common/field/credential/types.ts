@@ -1,3 +1,4 @@
+import { MaybeArray } from "@owlmeans/regov-ssi-core"
 import { ReactNode, FunctionComponent } from "react"
 import { EmptyProps } from "../../../../../common"
 
@@ -13,11 +14,21 @@ export type CredentialListConfig = {
 
 export type CredentialListItemConfig = {
   readOnly?: boolean
-  type: string
-  plural: boolean
-  max: number
+  type?: MaybeArray<string>
+  plural?: boolean
+  max?: number
   field: string
   prefix?: string
+  arbitraryEvidence?: boolean
+}
+
+export type CredentialListItemControl = {
+  field: string
+  index?: number
+  type?: MaybeArray<string>
+  getMainConfig: () => CredentialListConfig
+  getType: () => undefined | MaybeArray<string>
+  setType: (type: MaybeArray<string>) => void
 }
 
 export type CredentialListInputDetailsProps = EmptyProps & {
@@ -28,8 +39,13 @@ export type CredentialListInputDetailsProps = EmptyProps & {
 export type CredentialListInputDetails = FunctionComponent<CredentialListInputDetailsProps>
 
 export type CredentialListItemInputProps = EmptyProps & {
+  index?: number
   config: CredentialListItemConfig
   control: CredentialListControl
+}
+
+export type CredentialListItemTypeSelectorProps = EmptyProps & {
+  control: CredentialListItemControl
 }
 
 export type CredentialListControl = {
@@ -40,6 +56,8 @@ export type CredentialListControl = {
   setDialogContentProvider: (callback: (content: ReactNode) => void) => void
   openDetails: (field: string | CredentialListItemConfig, ns?: string) => void
   closeDetails: () => void
+  getItemControl: (field: string, index?: number) => CredentialListItemControl
+  setNotifier: (notifier: () => void) => void
 }
 
 export const isCredentialListControl = (obj: Object): obj is CredentialListControl => obj && 'renderFields' in obj

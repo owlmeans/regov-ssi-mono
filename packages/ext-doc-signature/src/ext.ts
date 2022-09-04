@@ -63,6 +63,7 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
     selfIssuing: true,
     claimable: false,
     listed: true,
+    arbitraryEvidence: true,
   },
   [REGOV_SIGNATURE_REQUEST_TYPE]: {
     mainType: REGOV_SIGNATURE_REQUEST_TYPE,

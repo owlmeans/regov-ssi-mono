@@ -62,6 +62,7 @@ export type CredentialDescription<
     requestType?: string
     responseType?: string
     defaultSubject?: Subject
+    arbitraryEvidence?: boolean
   }
 
 export type CredentialEvidenceDesctiption = {
