@@ -110,7 +110,17 @@ export const buildCredentialListControl = (config: CredentialListConfig, extensi
             : _items[item.field].value
         }
       }, {}
-    )
+    ),
+
+    setValues: values => {
+      Object.entries(values).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((val, idx) => control.getItemControl(key, idx).value = val)
+        } else {
+          control.getItemControl(key).value = value
+        }
+      })
+    }
   }
 
   return control

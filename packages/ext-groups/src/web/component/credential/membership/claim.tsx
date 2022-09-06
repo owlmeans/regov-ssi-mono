@@ -17,7 +17,7 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 
 import {
-  Credential, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, UnsignedCredential
+  Credential, getCompatibleSubject, Presentation, RegistryItem, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, singleValue, UnsignedCredential
 } from '@owlmeans/regov-ssi-core'
 import {
   CredentialListInput,
@@ -54,7 +54,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
     defaultValues: {
       membership: {
         group: groupSubjet,
-        evidences: {},
+        evidences: { evidence: [] },
         claim: {
           groupId: group ? group.id : '',
           role: '',
@@ -127,7 +127,11 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
         unsignedMemberhip.evidence = addToValue(unsignedMemberhip.evidence, group)
       }
       const factory = ext.getFactory(unsignedMemberhip.type)
-      const claim = await factory.claim(handler.wallet, { unsignedClaim: unsignedMemberhip })
+      const claim = await factory.claim(handler.wallet, {
+        unsignedClaim: unsignedMemberhip,
+        evidenceClaims: data.membership.evidences.evidence.filter(ev => ev)
+          .map((ev: Presentation) => singleValue(ev.verifiableCredential)) as RegistryItem[]
+      })
 
       const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
       const item = await registry.addCredential(claim)

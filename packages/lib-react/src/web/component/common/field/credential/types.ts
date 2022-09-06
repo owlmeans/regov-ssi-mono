@@ -68,6 +68,7 @@ export type CredentialListControl = {
   getItemControl: (field: string, index?: number) => CredentialListItemControl
   setNotifier: (notifier: () => void) => void
   getValues: () => { [key: string]: MaybeArray<RegistryItem> }
+  setValues: (values: { [key: string]: MaybeArray<RegistryItem> }) => void
 }
 
 export const isCredentialListControl = (obj: Object): obj is CredentialListControl => obj && 'renderFields' in obj

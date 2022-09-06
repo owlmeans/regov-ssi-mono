@@ -161,7 +161,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
     verifyCredential: async (credential, didDoc, options) => {
       const keyId = typeof options === 'string' ? options : options?.keyId
       if (!didDoc) {
-        didDoc = credential.issuer as DIDDocument
+        didDoc = credential.issuer as DIDDocument // || credential.holder as DIDDocument
       }
       if (typeof didDoc !== 'object') {
         didDoc = await did.lookUpDid<DIDDocument>(didDoc)
@@ -293,14 +293,14 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       if (did.helper().isDIDDocument(presentation.holder)) {
         const pubKey = singleValue(presentation.holder.verificationMethod)?.publicKeyBase58
         const unknownIdAndStates = normalizeValue(presentation.verifiableCredential).map(cred => {
-          if (did.helper().isDIDDocument(cred.issuer)) {
+          if (cred.issuer && did.helper().isDIDDocument(cred.issuer)) {
             if (normalizeValue(cred.issuer.verificationMethod).some(
               method => method?.publicKeyBase58 === pubKey
             )) {
               return [cred.id, true]
             }
           }
-          if (did.helper().isDIDDocument(cred.holder)) {
+          if (cred.holder && did.helper().isDIDDocument(cred.holder)) {
             if (normalizeValue(cred.holder.verificationMethod).some(
               method => method?.publicKeyBase58 === pubKey
             )) {

@@ -15,7 +15,7 @@
  */
 
 import { addToValue } from "../../../common"
-import { isCredential } from "../../../vc"
+import { isCredential, Credential } from "../../../vc"
 import { DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_HOLDER } from "../../../did"
 import { ClaimMethodBuilder } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
@@ -62,7 +62,7 @@ export const defaultClaimMethod: ClaimMethodBuilder = schema =>
 
     const helper = wallet.did.helper()
 
-    const unsignedClaim = await wallet.ssi.buildPresentation([cred], {
+    const unsignedClaim = await wallet.ssi.buildPresentation([cred, ...(params.evidenceClaims as Credential[] || [])], {
       holder, type: schema.claimType,
       id: helper.parseDIDId(
         helper.makeDIDId(signerKey, { data: JSON.stringify([cred]), hash: true })

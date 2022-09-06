@@ -9,13 +9,20 @@ import { useFormContext } from "react-hook-form"
 
 export const CredentialListInput: FunctionComponent<CredentialListInputProps> =
   ({ field, config, ns }: CredentialListInputProps) => {
-    const { setValue } = useFormContext()
+    const { setValue, getValues } = useFormContext()
     const { extensions } = useRegov()
     const [notification, setNotification] = useState(0)
+
     const control = useMemo(
-      () => isCredentialListControl(config) ? config : buildCredentialListControl(config, extensions),
-      [config]
+      () => {
+        const control = isCredentialListControl(config) ? config : buildCredentialListControl(config, extensions)
+        control.setValues(getValues(field))
+
+        return control
+      },
+      [field, config]
     )
+
     control.setNotifier(() => {
       setValue && setValue(field, control.getValues())
       setNotification(notification + 1)
