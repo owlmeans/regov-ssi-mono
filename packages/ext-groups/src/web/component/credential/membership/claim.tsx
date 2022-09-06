@@ -17,10 +17,11 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 
 import {
-  Credential, getCompatibleSubject, Presentation, RegistryItem, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, singleValue, UnsignedCredential
+  Credential, getCompatibleSubject, Presentation, RegistryItem, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, 
+  singleValue, UnsignedCredential
 } from '@owlmeans/regov-ssi-core'
 import {
-  CredentialListInput,
+  // CredentialListInput,
   EmptyProps, generalNameVlidation, RegovComponentProps, useNavigator, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
@@ -41,7 +42,7 @@ import DialogContent from '@mui/material/DialogContent'
 export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withRegov<
   MembershipClaimProps, ListNavigator
 >({ namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
-  const { group, t, i18n, ext, ns } = props
+  const { group, t, i18n, ext /*, ns */ } = props
   const { handler, extensions } = useRegov()
   const navigate = useNavigate()
   const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
@@ -173,9 +174,9 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
           <MainTextOutput {..._props} field="membership.claim.groupId" showHint />
           <MainTextInput {..._props} field="membership.claim.role" />
           <MainTextInput {..._props} field="membership.claim.description" />
-          <CredentialListInput ns={ns} field="membership.evidences" config={{
+          {/* <CredentialListInput ns={ns} field="membership.evidences" config={{
             prefix: 'claim', items: [{ plural: true, max: 5, field: 'evidence', arbitraryEvidence: true }]
-          }} />
+          }} /> */}
           <MainTextOutput {...props} field="membership.claim.createdAt" showHint formatter={dateFormatter} />
           <AlertOutput {...props} field="membership.claim.alert" />
           <FormMainAction {...props} title="membership.claim.create" action={methods.handleSubmit(claim)} />
