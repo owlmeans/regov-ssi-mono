@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-import { MaybeArray, normalizeValue } from "../../../common"
+import { MaybeArray, normalizeValue, singleValue } from "../../../common"
 import { Credential } from "../../../vc"
 import {
   buildWalletLoader, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CLAIMS,
   REGISTRY_TYPE_IDENTITIES, REGISTRY_TYPE_REQUESTS
 } from "../../../wallet"
-import { ERROR_CANT_IDENTIFY_CREDENTIAL } from "./types"
+import { ERROR_CANT_IDENTIFY_CREDENTIAL, ERROR_NO_CREDENTIAL_PROVIDED } from "./types"
 import {
   EvidenceValidationResult, ValidationErrorCause, ValidateMethodBuilder,
   VALIDATION_KIND_OFFER, VALIDATION_KIND_RESPONSE
@@ -33,6 +33,9 @@ export const defaultValidateMethod: ValidateMethodBuilder = schema =>
     let presentationResult: boolean = true
     let presentationCause: undefined | MaybeArray<string | ValidationErrorCause> = undefined
     if (presentation) {
+      if (!credential) {
+        credential = singleValue(presentation.verifiableCredential)
+      }
       const [result, info] = await wallet.ssi.verifyPresentation(presentation, undefined, {
         localLoader: buildWalletLoader(wallet),
         testEvidence: true,
@@ -64,6 +67,10 @@ export const defaultValidateMethod: ValidateMethodBuilder = schema =>
             break
         }
       }
+    }
+
+    if (!credential) {
+      throw ERROR_NO_CREDENTIAL_PROVIDED
     }
 
     const [result, info] = await wallet.ssi.verifyCredential(credential, undefined, {

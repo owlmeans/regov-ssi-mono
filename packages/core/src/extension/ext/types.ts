@@ -112,7 +112,7 @@ export type ValidateMethod = <
 
 export type ValidateMethodParams = {
   presentation?: Presentation
-  credential: Credential
+  credential?: Credential
   extensions: ExtensionRegistry
   kind?: ValidationKind
 }

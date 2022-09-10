@@ -27,6 +27,7 @@ import {
   ServerAppConfig,
   ServerEventProduceIdentityParams
 } from './types'
+import { reviveJson } from '../utils'
 
 
 const _bindings = new WeakMap<Request, RegovServerApp>()
@@ -107,7 +108,9 @@ export const buildApp = async (
     }
   }
 
-  _app.app.use(bodyParser.json())
+  _app.app.use(bodyParser.json({
+    reviver: reviveJson
+  }))
   // _app.app.use(bodyParser.urlencoded({ extended: true }))
 
   _app.app.use((req, res, next) => {
