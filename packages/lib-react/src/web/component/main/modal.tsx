@@ -27,6 +27,15 @@ export const MainModalWeb: FunctionComponent<MainModalImplProps> = props => {
     setCounter(counter + 1)
     setOpen(value)
   }
+  handle.open = content => {
+    handle.getContent = content
+    if (handle.setOpen) {
+      handle.setOpen(true)
+      return true
+    }
+
+    return false
+  }
 
   return <Dialog open={isOpened} onClose={() => setOpen(false)} scroll="paper" fullWidth maxWidth="xl">
     {handle.getContent ? handle.getContent() : undefined}

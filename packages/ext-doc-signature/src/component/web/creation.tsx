@@ -16,11 +16,10 @@
 
 import {
   EmptyProps, generalNameVlidation, RegovComponentProps, urlVlidation, useRegov, withRegov,
-  humanReadableVersion, useNavigator, generalIdVlidation
+  humanReadableVersion, useNavigator, generalIdVlidation, trySubmit, FileProcessorMethod
 } from '@owlmeans/regov-lib-react'
 import {
-  AlertOutput, dateFormatter, FileProcessorWeb, FormMainAction, LongTextInput, MainTextInput,
-  MainTextOutput, PrimaryForm, WalletFormProvider, partialListNavigator, ListNavigator, CredentialSelector
+  FileProcessorWeb, FormMainAction, PrimaryForm, WalletFormProvider, partialListNavigator, ListNavigator
 } from '@owlmeans/regov-lib-react'
 import { CredentialsRegistryWrapper, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-core'
@@ -31,7 +30,7 @@ import {
   DOCUMENT_TYPE_JSON, DOCUMENT_TYPE_TEXT, DOCUMENT_TYPE_BINARY, REGOV_CREDENTIAL_TYPE_SIGNATURE,
   ERROR_WIDGET_AUTHENTICATION, SignatureSubject
 } from '../../types'
-import { typeFormatterFacotry } from '../formatter'
+import { SignatureCreationFieldsWeb } from './creation/fields'
 const isUtf8 = require('is-utf8') as (arg: any) => boolean
 
 
@@ -81,82 +80,69 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
       }
     }, [registry?.registry.credentials[REGISTRY_SECTION_OWN].length])
 
-    const create = async (data: SignatureCreationFields) => {
-      const loader = await navigator?.invokeLoading()
-      try {
-        if (!handler.wallet) {
-          throw ERROR_WIDGET_AUTHENTICATION
-        }
-
-        const subject = Object.fromEntries(
-          Object.entries(data.signature.creation).filter(([key]) => ![
-            'alert', 'file', 'identity'
-          ].includes(key))
-        )
-
-        const identity = registry.getCredential(data.signature.creation.identity)?.credential
-
-        const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
-        const unsigned = await factory.build(handler.wallet, {
-          extensions: extensions?.registry,
-          identity, subjectData: {
-            ...subject,
-            signedAt: new Date().toISOString()
-          }
-        })
-        const credential = await factory.sign(handler.wallet, {
-          unsigned,
-          evidence: identity
-        })
-
-        const credRegistry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
-        const item = await credRegistry.addCredential(credential)
-        item.meta.title = data.signature.creation.name
-
-        loader?.success(t('signature.creation.success'))
-
-        handler.notify()
-
-        if (item.credential.id) {
-          await navigator.item(REGISTRY_TYPE_CREDENTIALS, {
-            section: REGISTRY_SECTION_OWN,
-            id: item.credential.id
-          })
-        } else {
-          next()
-        }
-      } catch (error) {
-        loader?.error(error.message)
-        methods.setError('signature.creation.alert', { type: error.message })
-      } finally {
-        loader?.finish()
+    const create = trySubmit<SignatureCreationFields>({
+      navigator, methods, errorField: 'signature.creation.alert'
+    }, async ({ loader }, data: SignatureCreationFields) => {
+      if (!handler.wallet) {
+        throw ERROR_WIDGET_AUTHENTICATION
       }
-    }
 
-    const processFile = async () => {
-      const loader = await navigator?.invokeLoading()
-      try {
-        const content = methods.getValues('signature.creation.file')
-        const encoder = new TextEncoder()
-        methods.setValue('signature.creation.creationDate', new Date().toISOString())
-        setFileContent(encoder.encode(content))
-        if (handler && handler.wallet) {
-          methods.setValue('signature.creation.documentHash', handler.wallet.ssi.crypto.hash(content))
-        }
+      const subject = Object.fromEntries(
+        Object.entries(data.signature.creation).filter(([key]) => ![
+          'alert', 'file', 'identity'
+        ].includes(key))
+      )
 
-        const obj = JSON.parse(content)
-        if (obj) {
-          setIsCode(true)
-          methods.setValue('signature.creation.docType', DOCUMENT_TYPE_JSON)
+      const identity = registry.getCredential(data.signature.creation.identity)?.credential
+
+      const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
+      const unsigned = await factory.build(handler.wallet, {
+        extensions: extensions?.registry,
+        identity, subjectData: {
+          ...subject,
+          signedAt: new Date().toISOString()
         }
-      } catch (error) {
-        loader?.error(error.message)
-        methods.setValue('signature.creation.docType', DOCUMENT_TYPE_TEXT)
-        console.error(error)
-      } finally {
-        loader?.finish()
+      })
+      const credential = await factory.sign(handler.wallet, {
+        unsigned,
+        evidence: identity
+      })
+
+      const credRegistry = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
+      const item = await credRegistry.addCredential(credential)
+      item.meta.title = data.signature.creation.name
+
+      loader?.success(t('signature.creation.success'))
+
+      handler.notify()
+
+      if (item.credential.id) {
+        await navigator.item(REGISTRY_TYPE_CREDENTIALS, {
+          section: REGISTRY_SECTION_OWN,
+          id: item.credential.id
+        })
+      } else {
+        next()
       }
-    }
+    })
+
+    const processFile = trySubmit<SignatureCreationFields>({
+      navigator, onError: async () => methods.setValue('signature.creation.docType', DOCUMENT_TYPE_TEXT)
+    }, async () => {
+      const content = methods.getValues('signature.creation.file')
+      const encoder = new TextEncoder()
+      methods.setValue('signature.creation.creationDate', new Date().toISOString())
+      setFileContent(encoder.encode(content))
+      if (handler && handler.wallet) {
+        methods.setValue('signature.creation.documentHash', handler.wallet.ssi.crypto.hash(content))
+      }
+
+      const obj = JSON.parse(content)
+      if (obj) {
+        setIsCode(true)
+        methods.setValue('signature.creation.docType', DOCUMENT_TYPE_JSON)
+      }
+    }) as FileProcessorMethod
 
     const onDrop = async (files: File[]) => {
       const loader = await navigator?.invokeLoading()
@@ -232,28 +218,12 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
           ? <PrimaryForm {..._props} title="signature.creation.title">
             <FileProcessorWeb {..._props} field="signature.creation.file"
               isCode={isCode} onDrop={onDrop} process={processFile} />
+
           </PrimaryForm>
           : <PrimaryForm {..._props} title="signature.creation.title">
-            <MainTextInput {..._props} field="signature.creation.name" />
-            <LongTextInput {..._props} field="signature.creation.description" />
-            <MainTextInput {..._props} field="signature.creation.url" />
-            <MainTextInput {..._props} field="signature.creation.version" />
-            <MainTextInput {..._props} field="signature.creation.author" />
-            <MainTextInput {..._props} field="signature.creation.authorId" />
-            <MainTextOutput {..._props} field="signature.creation.documentHash" showHint />
-            <MainTextOutput {..._props} field="signature.creation.docType" showHint formatter={
-              typeFormatterFacotry(t)
-            } />
-            {
-              filename && filename !== ''
-              && <MainTextOutput {..._props} field="signature.creation.filename" showHint />
-            }
-            <MainTextOutput {..._props} field="signature.creation.creationDate" showHint formatter={dateFormatter} />
-
-            <AlertOutput {..._props} field="signature.creation.alert" />
-
-            <CredentialSelector {...props} field="signature.creation.identity"
-              credentials={identities} defaultId={defaultId} />
+            <SignatureCreationFieldsWeb fieldProps={_props} selectorProps={{
+              ...props, credentials: identities, defaultId
+            }} filename={filename} />
 
             <FormMainAction {..._props} title="signature.creation.create" action={methods.handleSubmit(create)} />
           </PrimaryForm>

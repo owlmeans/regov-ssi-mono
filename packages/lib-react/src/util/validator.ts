@@ -74,6 +74,14 @@ export const generalIdVlidation = (required: boolean = true) => ({
   maxLength: 1024
 })
 
+export const generalDidIdValidation = (required: boolean = true) => ({
+  required,
+  maxLength: 2028,
+  validate: {
+    pattern: (v: string) => v.startsWith('did:')
+  }
+})
+
 export const urlVlidation = (required: boolean = false) => ({
   validate: {
     url: (v: string) => {

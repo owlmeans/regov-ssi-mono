@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import { 
-  Credential, DIDDocument, EventParams, Presentation, WalletWrapper 
-} from "@owlmeans/regov-ssi-core"
+import {
+  Credential, DIDDocument, EventParams, IncommigDocumentEventParams, Presentation, WalletWrapper
+} from '@owlmeans/regov-ssi-core'
 import { JWE } from 'did-jwt'
 
 
@@ -55,6 +55,10 @@ export type DIDCommConnectMeta = {
   recipient?: DIDDocument
   channel?: string
   allowAsync?: boolean
+}
+
+export type IncommigDocumentWithConn = IncommigDocumentEventParams & {
+  conn?: DIDCommConnectMeta
 }
 
 export type DIDCommConnectMetaKeys = keyof DIDCommConnectMeta
@@ -118,7 +122,7 @@ export type InitCommEventParams = EventParams & {
   rejectConnection?: (err: any) => Promise<void>
 }
 
-export type CommConnectionStatusHandler = { 
+export type CommConnectionStatusHandler = {
   established: boolean
   helper?: DIDCommHelper
   defaultListener?: DIDCommListner

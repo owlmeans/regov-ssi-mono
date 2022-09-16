@@ -112,6 +112,7 @@ export type CredentialListNavigator = BasicNavigator & {
   menu?: WalletNavigatorMenuMethod<CredentialListNavigatorItem, CredentialListNavigatorParams>
   create?: WalletNavigatorMenuMethod<string>
   request?: WalletNavigatorMenuMethod<string>
+  claim?: WalletNavigatorMenuMethod<string>
 }
 
 export type CredentialListNavigatorItem = RegistryType

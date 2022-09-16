@@ -94,7 +94,7 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
       const presentation: Presentation = req.body
 
       const factory = authExtension.getFactory(REGOV_AUTH_RESPONSE_TYPE)
-      const result = factory.validate(handler.wallet, {
+      const result = await factory.validate(handler.wallet, {
         presentation,
         extensions: extensions.registry,
         kind: VALIDATION_KIND_RESPONSE

@@ -21,7 +21,7 @@ import {
 import {
   BASIC_IDENTITY_TYPE, RegovSignatureCredential, REGOV_CLAIM_PRESONALID, REGOV_CLAIM_TYPE_SIGNATURE, REGOV_CREDENTIAL_TYPE_SIGNATURE,
   REGOV_CRED_PERSONALID,
-  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_OFFER_PRESONALID, REGOV_OFFER_TYPE_SIGNATURE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE
+  REGOV_EXT_SIGNATURE_NAMESPACE, REGOV_OFFER_PRESONALID, REGOV_OFFER_TYPE_SIGNATURE, REGOV_SIGNATURE_CLAIM_TYPE, REGOV_SIGNATURE_OFFER_TYPE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE
 } from "./types"
 import { isCredential, isPresentation, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS } from "@owlmeans/regov-ssi-core"
 import enCommon from './i18n/en/common.json'
@@ -62,6 +62,8 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
     },
     requestType: REGOV_SIGNATURE_REQUEST_TYPE,
     registryType: REGISTRY_TYPE_CREDENTIALS,
+    claimType: REGOV_SIGNATURE_CLAIM_TYPE,
+    offerType: REGOV_SIGNATURE_OFFER_TYPE,
     selfIssuing: true,
     claimable: false,
     listed: true
@@ -126,6 +128,14 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
   [REGOV_OFFER_PRESONALID]: {
     mainType: REGOV_OFFER_PRESONALID,
     credentialContext: {}
+  },
+  [REGOV_SIGNATURE_CLAIM_TYPE]: {
+    mainType: REGOV_SIGNATURE_CLAIM_TYPE,
+    credentialContext: {}
+  },
+  [REGOV_SIGNATURE_OFFER_TYPE]: {
+    mainType: REGOV_SIGNATURE_OFFER_TYPE,
+    credentialContext: {}
   }
 })
 
@@ -139,6 +149,8 @@ signatureExtensionSchema = addObserverToSchema(signatureExtensionSchema, {
     if (isPresentation(params.credential)) {
       return normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_REQUEST_TYPE)
         || normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_RESPONSE_TYPE)
+        || normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_CLAIM_TYPE)
+        || normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_OFFER_TYPE)
     }
 
     return false
@@ -152,7 +164,9 @@ export const signatureExtension = buildExtension(
   [REGOV_SIGNATURE_RESPONSE_TYPE]: {},
   [REGOV_CRED_PERSONALID]: {},
   [REGOV_CLAIM_PRESONALID]: {},
-  [REGOV_OFFER_PRESONALID]: {}
+  [REGOV_OFFER_PRESONALID]: {},
+  [REGOV_SIGNATURE_CLAIM_TYPE]: {},
+  [REGOV_SIGNATURE_OFFER_TYPE]: {}
 })
 signatureExtension.localization = {
   ns: REGOV_EXT_SIGNATURE_NAMESPACE,

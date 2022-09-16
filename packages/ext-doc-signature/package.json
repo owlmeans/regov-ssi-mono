@@ -39,6 +39,7 @@
     "@mui/material": "*",
     "@owlmeans/regov-lib-react": "^0.2.9",
     "@owlmeans/regov-ssi-core": "^0.6.9",
+    "@owlmeans/regov-comm": "^0.2.13",
     "i18next": "^21.4.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

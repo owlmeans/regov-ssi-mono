@@ -39,6 +39,7 @@ export const EXTENSION_ITEM_PURPOSE_EVIDENCE = 'evidence'
 export const EXTENSION_ITEM_PURPOSE_VALIDATION = 'validation'
 export const EXTENSION_ITEM_PURPOSE_CREATION = 'creation'
 export const EXTENSION_ITEM_PURPOSE_REQUEST = 'request'
+export const EXTENSION_ITEM_PURPOSE_CLAIM = 'claim'
 export const EXTENSION_ITEM_PURPOSE_TOP_ACTION = 'top_action'
 
 

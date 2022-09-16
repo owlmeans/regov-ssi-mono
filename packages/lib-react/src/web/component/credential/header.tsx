@@ -19,7 +19,7 @@ import {
   castMenuItemParams, CredentialListNavigator, EmptyProps, ManuItemParams, MenuActionResult, RegovComponentProps,
   useNavigator, useRegov, withRegov
 } from '../../../common'
-import { MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW, NewCredentailMenuItem } from '../../extension/types'
+import { MENU_TAG_CLAIM_NEW, MENU_TAG_CRED_NEW, MENU_TAG_REQUEST_NEW, NewCredentailMenuItem } from '../../extension/types'
 import { TFunction } from 'i18next'
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline'
 import Drafts from '@mui/icons-material/Drafts'
@@ -35,7 +35,7 @@ import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
 
 
-type SvgIconComponent = typeof SvgIcon 
+type SvgIconComponent = typeof SvgIcon
 
 export const CredentialHeader = withRegov<
   CredentialHeaderProps, CredentialListNavigator
@@ -46,8 +46,10 @@ export const CredentialHeader = withRegov<
   const { extensions } = useRegov()
   const createMenuList = extensions?.getMenuItems(MENU_TAG_CRED_NEW)
   const requestMenuList = extensions?.getMenuItems(MENU_TAG_REQUEST_NEW)
+  const claimMenuList = extensions?.getMenuItems(MENU_TAG_CLAIM_NEW)
   const [openCreation, setOpenCreation] = useState<boolean>(false)
   const [openRequest, setOpenRequest] = useState<boolean>(false)
+  const [openClaim, setOpenClaim] = useState<boolean>(false)
 
   return <Fragment>
     <Grid container direction="row" justifyContent="flex-end" alignItems="flex-start" columnSpacing={2}
@@ -59,6 +61,10 @@ export const CredentialHeader = withRegov<
       <Grid item>
         <Button variant="outlined" color="primary"
           onClick={() => setOpenRequest(true)}>{`${t('header.request')}`}</Button>
+      </Grid>
+      <Grid item>
+        <Button variant="outlined" color="primary"
+          onClick={() => setOpenClaim(true)}>{`${t('header.claim')}`}</Button>
       </Grid>
     </Grid>
     <HeaderMenu open={openCreation} t={t} setOpen={setOpenCreation} menuList={createMenuList}
@@ -73,6 +79,13 @@ export const CredentialHeader = withRegov<
         if (res.params && navigator.request) {
           const params = res.params as NewCredentailMenuItem
           navigator.request(`${params.ext}/${params.type}`)
+        }
+      }} />
+    <HeaderMenu open={openClaim} t={t} setOpen={setOpenClaim} menuList={claimMenuList}
+      Icon={Drafts} title="header.claim-dialog.title" action={async res => {
+        if (res.params && navigator.claim) {
+          const params = res.params as NewCredentailMenuItem
+          navigator.claim(`${params.ext}/${params.type}`)
         }
       }} />
   </Fragment>

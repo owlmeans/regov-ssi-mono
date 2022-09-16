@@ -29,6 +29,9 @@ export const REGOV_OFFER_PRESONALID = 'OwlMeans:RegovStd:PersonalId:Offer'
 export const REGOV_SIGNATURE_REQUEST_TYPE = 'OwlMeans:Regov:Signature:Request'
 export const REGOV_SIGNATURE_RESPONSE_TYPE = 'OwlMeans:Regov:Signature:Response'
 
+export const REGOV_SIGNATURE_CLAIM_TYPE = 'OwlMeans:Regov:Signature:Claim'
+export const REGOV_SIGNATURE_OFFER_TYPE = 'OwlMeans:Regov:Signature:Offer'
+
 export const BASIC_IDENTITY_TYPE = 'Identity'
 
 export const REGOV_EXT_SIGNATURE_NAMESPACE = 'owlmeans-regov-ext-doc-signature'
@@ -36,6 +39,10 @@ export const REGOV_EXT_SIGNATURE_NAMESPACE = 'owlmeans-regov-ext-doc-signature'
 export type RegovSignatureCredential = typeof REGOV_CREDENTIAL_TYPE_SIGNATURE
 
 export type RegovStdPersonalIdClaim = Presentation<Credential<PersonalIdSubject>>
+
+export type SignatureCredential = Credential<SignatureSubject>
+
+export type SignaturePresentation = Presentation<SignatureCredential>
 
 export type SignatureSubject = {
   name: string
