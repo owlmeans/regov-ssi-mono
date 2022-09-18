@@ -5,16 +5,21 @@ import {
 } from "@owlmeans/regov-lib-react"
 import React, { Fragment, FunctionComponent, PropsWithChildren, useEffect, useState } from "react"
 import { SignatureCreationFieldsWeb } from "./creation/fields"
-import { useForm } from 'react-hook-form'
+import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
 import { SignatureCreationFields } from "./creation"
 import { useTranslation } from "react-i18next"
-import { DIDDocument, ERROR_NO_IDENTITY, Extension, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES } from "@owlmeans/regov-ssi-core"
-import { ERROR_WIDGET_AUTHENTICATION, REGOV_CREDENTIAL_TYPE_SIGNATURE } from "../../types"
+import {
+  DIDDocument, ERROR_NO_IDENTITY, Extension, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES
+} from "@owlmeans/regov-ssi-core"
+import {
+  ERROR_WIDGET_AUTHENTICATION, REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_EXT_SIGNATURE_NAMESPACE
+} from "../../types"
 import { DIDCommConnectMeta, getDIDCommUtils } from "@owlmeans/regov-comm"
+import { isCreationMetaFields } from "./creation/types"
 
 
 export const SignatureClaimWeb = (ext: Extension): FunctionComponent<SignatureClaimWebProps> => props => {
-  const { t, i18n } = useTranslation(props.ns)
+  const { t, i18n } = useTranslation(props.ns || REGOV_EXT_SIGNATURE_NAMESPACE)
   const { handler, extensions } = useRegov()
   const navigator = useNavigator(basicNavigator)
 
@@ -32,7 +37,7 @@ export const SignatureClaimWeb = (ext: Extension): FunctionComponent<SignatureCl
           authorId: '',
           file: '',
           filename: '',
-          creationDate: '',
+          creationDate: new Date().toISOString(),
           documentHash: '',
           docType: '',
           alert: '',
@@ -77,9 +82,9 @@ export const SignatureClaimWeb = (ext: Extension): FunctionComponent<SignatureCl
       throw ERROR_WIDGET_AUTHENTICATION
     }
     const subject = Object.fromEntries(
-      Object.entries(data.signature.creation).filter(([key]) => ![
-        'alert', 'file', 'identity'
-      ].includes(key))
+      Object.entries(data.signature.creation).filter(
+        ([key]) => !isCreationMetaFields(key)
+      )
     )
 
     const identity = handler.wallet.getIdentityCredential(data.signature.creation.identity)
@@ -90,8 +95,8 @@ export const SignatureClaimWeb = (ext: Extension): FunctionComponent<SignatureCl
 
     const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
     const unsignedClaim = await factory.build(handler.wallet, {
-      extensions: extensions?.registry, identity, subjectData: { ...subject, signedAt: new Date().toISOString() },
-      evidence: identity
+      extensions: extensions?.registry, identity, 
+      subjectData: { ...subject, signedAt: new Date().toISOString() },
     })
 
     const claim = await factory.claim(handler.wallet, { unsignedClaim })
@@ -103,10 +108,17 @@ export const SignatureClaimWeb = (ext: Extension): FunctionComponent<SignatureCl
     }
 
     const connection = getDIDCommUtils(handler.wallet)
-
     await connection.send(await connection.connect(conn), claim)
 
-    props.close && props.close()
+    await handler.wallet.getClaimRegistry().addCredential(claim)
+
+    handler.notify()
+
+    if (props.close) {
+      props.close()
+    } else if (props.next) {
+      props.next()
+    }
   })
 
   return <Fragment>
@@ -114,7 +126,7 @@ export const SignatureClaimWeb = (ext: Extension): FunctionComponent<SignatureCl
       <PrimaryForm {...fieldProps} title="signature.claim.title">
         <SignatureCreationFieldsWeb fieldProps={fieldProps} selectorProps={{
           ...fieldProps, credentials: identities, defaultId
-        }}>
+        }} methods={methods as unknown as UseFormReturn<FieldValues>}>
           <MainTextInput {...fieldProps} field="signature.claim.issuerDid" />
         </SignatureCreationFieldsWeb>
 
@@ -125,12 +137,11 @@ export const SignatureClaimWeb = (ext: Extension): FunctionComponent<SignatureCl
 }
 
 
-export type SignatureClaimWebProps = PropsWithChildren<EmptyProps & {
-  close?: () => void
+export type SignatureClaimWebProps = PropsWithChildren<EmptyProps & { 
+  close?: () => void 
+  next?: () => void
 }>
 
 export type SignatureClaimFields = SignatureCreationFields & {
-  signature: {
-    claim: { issuerDid: string }
-  }
+  signature: { claim: { issuerDid: string } }
 }

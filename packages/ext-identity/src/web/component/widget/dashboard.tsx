@@ -16,7 +16,9 @@
 
 import React, { Fragment, useMemo } from 'react'
 
-import { CredentialWrapper, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
+import { 
+  CredentialWrapper, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES 
+} from '@owlmeans/regov-ssi-core'
 import { EmptyImplProps, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import { IdentitySubject } from '../../../types'
@@ -54,7 +56,11 @@ export const DashboardWidget = (ext: Extension) =>
           <Grid item>
             <MenuIconButton handle={handle} />
             <ItemMenu handle={handle} content={identityWrap.credential} i18n={i18n} prettyOutput
-              exportTitle={`${identityWrap.meta.title}.identity`} />
+              exportTitle={`${identityWrap.meta.title}.identity`} meta={{
+                id: identityWrap.credential.id,
+                registry: REGISTRY_TYPE_IDENTITIES,
+                section: REGISTRY_SECTION_OWN
+              }} />
           </Grid>
         </Grid>
       </Grid>

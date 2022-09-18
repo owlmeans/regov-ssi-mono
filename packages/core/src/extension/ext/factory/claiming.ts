@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { addToValue } from "../../../common"
+import { addToValue, normalizeValue } from "../../../common"
 import { isCredential, Credential } from "../../../vc"
 import { DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_HOLDER } from "../../../did"
 import { ClaimMethodBuilder } from "../types"
@@ -28,7 +28,9 @@ export const defaultClaimMethod: ClaimMethodBuilder = schema =>
     if (!identity) {
       throw ERROR_FACTORY_NO_IDENTITY
     }
-    unsigned.evidence = addToValue(unsigned.evidence, identity)
+    if (!normalizeValue(unsigned.evidence).find(cred => cred?.id === identity.id)) {
+      unsigned.evidence = addToValue(unsigned.evidence, identity)
+    }
 
     const unsignedDid = unsigned.holder as DIDDocumentUnsinged
     const signerKey = await wallet.ssi.did.helper().extractKey(unsignedDid, VERIFICATION_KEY_HOLDER)

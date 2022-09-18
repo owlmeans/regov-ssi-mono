@@ -4,23 +4,30 @@ import {
   basicNavigator, EmptyProps, generalDidIdValidation, generalIdVlidation, generalNameVlidation,
   humanReadableVersion, PrimaryForm, trySubmit, urlVlidation, useNavigator, useRegov, WalletFormProvider
 } from "@owlmeans/regov-lib-react"
-import { SignaturePresentation } from "../../types"
+import {
+  ERROR_WIDGET_AUTHENTICATION, REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_EXT_SIGNATURE_NAMESPACE,
+  SignatureCredential, SignaturePresentation
+} from "../../types"
 import { useTranslation } from "react-i18next"
 import { getSignatureCredentialClaimFromPresentation } from "../../util"
 import { SignatureCreationFields } from "./creation"
-import { useForm } from "react-hook-form"
-import { SignatureCreationFieldsWeb } from "./creation/fields"
+import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
+import { SignatureCreationFieldsWeb } from './creation/fields'
+import { useInboxRegistry } from '@owlmeans/regov-ext-comm'
 
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from "@mui/material/DialogActions"
 import Button from "@mui/material/Button"
-import { DIDCommConnectMeta } from "@owlmeans/regov-comm"
+import { DIDCommConnectMeta, getDIDCommUtils } from "@owlmeans/regov-comm"
+import { addToValue, DIDDocument, ERROR_NO_IDENTITY, Extension } from "@owlmeans/regov-ssi-core"
+import { isCreationMetaFields } from "./creation/types"
 
 
 export const SignatureOfferWeb: FunctionComponent<SignatureOfferWebProps> = props => {
-  const { claim } = props
+  const { claim, ext, conn } = props
   const navigator = useNavigator(basicNavigator)
-  const { t, i18n } = useTranslation(props.ns)
+  const inboxRegistry = useInboxRegistry()
+  const { t, i18n } = useTranslation(props.ns || REGOV_EXT_SIGNATURE_NAMESPACE)
   const { handler } = useRegov()
 
   const cred = getSignatureCredentialClaimFromPresentation(claim)
@@ -45,7 +52,7 @@ export const SignatureOfferWeb: FunctionComponent<SignatureOfferWebProps> = prop
 
   const identities = handler.wallet?.getIdentityWrappers() || []
 
-  const [defaultId, setDefaultId] = useState<string | undefined>(undefined)
+  const [defaultId, setDefaultId] = useState<string | undefined>(props.conn.sender.id)
 
   useEffect(() => {
     const id = handler.wallet?.getIdentity()?.credential.id
@@ -58,7 +65,44 @@ export const SignatureOfferWeb: FunctionComponent<SignatureOfferWebProps> = prop
 
   const offer = trySubmit<SignatureOfferFields>({
     navigator, methods, errorField: 'signature.creation.alert'
-  }, async () => {
+  }, async (_, data) => {
+    if (!handler.wallet) {
+      throw ERROR_WIDGET_AUTHENTICATION
+    }
+
+    const unsigned: SignatureCredential = JSON.parse(JSON.stringify(cred))
+    const identity = handler.wallet.getIdentityCredential(data.signature.offer.identity)
+
+    if (!identity) {
+      throw ERROR_NO_IDENTITY
+    }
+
+    const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_SIGNATURE)
+    unsigned.evidence = addToValue(unsigned.evidence, identity)
+
+    const offer = await factory.offer(handler.wallet, {
+      claim, credential: unsigned,
+      holder: unsigned.issuer as DIDDocument,
+      cryptoKey: await handler.wallet.keys.getCryptoKey(),
+      subject: {
+        ...unsigned.credentialSubject, ...Object.fromEntries(
+          Object.entries(data.signature.creation).filter(
+            ([key]) => !isCreationMetaFields(key)
+          )
+        )
+      },
+      id: claim.id as string,
+      challenge: claim.proof.challenge || '',
+      domain: claim.proof.domain || ''
+    })
+
+    await getDIDCommUtils(handler.wallet).send(conn, offer)
+
+    await inboxRegistry.removePeer(claim)
+
+    handler.notify()
+
+    props.close && props.close()
   })
 
   return <Fragment>
@@ -67,7 +111,8 @@ export const SignatureOfferWeb: FunctionComponent<SignatureOfferWebProps> = prop
         <PrimaryForm {...fieldProps} title="signature.offer.title">
           <SignatureCreationFieldsWeb fieldProps={fieldProps} selectorProps={{
             ...fieldProps, credentials: identities, defaultId
-          }} signatureField="signature.offer.identity" />
+          }} signatureField="signature.offer.identity"
+            methods={methods as unknown as UseFormReturn<FieldValues>} />
         </PrimaryForm>
       </WalletFormProvider>
     </DialogContent>
@@ -81,6 +126,7 @@ export type SignatureOfferWebProps = PropsWithChildren<EmptyProps & {
   close?: () => void
   claim: SignaturePresentation
   conn: DIDCommConnectMeta
+  ext: Extension
 }>
 
 export type SignatureOfferFields = SignatureCreationFields & {

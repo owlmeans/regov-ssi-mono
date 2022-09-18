@@ -15,19 +15,19 @@
  */
 
 import { addToValue, normalizeValue } from "../../../common"
-import { CredentialSchema, BASE_CREDENTIAL_TYPE, Credential } from "../../../vc"
+import { CredentialSchema, BASE_CREDENTIAL_TYPE } from "../../../vc"
 import { WalletWrapper } from "../../../wallet"
 import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION } from "../../../did"
 import { CredentialDescription } from "../../schema"
 import { BuildMethodParams } from "../types"
 import { EVENT_EXTENSION_AFTER_BULIDING_DID, ExtensionEventAfterBuildingDid } from "./types"
+import { CryptoKey } from '../../../common/crypto'
 
 
 export const defaultBuildMethod = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) =>
+>(schema: CredentialDescription<Schema>) =>
   async (wallet: WalletWrapper, params: BuildMethodParams) => {
-
     const subject = params.subjectData as any
 
     if (params.identity) {
@@ -36,15 +36,21 @@ export const defaultBuildMethod = <
       }
     }
 
-    const identityKey = params.identity && await wallet.ssi.did.extractKey(
+    const identityKey = params.identity && JSON.parse(JSON.stringify(await wallet.ssi.did.extractKey(
       params.identity.holder.hasOwnProperty('@context')
         ? params.identity.holder as DIDDocument
         : params.identity.issuer as unknown as DIDDocument
-    )
+    ))) as CryptoKey
 
-    identityKey && await wallet.ssi.keys.expandKey(identityKey)
+    if (identityKey) {
+      await wallet.ssi.keys.expandKey(identityKey)
+      if (identityKey.fragment) {
+        delete identityKey.fragment
+      }
+    }
 
     const key = params.key || identityKey || await wallet.ssi.keys.getCryptoKey()
+
     const didUnsigned = params.didUnsigned || await wallet.ssi.did.helper().createDID(
       key,
       {

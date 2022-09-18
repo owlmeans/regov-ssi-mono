@@ -17,16 +17,13 @@
 import { Extension, ValidationResult, VALIDATION_FAILURE_CHECKING } from '@owlmeans/regov-ssi-core'
 import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
-import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureSubject } from '../../types'
+import { REGOV_EXT_SIGNATURE_NAMESPACE, SignatureCredential, SignatureSubject } from '../../types'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'
 import {
-  CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, ValidationResultWidgetWeb, 
-  AlertOutput, dateFormatter, EntityRenderer, EntityTextRenderer, FileProcessorWeb, PrimaryForm,
-  WalletFormProvider, withRegov
+  CredentialEvidenceWidget, EmptyProps, RegovComponentProps, useRegov, ValidationResultWidgetWeb,
+  AlertOutput, FileProcessorWeb, PrimaryForm, WalletFormProvider, withRegov
 } from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
-import { typeFormatterFacotry } from '../formatter'
-import BorderColor from '@mui/icons-material/BorderColor'
 import Close from '@mui/icons-material/Close'
 
 import Button from '@mui/material/Button'
@@ -36,6 +33,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import Paper from '@mui/material/Paper'
+import { SignatureViewFieldsWeb } from './view/fields'
 
 
 export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<SignatureViewProps>({
@@ -70,14 +68,7 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
   const methods = useForm<SignatureViewFields>({
     mode: 'onChange',
     criteriaMode: 'all',
-    defaultValues: {
-      signature: {
-        view: {
-          file: '',
-          alert: ''
-        }
-      }
-    }
+    defaultValues: { signature: { view: { file: '', alert: '' } } }
   })
 
   const props = { t, i18n }
@@ -161,30 +152,7 @@ export const SignatureView: FunctionComponent<SignatureViewParams> = withRegov<S
         <Grid item container direction="row" justifyContent="space-between" alignItems="stretch">
           <Grid item xs={12} sm={6} md={7} px={1}>
             <Paper elevation={3}>
-              <EntityRenderer t={t} entity="signature.view" title={
-                <Fragment>
-                  <Grid container direction="row" spacing={1} justifyContent="flex-start" alignItems="flex-start">
-                    <Grid item>
-                      <BorderColor fontSize="large" />
-                    </Grid>
-                    <Grid item>{subject.name}</Grid>
-                  </Grid>
-                </Fragment>
-              } subject={subject}>
-                {subject.description?.trim() !== "" && <EntityTextRenderer field="description" showLabel />}
-                <EntityTextRenderer field="documentHash" small showLabel />
-                {subject.filename?.trim() !== "" && <EntityTextRenderer field="filename" showLabel />}
-                {subject.url?.trim() !== "" && <EntityTextRenderer field="url" showLabel />}
-                {subject.authorId?.trim() !== "" && <EntityTextRenderer field="authorId" showLabel />}
-                <Grid item container direction="row" justifyContent="space-between" alignItems="flex-start">
-                  <EntityTextRenderer field="signedAt" showHint small netSize={6} formatter={dateFormatter} />
-                  <EntityTextRenderer field="docType" showHint small netSize={6} formatter={typeFormatterFacotry(t)} />
-                </Grid>
-                <Grid item container direction="row" justifyContent="space-between" alignItems="flex-start">
-                  <EntityTextRenderer field="creationDate" showHint small netSize={6} formatter={dateFormatter} />
-                  {subject.version?.trim() !== "" && <EntityTextRenderer field="version" showHint small netSize={6} />}
-                </Grid>
-              </EntityRenderer>
+              <SignatureViewFieldsWeb t={t} cred={credential as SignatureCredential} />
               <WalletFormProvider {...methods}>
                 <PrimaryForm {...props} title="signature.view.upload">
                   <AlertOutput {...props} field="signature.view.alert" />

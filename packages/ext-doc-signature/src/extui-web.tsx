@@ -16,7 +16,7 @@
 
 import { EVENT_INIT_CONNECTION, IncommigDocumentWithConn, InitCommEventParams } from "@owlmeans/regov-comm"
 import {
-  buildUIExtension, castMainModalHandler, EXRENSION_ITEM_PURPOSE_INPUT_DETAILS, EXTENSION_ITEM_PURPOSE_CLAIM, 
+  buildUIExtension, castMainModalHandler, EXRENSION_ITEM_PURPOSE_INPUT_DETAILS, EXTENSION_ITEM_PURPOSE_CLAIM,
   EXTENSION_ITEM_PURPOSE_CREATION, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET,
   EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_REQUEST, EXTENSION_ITEM_PURPOSE_VALIDATION,
   MainModalAuthenticatedEventParams, PurposeListItemParams, UIExtensionFactoryProduct
@@ -32,14 +32,17 @@ import {
 import React from "react"
 import {
   SignatureCreationWeb, SignatureItemWeb, SignatureView, SignatureRequestWeb, DashboardWidgetWeb,
-  SignatureRequestItemWeb, SignatureRequestViewWeb, SignatureResponseWeb, SignatureRequestResponseWeb, ValidationWidget,
-  PersonalIdClaim,
-  SignatureClaimWeb,
-  SignatureOfferWeb
+  SignatureRequestItemWeb, SignatureRequestViewWeb, SignatureResponseWeb, SignatureRequestResponseWeb,
+  ValidationWidget, PersonalIdClaim, SignatureClaimWeb, SignatureOfferWeb, SignatureOfferReviewWeb
 } from "./component"
 import { ClaimSignatureItemParams, SignatureClaimItem } from "./component/web/claim-item"
+import { OfferSignatureItemParams, SignatureOfferItem } from "./component/web/offer-item"
 import { signatureExtension } from "./ext"
-import { REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_CRED_PERSONALID, REGOV_SIGNATURE_CLAIM_TYPE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE, SignaturePresentation } from "./types"
+import {
+  REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_CRED_PERSONALID, REGOV_SIGNATURE_CLAIM_TYPE,
+  REGOV_SIGNATURE_OFFER_TYPE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE,
+  SignaturePresentation
+} from "./types"
 import { getSignatureRequestFromPresentation, getSignatureRequestOwner } from "./util"
 
 
@@ -49,7 +52,6 @@ if (signatureExtension.schema.events) {
   signatureExtension.modifyEvent(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, 'method', async (
     wallet: WalletWrapper, params: IncommigDocumentWithConn
   ) => {
-    console.log('Ready to open signature')
     params.statusHandler.successful = false
     if (!modalHandler.handle) {
       return false
@@ -58,7 +60,6 @@ if (signatureExtension.schema.events) {
     const modalHandle = modalHandler.handle.upgrade(params)
 
     if (modalHandle.open) {
-      console.log('Can open signature')
       if (isCredential(params.credential)) {
         params.statusHandler.successful = modalHandle.open(
           () => <SignatureView ext={signatureExtension} close={modalHandle.close}
@@ -90,14 +91,17 @@ if (signatureExtension.schema.events) {
               credential={params.credential as Presentation} />
           )
         } else if (normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_CLAIM_TYPE)) {
-          console.log('Claim to open detected')
           if (params.conn) {
-            console.log('Connection provided. Open signature claim.')
             params.statusHandler.successful = modalHandle.open(
               () => params.conn && <SignatureOfferWeb close={modalHandle.close} conn={params.conn}
-                claim={params.credential as SignaturePresentation} />
+                ext={signatureExtension} claim={params.credential as SignaturePresentation} />
             )
           }
+        } else if (normalizeValue(params.credential.type).includes(REGOV_SIGNATURE_OFFER_TYPE)) {
+          params.statusHandler.successful = modalHandle.open(
+            () => params.conn && <SignatureOfferReviewWeb offer={params.credential as SignaturePresentation}
+              close={modalHandle.close} ext={signatureExtension} />
+          )
         }
       }
 
@@ -120,8 +124,8 @@ signatureExtension.schema = addObserverToSchema(signatureExtension.schema, {
         if (isPresentation(doc)) {
           params.extensions.triggerEvent<IncommigDocumentWithConn>(
             wallet, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, {
-            conn, credential: doc, statusHandler: { successful: false }, 
-            cleanUp: () => {}
+            conn, credential: doc, statusHandler: { successful: false },
+            cleanUp: () => { }
           })
         }
       }
@@ -166,10 +170,17 @@ export const signatureWebExtension = buildUIExtension(signatureExtension, (purpo
         case REGOV_SIGNATURE_CLAIM_TYPE:
           return [{
             com: SignatureClaimItem(signatureExtension),
-            extensionCode: `${signatureExtension.schema.details.code}SignatureItem`,
+            extensionCode: `${signatureExtension.schema.details.code}SignatureClaimItem`,
             params: {},
             order: 0
           }] as UIExtensionFactoryProduct<ClaimSignatureItemParams>[]
+        case REGOV_SIGNATURE_OFFER_TYPE:
+          return [{
+            com: SignatureOfferItem(signatureExtension),
+            extensionCode: `${signatureExtension.schema.details.code}SignatureOfferItem`,
+            params: {},
+            order: 0,
+          }] as UIExtensionFactoryProduct<OfferSignatureItemParams>[]
         case REGOV_CREDENTIAL_TYPE_SIGNATURE:
           return [{
             com: SignatureItemWeb(signatureExtension),

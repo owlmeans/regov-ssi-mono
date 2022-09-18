@@ -24,7 +24,7 @@ import {
 import { CredentialsRegistryWrapper, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import {
   DOCUMENT_TYPE_JSON, DOCUMENT_TYPE_TEXT, DOCUMENT_TYPE_BINARY, REGOV_CREDENTIAL_TYPE_SIGNATURE,
@@ -55,7 +55,7 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
             authorId: '',
             file: '',
             filename: '',
-            creationDate: '',
+            creationDate: new Date().toISOString(),
             documentHash: '',
             docType: '',
             alert: '',
@@ -210,7 +210,6 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
       }
     }
 
-    const filename = methods.watch('signature.creation.filename')
 
     return <Fragment>
       <WalletFormProvider {...methods}>
@@ -223,7 +222,7 @@ export const SignatureCreationWeb = (ext: Extension): FunctionComponent<Signatur
           : <PrimaryForm {..._props} title="signature.creation.title">
             <SignatureCreationFieldsWeb fieldProps={_props} selectorProps={{
               ...props, credentials: identities, defaultId
-            }} filename={filename} />
+            }} methods={methods as unknown as UseFormReturn<FieldValues>} />
 
             <FormMainAction {..._props} title="signature.creation.create" action={methods.handleSubmit(create)} />
           </PrimaryForm>

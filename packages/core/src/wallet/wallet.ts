@@ -21,7 +21,7 @@ import { buildStore } from "../store/store"
 import { SecureStore } from "../store/types"
 import {
   CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, CredentialWrapperMetadata, RegistryItem,
-  REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES
+  REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CLAIMS, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES
 } from "./registry"
 import { GetRegistryMethod, WalletWrapper, WalletWrapperBuilder } from "./types"
 import { CredentialEventParams, EXTENSION_TRIGGER_ADD_CREDENTIAL } from "../extension"
@@ -146,7 +146,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             )
 
             return wrapper
-          }
+          },
+
+          removePeer: async (credential) =>
+            _registryWrappers[type].removeCredential(credential, REGISTRY_SECTION_PEER)
         }
       }
 
@@ -167,6 +170,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
       wallet: _store.data,
 
       getRegistry: _getRegistry,
+
+      getClaimRegistry: () => _getRegistry(REGISTRY_TYPE_CLAIMS),
+
+      getCredRegistry: () => _getRegistry(REGISTRY_TYPE_CREDENTIALS),
 
       hasIdentity: () => {
         return _getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential() !== undefined

@@ -93,6 +93,10 @@ export type WalletWrapper = {
 
   getRegistry: GetRegistryMethod
 
+  getClaimRegistry: GetRegistryMethod
+
+  getCredRegistry: GetRegistryMethod
+
   findCredential: (id: string, section?: string) => CredentialWrapper | undefined
 
   export: (_password?: string) => Promise<EncryptedStore>

@@ -243,15 +243,11 @@ export const buildDidHelper =
         return undefined
       }
 
-      const verificationMethod = normalizeValue(did.verificationMethod).find(
-        _method => _method && _extractKeyId(_method) === keyId
-      )
-
       return {
         id: method.id,
         pubKey: method.publicKeyBase58,
         nextKeyDigest: (nonce => nonce && nonce.length > 1 ? nonce[1] : undefined)
-          (verificationMethod?.nonce?.split(':', 2)),
+          (method?.nonce?.split(':', 2)),
         fragment: keyId
       }
     }
