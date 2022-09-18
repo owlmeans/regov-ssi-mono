@@ -1,6 +1,12 @@
 import React, { Fragment, FunctionComponent, PropsWithChildren, useEffect, useState } from "react"
-import { basicNavigator, EmptyProps, useNavigator, useRegov } from "@owlmeans/regov-lib-react"
-import { ERROR_INVALID_SIGNATURE_TO_ACCEPT, REGOV_CREDENTIAL_TYPE_SIGNATURE, REGOV_EXT_SIGNATURE_NAMESPACE, SignaturePresentation } from "../../types"
+import {
+  AlertOutput, basicNavigator, EmptyProps, PrimaryForm, useNavigator, useRegov,
+  WalletFormProvider
+} from "@owlmeans/regov-lib-react"
+import {
+  ERROR_INVALID_SIGNATURE_TO_ACCEPT, REGOV_CREDENTIAL_TYPE_SIGNATURE,
+  REGOV_EXT_SIGNATURE_NAMESPACE, SignaturePresentation
+} from "../../types"
 import { getSignatureCredentialOfferFromPresentation } from "../../util"
 import { useTranslation } from "react-i18next"
 import { SignatureViewFieldsWeb } from "./view/fields"
@@ -8,17 +14,24 @@ import { SignatureViewFieldsWeb } from "./view/fields"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import { Button } from "@mui/material"
-import { Extension, VALIDATION_KIND_OFFER } from "@owlmeans/regov-ssi-core"
+import { Extension, singleValue, VALIDATION_KIND_OFFER } from "@owlmeans/regov-ssi-core"
 import { useInboxRegistry } from "@owlmeans/regov-ext-comm"
+import { useForm } from "react-hook-form"
 
 
 export const SignatureOfferReviewWeb: FunctionComponent<SignatureOfferReviewWebProps> = props => {
   const { handler, extensions } = useRegov()
   const cred = getSignatureCredentialOfferFromPresentation(props.offer)
   const inbox = useInboxRegistry()
-  const { t } = useTranslation(props.ns || REGOV_EXT_SIGNATURE_NAMESPACE)
+  const { t, i18n } = useTranslation(props.ns || REGOV_EXT_SIGNATURE_NAMESPACE)
   const [valid, setValid] = useState<boolean>(false)
   const navigator = useNavigator(basicNavigator)
+
+  const methods = useForm({
+    mode: 'onChange',
+    criteriaMode: 'all',
+    defaultValues: { signature: { offerReview: { alert: '' } } }
+  })
 
   useEffect(() => {
     (async () => {
@@ -33,10 +46,16 @@ export const SignatureOfferReviewWeb: FunctionComponent<SignatureOfferReviewWebP
       })
 
       setValid(result.valid)
-      
-      // @TODO Display error if result is invalid
 
-      console.log(result)
+      if (!result.valid) {
+        const cause = singleValue(result.cause)
+        methods.setError('signature.offerReview.alert', {
+          type: 'signature.offerInvalid',
+          message: cause === undefined ? ''
+            : typeof cause === 'string' ? cause
+              : cause.message
+        })
+      }
     })()
   }, [props.offer.id])
 
@@ -67,8 +86,15 @@ export const SignatureOfferReviewWeb: FunctionComponent<SignatureOfferReviewWebP
     }
   }
 
+  const _props = { t, i18n }
+
   return <Fragment>
     <DialogContent>
+      <WalletFormProvider {...methods}>
+        <PrimaryForm {..._props} title="signature.offer-review.title">
+          <AlertOutput {..._props} field="signature.offerReview.alert" />
+        </PrimaryForm>
+      </WalletFormProvider>
       <SignatureViewFieldsWeb t={t} cred={cred} />
     </DialogContent>
     <DialogActions>

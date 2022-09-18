@@ -331,6 +331,9 @@
       "send": "Sign & send offer",
       "accept": "Accept & add credential"
     },
+    "offer-review": {
+      "title": "Review signature offer"
+    },
     "claim": {
       "title": "Document signature claim",
       "issuerDid": {
@@ -343,6 +346,11 @@
           "type": "Document signature claim"
         }
       }
+    }
+  },
+  "error": {
+    "signature": {
+      "offerInvalid": "Provided signature credential offer is invalid: {{message}}"
     }
   }
 }
