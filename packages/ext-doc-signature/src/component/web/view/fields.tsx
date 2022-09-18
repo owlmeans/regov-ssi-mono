@@ -1,10 +1,28 @@
+/**
+ *  Copyright 2022 OwlMeans
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 import React, { FunctionComponent, PropsWithChildren } from "react"
+
 import { dateFormatter, EmptyProps, EntityRenderer, EntityTextRenderer } from "@owlmeans/regov-lib-react"
 import { TFunction } from "react-i18next"
-import Grid from "@mui/material/Grid"
-import BorderColor from "@mui/icons-material/BorderColor"
 import { SignatureCredential } from "../../../types"
 import { typeFormatterFacotry } from "../../formatter"
+
+import Grid from "@mui/material/Grid"
+import BorderColor from "@mui/icons-material/BorderColor"
 
 
 export const SignatureViewFieldsWeb: FunctionComponent<SignatureViewFieldsWebProps> = props => {
