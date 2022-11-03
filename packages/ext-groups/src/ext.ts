@@ -81,6 +81,9 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
     selfIssuing: false,
     claimable: true,
     listed: true,
+    verfiableId: {
+      fields: ['groupId', 'role', 'createdAt']
+    },
     evidence: [
       {
         type: BASIC_IDENTITY_TYPE,

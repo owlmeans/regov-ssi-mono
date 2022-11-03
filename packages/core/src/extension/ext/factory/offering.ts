@@ -20,6 +20,7 @@ import {
 } from "../../../did"
 import { Credential } from '../../../vc'
 import { buildWalletLoader } from '../../../wallet'
+import { updateDidIdWithKey, validateVerifiableId } from "../../schema"
 import { OfferMethodBuilder } from "../types"
 
 
@@ -41,8 +42,10 @@ export const defaultOfferMethod: OfferMethodBuilder = schema => async (wallet, p
   }
 
   const offeredCredential = JSON.parse(JSON.stringify(credential)) as Credential
+  offeredCredential.credentialSubject = subject as any
   let issuerDid: DIDDocument | DIDDocumentUnsinged = JSON.parse(JSON.stringify(holder))
   delete (issuerDid as any).proof
+  updateDidIdWithKey(wallet.did.helper(), schema, cryptoKey, issuerDid, offeredCredential)
   issuerDid = await wallet.did.helper().signDID(
     cryptoKey, issuerDid, VERIFICATION_KEY_CONTROLLER,
     [DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
@@ -53,8 +56,12 @@ export const defaultOfferMethod: OfferMethodBuilder = schema => async (wallet, p
     offeredCredential.type.splice(idx, 1)
   }
 
-  offeredCredential.holder = holder
-  offeredCredential.credentialSubject = subject as any
+  if (!validateVerifiableId(wallet.did.helper(), schema, offeredCredential)) {
+    offeredCredential.id = issuerDid.id
+    offeredCredential.holder = { id: issuerDid.id }
+  } else {
+    offeredCredential.holder = holder
+  }
 
   const signed = await wallet.ssi.signCredential(offeredCredential, issuerDid as DIDDocument)
   const offer = await wallet.ssi.buildPresentation([signed], {

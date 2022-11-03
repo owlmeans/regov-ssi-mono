@@ -16,7 +16,7 @@
 
 import {
   CryptoKey, CryptoHelper, extractId, Idish, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY,
-  COMMON_CRYPTO_ERROR_NOID, normalizeValue, addToValue
+  COMMON_CRYPTO_ERROR_NOID, normalizeValue, addToValue, MaybeArray
 } from '../common'
 import { QueryDict, DEFAULT_VERIFICATION_KEY, VERIFICATION_KEY_HOLDER, DID_ERROR_MUST_BE_LONG_FORM, } from './types'
 import {
@@ -76,14 +76,10 @@ export const buildDidHelper =
     }))
 
     const _makeDIDId = (key: CryptoKey, options: MakeDIDIdOptions = {}) => {
-      if (!key.id) {
-        throw new Error(COMMON_CRYPTO_ERROR_NOID)
-      }
-
       return `did:${buildOptions.prefix}:${!options.hash
-        ? `${key.id}${options.data ? `:${options.data}` : ''}`
+        ? `${key.pubKey}${options.data ? `:${options.data}` : ''}`
         : crypto.makeId(
-          key.id,
+          `${key.pubKey}`,
           options.data && options.hash ? crypto.hash(options.data) : options.data,
           options.expand
         )
@@ -353,7 +349,7 @@ export const buildDidHelper =
           })).map(([key, methods]) => {
             didDocUnsigned[key as DIDDocumentPurpose] = addToValue(
               didDocUnsigned[key as DIDDocumentPurpose], methods
-            ) as any /** @TODO Fix this any - ti's really hard */
+            ) as MaybeArray<DIDVerificationItem>
           })
         }
 

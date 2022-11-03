@@ -25,7 +25,7 @@ import {
   EvidenceValidationResult, ValidationErrorCause, ValidateMethodBuilder,
   VALIDATION_KIND_OFFER, VALIDATION_KIND_RESPONSE
 } from "../types"
-import { CredentialDescription } from "../../schema"
+import { CredentialDescription, validateVerifiableId } from "../../schema"
 
 
 export const defaultValidateMethod: ValidateMethodBuilder = schema =>
@@ -142,6 +142,15 @@ export const defaultValidateMethod: ValidateMethodBuilder = schema =>
         }
       })) : []
 
+    if (!await validateVerifiableId(wallet.did.helper(), schema, credential)) {
+      return {
+        valid: false,
+        trusted: false,
+        cause: 'id.invalid',
+        instance: credential,
+        evidence: evidenceValidation
+      }
+    }
 
     if (result && presentationResult) { // && schema.trustable) {
       const identity = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(

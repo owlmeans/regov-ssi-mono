@@ -21,6 +21,7 @@ import {
 } from "../../../did"
 import { SignMethodBuilder } from "../types"
 import { ERROR_FACTORY_EVIDENCE_HOLDER_FORMAT, ERROR_FACTORY_SIGNING_KEY_ISNT_RETRIVED, EVENT_EXTENSION_BEFORE_SIGNING_DID, ExtensionEventBeforeSigningDid } from "./types"
+import { updateDidIdWithKey } from "../../schema"
 
 
 export const defaultSignMethod: SignMethodBuilder = schema =>
@@ -75,6 +76,8 @@ export const defaultSignMethod: SignMethodBuilder = schema =>
         cred: unsigned,
         key: signerKey
       })
+      updateDidIdWithKey(wallet.did.helper(), schema, signerKey, unsignedDid, unsigned)
+      unsigned.id = unsignedDid.id
       unsigned.holder = await wallet.ssi.did.helper().signDID(
         signerKey, unsignedDid, VERIFICATION_KEY_CONTROLLER
       )
@@ -93,6 +96,8 @@ export const defaultSignMethod: SignMethodBuilder = schema =>
         cred: unsigned,
         key: signerKey
       })
+      updateDidIdWithKey(wallet.did.helper(), schema, signerKey, unsignedDid, unsigned)
+      unsigned.id = unsignedDid.id
       issuer = await wallet.ssi.did.helper().signDID(signerKey, unsignedDid)
       unsigned.holder = { id: issuer.id }
     }

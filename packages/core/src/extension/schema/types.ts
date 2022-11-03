@@ -45,26 +45,31 @@ export type ExtensionTypes = {
 export type CredentialDescription<
   Schema extends CredentialSchema = CredentialSchema,
   Subject extends {} = {}
-  > = {
-    defaultNameKey?: string
-    mainType: string
-    mandatoryTypes?: BasicCredentialType
-    credentialContext: MultiSchema
-    contextUrl?: string
-    evidence?: MaybeArray<CredentialEvidenceDesctiption>
-    credentialSchema?: MaybeArray<Schema>
-    registryType?: string
-    claimable?: boolean
-    listed?: boolean
-    selfIssuing?: boolean
-    trustable?: boolean
-    claimType?: string
-    offerType?: string
-    requestType?: string
-    responseType?: string
-    defaultSubject?: Subject
-    arbitraryEvidence?: boolean
-  }
+> = {
+  defaultNameKey?: string
+  mainType: string
+  mandatoryTypes?: BasicCredentialType
+  credentialContext: MultiSchema
+  contextUrl?: string
+  evidence?: MaybeArray<CredentialEvidenceDesctiption>
+  credentialSchema?: MaybeArray<Schema>
+  registryType?: string
+  claimable?: boolean
+  listed?: boolean
+  selfIssuing?: boolean
+  trustable?: boolean
+  claimType?: string
+  offerType?: string
+  requestType?: string
+  responseType?: string
+  defaultSubject?: Subject
+  arbitraryEvidence?: boolean
+  verfiableId?: CredentialIdMeta
+}
+
+export type CredentialIdMeta = {
+  fields: string[]
+}
 
 export type CredentialEvidenceDesctiption = {
   type: string

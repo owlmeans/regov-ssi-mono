@@ -14,14 +14,13 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
+import React, { Fragment, FunctionComponent, useEffect } from 'react'
 
 import {
-  Credential, getCompatibleSubject, Presentation, RegistryItem, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, 
-  singleValue, UnsignedCredential
+  Credential, getCompatibleSubject, Presentation, RegistryItem, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS,
+  singleValue
 } from '@owlmeans/regov-ssi-core'
 import {
-  // CredentialListInput,
   EmptyProps, generalNameVlidation, RegovComponentProps, useNavigator, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import {
@@ -33,7 +32,7 @@ import {
   ListNavigator, partialListNavigator
 } from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
-import { ERROR_MEMBERSHIP_READYTO_CLAIM, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION } from '../../types'
+import { ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION } from '../../types'
 import { useNavigate } from 'react-router-dom'
 import { addToValue } from '@owlmeans/regov-ssi-core'
 import DialogContent from '@mui/material/DialogContent'
@@ -47,7 +46,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
   const navigate = useNavigate()
   const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
   const groupSubjet = group ? getCompatibleSubject<GroupSubject>(group) : undefined
-  const [unsignedMemberhip, setUnsignedMembership] = useState<UnsignedCredential | undefined>(undefined)
+  // const [unsignedMemberhip, setUnsignedMembership] = useState<UnsignedCredential | undefined>(undefined)
 
   const methods = useForm<MembershipClaimFields>({
     mode: 'onChange',
@@ -77,14 +76,15 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
         if (!ext) {
           throw ERROR_WIDGET_EXTENSION
         }
-        const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
-        const unsignedMemberhip = await factory.build(handler.wallet, {
-          extensions: extensions?.registry,
-          subjectData: { groupId: group ? group.id : '' }
-        })
-        setUnsignedMembership(unsignedMemberhip)
         methods.setValue(
-          'membership.claim', unsignedMemberhip.credentialSubject as unknown as MembershipSubject
+          'membership.claim',
+          {
+            groupId: group ? group.id : '',
+            role: '',
+            memberCode: '',
+            description: '',
+            createdAt: (new Date).toISOString()
+          }
         )
       } catch (error) {
         console.error(error)
@@ -107,25 +107,18 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
       if (!handler.wallet) {
         throw ERROR_WIDGET_AUTHENTICATION
       }
-      if (!unsignedMemberhip || !ext) {
-        throw ERROR_MEMBERSHIP_READYTO_CLAIM
-      }
-      /**
-       * @TODO Move all this stuff to some credential specific method
-       */
-      const extendSubject = {
-        role: data.membership.claim.role,
-        description: data.membership.claim.description
-      }
-      unsignedMemberhip.credentialSubject = {
-        ...unsignedMemberhip.credentialSubject,
-        ...extendSubject
-      }
+      const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
+      const unsignedMemberhip = await factory.build(handler.wallet, {
+        extensions: extensions?.registry,
+        subjectData: Object.fromEntries(
+          Object.entries(data.membership.claim).filter(([key]) => key !== 'alert')
+        )
+      })
 
       if (group) {
         unsignedMemberhip.evidence = addToValue(unsignedMemberhip.evidence, group)
       }
-      const factory = ext.getFactory(unsignedMemberhip.type)
+
       const claim = await factory.claim(handler.wallet, {
         unsignedClaim: unsignedMemberhip,
         evidenceClaims: data.membership.evidences.evidence.filter(ev => ev)
