@@ -16,18 +16,21 @@
 
 import { server as WSServer, connection as WSConnection } from 'websocket'
 import { Server as HttpServer } from 'http'
+import { createJWT, decodeJWT, ES256KSigner } from 'did-jwt'
+
+import { extension } from '../ext'
 import { ServerConfig } from './types'
 import {
-  COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_DIDDOC, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL, DIDCommConnectMeta,
-  ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD, ERROR_COMM_NO_CONNECTION,
-  ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER, ERROR_COMM_WS_DID_REGISTERED, ERROR_COMM_WS_TIMEOUT
+  COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_DIDDOC, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL,
+  DIDCommConnectMeta, ERROR_COMM_DID_WRONG_SIGNATURE, ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD,
+  ERROR_COMM_NO_CONNECTION, ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER, ERROR_COMM_WS_DID_REGISTERED,
+  ERROR_COMM_WS_TIMEOUT, ERROR_COMM_WS_UNKNOWN, REGOV_COMM_REQUEST_TYPE
 } from '../types'
 import {
-  buildWalletWrapper, ExtensionRegistry, makeRandomUuid, nodeCryptoHelper, DIDDocument
+  buildWalletWrapper, ExtensionRegistry, makeRandomUuid, nodeCryptoHelper, DIDDocument, VERIFICATION_KEY_HOLDER,
+  EXTENSION_TRIGGER_PRODUCE_IDENTITY, InitSensetiveEventParams
 } from '@owlmeans/regov-ssi-core'
 import { parseJWE } from '../util'
-import { decodeJWT } from 'did-jwt'
-
 
 const messages: { [key: string]: SentMessage } = {}
 
@@ -44,12 +47,19 @@ export const startWSServer = async (
       didSchemaPath: config.did.schemaPath
     }
   )
+  if (extensions) {
+    await extensions.triggerEvent<InitSensetiveEventParams>(
+      serverWallet, EXTENSION_TRIGGER_PRODUCE_IDENTITY, { extensions }
+    )
+  }
+
   const didHelper = serverWallet.did.helper()
 
   const _clientList: { [uuid: string]: Client } = {}
   const _didToClient: { [did: string]: string } = {}
   const _messages: { [did: string]: Message[] } = {}
   const _didDocs: { [did: string]: DIDDocument } = {}
+  const _handshakes: { [sequence: string]: string } = {}
 
   setInterval(() => {
     Object.entries(_messages).forEach(([did, messages]) => {
@@ -198,24 +208,41 @@ export const startWSServer = async (
           return reject && reject(code)
         } else if (data.startsWith('did:')) {
           const didInfo = didHelper.parseDIDId(data)
-          const did = didInfo.did
-          if (_didToClient[did]) {
-            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_DID_REGISTERED)
-          }
+          const sequence = (await nodeCryptoHelper.getRandomBytes(32)).toString()
+          const request = extension.getFactory(REGOV_COMM_REQUEST_TYPE)
 
+          const unsigned = await request.build(serverWallet, { subjectData: { handshakeSequence: sequence } })
           try {
             if (didInfo.query && didInfo.query['initialState']) {
-              _didDocs[did] = serverWallet.did.helper().parseLongForm(data)
+              const didDoc = serverWallet.did.helper().parseLongForm(data)
+              _handshakes[sequence] = data
+
+              if (!(await serverWallet.did.helper().verifyDID(didDoc))) {
+                delete _handshakes[sequence]
+
+                return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_DID_WRONG_SIGNATURE)
+              }
             }
           } catch (e) {
             console.error('Issue with long format', e)
           }
 
-          _didToClient[did] = uuid
-          client.dids.push(did)
-          _pokeDid(did)
+          const identity = serverWallet.getIdentity()
+          if (!identity) {
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
+          }
+          const cryptoKey = await serverWallet.did.extractKey(identity.credential.issuer as DIDDocument, VERIFICATION_KEY_HOLDER)
+          if (!cryptoKey) {
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
+          }
+          await serverWallet.keys.expandKey(cryptoKey)
+          if (!cryptoKey.pk) {
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
+          }
 
-          return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + data)
+          const jwt = await createJWT({ request: unsigned }, { issuer: identity.credential.id, signer: ES256KSigner(serverWallet.crypto.base58().decode(cryptoKey.pk)) })
+
+          return await _send(id + ':' + jwt)
         } else if (data.startsWith('{') && data.endsWith('}')) {
           const jwe = parseJWE(data)
           if (!jwe?.protected) {
@@ -237,26 +264,52 @@ export const startWSServer = async (
         try {
           const jwt = decodeJWT(data)
           console.log('we got jwt: ' + jwt.payload.iss)
-          const commConn: DIDCommConnectMeta = jwt.payload as DIDCommConnectMeta
-          const results = [
-            !commConn.recipientId,
-            !commConn.sender || !didHelper.verifyDID(commConn.sender),
-            commConn.recipient && !didHelper.verifyDID(commConn.recipient)
-          ]
-          if (results.some(result => result)) {
-            console.error('ERROR JWT', results)
-            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_MALFORMED_PAYLOAD)
+          if (jwt.payload.response.credentialSubject.handshakeSequence) {
+            const handshakeData = _handshakes[jwt.payload.response.credentialSubject.handshakeSequence]
+            const did = didHelper.parseDIDId(handshakeData).did
+
+            try {
+              const didDoc = serverWallet.did.helper().parseLongForm(handshakeData)
+              const [verified, result] = await serverWallet.ssi.verifyCredential(jwt.payload.response, didDoc, VERIFICATION_KEY_HOLDER)
+              if (!verified) {
+                return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
+              }
+              if (_didToClient[did]) {
+                return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_DID_REGISTERED)
+              }
+
+              _didDocs[did] = didDoc
+            } catch (e) {
+              console.error('Issue with long format', e)
+            }
+
+            _didToClient[did] = uuid
+            client.dids.push(did)
+            _pokeDid(did)
+
+            return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + data)
+          } else {
+            const commConn: DIDCommConnectMeta = jwt.payload as DIDCommConnectMeta
+            const results = [
+              !commConn.recipientId,
+              !commConn.sender || !didHelper.verifyDID(commConn.sender),
+              commConn.recipient && !didHelper.verifyDID(commConn.recipient)
+            ]
+            if (results.some(result => result)) {
+              console.error('ERROR JWT', results)
+              return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_MALFORMED_PAYLOAD)
+            }
+            console.log('JWT from: ' + commConn.sender.id + ' - to: ' + commConn.recipientId)
+            _addMessage(commConn.recipientId, id + ':' + data)
+            if (_didDocs[commConn.recipientId]) {
+              await _send(
+                id + ':' + COMM_WS_PREFIX_DIDDOC + ':' + await serverWallet.did.helper()
+                  .didToLongForm(_didDocs[commConn.recipientId])
+              )
+            }
+
+            return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + commConn.recipientId)
           }
-          console.log('JWT from: ' + commConn.sender.id + ' - to: ' + commConn.recipientId)
-          _addMessage(commConn.recipientId, id + ':' + data)
-          if (_didDocs[commConn.recipientId]) {
-            await _send(
-              id + ':' + COMM_WS_PREFIX_DIDDOC + ':' + await serverWallet.did.helper()
-                .didToLongForm(_didDocs[commConn.recipientId])
-            )
-          }
-          
-          return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + commConn.recipientId)
         } catch (err) {
           return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_INVALID_PAYLOAD)
         }

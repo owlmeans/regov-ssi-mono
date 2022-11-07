@@ -8,6 +8,8 @@
   "private": true,
   "dependencies": {
     "@owlmeans/regov-come": "link:../",
+    "@owlmeans/regov-ext-identity": "link:../../ext-identity/",
+    "@owlmeans/regov-ssi-core": "link:../../core/",
     "dotenv": "^16.0.0"
   },
   "devDependencies": {

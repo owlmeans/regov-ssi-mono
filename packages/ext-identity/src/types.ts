@@ -28,3 +28,5 @@ export type RegovIdentityExtension = Extension
 export const REGOV_IDENTITY_DEFAULT_NAMESPACE = 'regov-ext-basic-identity'
 
 export const REGOV_IDENTITY_DEFAULT_TYPE = 'OwlMeans:Regov:Identity'
+
+export const ERROR_NO_EXENSION = 'ERROR_NO_EXENSION'

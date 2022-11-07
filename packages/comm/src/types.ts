@@ -95,6 +95,7 @@ export const COMM_CHANNEL_BROADCAST = '__broadcast'
 export const COMM_WS_SUBPROTOCOL = 'owlmeans-regov-ws-did-com'
 
 export const COMM_WS_PREFIX_CONFIRMED = 'ok'
+export const COMM_WS_PREFIX_HANDSHAKE = 'handshake'
 export const COMM_WS_PREFIX_DIDDOC = 'diddoc'
 export const COMM_WS_PREFIX_ERROR = 'error'
 
@@ -109,6 +110,12 @@ export const COMM_VERIFICATION_TYPE = 'X25519KeyAgreementKey2020'
 
 
 export const EVENT_INIT_CONNECTION = 'regov:comm:init'
+
+export const REGOV_CREDENTIAL_TYPE_COMM = 'OwlMeans:Regov:Comm'
+export const REGOV_COMM_REQUEST_TYPE = 'OwlMeans:Regov:Comm:Request'
+export const REGOV_COMM_RESPONSE_TYPE = 'OwlMeans:Regov:Comm:Response'
+
+export const BASIC_IDENTITY_TYPE = 'Identity'
 
 export type InitCommEventParams = EventParams & {
   alias?: string

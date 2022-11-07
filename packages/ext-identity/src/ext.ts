@@ -18,12 +18,13 @@ import {
   addObserverToSchema, buildExtension, buildExtensionSchema, ExtensionDetails,
   defaultBuildMethod, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_RETRIEVE_NAME,
   RetreiveNameEventParams, isCredential, IncommigDocumentEventParams, EXTENSION_TRIGGER_INIT_SENSETIVE,
-  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, REGISTRY_SECTION_OWN, InitSensetiveEventParams
+  EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, REGISTRY_SECTION_OWN, EXTENSION_TRIGGER_PRODUCE_IDENTITY,
+  InitSensetiveEventParams
 } from "@owlmeans/regov-ssi-core"
 import {
   getCompatibleSubject, REGISTRY_TYPE_IDENTITIES, UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
-import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE, REGOV_IDENTITY_DEFAULT_TYPE } from "./types"
+import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE, REGOV_IDENTITY_DEFAULT_TYPE, ERROR_NO_EXENSION } from "./types"
 import { makeRandomUuid } from "@owlmeans/regov-ssi-core"
 import { credIdToIdentityId } from "./helper"
 import en from './i18n/en.json'
@@ -134,6 +135,29 @@ export const buildIdentityExtension = (
 
       return params.credential.type.includes(identityType)
     },
+  })
+
+  schema = addObserverToSchema(schema, {
+    trigger: EXTENSION_TRIGGER_PRODUCE_IDENTITY,
+    filter: async wallet => !wallet.getIdentity(),
+    method: async (wallet, params: InitSensetiveEventParams) => {
+      console.log('EXTENSION_TRIGGER_PRODUCE_IDENTITY')
+      const { ext } = params
+      if (!ext) {
+        throw ERROR_NO_EXENSION
+      }
+      const factory = ext.getFactory(ext.schema.details.defaultCredType || BASIC_IDENTITY_TYPE)
+      const unsigned = await factory.build(wallet, {
+        extensions: params.extensions, subjectData: {}
+      })
+      const identity = await factory.sign(wallet, { unsigned })
+
+      const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+
+      const item = await registry.addCredential(identity)
+      item.meta.title = 'Main ID'
+      registry.registry.rootCredential = identity.id
+    }
   })
 
   const extension = buildExtension(schema, {

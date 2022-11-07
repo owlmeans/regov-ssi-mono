@@ -96,6 +96,7 @@ export const EXTENSION_TRIGGER_REMOVE_CREDENTIAL = 'wallet:remove-credential'
 export const EXTENSION_TRIGGER_DEFAULT_SIGNATURE = 'signer:default-signature'
 export const EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED = 'documnet:received'
 export const EXTENSION_TRIGGER_RETRIEVE_NAME = 'credentail:get-name'
+export const EXTENSION_TRIGGER_PRODUCE_IDENTITY = 'identity:produce'
 
 export type CredentialEventParams = EventParams & {
   item: CredentialWrapper

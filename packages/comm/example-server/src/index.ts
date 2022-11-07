@@ -16,6 +16,8 @@
 
 import "dotenv"
 import http from 'http'
+import { buildExtensionRegistry } from "@owlmeans/regov-ssi-core"
+import { buildIdentityExtension } from "@owlmeans/regov-ext-identity/dist/ext"
 import { startWSServer } from '@owlmeans/regov-come'
 
 import './warmup'
@@ -23,23 +25,40 @@ import './warmup'
 import util from 'util'
 util.inspect.defaultOptions.depth = 8
 
+const EXAMPLE_IDENTITY_TYPE = 'ExampleIdentity'
 
 const httpServer = http.createServer((_, response) => {
   response.writeHead(404)
   response.end()
 })
 
-startWSServer(httpServer, {
-  timeout: parseInt(process.env.RECEIVE_MESSAGE_TIMEOUT || '30'),
-  did: {
-    prefix: process.env.DID_PREFIX,
-    baseSchemaUrl: process.env.DID_SCHEMA,
-    schemaPath: process.env.DID_SCHEMA_PATH,
-  },
-  message: {
-    ttl: 2 * 24 * 3600 * 1000
+const registry = buildExtensionRegistry()
+registry.registerSync(buildIdentityExtension(
+  EXAMPLE_IDENTITY_TYPE, { appName: 'Regov example server wallet' },
+  {
+    name: '',
+    code: 'example-identity',
+    organization: 'Example Org.',
+    home: 'https://my-example.org/',
+    schemaBaseUrl: 'https://my-example.org/schemas/'
   }
-})
+))
+
+startWSServer(
+  httpServer,
+  {
+    timeout: parseInt(process.env.RECEIVE_MESSAGE_TIMEOUT || '30'),
+    did: {
+      prefix: process.env.DID_PREFIX,
+      baseSchemaUrl: process.env.DID_SCHEMA,
+      schemaPath: process.env.DID_SCHEMA_PATH,
+    },
+    message: {
+      ttl: 2 * 24 * 3600 * 1000
+    },
+  },
+  registry
+)
 
 const port = process.env.SERVER_WS_PORT || '8080'
 httpServer.listen(parseInt(port), () => {

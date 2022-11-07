@@ -15,8 +15,8 @@
  */
 
 import {
-  buildWalletLoader, Credential, DIDDocument, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION,
-  isPresentation, KEYCHAIN_ERROR_NO_KEY, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES,
+  buildWalletLoader, Credential, DIDDocument, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION, ERROR_NO_CREDENTIAL_SIGNING_KEY, ERROR_NO_IDENTITY,
+  isPresentation, KEYCHAIN_ERROR_NO_KEY, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES, UnsignedCredential,
   VERIFICATION_KEY_CONTROLLER,
   VERIFICATION_KEY_HOLDER, WalletWrapper
 } from "@owlmeans/regov-ssi-core"
@@ -335,46 +335,71 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
       try {
         const jwt = decodeJWT(datagram)
-        const result = await verifyJWT(datagram, {
-          resolver: buildBasicResolver(jwt),
-          proofPurpose: DIDPURPOSE_AUTHENTICATION
-        })
-
-        const connection = filterConnectionFields(result.payload as DIDCommConnectMeta)
-
-        if (connection.sender && connection.recipient) {
-          console.log('establish connection .....')
-          if (!wallet.did.helper().verifyDID(connection.sender)) {
-            throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
+        if (jwt.payload.request.credentialSubject.handshakeSequence) {
+          const identity = wallet.getIdentity()
+          if (!identity) {
+            throw new Error(ERROR_NO_IDENTITY)
           }
-          if (!wallet.did.helper().verifyDID(connection.recipient)) {
-            throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
+          const cryptoKey = await wallet.did.extractKey(identity.credential.issuer as DIDDocument, VERIFICATION_KEY_HOLDER)
+          if (!cryptoKey) {
+            throw new Error(ERROR_NO_CREDENTIAL_SIGNING_KEY)
           }
-          await channel.send(connection.recipientId, { ok: true, id })
-
-          _listeners.forEach(
-            listener =>
-              listener.established && listener.established(invertConnection(connection, channel.code))
+          await wallet.keys.expandKey(cryptoKey)
+          if (!cryptoKey.pk) {
+            throw new Error(ERROR_NO_CREDENTIAL_SIGNING_KEY)
+          }
+          const signed = await wallet.ssi.signCredential(
+            jwt.payload.request as UnsignedCredential,
+            identity.credential.issuer as DIDDocument,
+            { keyId: VERIFICATION_KEY_HOLDER }
           )
+          const response = await createJWT(
+            { response: signed },
+            { issuer: identity.credential.id, signer: ES256KSigner(wallet.crypto.base58().decode(cryptoKey.pk)) }
+          )
+
+          await channel.send(response)
         } else {
-          if (!wallet.did.helper().verifyDID(connection.sender)) {
-            throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
+          const result = await verifyJWT(datagram, {
+            resolver: buildBasicResolver(jwt),
+            proofPurpose: DIDPURPOSE_AUTHENTICATION
+          })
+          const connection = filterConnectionFields(result.payload as DIDCommConnectMeta)
+
+          if (connection.sender && connection.recipient) {
+            console.log('establish connection .....')
+            if (!wallet.did.helper().verifyDID(connection.sender)) {
+              throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
+            }
+            if (!wallet.did.helper().verifyDID(connection.recipient)) {
+              throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
+            }
+            await channel.send(connection.recipientId, { ok: true, id })
+
+            _listeners.forEach(
+              listener =>
+                listener.established && listener.established(invertConnection(connection, channel.code))
+            )
+          } else {
+            if (!wallet.did.helper().verifyDID(connection.sender)) {
+              throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
+            }
+
+            const recipient = wallet.findCredential(connection.recipientId)
+
+            const newConnection: DIDCommConnectMeta = {
+              ...filterConnectionFields(connection),
+              recipientId: connection.sender.id,
+              recipient: connection.sender,
+              sender: (wallet.did.helper().isDIDDocument(recipient?.credential.holder as DIDDocument)
+                ? recipient?.credential.holder : recipient?.credential.issuer as unknown) as DIDDocument,
+              channel: channel.code
+            }
+
+            await channel.send(newConnection.sender.id, { ok: true, id })
+
+            _listeners.forEach(listener => listener.accept && listener.accept(newConnection))
           }
-
-          const recipient = wallet.findCredential(connection.recipientId)
-
-          const newConnection: DIDCommConnectMeta = {
-            ...filterConnectionFields(connection),
-            recipientId: connection.sender.id,
-            recipient: connection.sender,
-            sender: (wallet.did.helper().isDIDDocument(recipient?.credential.holder as DIDDocument)
-              ? recipient?.credential.holder : recipient?.credential.issuer as unknown) as DIDDocument,
-            channel: channel.code
-          }
-
-          await channel.send(newConnection.sender.id, { ok: true, id })
-
-          _listeners.forEach(listener => listener.accept && listener.accept(newConnection))
         }
       } catch (error) {
         console.error('JWT Error', error)
