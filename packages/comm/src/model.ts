@@ -335,7 +335,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
       try {
         const jwt = decodeJWT(datagram)
-        if (jwt.payload.request.credentialSubject.handshakeSequence) {
+        if (jwt.payload.request?.credentialSubject.handshakeSequence) {
           const identity = wallet.getIdentity()
           if (!identity) {
             throw new Error(ERROR_NO_IDENTITY)

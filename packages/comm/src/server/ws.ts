@@ -264,7 +264,7 @@ export const startWSServer = async (
         try {
           const jwt = decodeJWT(data)
           console.log('we got jwt: ' + jwt.payload.iss)
-          if (jwt.payload.response.credentialSubject.handshakeSequence) {
+          if (jwt.payload.response?.credentialSubject.handshakeSequence) {
             const handshakeData = _handshakes[jwt.payload.response.credentialSubject.handshakeSequence]
             const did = didHelper.parseDIDId(handshakeData).did
 
