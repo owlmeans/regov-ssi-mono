@@ -41,3 +41,7 @@ export const castMainModalHandler = (extension: Extension) => {
 
   return handler
 }
+
+export type CastMainModalParams = {
+  cleanUp?: () => void
+}

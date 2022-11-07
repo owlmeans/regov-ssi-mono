@@ -34,13 +34,17 @@ export const WalletCredentialList = () => {
     menu: async (location: string, params: CredentialListNavigatorParams) => {
       navigate(`/credential/list/${location}/${params.section || ''}`)
     },
-    
+
     create: async (path: string) => {
       navigate(`/credential/create/${path}`)
     },
-    
+
     request: async (path: string) => {
       navigate(`/credential/request/${path}`)
+    },
+
+    claim: async (path: string) => {
+      navigate(`/credential/claim/${path}`)
     }
   })
 

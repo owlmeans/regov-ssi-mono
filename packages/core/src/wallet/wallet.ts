@@ -21,7 +21,7 @@ import { buildStore } from "../store/store"
 import { SecureStore } from "../store/types"
 import {
   CredentialsRegistry, CredentialsRegistryWrapper, CredentialWrapper, CredentialWrapperMetadata, RegistryItem,
-  REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES
+  REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CLAIMS, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_IDENTITIES
 } from "./registry"
 import { GetRegistryMethod, WalletWrapper, WalletWrapperBuilder } from "./types"
 import { CredentialEventParams, EXTENSION_TRIGGER_ADD_CREDENTIAL } from "../extension"
@@ -146,7 +146,10 @@ export const buildWalletWrapper: WalletWrapperBuilder =
             )
 
             return wrapper
-          }
+          },
+
+          removePeer: async (credential) =>
+            _registryWrappers[type].removeCredential(credential, REGISTRY_SECTION_PEER)
         }
       }
 
@@ -168,13 +171,16 @@ export const buildWalletWrapper: WalletWrapperBuilder =
 
       getRegistry: _getRegistry,
 
+      getClaimRegistry: () => _getRegistry(REGISTRY_TYPE_CLAIMS),
+
+      getCredRegistry: () => _getRegistry(REGISTRY_TYPE_CREDENTIALS),
+
       hasIdentity: () => {
         return _getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential() !== undefined
       },
 
       getIdentity: <
-        Subject extends {} = {},
-        Identity extends Credential<Subject> = Credential<Subject>
+        Subject extends {} = {}, Identity extends Credential<Subject> = Credential<Subject>
       >() => {
         if (_wallet.hasIdentity()) {
           return _getRegistry(REGISTRY_TYPE_IDENTITIES)
@@ -183,6 +189,23 @@ export const buildWalletWrapper: WalletWrapperBuilder =
 
         return undefined
       },
+
+      getIdentityCredential: <
+        Subject extends {} = {}, Identity extends Credential<Subject> = Credential<Subject>
+      >(id?: string) =>
+        _getRegistry(REGISTRY_TYPE_IDENTITIES)
+          .getCredential<Subject, Identity>(id, REGISTRY_SECTION_OWN)?.credential,
+
+      getIdentityWrappers: <
+        Subject extends {} = {},
+        Identity extends Credential<Subject> = Credential<Subject>
+      >() => _getRegistry(REGISTRY_TYPE_IDENTITIES).registry
+        .credentials[REGISTRY_SECTION_OWN] as CredentialWrapper<Subject, Identity>[],
+
+      getIdentities: <
+        Subject extends {} = {},
+        Identity extends Credential<Subject> = Credential<Subject>
+      >() => _wallet.getIdentityWrappers().map(wrap => wrap.credential) as Identity[],
 
       findCredential: (id: string, section: string = REGISTRY_SECTION_OWN) => {
         return Object.entries(_registryWrappers).reduce<CredentialWrapper | undefined>((found, [, registry]) => {

@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
+import React, { Fragment, FunctionComponent, useEffect } from 'react'
 
 import {
-  Credential, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS, UnsignedCredential
+  Credential, getCompatibleSubject, Presentation, RegistryItem, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS,
+  singleValue
 } from '@owlmeans/regov-ssi-core'
 import {
   EmptyProps, generalNameVlidation, RegovComponentProps, useNavigator, useRegov, withRegov
@@ -31,7 +32,7 @@ import {
   ListNavigator, partialListNavigator
 } from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
-import { ERROR_MEMBERSHIP_READYTO_CLAIM, ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION } from '../../types'
+import { ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION } from '../../types'
 import { useNavigate } from 'react-router-dom'
 import { addToValue } from '@owlmeans/regov-ssi-core'
 import DialogContent from '@mui/material/DialogContent'
@@ -40,12 +41,12 @@ import DialogContent from '@mui/material/DialogContent'
 export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withRegov<
   MembershipClaimProps, ListNavigator
 >({ namespace: REGOV_EXT_GROUP_NAMESPACE }, (props) => {
-  const { group, t, i18n, ext } = props
+  const { group, t, i18n, ext /*, ns */ } = props
   const { handler, extensions } = useRegov()
   const navigate = useNavigate()
   const navigator = useNavigator<ListNavigator>(partialListNavigator(navigate))
   const groupSubjet = group ? getCompatibleSubject<GroupSubject>(group) : undefined
-  const [unsignedMemberhip, setUnsignedMembership] = useState<UnsignedCredential | undefined>(undefined)
+  // const [unsignedMemberhip, setUnsignedMembership] = useState<UnsignedCredential | undefined>(undefined)
 
   const methods = useForm<MembershipClaimFields>({
     mode: 'onChange',
@@ -53,6 +54,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
     defaultValues: {
       membership: {
         group: groupSubjet,
+        evidences: { evidence: [] },
         claim: {
           groupId: group ? group.id : '',
           role: '',
@@ -74,16 +76,15 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
         if (!ext) {
           throw ERROR_WIDGET_EXTENSION
         }
-        const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
-        const unsignedMemberhips = await factory.build(handler.wallet, {
-          extensions: extensions?.registry,
-          subjectData: {
-            groupId: group ? group.id : ''
-          }
-        })
-        setUnsignedMembership(unsignedMemberhips)
         methods.setValue(
-          'membership.claim', unsignedMemberhips.credentialSubject as unknown as MembershipSubject
+          'membership.claim',
+          {
+            groupId: group ? group.id : '',
+            role: '',
+            memberCode: '',
+            description: '',
+            createdAt: (new Date).toISOString()
+          }
         )
       } catch (error) {
         console.error(error)
@@ -106,26 +107,23 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
       if (!handler.wallet) {
         throw ERROR_WIDGET_AUTHENTICATION
       }
-      if (!unsignedMemberhip || !ext) {
-        throw ERROR_MEMBERSHIP_READYTO_CLAIM
-      }
-      /**
-       * @TODO Move all this stuff to some credential specific method
-       */
-      const extendSubject = {
-        role: data.membership.claim.role,
-        description: data.membership.claim.description
-      }
-      unsignedMemberhip.credentialSubject = {
-        ...unsignedMemberhip.credentialSubject,
-        ...extendSubject
-      }
+      const factory = ext.getFactory(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)
+      const unsignedMemberhip = await factory.build(handler.wallet, {
+        extensions: extensions?.registry,
+        subjectData: Object.fromEntries(
+          Object.entries(data.membership.claim).filter(([key]) => key !== 'alert')
+        )
+      })
 
       if (group) {
         unsignedMemberhip.evidence = addToValue(unsignedMemberhip.evidence, group)
       }
-      const factory = ext.getFactory(unsignedMemberhip.type)
-      const claim = await factory.claim(handler.wallet, { unsignedClaim: unsignedMemberhip })
+
+      const claim = await factory.claim(handler.wallet, {
+        unsignedClaim: unsignedMemberhip,
+        evidenceClaims: data.membership.evidences.evidence.filter(ev => ev)
+          .map((ev: Presentation) => singleValue(ev.verifiableCredential)) as RegistryItem[]
+      })
 
       const registry = handler.wallet.getRegistry(REGISTRY_TYPE_CLAIMS)
       const item = await registry.addCredential(claim)
@@ -167,10 +165,9 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
           <MainTextOutput {..._props} field="membership.claim.groupId" showHint />
           <MainTextInput {..._props} field="membership.claim.role" />
           <MainTextInput {..._props} field="membership.claim.description" />
-          {/*<CredentialListInput ns={ns} config={{
-            // prefix: 'claim',
-            items: [{ type: '', plural: true, max: 5, field: 'evidence' }]
-          }} />*/}
+          {/* <CredentialListInput ns={ns} field="membership.evidences" config={{
+            prefix: 'claim', items: [{ plural: true, max: 5, field: 'evidence', arbitraryEvidence: true }]
+          }} /> */}
           <MainTextOutput {...props} field="membership.claim.createdAt" showHint formatter={dateFormatter} />
           <AlertOutput {...props} field="membership.claim.alert" />
           <FormMainAction {...props} title="membership.claim.create" action={methods.handleSubmit(claim)} />
@@ -192,6 +189,7 @@ export type MembershipClaimProps = RegovComponentProps<MembershipClaimParams>
 export type MembershipClaimFields = {
   membership: {
     group: GroupSubject | undefined
+    evidences: { evidence: unknown[] }
     claim: MembershipSubject & {
       alert?: string
     }

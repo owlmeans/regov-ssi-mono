@@ -18,7 +18,8 @@ import { MaybeArray, normalizeValue } from "@owlmeans/regov-ssi-core"
 import { Presentation, Credential } from "@owlmeans/regov-ssi-core"
 import {
   BASIC_IDENTITY_TYPE, REGOV_SIGNATURE_REQUEST_TYPE, REGOV_SIGNATURE_RESPONSE_TYPE,
-  REGOV_CREDENTIAL_TYPE_SIGNATURE
+  REGOV_CREDENTIAL_TYPE_SIGNATURE, SignaturePresentation, REGOV_SIGNATURE_CLAIM_TYPE,
+  SignatureCredential
 } from "./types"
 
 
@@ -30,6 +31,22 @@ export const getSignatureRequestFromPresentation = (presentation: Presentation) 
   return presentation.verifiableCredential.find(
     credential => credential.type.includes(REGOV_SIGNATURE_REQUEST_TYPE)
   )
+}
+
+export const getSignatureCredentialClaimFromPresentation = (presentation: SignaturePresentation) => {
+  if (!presentation.type.includes(REGOV_SIGNATURE_CLAIM_TYPE)) {
+    return undefined
+  }
+
+  return presentation.verifiableCredential.find(
+    credential => credential.type.includes(REGOV_SIGNATURE_CLAIM_TYPE)
+  )
+}
+
+export const getSignatureCredentialOfferFromPresentation = (presentaton: SignaturePresentation) => {
+  return presentaton.verifiableCredential.find(
+    credential => credential.type.includes(REGOV_CREDENTIAL_TYPE_SIGNATURE)
+  ) as SignatureCredential
 }
 
 export const getSignatureResponseFromPresentation = (presentation: Presentation) => {

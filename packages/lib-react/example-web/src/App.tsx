@@ -22,7 +22,7 @@ import { groupsUIExtension } from '@owlmeans/regov-ext-groups'
 import { authUIExtension } from '@owlmeans/regov-ext-auth'
 import { buildCommUIExtension } from '@owlmeans/regov-ext-comm'
 
-import { WalletApp, buildUniversalExtensionUI } from '@owlmeans/regov-lib-react'
+import { WalletApp } from '@owlmeans/regov-lib-react'
 
 import { config, commConfig } from './config'
 
@@ -36,14 +36,6 @@ const registry = buildUIExtensionRegistry()
 registry.registerSync(buildCommUIExtension(commConfig))
 
 registry.registerSync(authUIExtension)
-
-registry.registerSync(buildUniversalExtensionUI({
-  name: '',
-  code: 'example-uvc',
-  organization: 'Example Org.',
-  home: 'https://my-example.org/',
-  schemaBaseUrl: 'https://my-example.org/schemas/'
-}))
 
 registry.registerSync(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName: config.name }, {
   name: '',

@@ -40,7 +40,7 @@ export type Wallet = {
 export type WalletWrapperMethodBuilder<Method extends Function> = (wallet: Wallet, context: SSICore) => Method
 
 export type WalletWrapperBuilder = <Store extends BasicStore = BasicStore>(
-  dependencies: { 
+  dependencies: {
     crypto: CryptoHelper
     extensions?: ExtensionRegistry
   },
@@ -74,9 +74,28 @@ export type WalletWrapper = {
   getIdentity: <
     Subject extends {} = {},
     Identity extends Credential<Subject> = Credential<Subject>
-    >() => CredentialWrapper<Subject, Identity> | undefined
+  >() => CredentialWrapper<Subject, Identity> | undefined
+
+  getIdentityCredential: <
+    Subject extends {} = {},
+    Identity extends Credential<Subject> = Credential<Subject>
+  >(id?: string) => Identity | undefined
+
+  getIdentities: <
+    Subject extends {} = {},
+    Identity extends Credential<Subject> = Credential<Subject>
+  >() => Identity[]
+
+  getIdentityWrappers: <
+    Subject extends {} = {},
+    Identity extends Credential<Subject> = Credential<Subject>
+  >() => CredentialWrapper<Subject, Identity>[]
 
   getRegistry: GetRegistryMethod
+
+  getClaimRegistry: GetRegistryMethod
+
+  getCredRegistry: GetRegistryMethod
 
   findCredential: (id: string, section?: string) => CredentialWrapper | undefined
 

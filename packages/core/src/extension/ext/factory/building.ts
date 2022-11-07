@@ -15,20 +15,27 @@
  */
 
 import { addToValue, normalizeValue } from "../../../common"
-import { CredentialSchema, BASE_CREDENTIAL_TYPE, Credential } from "../../../vc"
+import { CredentialSchema, BASE_CREDENTIAL_TYPE } from "../../../vc"
 import { WalletWrapper } from "../../../wallet"
 import { DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION } from "../../../did"
-import { CredentialDescription } from "../../schema"
+import { CredentialDescription, extractIdFieldsFromSubject, verifySubjectForIdIntegrity } from "../../schema"
 import { BuildMethodParams } from "../types"
-import { EVENT_EXTENSION_AFTER_BULIDING_DID, ExtensionEventAfterBuildingDid } from "./types"
+import {
+  ERROR_NO_DATA_FOR_ID_INTEGRITY, EVENT_EXTENSION_AFTER_BULIDING_DID,
+  ExtensionEventAfterBuildingDid
+} from "./types"
+import { CryptoKey } from '../../../common/crypto'
 
 
 export const defaultBuildMethod = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) =>
+>(schema: CredentialDescription<Schema>) =>
   async (wallet: WalletWrapper, params: BuildMethodParams) => {
-
     const subject = params.subjectData as any
+
+    if (schema.verfiableId && !verifySubjectForIdIntegrity(schema, subject)) {
+      throw ERROR_NO_DATA_FOR_ID_INTEGRITY
+    }
 
     if (params.identity) {
       if (!normalizeValue(params.evidence).find(evidence => evidence?.id === params.identity?.id)) {
@@ -36,19 +43,25 @@ export const defaultBuildMethod = <
       }
     }
 
-    const identityKey = params.identity && await wallet.ssi.did.extractKey(
+    const identityKey = params.identity && JSON.parse(JSON.stringify(await wallet.ssi.did.extractKey(
       params.identity.holder.hasOwnProperty('@context')
         ? params.identity.holder as DIDDocument
         : params.identity.issuer as unknown as DIDDocument
-    )
+    ))) as CryptoKey
 
-    identityKey && await wallet.ssi.keys.expandKey(identityKey)
+    if (identityKey) {
+      await wallet.ssi.keys.expandKey(identityKey)
+      if (identityKey.fragment) {
+        delete identityKey.fragment
+      }
+    }
 
     const key = params.key || identityKey || await wallet.ssi.keys.getCryptoKey()
+
     const didUnsigned = params.didUnsigned || await wallet.ssi.did.helper().createDID(
       key,
       {
-        data: JSON.stringify(subject),
+        data: JSON.stringify(extractIdFieldsFromSubject(schema, subject)),
         hash: true,
         purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION]
       }

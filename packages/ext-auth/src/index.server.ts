@@ -20,9 +20,9 @@ import {
 } from '@owlmeans/regov-lib-node'
 import { authExtension } from './ext'
 import {
-  ERROR_NO_AUTHENTICATION_FROM_EXTERNAL_WALLET, REGOV_CREDENTIAL_TYPE_AUTH, SERVER_PROVIDE_AUTH
+  ERROR_NO_AUTHENTICATION_FROM_EXTERNAL_WALLET, REGOV_AUTH_REQUEST_TYPE, REGOV_AUTH_RESPONSE_TYPE, REGOV_CREDENTIAL_TYPE_AUTH, SERVER_PROVIDE_AUTH, SERVER_REQUEST_AUTH, SERVER_VALIDATE_AUTH
 } from './types'
-import { Presentation } from '@owlmeans/regov-ssi-core'
+import { Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENTIALS, REGISTRY_TYPE_REQUESTS, VALIDATION_KIND_RESPONSE } from '@owlmeans/regov-ssi-core'
 import { getAuthFromPresentation } from './util'
 
 export * from './types'
@@ -38,7 +38,7 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
       if (!handler.wallet) {
         throw ERROR_NO_WALLET
       }
-      
+
       const presentation: Presentation = req.body
       const credential = getAuthFromPresentation(presentation)
       if (!credential) {
@@ -49,6 +49,65 @@ export const authServerExtension = buildServerExtension(authExtension, () => {
       const result = await factory.validate(handler.wallet, {
         presentation, credential, extensions: extensions.registry
       })
+
+      res.json(result)
+    } catch (e) {
+      res.status(500).send(`${e}`)
+    }
+  })
+
+  router.get(SERVER_REQUEST_AUTH, async (req, res) => {
+    try {
+      const { handler } = getAppContext(req)
+      if (!handler.wallet) {
+        throw ERROR_NO_WALLET
+      }
+
+      const factory = authExtension.getFactory(REGOV_AUTH_REQUEST_TYPE)
+      const unsigned = await factory.build(handler.wallet, {
+        subjectData: {
+          did: req.params.did, createdAt: (new Date()).toISOString()
+        }
+      })
+
+      const authRequest = await factory.request(handler.wallet, {
+        unsignedRequest: unsigned,
+        identity: handler.wallet.getIdentity()?.credential
+      })
+
+      handler.wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
+        .addCredential(authRequest, REGISTRY_SECTION_OWN)
+
+      res.json(authRequest)
+    } catch (e) {
+      res.status(500).send(`${e}`)
+    }
+  })
+
+  router.post(SERVER_VALIDATE_AUTH, async (req, res) => {
+    try {
+      const { handler, extensions } = getAppContext(req)
+      if (!handler.wallet) {
+        throw ERROR_NO_WALLET
+      }
+
+      const presentation: Presentation = req.body
+
+      const factory = authExtension.getFactory(REGOV_AUTH_RESPONSE_TYPE)
+      const result = await factory.validate(handler.wallet, {
+        presentation,
+        extensions: extensions.registry,
+        kind: VALIDATION_KIND_RESPONSE
+      })
+
+      if (presentation.id) {
+        const request = handler.wallet.getRegistry(REGISTRY_TYPE_CREDENTIALS)
+          .getCredential(presentation.id, REGISTRY_SECTION_OWN)
+        if (request?.credential) {
+          handler.wallet.getRegistry(REGISTRY_TYPE_REQUESTS)
+            .removeCredential(request.credential, REGISTRY_SECTION_OWN)
+        }
+      }
 
       res.json(result)
     } catch (e) {

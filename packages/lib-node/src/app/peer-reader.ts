@@ -19,6 +19,7 @@ import {
 } from "@owlmeans/regov-ssi-core"
 import { ERROR_NO_PEER_VCS, ServerAppConfig } from "./types"
 import fs from 'fs'
+import { reviveJson } from "../utils"
 
 
 export const readPeerVCs = async (wallet: WalletWrapper, config: ServerAppConfig) => {
@@ -51,7 +52,7 @@ export const readPeerVCs = async (wallet: WalletWrapper, config: ServerAppConfig
 
             try {
               console.log(`Read file: ${file}`)
-              const vc: Credential = JSON.parse(data.toString('utf8'))
+              const vc: Credential = JSON.parse(data.toString('utf8'), reviveJson)
               const [result, err] = await wallet.ssi.verifyCredential(vc, undefined, {
                 localLoader: buildWalletLoader(wallet),
                 verifyEvidence: true,

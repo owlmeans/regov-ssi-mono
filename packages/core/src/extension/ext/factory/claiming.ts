@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import { addToValue } from "../../../common"
-import { isCredential } from "../../../vc"
+import { addToValue, normalizeValue } from "../../../common"
+import { isCredential, Credential } from "../../../vc"
 import { DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_HOLDER } from "../../../did"
 import { ClaimMethodBuilder } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
@@ -28,7 +28,9 @@ export const defaultClaimMethod: ClaimMethodBuilder = schema =>
     if (!identity) {
       throw ERROR_FACTORY_NO_IDENTITY
     }
-    unsigned.evidence = addToValue(unsigned.evidence, identity)
+    if (!normalizeValue(unsigned.evidence).find(cred => cred?.id === identity.id)) {
+      unsigned.evidence = addToValue(unsigned.evidence, identity)
+    }
 
     const unsignedDid = unsigned.holder as DIDDocumentUnsinged
     const signerKey = await wallet.ssi.did.helper().extractKey(unsignedDid, VERIFICATION_KEY_HOLDER)
@@ -62,7 +64,7 @@ export const defaultClaimMethod: ClaimMethodBuilder = schema =>
 
     const helper = wallet.did.helper()
 
-    const unsignedClaim = await wallet.ssi.buildPresentation([cred], {
+    const unsignedClaim = await wallet.ssi.buildPresentation([cred, ...(params.evidenceClaims as Credential[] || [])], {
       holder, type: schema.claimType,
       id: helper.parseDIDId(
         helper.makeDIDId(signerKey, { data: JSON.stringify([cred]), hash: true })

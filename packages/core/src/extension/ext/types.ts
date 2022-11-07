@@ -19,7 +19,7 @@ import {
   Presentation, Credential, UnsignedCredential, Evidence, CredentialSchema,
   CredentialType, MultiSchema, BasicCredentialType
 } from '../../vc'
-import { WalletWrapper } from '../../wallet'
+import { RegistryItem, WalletWrapper } from '../../wallet'
 import { DIDDocument, DIDDocumentUnsinged } from '../../did'
 import { ExtensionRegistry } from '../registry'
 import {
@@ -112,7 +112,7 @@ export type ValidateMethod = <
 
 export type ValidateMethodParams = {
   presentation?: Presentation
-  credential: Credential
+  credential?: Credential
   extensions: ExtensionRegistry
   kind?: ValidationKind
 }
@@ -158,6 +158,7 @@ export type ClaimMethodParams = {
   holder?: DIDDocument
   claimType?: string
   identity?: Credential
+  evidenceClaims?: RegistryItem[]
 }
 
 export type RequestMethodBuilder = <

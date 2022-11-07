@@ -15,11 +15,12 @@
  */
 
 import React, { Fragment, FunctionComponent, useMemo } from 'react'
-import { IncommigDocumentWithConn, MembershipSubject, REGOV_CREDENTIAL_TYPE_MEMBERSHIP } from '../../../../types'
+import { MembershipSubject, REGOV_CREDENTIAL_TYPE_MEMBERSHIP } from '../../../../types'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, normalizeValue, UnsignedCredential } from '@owlmeans/regov-ssi-core'
 import { CredentialWrapper, Presentation } from '@owlmeans/regov-ssi-core'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
+import { IncommigDocumentWithConn } from '@owlmeans/regov-comm'
 import Person from '@mui/icons-material/Person'
 
 import Avatar from '@mui/material/Avatar'

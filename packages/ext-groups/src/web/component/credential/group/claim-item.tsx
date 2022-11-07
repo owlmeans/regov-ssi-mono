@@ -15,13 +15,14 @@
  */
 
 import React, { Fragment, FunctionComponent, useMemo } from 'react'
-import { GroupSubject, IncommigDocumentWithConn, REGOV_CREDENTIAL_TYPE_GROUP } from '../../../../types'
+import { GroupSubject, REGOV_CREDENTIAL_TYPE_GROUP } from '../../../../types'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, Presentation, normalizeValue } from '@owlmeans/regov-ssi-core'
 import { CredentialWrapper, UnsignedCredential } from '@owlmeans/regov-ssi-core'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
-import Groups from '@mui/icons-material/Groups'
+import { IncommigDocumentWithConn } from '@owlmeans/regov-comm'
 
+import Groups from '@mui/icons-material/Groups'
 import Avatar from '@mui/material/Avatar'
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'

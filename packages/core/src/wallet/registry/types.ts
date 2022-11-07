@@ -36,6 +36,7 @@ export type CredentialsRegistryWrapper = {
   addCredential: AddCredentialMethod
   lookupCredentials: LookupCredentialsMethod
   removeCredential: RemoveCredentialMethod
+  removePeer: RemoveCredentialMethod
   getCredential: GetCredentialMethod
 }
 

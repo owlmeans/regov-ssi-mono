@@ -24,7 +24,7 @@ import {
 } from '@owlmeans/regov-lib-react'
 import {
   RegovGroupExtensionTypes, REGOV_MEMBERSHIP_CLAIM_TYPE, REGOV_CREDENTIAL_TYPE_GROUP, REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
-  REGOV_MEMBERSHIP_OFFER_TYPE, REGOV_GROUP_CLAIM_TYPE, IncommigDocumentWithConn
+  REGOV_MEMBERSHIP_OFFER_TYPE, REGOV_GROUP_CLAIM_TYPE
 } from '../types'
 import { groupsExtension } from '../ext'
 import { getGroupFromMembershipClaimPresentation, getGroupOwnerIdentity } from '../util'
@@ -41,7 +41,7 @@ import {
   Credential, isPresentation, Presentation, REGISTRY_TYPE_IDENTITIES, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import { MembershipClaimOffer } from './component/credential/membership/claim-offer'
-import { EVENT_INIT_CONNECTION, InitCommEventParams } from '@owlmeans/regov-comm'
+import { EVENT_INIT_CONNECTION, InitCommEventParams, IncommigDocumentWithConn } from '@owlmeans/regov-comm'
 import { GroupClaimView } from './component/credential/group/claim-view'
 import { GroupClaimItem } from './component/credential/group/claim-item'
 
@@ -49,7 +49,7 @@ import { GroupClaimItem } from './component/credential/group/claim-item'
 if (groupsExtension.schema.events) {
   let modalHandler: MainModalHandle
 
-  groupsExtension.getEvents(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED)[0].method = async (
+  groupsExtension.modifyEvent(EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, 'method', async (
     wallet: WalletWrapper, params: IncommigDocumentWithConn
   ) => {
     params.statusHandler.successful = false
@@ -117,7 +117,7 @@ if (groupsExtension.schema.events) {
     }
 
     return false
-  }
+  })
 
   groupsExtension.schema = addObserverToSchema(groupsExtension.schema, {
     trigger: EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER,

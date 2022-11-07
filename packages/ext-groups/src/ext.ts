@@ -16,8 +16,8 @@
 
 import {
   addObserverToSchema, addToValue, buildExtension, buildExtensionSchema, CredentialType, defaultBuildMethod, defaultSignMethod,
-  defaultValidateMethod, DIDDocument, DIDPURPOSE_VERIFICATION, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, EXTENSION_TRIGGER_RETRIEVE_NAME,
-  IncommigDocumentEventParams, MaybeArray, RetreiveNameEventParams, VERIFICATION_KEY_HOLDER
+  defaultValidateMethod, DIDDocument, DIDPURPOSE_VERIFICATION, ERROR_NO_CREDENTIAL_PROVIDED, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, EXTENSION_TRIGGER_RETRIEVE_NAME,
+  IncommigDocumentEventParams, MaybeArray, RetreiveNameEventParams, singleValue, VERIFICATION_KEY_HOLDER
 } from "@owlmeans/regov-ssi-core"
 import {
   REGISTRY_TYPE_IDENTITIES, REGISTRY_TYPE_CREDENTIALS, UnsignedCredential, getCompatibleSubject,
@@ -81,6 +81,9 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
     selfIssuing: false,
     claimable: true,
     listed: true,
+    verfiableId: {
+      fields: ['groupId', 'role', 'createdAt']
+    },
     evidence: [
       {
         type: BASIC_IDENTITY_TYPE,
@@ -220,6 +223,12 @@ export const groupsExtension = buildExtension(groupsExtensionSchema, {
     },
     produceValidateMethod: credSchema => async (wallet, params) => {
       const result = await defaultValidateMethod(credSchema)(wallet, params)
+      if (!params.credential && params.presentation) {
+        params.credential = singleValue(params.presentation.verifiableCredential)
+      }
+      if (!params.credential) {
+        throw ERROR_NO_CREDENTIAL_PROVIDED
+      }
 
       const membershipEvidence = normalizeValue(result.evidence).find(
         evidence => evidence.instance?.type.includes(REGOV_CREDENTIAL_TYPE_MEMBERSHIP)

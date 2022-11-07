@@ -66,6 +66,9 @@ export const buildIdentityExtension = (
       claimable: false,
       listed: true,
       selfIssuing: true,
+      verfiableId: {
+        fields: ['sourceApp', 'uuid', 'createdAt']
+      },
       defaultSubject: {
         sourceApp: params.appName
       }

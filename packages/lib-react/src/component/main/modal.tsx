@@ -19,14 +19,25 @@ import { EventParams, EXTENSION_TRIGGER_AUTHENTICATED, WalletHandler } from '@ow
 import {
   RegovComponentProps, useRegov, withRegov, WrappedComponentProps, Config
 } from '../../common/'
-import { UIExtensionRegistry } from '../../extension'
+import { CastMainModalParams, UIExtensionRegistry } from '../../extension'
 
 
 export const MainModal: FunctionComponent<MainModalParams> = withRegov<MainModalProps>(
   'MainModal', props => {
     const { i18n, t, alias, renderer: Renderer } = props
     const { extensions, handler, config } = useRegov()
-    const handle = useMemo<MainModalHandle>(() => ({}), [alias])
+    const handle: MainModalHandle = useMemo(() => ({
+      close: () => handle.setOpen && handle.setOpen(false),
+      
+      upgrade: params => {
+        return {
+          ...handle, close: () => {
+            params.cleanUp && params.cleanUp()
+            handle.close && handle.close()
+          }
+        }
+      }
+    }), [alias])
     const _props = { i18n, t, alias, handle }
     useEffect(() => {
       (async () => {
@@ -72,6 +83,9 @@ export type MainModalImplParams = {
 export type MainModalHandle = {
   getContent?: () => ReactNode
   setOpen?: (isOpened: boolean) => void
+  open?: (content: () => ReactNode) => boolean
+  close: () => void
+  upgrade: (params: CastMainModalParams) => MainModalHandle
 }
 
 export type MainModalImplProps = WrappedComponentProps<MainModalImplParams, MainModalState>

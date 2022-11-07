@@ -18,6 +18,7 @@ import { EncryptedStore, WalletHandler } from "@owlmeans/regov-ssi-core"
 import { ServerStore } from "./types"
 import fs from 'fs'
 import { default as Path } from 'path'
+import { reviveJson } from "../utils"
 
 
 export const buildFileStore = (path: string): ServerStore => {
@@ -43,7 +44,7 @@ export const buildFileStore = (path: string): ServerStore => {
                 return stores
               }
               try {
-                const store: EncryptedStore = JSON.parse(data.toString('utf8'))
+                const store: EncryptedStore = JSON.parse(data.toString('utf8'), reviveJson)
                 stores[store.alias] = store
               } catch (e) {
                 return stores

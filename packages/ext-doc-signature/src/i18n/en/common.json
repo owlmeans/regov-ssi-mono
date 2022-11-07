@@ -5,6 +5,9 @@
     },
     "request": {
       "signature": "Document Signature Request"
+    },
+    "claim": {
+      "signature": "Document Signature Claim"
     }
   },
   "dashboard": {
@@ -313,6 +316,41 @@
         "unknown": "Unknown document signature",
         "type": "Document signature VC"
       }
+    },
+    "offer": {
+      "title": "Document signature to offer",
+      "list": {
+        "item": {
+          "unknown": "Unknown document signature offer",
+          "type": "Document signature offer"
+        }
+      },
+      "identity": {
+        "hint": "Identity to sign claim with"
+      },
+      "send": "Sign & send offer",
+      "accept": "Accept & add credential"
+    },
+    "offer-review": {
+      "title": "Review signature offer"
+    },
+    "claim": {
+      "title": "Document signature claim",
+      "issuerDid": {
+        "label": "Issuer DID",
+        "hint": "DID address of issuer to claim from"
+      },
+      "list": {
+        "item": {
+          "unknown": "Unknown document signature claim",
+          "type": "Document signature claim"
+        }
+      }
+    }
+  },
+  "error": {
+    "signature": {
+      "offerInvalid": "Provided signature credential offer is invalid: {{message}}"
     }
   }
 }

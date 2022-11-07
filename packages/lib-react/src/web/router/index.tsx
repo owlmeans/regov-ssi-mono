@@ -23,7 +23,7 @@ import {
 } from '../../common'
 import {
   WalletStoreCreation, WalletStoreLogin, WalletStoreList, WalletCredentialList, WalletMainMenu,
-  CredentialCreation, CredentialRequest
+  CredentialCreation, CredentialRequest, CredentialClaim
 } from '../screen'
 
 
@@ -42,6 +42,7 @@ export const NavigationRoot = () => {
         <Route path="list/:tab/:section/:id" element={<WalletCredentialList />} />
         <Route path="create/:ext/:type" element={<CredentialCreation />} />
         <Route path="request/:ext/:type" element={<CredentialRequest />} />
+        <Route path="claim/:ext/:type" element={<CredentialClaim />} />
       </Route>
     </Route>
 

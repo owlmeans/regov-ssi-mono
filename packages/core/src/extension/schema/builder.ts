@@ -29,7 +29,8 @@ export const buildExtensionSchema = <CredType extends string>(
         ...creds,
         [key]: {
           ...cred,
-          ...(cred.claimType ? { claimType: cred.claimType } : { claimType: details.types?.claim })
+          ...(cred.claimType ? { claimType: cred.claimType } : { claimType: details.types?.claim }),
+          ...(cred.offerType ? { offerType: cred.offerType } : { offerType: details.types?.offer })
         }
       }
     }, {} as { [key in CredType]: CredentialDescription }),
