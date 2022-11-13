@@ -23,7 +23,7 @@
     ky "^0.25.1"
     ky-universal "^0.8.2"
 
-"@owlmeans/regov-come@link:..":
+"@owlmeans/regov-comm@link:..":
   version "0.0.0"
   uid ""
 

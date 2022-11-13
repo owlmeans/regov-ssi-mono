@@ -7,8 +7,6 @@ import docSignatureReq from './schemas/doc-signature-request.json'
 import groupMembership from './schemas/group-membership.json'
 import group from './schemas/group.json'
 import identity from './schemas/identity.json'
-import comm from './schemas/comm.json'
-import commRequest from './schemas/comm-request.json'
 
 import { documentWarmer } from '@owlmeans/regov-ssi-core'
 
@@ -22,5 +20,3 @@ documentWarmer('https://owlmeans.com/schema/doc-signature-request', JSON.stringi
 documentWarmer('https://owlmeans.com/schema/group-membership', JSON.stringify(groupMembership))
 documentWarmer('https://owlmeans.com/schema/group', JSON.stringify(group))
 documentWarmer('https://owlmeans.com/schema/identity', JSON.stringify(identity))
-documentWarmer('https://schema.owlmeans.com/comm-request.json', JSON.stringify(commRequest))
-documentWarmer('https://schema.owlmeans.com/comm.json', JSON.stringify(comm))

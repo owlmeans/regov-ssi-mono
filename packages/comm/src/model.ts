@@ -14,17 +14,19 @@
  *  limitations under the License.
  */
 
+import { REGOV_IDENTITY_DEFAULT_TYPE } from "@owlmeans/regov-ext-identity";
 import {
-  buildWalletLoader, Credential, DIDDocument, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION, ERROR_NO_CREDENTIAL_SIGNING_KEY, ERROR_NO_IDENTITY,
-  isPresentation, KEYCHAIN_ERROR_NO_KEY, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES, UnsignedCredential,
-  VERIFICATION_KEY_CONTROLLER,
+  buildWalletLoader, Credential, DIDDocument, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION, isPresentation,
+  KEYCHAIN_ERROR_NO_KEY, Presentation, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES, REGISTRY_TYPE_REQUESTS, singleValue, VERIFICATION_KEY_CONTROLLER,
   VERIFICATION_KEY_HOLDER, WalletWrapper
 } from "@owlmeans/regov-ssi-core"
+import { extension } from "./ext"
 import {
   COMM_CHANNEL_BROADCAST, COMM_CHANNEL_DEFAULT, DIDCommChannel, DIDCommConnectMeta, DIDCommHelper,
-  DIDCommListner, ERROR_COMM_ALIAN_SENDER, ERROR_COMM_DID_WRONG_SIGNATURE,
+  DIDCommListner, ERROR_COMM_ALIAN_SENDER, ERROR_COMM_DID_WRONG_SIGNATURE, COMM_WS_PREFIX_HANDSHAKE,
   ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD, ERROR_COMM_NODID, ERROR_COMM_NO_CHANNEL,
-  ERROR_COMM_NO_CONNECTION, ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER
+  ERROR_COMM_NO_CONNECTION, ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER, REGOV_COMM_REQUEST_TYPE,
+  REGOV_COMM_RESPONSE_TYPE, REGOV_CREDENTIAL_TYPE_COMM
 } from "./types"
 import { didDocToCommKeyBuilder, filterConnectionFields, invertConnection, parseJWE } from "./util"
 import {
@@ -244,7 +246,41 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
         return
       }
-      if (datagram.startsWith('{') && datagram.endsWith('}')) {
+
+      if (datagram.startsWith('handshake:')) {
+        try {
+          const [prefix, ...splitedData] = datagram.split(':')
+          const data = splitedData.join(':')
+          const request = JSON.parse(data)
+          const requestCredential = singleValue(request.verifiableCredential)
+
+          const registry = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES)
+          const identity = registry.getCredential(requestCredential.credentialSubject.did, REGISTRY_SECTION_OWN)
+          if (!identity) {
+            throw new Error(ERROR_COMM_INVALID_PAYLOAD)
+          }
+
+          const credFactory = extension.getFactory(REGOV_CREDENTIAL_TYPE_COMM)
+          const unsigned = await credFactory.build(wallet, {
+            subjectData: {
+              handshakeSequence: requestCredential.credentialSubject.handshakeSequence,
+              did: identity.credential.id
+            },
+            identity: identity.credential
+          })
+          const credential = await credFactory.sign(wallet, { unsigned })
+
+          const factory = extension.getFactory(REGOV_COMM_RESPONSE_TYPE)
+          const response = await factory.respond(wallet, { request, credential })
+
+          await channel.send(COMM_WS_PREFIX_HANDSHAKE + ':' + JSON.stringify(response), { id })
+        } catch (error) {
+          await channel.send(ERROR_COMM_MALFORMED_PAYLOAD, { ok: false, id })
+          throw error
+        } finally {
+          return
+        }
+      } else if (datagram.startsWith('{') && datagram.endsWith('}')) {
         try {
           const jwe = parseJWE(datagram)
           if (!jwe?.protected) {
@@ -335,71 +371,45 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
 
       try {
         const jwt = decodeJWT(datagram)
-        if (jwt.payload.request?.credentialSubject.handshakeSequence) {
-          const identity = wallet.getIdentity()
-          if (!identity) {
-            throw new Error(ERROR_NO_IDENTITY)
-          }
-          const cryptoKey = await wallet.did.extractKey(identity.credential.issuer as DIDDocument, VERIFICATION_KEY_HOLDER)
-          if (!cryptoKey) {
-            throw new Error(ERROR_NO_CREDENTIAL_SIGNING_KEY)
-          }
-          await wallet.keys.expandKey(cryptoKey)
-          if (!cryptoKey.pk) {
-            throw new Error(ERROR_NO_CREDENTIAL_SIGNING_KEY)
-          }
-          const signed = await wallet.ssi.signCredential(
-            jwt.payload.request as UnsignedCredential,
-            identity.credential.issuer as DIDDocument,
-            { keyId: VERIFICATION_KEY_HOLDER }
-          )
-          const response = await createJWT(
-            { response: signed },
-            { issuer: identity.credential.id, signer: ES256KSigner(wallet.crypto.base58().decode(cryptoKey.pk)) }
-          )
+        const result = await verifyJWT(datagram, {
+          resolver: buildBasicResolver(jwt),
+          proofPurpose: DIDPURPOSE_AUTHENTICATION
+        })
+        const connection = filterConnectionFields(result.payload as DIDCommConnectMeta)
 
-          await channel.send(response)
+        if (connection.sender && connection.recipient) {
+          console.log('establish connection .....')
+          if (!wallet.did.helper().verifyDID(connection.sender)) {
+            throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
+          }
+          if (!wallet.did.helper().verifyDID(connection.recipient)) {
+            throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
+          }
+          await channel.send(connection.recipientId, { ok: true, id })
+
+          _listeners.forEach(
+            listener =>
+              listener.established && listener.established(invertConnection(connection, channel.code))
+          )
         } else {
-          const result = await verifyJWT(datagram, {
-            resolver: buildBasicResolver(jwt),
-            proofPurpose: DIDPURPOSE_AUTHENTICATION
-          })
-          const connection = filterConnectionFields(result.payload as DIDCommConnectMeta)
-
-          if (connection.sender && connection.recipient) {
-            console.log('establish connection .....')
-            if (!wallet.did.helper().verifyDID(connection.sender)) {
-              throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
-            }
-            if (!wallet.did.helper().verifyDID(connection.recipient)) {
-              throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
-            }
-            await channel.send(connection.recipientId, { ok: true, id })
-
-            _listeners.forEach(
-              listener =>
-                listener.established && listener.established(invertConnection(connection, channel.code))
-            )
-          } else {
-            if (!wallet.did.helper().verifyDID(connection.sender)) {
-              throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
-            }
-
-            const recipient = wallet.findCredential(connection.recipientId)
-
-            const newConnection: DIDCommConnectMeta = {
-              ...filterConnectionFields(connection),
-              recipientId: connection.sender.id,
-              recipient: connection.sender,
-              sender: (wallet.did.helper().isDIDDocument(recipient?.credential.holder as DIDDocument)
-                ? recipient?.credential.holder : recipient?.credential.issuer as unknown) as DIDDocument,
-              channel: channel.code
-            }
-
-            await channel.send(newConnection.sender.id, { ok: true, id })
-
-            _listeners.forEach(listener => listener.accept && listener.accept(newConnection))
+          if (!wallet.did.helper().verifyDID(connection.sender)) {
+            throw new Error(ERROR_COMM_DID_WRONG_SIGNATURE)
           }
+
+          const recipient = wallet.findCredential(connection.recipientId)
+
+          const newConnection: DIDCommConnectMeta = {
+            ...filterConnectionFields(connection),
+            recipientId: connection.sender.id,
+            recipient: connection.sender,
+            sender: (wallet.did.helper().isDIDDocument(recipient?.credential.holder as DIDDocument)
+              ? recipient?.credential.holder : recipient?.credential.issuer as unknown) as DIDDocument,
+            channel: channel.code
+          }
+
+          await channel.send(newConnection.sender.id, { ok: true, id })
+
+          _listeners.forEach(listener => listener.accept && listener.accept(newConnection))
         }
       } catch (error) {
         console.error('JWT Error', error)

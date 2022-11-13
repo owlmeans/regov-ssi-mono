@@ -18,7 +18,8 @@ import "dotenv"
 import http from 'http'
 import { buildExtensionRegistry } from "@owlmeans/regov-ssi-core"
 import { buildIdentityExtension } from "@owlmeans/regov-ext-identity/dist/ext"
-import { startWSServer } from '@owlmeans/regov-come'
+import { startWSServer } from '@owlmeans/regov-comm'
+import { extension } from '@owlmeans/regov-comm/dist/ext'
 
 import './warmup'
 
@@ -43,6 +44,7 @@ registry.registerSync(buildIdentityExtension(
     schemaBaseUrl: 'https://my-example.org/schemas/'
   }
 ))
+registry.registerSync(extension)
 
 startWSServer(
   httpServer,

@@ -93,6 +93,9 @@ export const ERROR_COMM_NO_CONNECTION = 'ERROR_COMM_NO_CONNECTION'
 export const ERROR_COMM_INVALID_PAYLOAD = 'ERROR_COMM_INVALID_PAYLOAD'
 export const ERROR_COMM_MALFORMED_PAYLOAD = 'ERROR_COMM_MALFORMED_PAYLOAD'
 export const ERROR_COMM_ALIAN_SENDER = 'ERROR_COMM_ALIAN_SENDER'
+export const ERROR_COMM_INVALID_HANDSHAKE_RESPONSE = 'ERROR_COMM_INVALID_HANDSHAKE_RESPONSE'
+export const ERROR_COMM_NO_HANDSHAKE_REQUEST = 'ERROR_COMM_NO_HANDSHAKE_REQUEST'
+
 
 export const COMM_CHANNEL_DEFAULT = '_default'
 export const COMM_CHANNEL_BROADCAST = '__broadcast'
@@ -133,6 +136,12 @@ export type CommConnectionStatusHandler = {
   established: boolean
   helper?: DIDCommHelper
   defaultListener?: DIDCommListner
+}
+
+export type CommCredentialSubject = {
+  did: string
+  handshakeSequence: string
+  createdAt: string
 }
 
 export const ERROR_COMM_CONNECTION_UNKNOWN = 'ERROR_COMM_CONNECTION_UNKNOWN'
