@@ -270,7 +270,7 @@ export const startWSServer = async (
 
             try {
               const didDoc = serverWallet.did.helper().parseLongForm(handshakeData)
-              const [verified, result] = await serverWallet.ssi.verifyCredential(jwt.payload.response, didDoc, VERIFICATION_KEY_HOLDER)
+              const [verified/*, result*/] = await serverWallet.ssi.verifyCredential(jwt.payload.response, didDoc, VERIFICATION_KEY_HOLDER)
               if (!verified) {
                 return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
               }
