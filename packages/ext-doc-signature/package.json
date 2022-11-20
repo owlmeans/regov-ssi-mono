@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-doc-signature",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Regov extension to sign and check signatures of random documents.",
   "keywords": [
     "Regov",
@@ -37,10 +37,10 @@
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-lib-react": "^0.2.9",
-    "@owlmeans/regov-ssi-core": "^0.6.9",
-    "@owlmeans/regov-comm": "^0.2.13",
-    "@owlmeans/regov-ext-comm": "^0.1.13",
+    "@owlmeans/regov-lib-react": "^0.2.12",
+    "@owlmeans/regov-ssi-core": "^0.7.0",
+    "@owlmeans/regov-comm": "^0.3.0",
+    "@owlmeans/regov-ext-comm": "^0.1.14",
     "i18next": "^21.4.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
