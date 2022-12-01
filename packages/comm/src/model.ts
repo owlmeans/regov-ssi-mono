@@ -226,7 +226,6 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
       const [id, ...splitedData] = _datagram.split(':')
       const datagram = splitedData.join(':')
       if (datagram.startsWith('ok:') || datagram.startsWith('error:')) {
-        console.log('Receive: ' + datagram)
         return
       }
       if ('did' === id) {

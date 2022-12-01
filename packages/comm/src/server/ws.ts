@@ -240,9 +240,11 @@ export const startWSServer = async (
             return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
           }
 
+          // console.log('!!! Hand shake sent')
           const jwt = await createJWT({ request: unsigned }, { issuer: identity.credential.id, signer: ES256KSigner(serverWallet.crypto.base58().decode(cryptoKey.pk)) })
 
-          return await _send(id + ':' + jwt)
+          await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + didInfo.did)
+          return await _send(makeRandomUuid() + ':' + jwt)
         } else if (data.startsWith('{') && data.endsWith('}')) {
           const jwe = parseJWE(data)
           if (!jwe?.protected) {
@@ -263,17 +265,21 @@ export const startWSServer = async (
         }
         try {
           const jwt = decodeJWT(data)
-          console.log('we got jwt: ' + jwt.payload.iss)
+          // console.log('we got jwt: ' + jwt.payload.iss)
           if (jwt.payload.response?.credentialSubject.handshakeSequence) {
             const handshakeData = _handshakes[jwt.payload.response.credentialSubject.handshakeSequence]
             const did = didHelper.parseDIDId(handshakeData).did
 
+            // console.log('!!! DID ID parsed out:', did)
+
             try {
               const didDoc = serverWallet.did.helper().parseLongForm(handshakeData)
               const [verified/*, result*/] = await serverWallet.ssi.verifyCredential(jwt.payload.response, didDoc, VERIFICATION_KEY_HOLDER)
+              // console.log('!!! verified:', verified)
               if (!verified) {
                 return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
               }
+              // console.log('!!! check', _didToClient[did])
               if (_didToClient[did]) {
                 return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_DID_REGISTERED)
               }
@@ -286,6 +292,8 @@ export const startWSServer = async (
             _didToClient[did] = uuid
             client.dids.push(did)
             _pokeDid(did)
+
+            // console.log('!!! confirm !!!', id)
 
             return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + data)
           } else {

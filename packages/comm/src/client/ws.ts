@@ -177,7 +177,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
             let timeout: ReturnType<typeof setTimeout> | undefined
             try {
               _wsClient.send(`${id}:${msg}`)
-              console.log('sending... ' + msg.substring(0, 23))
+              console.log(`brwsr:sending {${id}}... ` + msg.substring(0, 23))
               if (!msg.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')
                 && !msg.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
                 messages[id] = { id }
