@@ -1,0 +1,94 @@
+{
+  "name": "@owlmeans/regov-ext-custom",
+  "version": "0.1.0",
+  "description": "Regov extension to build customizable credentials.",
+  "keywords": [
+    "Regov",
+    "SSI",
+    "VC",
+    "Credential",
+    "Signature",
+    "Custom"
+  ],
+  "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
+  "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "lib": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/owlmeans/regov-ssi-mono.git",
+    "directory": "packages/ext-custom"
+  },
+  "sources": "src/index.ts",
+  "scripts": {
+    "build": "tsc -b -f",
+    "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
+  },
+  "peerDependencies": {
+    "@emotion/react": "*",
+    "@emotion/styled": "*",
+    "@mui/icons-material": "*",
+    "@mui/material": "*",
+    "@owlmeans/regov-lib-react": "^0.2.12",
+    "@owlmeans/regov-ssi-core": "^0.7.0",
+    "@owlmeans/regov-comm": "^0.3.0",
+    "@owlmeans/regov-ext-comm": "^0.1.14",
+    "i18next": "^21.4.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-hook-form": "*",
+    "react-i18next": "*",
+    "react-router-dom": "^6.*"
+  },
+  "peerDependenciesMeta": {
+    "@emotion/react": {
+      "optional": true
+    },
+    "@emotion/styled": {
+      "optional": true
+    },
+    "@mui/icons-material": {
+      "optional": true
+    },
+    "@mui/material": {
+      "optional": true
+    },
+    "@owlmeans/regov-lib-react": {
+      "optional": true
+    },
+    "@owlmeans/regov-ext-comm": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "react-i18next": {
+      "optional": true
+    },
+    "react-router-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

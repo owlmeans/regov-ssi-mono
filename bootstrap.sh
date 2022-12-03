@@ -1,44 +1,48 @@
 yarn install
-lerna clean
+yarn lerna clean
 cd packages/tiny-secp256k1-2019
 yarn build
-lerna link
+yarn lerna link
 yarn link
 cd ../../packages/core
 yarn build
-lerna link
+yarn lerna link
 yarn link
 cd ../../packages/comm
 yarn build
-lerna link
+yarn lerna link
 yarn link
 cd ../../packages/lib-node
 yarn build
-lerna link
+yarn lerna link
 yarn link
 cd ../../packages/lib-react
 yarn build
-lerna link
+yarn lerna link
 yarn link
 cd ../../packages/ext-comm
 yarn build
-lerna link
+yarn lerna link
 yarn link
 cd ../../packages/ext-auth
 yarn build
-lerna link
+yarn lerna link
 yarn link
 cd ../../packages/ext-identity
 yarn build
-lerna link
+yarn lerna link
 yarn link
 cd ../../packages/ext-groups
 yarn build
-lerna link
+yarn lerna link
 yarn link
 cd ../../packages/ext-doc-signature
 yarn build
-lerna link
+yarn lerna link
+yarn link
+cd ../../packages/ext-custom
+yarn build
+yarn lerna link
 yarn link
 cd ../..
-lerna bootstrap
+yarn lerna bootstrap
