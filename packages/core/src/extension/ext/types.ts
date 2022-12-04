@@ -70,11 +70,11 @@ export type CredentialService = {
 
 export type BuildMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) => BuildMethod
+>(schema: CredentialDescription<{}, Schema>) => BuildMethod
 
 export type BuildMethod = <
   Params extends BuildMethodParams
-  >(wallet: WalletWrapper, params: Params) => Promise<UnsignedCredential>
+>(wallet: WalletWrapper, params: Params) => Promise<UnsignedCredential>
 
 export type BuildMethodParams = {
   didUnsigned?: DIDDocumentUnsinged
@@ -90,11 +90,11 @@ export type BuildMethodParams = {
 
 export type SignMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) => SignMethod
+>(schema: CredentialDescription<{}, Schema>) => SignMethod
 
 export type SignMethod = <
   Params extends SignMethodParams
-  >(wallet: WalletWrapper, params: Params) => Promise<Credential>
+>(wallet: WalletWrapper, params: Params) => Promise<Credential>
 
 export type SignMethodParams = {
   unsigned: UnsignedCredential
@@ -104,11 +104,11 @@ export type SignMethodParams = {
 
 export type ValidateMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema
-  >(schema: CredentialDescription<Schema>) => ValidateMethod
+>(schema: CredentialDescription<{}, Schema>) => ValidateMethod
 
 export type ValidateMethod = <
   Params extends ValidateMethodParams
-  >(wallet: WalletWrapper, params: Params) => Promise<ValidationResult>
+>(wallet: WalletWrapper, params: Params) => Promise<ValidationResult>
 
 export type ValidateMethodParams = {
   presentation?: Presentation
@@ -147,11 +147,11 @@ export interface EvidenceValidationResult {
 
 export type ClaimMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema
-  >(schema: CredentialDescription<Schema>) => ClaimMethod
+>(schema: CredentialDescription<{}, Schema>) => ClaimMethod
 
 export type ClaimMethod = <
   Params extends ClaimMethodParams
-  >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
 export type ClaimMethodParams = {
   unsignedClaim: UnsignedCredential
@@ -163,11 +163,11 @@ export type ClaimMethodParams = {
 
 export type RequestMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema
-  >(schema: CredentialDescription<Schema>) => RequestMethod
+>(schema: CredentialDescription<{}, Schema>) => RequestMethod
 
 export type RequestMethod = <
   Params extends RequestMethodParams
-  >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
 export type RequestMethodParams = {
   unsignedRequest: UnsignedCredential
@@ -178,11 +178,11 @@ export type RequestMethodParams = {
 
 export type OfferMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) => OfferMethod
+>(schema: CredentialDescription<{}, Schema>) => OfferMethod
 
 export type OfferMethod = <
   Params extends OfferMethodParams
-  >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
 export type OfferMethodParams = {
   claim: Presentation
@@ -199,11 +199,11 @@ export type OfferMethodParams = {
 
 export type RespondMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
-  >(schema: CredentialDescription<Schema>) => RespondMethod
+>(schema: CredentialDescription<{}, Schema>) => RespondMethod
 
 export type RespondMethod = <
   Params extends RespondMethodParams
-  >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
 export type RespondMethodParams = {
   request: Presentation

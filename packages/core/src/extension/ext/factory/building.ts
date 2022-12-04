@@ -29,7 +29,7 @@ import { CryptoKey } from '../../../common/crypto'
 
 export const defaultBuildMethod = <
   Schema extends CredentialSchema = CredentialSchema,
->(schema: CredentialDescription<Schema>) =>
+>(schema: CredentialDescription<{},Schema>) =>
   async (wallet: WalletWrapper, params: BuildMethodParams) => {
     const subject = params.subjectData as any
 

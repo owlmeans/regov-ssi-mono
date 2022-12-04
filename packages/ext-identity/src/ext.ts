@@ -63,9 +63,6 @@ export const buildIdentityExtension = (
        */
       // credentialSchema: {}
       registryType: REGISTRY_TYPE_IDENTITIES,
-      claimable: false,
-      listed: true,
-      selfIssuing: true,
       verfiableId: {
         fields: ['sourceApp', 'uuid', 'createdAt']
       },

@@ -1661,6 +1661,10 @@
   version "0.0.0"
   uid ""
 
+"@owlmeans/regov-ext-custom@link:../../ext-custom":
+  version "0.0.0"
+  uid ""
+
 "@owlmeans/regov-ext-doc-signature@link:../../ext-doc-signature":
   version "0.0.0"
   uid ""

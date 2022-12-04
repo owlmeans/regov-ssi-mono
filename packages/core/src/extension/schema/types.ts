@@ -43,8 +43,8 @@ export type ExtensionTypes = {
 }
 
 export type CredentialDescription<
-  Schema extends CredentialSchema = CredentialSchema,
-  Subject extends {} = {}
+  Subject extends {} = {},
+  Schema extends CredentialSchema = CredentialSchema
 > = {
   defaultNameKey?: string
   mainType: string
@@ -54,10 +54,6 @@ export type CredentialDescription<
   evidence?: MaybeArray<CredentialEvidenceDesctiption>
   credentialSchema?: MaybeArray<Schema>
   registryType?: string
-  claimable?: boolean
-  listed?: boolean
-  selfIssuing?: boolean
-  trustable?: boolean
   claimType?: string
   offerType?: string
   requestType?: string

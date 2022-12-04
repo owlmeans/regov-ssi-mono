@@ -1,0 +1,2 @@
+
+export { customizeExtension } from './extension'

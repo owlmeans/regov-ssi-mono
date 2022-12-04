@@ -65,9 +65,6 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
     registryType: REGISTRY_TYPE_CREDENTIALS,
     claimType: REGOV_SIGNATURE_CLAIM_TYPE,
     offerType: REGOV_SIGNATURE_OFFER_TYPE,
-    selfIssuing: true,
-    claimable: false,
-    listed: true
   },
   [REGOV_SIGNATURE_REQUEST_TYPE]: {
     mainType: REGOV_SIGNATURE_REQUEST_TYPE,
@@ -84,9 +81,6 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
       authorId: "http://www.w3.org/2001/XMLSchema#string",
     },
     registryType: REGISTRY_TYPE_REQUESTS,
-    selfIssuing: true,
-    claimable: false,
-    listed: true,
   },
   [REGOV_SIGNATURE_RESPONSE_TYPE]: {
     mainType: REGOV_SIGNATURE_RESPONSE_TYPE,
@@ -117,9 +111,6 @@ let signatureExtensionSchema = buildExtensionSchema<RegovSignatureCredential>({
     registryType: REGISTRY_TYPE_CREDENTIALS,
     claimType: REGOV_CLAIM_PRESONALID,
     offerType: REGOV_OFFER_PRESONALID,
-    selfIssuing: false,
-    claimable: true,
-    listed: true,
     arbitraryEvidence: true
   },
   [REGOV_CLAIM_PRESONALID]: {

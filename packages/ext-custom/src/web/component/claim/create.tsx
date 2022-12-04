@@ -1,0 +1,65 @@
+import React, { FunctionComponent } from "react"
+import { useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
+import { ERROR_NO_IDENTITY, Extension } from "@owlmeans/regov-ssi-core"
+import {
+  basicNavigator,
+  CredentialSelector, FormMainAction, PrimaryForm, trySubmit, useNavigator, useRegov, WalletFormProvider
+} from "@owlmeans/regov-lib-react"
+
+import { CustomDescription, UseFieldAt } from "../../../custom.types"
+import { buildForm, castHolderField } from "../helper/form"
+import { FieldsRenderer } from "../widget/fields"
+import { ERROR_WIDGET_AUTHENTICATION } from "../../ui.types"
+import { castSectionKey } from "../../utils/tools"
+import { useNavigate } from "react-router-dom"
+import { makeClaimPreviewPath } from "../../utils/router"
+
+
+export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionComponent =>
+  () => {
+    const { handler, extensions } = useRegov()
+    const navigator = useNavigator(basicNavigator)
+    const navigate = useNavigate()
+    // Load identities
+    const identities = handler.wallet?.getIdentityWrappers()
+    const defaultId = handler.wallet?.getIdentityCredential()?.id || ''
+    // Produce form methods object
+    const [methods, fields] = buildForm(UseFieldAt.CLAIM_CREATE, descr, defaultId, useForm, useTranslation)
+
+    // Create claim
+    const claim = trySubmit(
+      { navigator, methods, errorField: `${castSectionKey(descr)}.alert` },
+      async (_, data) => {
+        if (!handler.wallet) {
+          throw ERROR_WIDGET_AUTHENTICATION
+        }
+        const sectionData = data[castSectionKey(descr)]
+        const subject = sectionData[UseFieldAt.CLAIM_CREATE] as Record<string, any>
+        const identity = handler.wallet.getIdentityCredential(data.holder)
+        if (!identity) {
+          throw ERROR_NO_IDENTITY
+        }
+        const factory = ext.getFactory(descr.mainType)
+        const cred = await factory.build(handler.wallet, {
+          extensions: extensions?.registry, identity,
+          subjectData: { ...subject },
+        })
+        const claim = await factory.claim(handler.wallet, { unsignedClaim: cred })
+        await handler.wallet.getClaimRegistry().addCredential(claim)
+        handler.notify()
+        navigate(makeClaimPreviewPath(descr, claim.id))
+      }
+    )
+
+    // Render fields
+    return <WalletFormProvider {...methods}>
+      <PrimaryForm {...fields}>
+        {identities && <CredentialSelector {...fields} credentials={identities}
+          defaultId={defaultId} field={castHolderField(descr)} />}
+        <FieldsRenderer purpose={UseFieldAt.CLAIM_CREATE} descr={descr} props={fields} />
+        <FormMainAction {...fields} title={`${castSectionKey(descr)}.action.claim`}
+          action={methods.handleSubmit(claim)} />
+      </PrimaryForm>
+    </WalletFormProvider>
+  }

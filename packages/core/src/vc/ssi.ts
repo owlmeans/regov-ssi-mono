@@ -22,7 +22,7 @@ import {
 import {
   Credential, UnsignedCredential, Presentation, ERROR_CREDENTAILSCHEMA_UNKNOWN_ERROR,
   PresentationHolder, UnsignedPresentation, BASE_CREDENTIAL_TYPE, ERROR_EVIDENCE_ISNT_TRUSTED,
-  ERROR_EVIDENCE_ISNT_CREDENTIAL, ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED, SUBJECT_ONLY_CREDENTIAL_SCHEMA_TYPE
+  ERROR_EVIDENCE_ISNT_CREDENTIAL, ERROR_CREDENTIALSCHEMA_ISNT_SUPPORTED, SUBJECT_ONLY_CREDENTIAL_SCHEMA_TYPE
 } from './types'
 import {
   COMMON_CRYPTO_ERROR_NOID, COMMON_CRYPTO_ERROR_NOPK, COMMON_CRYPTO_ERROR_NOPUBKEY, makeRandomUuid,
@@ -567,7 +567,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             }
           }
 
-          return [false, [new Error(ERROR_CREDENTAILSCHEMA_ISNT_SUPPORTED)]]
+          return [false, [new Error(ERROR_CREDENTIALSCHEMA_ISNT_SUPPORTED)]]
         })
 
         if (result.some(([res]) => !res)) {

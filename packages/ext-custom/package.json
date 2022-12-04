@@ -39,10 +39,11 @@
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-lib-react": "^0.2.12",
-    "@owlmeans/regov-ssi-core": "^0.7.0",
     "@owlmeans/regov-comm": "^0.3.0",
     "@owlmeans/regov-ext-comm": "^0.1.14",
+    "@owlmeans/regov-lib-react": "^0.2.12",
+    "@owlmeans/regov-ssi-core": "^0.7.0",
+    "jsonld": "^5.0.0",
     "i18next": "^21.4.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -86,7 +87,9 @@
     }
   },
   "devDependencies": {
-    "typescript": "^4.5.2"
+    "@types/jsonld": "^1.5.8",
+    "typescript": "^4.5.2",
+    "ts-node": "^10.2.0"
   },
   "publishConfig": {
     "access": "public"

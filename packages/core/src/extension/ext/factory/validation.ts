@@ -152,7 +152,7 @@ export const defaultValidateMethod: ValidateMethodBuilder = schema =>
       }
     }
 
-    if (result && presentationResult) { // && schema.trustable) {
+    if (result && presentationResult) {
       const identity = wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(
         credential.id, REGISTRY_SECTION_PEER
       ) || wallet.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(

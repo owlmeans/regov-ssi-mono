@@ -59,9 +59,6 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
     },
     claimType: REGOV_GROUP_CLAIM_TYPE,
     registryType: REGISTRY_TYPE_CREDENTIALS,
-    selfIssuing: true,
-    claimable: true,
-    listed: true,
   },
   [REGOV_CREDENTIAL_TYPE_MEMBERSHIP]: {
     mainType: REGOV_CREDENTIAL_TYPE_MEMBERSHIP,
@@ -78,9 +75,6 @@ let groupsExtensionSchema = buildExtensionSchema<RegovGroupExtensionTypes>({
     },
     claimType: REGOV_MEMBERSHIP_CLAIM_TYPE,
     registryType: REGISTRY_TYPE_IDENTITIES,
-    selfIssuing: false,
-    claimable: true,
-    listed: true,
     verfiableId: {
       fields: ['groupId', 'role', 'createdAt']
     },

@@ -15,12 +15,12 @@
  */
 
 import { BASE_CREDENTIAL_TYPE } from "../../vc"
-import { 
-  CredentialService, Extension, ExtensionService, ExtensionServiceBuilder 
+import {
+  CredentialService, Extension, ExtensionService, ExtensionServiceBuilder
 } from "./types"
 import { ExtensionSchema } from "../schema"
 import { findAppropriateCredentialType } from "../util"
-import { 
+import {
   defaultBuildMethod, defaultClaimMethod, defaultSignMethod, defaultValidateMethod,
   defaultOfferMethod, defaultRequestMethod
 } from "./factory"
@@ -55,17 +55,18 @@ export const buildExtension = (
             offer: defaultOfferMethod(description),
             request: defaultRequestMethod(description),
             respond: defaultRespondMethod(description),
-            ...(factories
-              ? Object.entries(factories[key]).reduce((_facts, [method, builder]) => {
-                if (schema.credentials) {
-                  return {
-                    ..._facts,
-                    [(methodMap as any)[method]]: builder(schema.credentials[key])
+            ...(
+              factories && factories[key]
+                ? Object.entries(factories[key]).reduce((_facts, [method, builder]) => {
+                  if (schema.credentials) {
+                    return {
+                      ..._facts,
+                      [(methodMap as any)[method]]: builder(schema.credentials[key])
+                    }
                   }
-                }
-                return _facts
-              }, {} as CredentialService)
-              : {}
+                  return _facts
+                }, {} as CredentialService)
+                : {}
             )
           }
         }

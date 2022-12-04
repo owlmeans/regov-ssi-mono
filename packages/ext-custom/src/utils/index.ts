@@ -1,0 +1,2 @@
+
+export { addCredential } from './extension'
