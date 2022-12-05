@@ -1,4 +1,6 @@
-import { CredentialDescription, CredentialSchema, MaybeArray } from "@owlmeans/regov-ssi-core"
+import { 
+  CredentialDescription, CredentialSchema, MaybeArray, Presentation, Credential 
+} from "@owlmeans/regov-ssi-core"
 import { ExpandedTermDefinition } from "jsonld"
 
 export type CustomDescription<
@@ -14,6 +16,12 @@ export type CustomDescription<
 export const isCustom = <Subject extends {} = {}>(
   cred: CredentialDescription<Subject>
 ): cred is CustomDescription<Subject> => (cred as CustomDescription).customExtFlag
+
+export type DefaultSubject = Record<string, any>
+
+export type DefaultCredential = Credential<DefaultSubject>
+
+export type DefaultPresentation = Presentation<DefaultCredential>
 
 export type SubjectMeta<Subject extends {}> = {
   [k in keyof Subject]: {
@@ -32,15 +40,11 @@ export type ValidationOptions = Partial<{
 
 
 export const USE_CREATE_CLAIM = "claim_create"
+export const USE_PREVIEW_CLAIM = "claim_preview"
 
 export const enum UseFieldAt {
-  VIEW = "view",
-  UPDATE = "update",
   CLAIM_CREATE = "claim_create",
-  OFFER = "offer",
-  LIST = "list",
-  EVIDENCE = "evidence",
-  VALIDATAION = "validation"
+  CLAIM_PREVIEW = "claim_preview"
 }
 
 export const DEFAULT_SUFFIX_CLAIM = "Claim"

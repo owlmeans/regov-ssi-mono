@@ -9,7 +9,7 @@ import {
 
 import { CustomDescription, UseFieldAt } from "../../../custom.types"
 import { buildForm, castHolderField } from "../helper/form"
-import { FieldsRenderer } from "../widget/fields"
+import { InputsRenderer } from "../widget/inputs"
 import { ERROR_WIDGET_AUTHENTICATION } from "../../ui.types"
 import { castSectionKey } from "../../utils/tools"
 import { useNavigate } from "react-router-dom"
@@ -57,7 +57,7 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
       <PrimaryForm {...fields}>
         {identities && <CredentialSelector {...fields} credentials={identities}
           defaultId={defaultId} field={castHolderField(descr)} />}
-        <FieldsRenderer purpose={UseFieldAt.CLAIM_CREATE} descr={descr} props={fields} />
+        <InputsRenderer purpose={UseFieldAt.CLAIM_CREATE} descr={descr} props={fields} />
         <FormMainAction {...fields} title={`${castSectionKey(descr)}.action.claim`}
           action={methods.handleSubmit(claim)} />
       </PrimaryForm>
