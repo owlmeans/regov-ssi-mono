@@ -38,7 +38,7 @@ export type Validated<T> = ValidatiedSuccess<T> | ValidatiedInvalid
 export type ContextObjDetailedItem = {
   [key: string]: undefined | string | Record<string, unknown>
   '@id': string
-  '@type': string
+  '@type'?: string
 }
 
 export type ContextSchema = {
@@ -132,7 +132,6 @@ export type UnsignedPresentation<CredentialT extends UnsignedCredential = Creden
   type: PresentationType
   verifiableCredential: CredentialT[]
   holder: PresentationHolder
-  presentation_submission?: PresentationSubmissionV1
 }
 
 export type Presentation<CredentialT extends UnsignedCredential = Credential> = UnsignedPresentation<CredentialT>

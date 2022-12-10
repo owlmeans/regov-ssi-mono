@@ -1,7 +1,8 @@
-import { 
-  CredentialDescription, CredentialSchema, MaybeArray, Presentation, Credential 
+import {
+  CredentialDescription, CredentialSchema, MaybeArray, Presentation, Credential
 } from "@owlmeans/regov-ssi-core"
 import { ExpandedTermDefinition } from "jsonld"
+
 
 export type CustomDescription<
   Subject extends {} = {},
