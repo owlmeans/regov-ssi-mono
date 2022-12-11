@@ -1,10 +1,11 @@
 import { ExpandedTermDefinition } from "jsonld"
+import { SubjectFieldMeta } from "./custom.types"
 
 
-export const castFieldType = (field: string) =>  
+export const castFieldType = (field: string) =>
   field.slice(0, 1).toUpperCase() + field.slice(1) + 'Type'
 
-export const addScansType = (space: string, field: string): ExpandedTermDefinition => {
+export const addScansContext = (space: string, field: string): ExpandedTermDefinition => {
   const itemType = castFieldType(field)
 
   return {
@@ -13,7 +14,7 @@ export const addScansType = (space: string, field: string): ExpandedTermDefiniti
       "xs": "http://www.w3.org/2001/XMLSchema#",
       "type": "@type",
       [itemType]: {
-        "@id": `${space}#${itemType}`,
+        "@id": `${space}:${itemType}`,
         "@context": {
           "page": "@id",
           "binaryData": {
@@ -34,3 +35,6 @@ export const addScansType = (space: string, field: string): ExpandedTermDefiniti
     }
   }
 }
+
+export const isTermPictures = (field: SubjectFieldMeta) =>
+  field.term && field.term['@context'] && field.term['@context']['files']

@@ -3,6 +3,7 @@ import { UseFormReturn, useForm, DefaultValues, FieldValues } from "react-hook-f
 import { useTranslation } from "react-i18next"
 
 import { CustomDescription, UseFieldAt } from "../../../custom.types"
+import { isTermPictures } from "../../../picture.types"
 import { castSectionKey } from "../../utils/tools"
 
 
@@ -41,7 +42,7 @@ const produceDefaults = (
 ): Record<string, any> =>
   Object.fromEntries(Object.entries(descr.subjectMeta)
     .filter(([, field]) => field.useAt.includes(purpose))
-    .map(([key]) => [key, '']))
+    .map(([key, field]) => [key, isTermPictures(field) ? [] : '']))
 
 const produceValidation = (
   purpose: UseFieldAt, descr: CustomDescription<Record<string, any>>

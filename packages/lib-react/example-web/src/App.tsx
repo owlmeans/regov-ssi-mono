@@ -21,8 +21,8 @@ import { signatureWebExtension } from '@owlmeans/regov-ext-doc-signature'
 import { groupsUIExtension } from '@owlmeans/regov-ext-groups'
 import { authUIExtension } from '@owlmeans/regov-ext-auth'
 import { buildCommUIExtension } from '@owlmeans/regov-ext-comm'
-import { 
-  customizeExtension, addCredential, USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, addScansType 
+import {
+  customizeExtension, addCredential, USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, addScansContext
 } from "@owlmeans/regov-ext-custom/dist/web"
 
 import { WalletApp } from '@owlmeans/regov-lib-react'
@@ -58,7 +58,10 @@ signatureWebExtension.extension.schema = addCredential(signatureWebExtension.ext
       useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM], validation: { required: true },
       term: { '@id': 'custom:testField', '@type': 'xsd:string' }
     },
-    scansField: addScansType('custom', 'scansField')
+    scansField: {
+      useAt: [USE_CREATE_CLAIM], validation: { required: true },
+      term: addScansContext('custom', 'scansField')
+    }
   }
 })
 

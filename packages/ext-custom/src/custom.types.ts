@@ -25,11 +25,13 @@ export type DefaultCredential = Credential<DefaultSubject>
 export type DefaultPresentation = Presentation<DefaultCredential>
 
 export type SubjectMeta<Subject extends {}> = {
-  [k in keyof Subject]: {
-    useAt: MaybeArray<UseFieldAt>
-    term?: ExpandedTermDefinition
-    validation?: ValidationOptions
-  }
+  [k in keyof Subject]: SubjectFieldMeta
+}
+
+export type SubjectFieldMeta = {
+  useAt: MaybeArray<UseFieldAt>
+  term?: ExpandedTermDefinition
+  validation?: ValidationOptions
 }
 
 export type ValidationOptions = Partial<{

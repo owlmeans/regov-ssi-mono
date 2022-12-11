@@ -16,49 +16,54 @@ export const PicsturesField: FunctionComponent<PricturesFieldProps> = ({ field, 
   useEffect(() => {
     methods.setValue(
       field, {
-        files: files.map((file, page) => ({
-          page, type: fieldType, mimeType: 'image/jpeg',
-          binaryData: Buffer.from(file).toString('base64'),
-        }))
-      }
-    )
-  }, [field, files.length])
+      files: files.map((file, page) => ({
+        page, type: fieldType, mimeType: 'image/jpeg',
+        binaryData: Buffer.from(file).toString('base64'),
+      }))
+    })
+  }, files)
 
   const onDrop = useCallback(async (uploaded: File[]) => {
-    const loader = navigator.invokeLoading && await navigator?.invokeLoading()
     if (uploaded.length) {
+      const loader = navigator.invokeLoading && await navigator?.invokeLoading()
       let counter = 0
       const stopLoading = () => {
-        if (--counter <= 0) {
+        if (++counter >= uploaded.length) {
           loader?.finish()
         }
       }
-      const reader = new FileReader()
-      reader.onabort = () => {
-        methods.setError(field, { type: 'file.aborted' })
-        stopLoading()
-      }
 
-      reader.onerror = () => {
+      const _files: ArrayBuffer[] = []
 
-        methods.setError(field, { type: 'file.error' })
-        stopLoading()
-      }
+      await Promise.all(uploaded.map(file => new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.onabort = () => {
+          methods.setError(field, { type: 'file.aborted' })
+          stopLoading()
+          resolve(undefined)
+        }
 
-      reader.onload = () => {
-        setFiles([...files, reader.result as ArrayBuffer])
-        stopLoading()
-      }
+        reader.onerror = () => {
+          methods.setError(field, { type: 'file.error' })
+          stopLoading()
+          resolve(undefined)
+        }
 
-      uploaded.map(file => {
+        reader.onload = () => {
+          _files.push(reader.result as ArrayBuffer)
+          stopLoading()
+          resolve(undefined)
+        }
+
         reader.readAsArrayBuffer(file)
-      })
-      console.log(loader)
+      })))
+
+      setFiles([...files, ..._files])
     }
   }, [])
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDropAccepted: onDrop, noClick: true, accept: { 'image/jpeg': ['.jpg', '.jpeg'] } as any
+    onDropAccepted: onDrop, accept: ['image/jpeg'] as any
   })
 
   return <Controller name={field} control={methods.control} render={({ }) => {
