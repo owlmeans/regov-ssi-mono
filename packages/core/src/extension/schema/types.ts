@@ -61,6 +61,7 @@ export type CredentialDescription<
   defaultSubject?: Subject
   arbitraryEvidence?: boolean
   verfiableId?: CredentialIdMeta
+  sourceType?: string
 }
 
 export type CredentialIdMeta = {

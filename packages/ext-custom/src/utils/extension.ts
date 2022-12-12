@@ -1,7 +1,23 @@
+/**
+ *  Copyright 2022 OwlMeans
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 import {
   CredentialDescription, Extension, ExtensionSchema, MultiSchema, buildExtension
 } from "@owlmeans/regov-ssi-core"
-import { CustomDescription, isCustom } from "../custom.types"
+import { CustomDescription, DefaultSubject, isCustom } from "../custom.types"
 import { castClaimType, castOfferType, castRequestType, castResponseType } from "./tools"
 
 
@@ -10,7 +26,7 @@ export const addCredential = (schema: ExtensionSchema, cred: Omit<CustomDescript
     ...schema,
     credentials: {
       ...schema.credentials,
-      ...productTypes(schema, { ...cred, customExtFlag: true })
+      ...produceTypes(schema, { ...cred, customExtFlag: true })
     }
   }
 }
@@ -34,7 +50,7 @@ export const updateFactories = (ext: Extension): Extension => {
   return ext
 }
 
-const productTypes = (schema: ExtensionSchema, cred: CustomDescription): { [key: string]: CredentialDescription } => {
+const produceTypes = (schema: ExtensionSchema, cred: CustomDescription): { [key: string]: CredentialDescription } => {
   const claimType = castClaimType(cred)
   const offerType = castOfferType(cred)
   const requestType = castRequestType(cred)
@@ -42,21 +58,23 @@ const productTypes = (schema: ExtensionSchema, cred: CustomDescription): { [key:
 
   return {
     [cred.mainType]: expandType(schema, cred),
-    [claimType]: expandType(schema, { mainType: claimType, credentialContext: {} }),
-    [offerType]: expandType(schema, { mainType: offerType, credentialContext: {} }),
-    [requestType]: expandType(schema, { mainType: requestType, credentialContext: {} }),
-    [responseType]: expandType(schema, { mainType: responseType, credentialContext: {} }),
+    [claimType]: expandType(schema, { mainType: claimType, sourceType: cred.mainType, credentialContext: {} }),
+    [offerType]: expandType(schema, { mainType: offerType, sourceType: cred.mainType, credentialContext: {} }),
+    [requestType]: expandType(schema, { mainType: requestType, sourceType: cred.mainType, credentialContext: {} }),
+    [responseType]: expandType(schema, { mainType: responseType, sourceType: cred.mainType, credentialContext: {} }),
   }
 }
 
 const expandType = (
-  schema: ExtensionSchema, cred: CustomDescription<Record<string, any>> | CredentialDescription
+  schema: ExtensionSchema, cred: CustomDescription<DefaultSubject> | CredentialDescription
 ): CredentialDescription => {
   return {
+    claimType: castClaimType(cred),
+    offerType: castOfferType(cred),
     ...(schema.credentials && schema.credentials[cred.mainType] || {}),
     ...cred, credentialContext: {
       ...cred.credentialContext,
-      ...(isCustom<Record<string, any>>(cred) ? Object.fromEntries(
+      ...(isCustom(cred) ? Object.fromEntries(
         Object.entries(cred.subjectMeta).filter(([, field]) => field.term).map(
           ([key, field]) => [key, field.term]
         )

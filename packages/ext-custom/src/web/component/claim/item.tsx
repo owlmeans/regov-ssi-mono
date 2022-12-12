@@ -14,5 +14,8 @@
  *  limitations under the License.
  */
 
-export const ERROR_WIDGET_AUTHENTICATION = 'ERROR_WIDGET_AUTHENTICATION'
-export const ERROR_NO_IDENTITY = 'ERROR_NO_IDENTITY'
+import React, { Fragment } from 'react'
+
+
+export const ClaimItem = () => () => 
+  <Fragment>Hello world!</Fragment>

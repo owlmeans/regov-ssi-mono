@@ -19,7 +19,7 @@ import { Server as HttpServer } from 'http'
 import { createJWT, decodeJWT, ES256KSigner } from 'did-jwt'
 
 import { extension } from '../ext'
-import { ServerConfig } from './types'
+import { REDEFINED_MAX_FRAME_SIZE, REDEFINED_MAX_MESSAGE_SIZE, ServerConfig } from './types'
 import {
   COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_DIDDOC, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL,
   DIDCommConnectMeta, ERROR_COMM_DID_WRONG_SIGNATURE, ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD,
@@ -37,7 +37,11 @@ const messages: { [key: string]: SentMessage } = {}
 export const startWSServer = async (
   server: HttpServer, config: ServerConfig, extensions?: ExtensionRegistry
 ): Promise<void> => {
-  const _wsServer = new WSServer({ httpServer: server })
+  const _wsServer = new WSServer({ 
+    httpServer: server, 
+    maxReceivedFrameSize: REDEFINED_MAX_FRAME_SIZE,
+    maxReceivedMessageSize: REDEFINED_MAX_MESSAGE_SIZE
+  })
 
   const serverWallet = await buildWalletWrapper(
     { crypto: nodeCryptoHelper, extensions }, '00000000', { alias: 'server', name: 'Regov' },

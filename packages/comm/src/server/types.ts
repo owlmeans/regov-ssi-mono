@@ -25,3 +25,5 @@ export type ServerConfig = {
   }
 }
 
+export const REDEFINED_MAX_FRAME_SIZE = 1024 * 1024
+export const REDEFINED_MAX_MESSAGE_SIZE = 8 * 1024 * 1024
