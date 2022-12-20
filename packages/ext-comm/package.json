@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-comm",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Communication channel Regov SSI",
   "keywords": [
     "Regov",
@@ -37,9 +37,9 @@
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-comm": "^0.3.0",
-    "@owlmeans/regov-lib-react": "^0.2.12",
-    "@owlmeans/regov-ssi-core": "^0.7.0",
+    "@owlmeans/regov-comm": "^0.3.2",
+    "@owlmeans/regov-lib-react": "^0.2.13",
+    "@owlmeans/regov-ssi-core": "^0.7.1",
     "i18next": "*",
     "react": "^17.0.2",
     "react-device-detect": "^2.1.2",

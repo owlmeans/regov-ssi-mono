@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-comm",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "It's DIDComm package for OwlMeans Re:gov SSI",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -37,7 +37,7 @@
     "typescript": "^4.3.5"
   },
   "peerDependencies": {
-    "@owlmeans/regov-ssi-core": "^0.7.0"
+    "@owlmeans/regov-ssi-core": "^0.7.1"
   },
   "dependencies": {
     "did-jwt": "^6.0.0",
