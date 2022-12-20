@@ -244,8 +244,9 @@ export const startWSServer = async (
             return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
           }
 
-          // console.log('!!! Hand shake sent')
-          const jwt = await createJWT({ request: unsigned }, { issuer: identity.credential.id, signer: ES256KSigner(serverWallet.crypto.base58().decode(cryptoKey.pk)) })
+          const jwt = await createJWT({ request: unsigned }, { 
+            issuer: identity.credential.id, signer: ES256KSigner(serverWallet.crypto.base58().decode(cryptoKey.pk)) 
+          })
 
           await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + didInfo.did)
           return await _send(makeRandomUuid() + ':' + jwt)
