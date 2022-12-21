@@ -381,7 +381,7 @@ export const buildDidHelper =
           }
         }
 
-        // suite, purpose, documentLoader, expansionMap, addSuiteContext
+        // suite, purpose, documentLoader, addSuiteContext
         return await jldsign.sign(
           _cutProof(didDocUnsigned),
           {
