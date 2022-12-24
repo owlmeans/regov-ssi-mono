@@ -15,8 +15,9 @@
  */
 
 import ReactDOM from 'react-dom'
+require('dotenv').config()
 
 import { App } from './App'
-
+import './warmup'
 
 ReactDOM.render(<App />, document.getElementById('root'))

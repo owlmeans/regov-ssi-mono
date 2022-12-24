@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import "dotenv"
+require('dotenv').config()
 import http from 'http'
 import { buildExtensionRegistry } from "@owlmeans/regov-ssi-core"
 import { buildIdentityExtension } from "@owlmeans/regov-ext-identity/dist/ext"
@@ -31,6 +31,7 @@ const httpServer = http.createServer((_, response) => {
   response.writeHead(404)
   response.end()
 })
+
 
 const registry = buildExtensionRegistry()
 registry.registerSync(buildIdentityExtension(
