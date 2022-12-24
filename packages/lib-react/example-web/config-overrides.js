@@ -14,8 +14,10 @@
  *  limitations under the License.
  */
 
-const {override, addExternalBabelPlugin} = require('customize-cra')
+const { override, addExternalBabelPlugin, addWebpackAlias } = require('customize-cra')
+const path = require('path')
 
-module.exports = override(addExternalBabelPlugin(
-  '@babel/plugin-proposal-nullish-coalescing-operator'
-))
+module.exports = override(
+  addExternalBabelPlugin('@babel/plugin-proposal-nullish-coalescing-operator'),
+  addWebpackAlias({ react: path.resolve(__dirname, 'node_modules/react') })
+)

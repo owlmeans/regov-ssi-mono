@@ -17,8 +17,9 @@
 
 require('dotenv').config()
 
-import {nodeCryptoHelper, buildDidHelper, buildDidRegistryWarpper, DIDPURPOSE_ASSERTION,
-  DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_CONTROLLER, 
+import {
+  nodeCryptoHelper, buildDidHelper, buildDidRegistryWarpper, DIDPURPOSE_ASSERTION,
+  DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_CONTROLLER,
   VERIFICATION_KEY_HOLDER, buildKeyChain, buildSSICore
 } from "../index"
 
@@ -55,9 +56,7 @@ const _test = async () => {
   )
 
   const did = await ssi.did.helper().signDID(key, didUnsigned)
-
   ssi.did.addDID(did)
-
   const unsingnedC = await ssi.buildCredential({
     id: did.id,
     type: ['VerifiableCredential', 'TestCredential'],

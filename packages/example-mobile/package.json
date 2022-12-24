@@ -1,0 +1,39 @@
+{
+  "name": "@owlmeans/regov-mold-wallet-native-example",
+  "version": "0.1.0",
+  "description": "> TODO: description",
+  "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
+  "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
+  "license": "Apache-2.0",
+  "private": false,
+  "main": "dist/index.js",
+  "directories": {
+    "lib": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "preinstall": "./preinstall.sh",
+    "postinstall": "./postinstall.sh",
+    "build": "tsc -b -f",
+    "cleanup": "react-native eject",
+    "start": "react-native start",
+    "ios": "react-native run-ios --simulator=\"iPhone 14\""
+  },
+  "devDependencies": {
+    "@types/react-native": "^0.70.8",
+    "react-native-eject": "^0.2.0",
+    "typescript": "^4.5.2"
+  },
+  "peerDependencies": {},
+  "dependencies": {
+    "@owlmeans/regov-lib-native": "0.1.0",
+    "react": "^17.0.2",
+    "react-native": "^0.68.5",
+    "react-native-crypto": "^2.2.0",
+    "react-native-randombytes": "^3.6.1",
+    "react-native-url-polyfill": "^1.3.0"
+  }
+}

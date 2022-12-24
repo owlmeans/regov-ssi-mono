@@ -1,8 +1,9 @@
 import base64url from 'base64url'
-import tinySecp256k1 from 'tiny-secp256k1'
+import * as tinySecp256k1 from 'tiny-secp256k1'
 import createHash from 'create-hash'
 
 import { VERIFICATION_KEY_TYPE, Signer, Verifier } from './common'
+
 
 const sha256 = (data: Buffer) => createHash('sha256').update(data).digest()
 

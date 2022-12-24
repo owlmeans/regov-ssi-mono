@@ -14,14 +14,16 @@
  *  limitations under the License.
  */
 
-import { MaybeArray, normalizeValue } from "../common"
+import { normalizeValue } from "../common"
 import { BasicCredentialType, Credential } from "../vc"
-import {
-  CredentialService, CredentialServiceBuilder, defaultBuildMethod, defaultClaimMethod,
-  defaultOfferMethod, defaultRequestMethod, defaultRespondMethod, defaultSignMethod, defaultValidateMethod,
-  Extension,
-  ValidationResult
-} from "./ext"
+import { defaultBuildMethod } from "./ext/factory/building"
+import { defaultClaimMethod } from "./ext/factory/claiming"
+import { defaultOfferMethod } from "./ext/factory/offering"
+import { defaultRequestMethod } from "./ext/factory/request"
+import { defaultRespondMethod } from "./ext/factory/response"
+import { defaultSignMethod } from "./ext/factory/signing"
+import { defaultValidateMethod } from "./ext/factory/validation"
+import { CredentialService, CredentialServiceBuilder, Extension, ValidationResult } from "./ext/types"
 import { CredentialDescription } from "./schema"
 
 

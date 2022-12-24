@@ -31,7 +31,6 @@ type MatchProofOptions = {
   document: unknown
   purpose: unknown
   documentLoader: unknown
-  expansionMap: unknown
 }
 
 type LinkedDataSignatureInstance = {

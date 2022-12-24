@@ -19,6 +19,7 @@ import { isCredential } from "../../../vc"
 import { DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_HOLDER } from "../../../did"
 import { RequestMethodBuilder } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
+import { Credential } from "../../../vc/types"
 
 
 export const defaultRequestMethod: RequestMethodBuilder = schema =>

@@ -16,6 +16,7 @@
 
 import { CommExtConfig, DEFAULT_SERVER_ALIAS } from "@owlmeans/regov-ext-comm"
 
+
 export const config = {
   DID_PREFIX: process.env.REACT_APP_DID_PREFIX || 'exwaldid',
   DID_SCHEMA_PATH: process.env.REACT_APP_DID_SCHEMA_PATH || 'exdid-schema',

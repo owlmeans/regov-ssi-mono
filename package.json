@@ -6,33 +6,34 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "lerna run build:watch --parallel",
+    "dev": "lerna run build:watch --stream --parallel --concurrency 12",
     "build": "lerna run build",
     "start": "cd ./packages/lib-react/example-web/ && yarn start"
   },
   "devDependencies": {
-    "@mui/material": "^5.2.4",
-    "@mui/icons-material": "^5.2.5",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/material": "^5.2.4",
     "@transmute/lds-ecdsa-secp256k1-2019": "^0.1.3",
-    "ajv": "^8.8.2",
-    "react-dom": "^17.0.2",
-    "react-router-dom": "^6.0.2",
-    "react-device-detect": "^2.1.2",
-    "react-dropzone": "^11.4.2",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
+    "ajv": "^8.8.2",
     "copy-to-clipboard": "^3.3.1",
+    "express": "^4.18.1",
     "i18next": "^21.4.2",
     "i18next-browser-languagedetector": "^6.1.3",
-    "react-i18next": "^11.14.2",
-    "react-hook-form": "^7.19.5",
     "jest": "^27.0.6",
-    "lerna": "^4.0.0",
+    "lerna": "^6.1.0",
+    "react-device-detect": "^2.1.2",
+    "react-dom": "^17.0.2",
+    "react-dropzone": "^11.4.2",
+    "react-hook-form": "^7.19.5",
+    "react-i18next": "^11.14.2",
+    "react-router-dom": "^6.0.2",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.0",
-    "typescript": "^4.3.5",
-    "express": "^4.18.1"
-  }
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {}
 }

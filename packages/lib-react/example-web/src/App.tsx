@@ -29,8 +29,6 @@ import { WalletApp } from '@owlmeans/regov-lib-react'
 
 import { config, commConfig } from './config'
 
-import './warmup'
-
 
 const EXAMPLE_IDENTITY_TYPE = 'ExampleIdentity'
 

@@ -19,7 +19,7 @@ import {
   VERIFICATION_KEY_CONTROLLER
 } from "../../../did"
 import { Credential } from '../../../vc'
-import { buildWalletLoader } from '../../../wallet'
+import { buildWalletLoader } from '../../../wallet/loader'
 import { updateDidIdWithKey, validateVerifiableId } from "../../schema"
 import { OfferMethodBuilder } from "../types"
 

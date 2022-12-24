@@ -14,18 +14,7 @@
  *  limitations under the License.
  */
 
-// require('dotenv').config()
+import 'react-native-url-polyfill/auto'
 
-export * from './vc'
-
-export * from './store'
-
-export * from './keys'
-
-export * from './wallet'
-
-export * from './common'
-
-export * from './did'
-
-export * from './extension'
+global.process = require("process")
+global.Buffer = require("buffer/").Buffer

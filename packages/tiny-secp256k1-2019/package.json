@@ -25,8 +25,8 @@
   "dependencies": {
     "base64url": "^3.0.1",
     "create-hash": "^1.2.0",
-    "jsonld": "^5.2.0",
-    "jsonld-signatures": "^9.3.1",
+    "jsonld": "^8.1.0",
+    "jsonld-signatures": "^11.0.0",
     "tiny-secp256k1": "^1.1.6",
     "tslib": "^2.3.0"
   },
@@ -35,14 +35,14 @@
     "@transmute/lds-ecdsa-secp256k1-2019": "^0.1.3",
     "@types/create-hash": "^1.2.2",
     "@types/jest": "^27.0.2",
-    "@types/tiny-secp256k1": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
     "cross-env": "^7.0.3",
     "jest": "^27.3.1",
     "license-checker": "25.0.1",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.0.2"
+    "typescript": "^4.5.2",
+    "@types/tiny-secp256k1": "^1.0.0"
   },
   "peerDependencies": {
     "elliptic": "^6.5.4"
