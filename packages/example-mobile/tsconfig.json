@@ -97,7 +97,6 @@
   },
   "include": [
     "src",
-    "index.ts",
-    "global.ts"
+    "index.ts"
   ]
 }

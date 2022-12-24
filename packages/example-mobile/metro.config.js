@@ -6,24 +6,10 @@
  */
 
 const path = require('path')
+const { getDefaultMetroConfig } = require('@owlmeans/regov-lib-native/dist/metro')
+
 
 module.exports = {
   watchFolders: [path.resolve(__dirname, '..'), path.resolve(__dirname, '../..')],
-  resolver: {
-    extraNodeModules: {
-      'url': path.resolve(__dirname, '../../node_modules/react-native-url-polyfill'),
-      crypto: path.resolve(__dirname, '../../node_modules/react-native-crypto'),
-      buffer: path.resolve(__dirname, 'node_modules/buffer'),
-      stream: path.resolve(__dirname, '../../node_modules/stream-browserify')
-    },
-    resolverMainFields: ['react-native', 'browser', 'module', 'main']
-  },
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: false,
-      },
-    }),
-  }
+  ...getDefaultMetroConfig(__dirname, '../../')
 }
