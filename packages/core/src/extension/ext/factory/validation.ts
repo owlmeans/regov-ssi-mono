@@ -17,15 +17,16 @@
 import { MaybeArray, normalizeValue, singleValue } from "../../../common"
 import { Credential } from "../../../vc"
 import {
-  buildWalletLoader, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CLAIMS,
+  REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CLAIMS,
   REGISTRY_TYPE_IDENTITIES, REGISTRY_TYPE_REQUESTS
-} from "../../../wallet"
+} from "../../../wallet/registry/types"
 import { ERROR_CANT_IDENTIFY_CREDENTIAL, ERROR_NO_CREDENTIAL_PROVIDED } from "./types"
 import {
   EvidenceValidationResult, ValidationErrorCause, ValidateMethodBuilder,
   VALIDATION_KIND_OFFER, VALIDATION_KIND_RESPONSE
 } from "../types"
 import { CredentialDescription, validateVerifiableId } from "../../schema"
+import { buildWalletLoader } from "../../../wallet/loader"
 
 
 export const defaultValidateMethod: ValidateMethodBuilder = schema =>

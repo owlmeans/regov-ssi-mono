@@ -16,13 +16,11 @@
 
 import { Secp256k1Key, Secp256k1Signature } from "@owlmeans/tiny-lds-ecdsa-secp256k1-2019"
 import { sha256 } from 'hash.js'
-import * as ecc from 'tiny-secp256k1';
-import { BIP32Factory, BIP32Interface } from 'bip32'
+import { fromSeed, BIP32Interface } from 'bip32'
 import { Base58Lib, CryptoHelper, CryptoKey } from "../types"
 import { encode as encode58, decode as decode58 } from './base58'
 
 require("jsonld/lib/events").safeEventHandler = ({ next }: { next: () => void }) => next()
-
 
 const IV_LENGTH = 16
 const ENCRYPTION_ALGORITHM = 'aes-256-cbc'
@@ -163,9 +161,8 @@ export const nodeCryptoHelper: CryptoHelper = {
     derivationPath = derivationPath || _makeDerivationPath()
     const _key = `${bufferedSeed.toString('hex')}_${derivationPath}`
 
-    const bip32 = BIP32Factory(ecc)
     if (!_keysCache[_key]) {
-      _keysCache[_key] = bip32.fromSeed(Buffer.from(bufferedSeed)).derivePath(derivationPath)
+      _keysCache[_key] = fromSeed(Buffer.from(bufferedSeed)).derivePath(derivationPath)
     }
 
     const pubKey = _base58().encode(_keysCache[_key].publicKey)

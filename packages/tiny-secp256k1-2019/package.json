@@ -27,7 +27,7 @@
     "create-hash": "^1.2.0",
     "jsonld": "^8.1.0",
     "jsonld-signatures": "^11.0.0",
-    "tiny-secp256k1": "^2.2.1",
+    "tiny-secp256k1": "^1.1.6",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -41,7 +41,8 @@
     "jest": "^27.3.1",
     "license-checker": "25.0.1",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.0.2"
+    "typescript": "^4.5.2",
+    "@types/tiny-secp256k1": "^1.0.0"
   },
   "peerDependencies": {
     "elliptic": "^6.5.4"

@@ -36,17 +36,18 @@
     "jest": "^27.0.6",
     "ts-jest": "^27.0.4",
     "ts-node": "^10.2.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "@types/tiny-secp256k1": "^1.0.0"
   },
   "dependencies": {
     "@owlmeans/tiny-lds-ecdsa-secp256k1-2019": "^1.0.3",
     "ajv": "^8.8.2",
-    "bip32": "^3.1.0",
+    "bip32": "^2.0.6",
     "browserify-aes": "^1.2.0",
     "hash.js": "^1.1.7",
     "jsonld-signatures": "^11.0.0",
     "secp256k1": "^4.0.3",
-    "tiny-secp256k1": "^2.2.1",
+    "tiny-secp256k1": "^1.1.6",
     "uuid": "^8.3.2"
   },
   "publishConfig": {

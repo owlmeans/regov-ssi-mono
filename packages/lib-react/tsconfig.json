@@ -23,7 +23,8 @@
     "allowSyntheticDefaultImports": true, 
     "esModuleInterop": true,
     "inlineSources": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
   "include": [
     "src"

@@ -36,7 +36,9 @@ const jldsign = require('jsonld-signatures')
 const VERIFICATION_METHOD = 'EcdsaSecp256k1VerificationKey2019'
 // const SIGNATURE_METHOD = 'EcdsaSecp256k1Signature2019'
 
-global.URLSearchParams = URLSearchParams || require('url').URLSearchParams
+const globalAny: any = global
+
+globalAny.URLSearchParams = URLSearchParams || require('url').URLSearchParams
 
 /**
  * @TODO Verify DID fully:

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-require('dotenv').config()
+// require('dotenv').config()
 
 export * from './types'
 export * from './types/'

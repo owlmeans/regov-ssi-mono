@@ -1,5 +1,5 @@
 {
-  "name": "@owlmeans/regov-mold-wallet-server-example",
+  "name": "@owlmeans/regov-mold-comm-server-example",
   "version": "0.1.0",
   "description": "Node.js Re:gov server wallet agent for SSI",
   "main": "build/index.js",
