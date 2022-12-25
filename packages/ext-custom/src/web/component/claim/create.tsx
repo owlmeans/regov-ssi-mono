@@ -41,7 +41,10 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
     const identities = handler.wallet?.getIdentityWrappers()
     const defaultId = handler.wallet?.getIdentityCredential()?.id || ''
     // Produce form methods object
-    const [methods, fields] = buildForm(UseFieldAt.CLAIM_CREATE, descr, defaultId, useForm, useTranslation)
+    const [methods, fields] = buildForm(
+      UseFieldAt.CLAIM_CREATE, descr, defaultId, useForm, useTranslation,
+      { controllerField: 'issuer' }
+    )
 
     // Create claim
     const claim = trySubmit(

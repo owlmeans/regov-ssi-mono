@@ -22,7 +22,7 @@ import { groupsUIExtension } from '@owlmeans/regov-ext-groups'
 import { authUIExtension } from '@owlmeans/regov-ext-auth'
 import { buildCommUIExtension } from '@owlmeans/regov-ext-comm'
 import {
-  customizeExtension, addCredential, USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, addScansContext
+  customizeExtension, addCredential, USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, addScansContext, USE_ITEM_CLAIM, USE_CREATE_OFFER, USE_CLAIM_VIEW
 } from "@owlmeans/regov-ext-custom/dist/web"
 
 import { WalletApp } from '@owlmeans/regov-lib-react'
@@ -48,16 +48,21 @@ registry.registerSync(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName:
 
 signatureWebExtension.extension.schema = addCredential(signatureWebExtension.extension.schema, {
   mainType: 'CustomSignature', ns: 'custom-signature', credentialContext: {
-    xsd: 'http://www.w3.org/2001/XMLSchema#',
+    xs: 'http://www.w3.org/2001/XMLSchema#',
     custom: 'https://my-example.org/custom-signature#',
   },
   subjectMeta: {
     testField: {
-      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM], validation: { required: true },
-      term: { '@id': 'custom:testField', '@type': 'xsd:string' }
+      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW], 
+      validation: { required: true },
+      term: { '@id': 'custom:testField', '@type': 'xs:string' }
+    },
+    'issuerField': {
+      useAt: [USE_CREATE_OFFER], validation: { required: true },
+      term: { '@id': 'custom:issuerField', '@type': 'xs:string' }
     },
     scansField: {
-      useAt: [USE_CREATE_CLAIM], validation: { required: true },
+      useAt: [USE_CREATE_CLAIM, USE_CLAIM_VIEW], validation: { required: true },
       term: addScansContext('custom', 'scansField')
     }
   }

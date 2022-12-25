@@ -16,10 +16,10 @@
 
 import React, { Fragment, FunctionComponent, useMemo } from 'react'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
-import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, normalizeValue } from '@owlmeans/regov-ssi-core'
+import { Extension, normalizeValue } from '@owlmeans/regov-ssi-core'
 import { CredentialWrapper } from '@owlmeans/regov-ssi-core'
 import { ItemMenu, ItemMenuHandle, MenuIconButton } from '@owlmeans/regov-lib-react'
-import { IncommigDocumentWithConn } from '@owlmeans/regov-comm'
+import { triggerIncommingDocView } from '@owlmeans/regov-comm'
 import { REGOV_SIGNATURE_CLAIM_TYPE, SignaturePresentation, SignatureSubject } from '../../types'
 
 
@@ -45,18 +45,10 @@ export const SignatureClaimItem = (ext: Extension): FunctionComponent<ClaimSigna
 
     const handle: ItemMenuHandle = useMemo(() => ({ handler: undefined }), [wrapper.credential.id])
 
-    action = action || (async () => {
-      if (!extensions || !handler.wallet) {
-        return
-      }
-
-      await extensions.triggerEvent<IncommigDocumentWithConn>(
-        handler.wallet, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, {
-        credential: wrapper.credential as any, statusHandler: { successful: false },
-        conn: (wrapper.meta as unknown as IncommigDocumentWithConn).conn,
-        cleanUp: () => undefined
-      })
-    })
+    action = action || (
+      async () => extensions && handler.wallet
+        && await triggerIncommingDocView(extensions.registry, handler.wallet, wrapper)
+    )
 
     return <ListItem>
       <ListItemButton onClick={action}>

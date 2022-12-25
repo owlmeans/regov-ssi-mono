@@ -15,7 +15,7 @@
  */
 
 import { MaybeArray } from "../../common"
-import { BasicCredentialType, CredentialSchema, MultiSchema, Credential, Presentation } from "../../vc"
+import { BasicCredentialType, CredentialSchema, MultiSchema, Credential, Presentation, UnsignedCredential } from "../../vc"
 import { CredentialWrapper, WalletWrapper } from '../../wallet'
 import { Extension } from "../ext"
 import { ExtensionRegistry } from "../registry"
@@ -62,7 +62,20 @@ export type CredentialDescription<
   arbitraryEvidence?: boolean
   verfiableId?: CredentialIdMeta
   sourceType?: string
+  metaRole?: MetaRole
 }
+
+export type MetaRole = typeof META_ROLE_CREDENTIAL
+  | typeof META_ROLE_CLAIM
+  | typeof META_ROLE_OFFER
+  | typeof META_ROLE_REQUEST
+  | typeof META_ROLE_RESPONSE
+
+export const META_ROLE_CREDENTIAL = 'credential'
+export const META_ROLE_CLAIM = 'claim'
+export const META_ROLE_OFFER = 'offer'
+export const META_ROLE_REQUEST = 'request'
+export const META_ROLE_RESPONSE = 'response'
 
 export type CredentialIdMeta = {
   fields: string[]
@@ -107,7 +120,7 @@ export type CredentialEventParams = EventParams & {
 }
 
 export type IncommigDocumentEventParams = EventParams & {
-  credential: Credential | Presentation
+  credential: Credential | Presentation | UnsignedCredential
   statusHandler: {
     successful: boolean
   }

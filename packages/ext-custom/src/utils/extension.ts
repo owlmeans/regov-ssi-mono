@@ -15,7 +15,7 @@
  */
 
 import {
-  CredentialDescription, Extension, ExtensionSchema, MultiSchema, buildExtension
+  CredentialDescription, Extension, ExtensionSchema, MultiSchema, buildExtension, META_ROLE_CREDENTIAL, META_ROLE_CLAIM, META_ROLE_OFFER, META_ROLE_REQUEST, META_ROLE_RESPONSE
 } from "@owlmeans/regov-ssi-core"
 import { CustomDescription, DefaultSubject, isCustom } from "../custom.types"
 import { castClaimType, castOfferType, castRequestType, castResponseType } from "./tools"
@@ -57,11 +57,19 @@ const produceTypes = (schema: ExtensionSchema, cred: CustomDescription): { [key:
   const responseType = castResponseType(cred)
 
   return {
-    [cred.mainType]: expandType(schema, cred),
-    [claimType]: expandType(schema, { mainType: claimType, sourceType: cred.mainType, credentialContext: {} }),
-    [offerType]: expandType(schema, { mainType: offerType, sourceType: cred.mainType, credentialContext: {} }),
-    [requestType]: expandType(schema, { mainType: requestType, sourceType: cred.mainType, credentialContext: {} }),
-    [responseType]: expandType(schema, { mainType: responseType, sourceType: cred.mainType, credentialContext: {} }),
+    [cred.mainType]: expandType(schema, {...cred, metaRole: META_ROLE_CREDENTIAL}),
+    [claimType]: /*expandType(schema,*/ { 
+      mainType: claimType, metaRole: META_ROLE_CLAIM, sourceType: cred.mainType, credentialContext: {} 
+    },//),
+    [offerType]: /*expandType(schema,*/ { 
+      mainType: offerType, metaRole: META_ROLE_OFFER, sourceType: cred.mainType, credentialContext: {} 
+    },//),
+    [requestType]: /*expandType(schema,*/ { 
+      mainType: requestType, metaRole: META_ROLE_REQUEST, sourceType: cred.mainType, credentialContext: {} 
+    },//),
+    [responseType]: /*expandType(schema,*/ { 
+      mainType: responseType, metaRole: META_ROLE_RESPONSE, sourceType: cred.mainType, credentialContext: {} 
+    },//),
   }
 }
 

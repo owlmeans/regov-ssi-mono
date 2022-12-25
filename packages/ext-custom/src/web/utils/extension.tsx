@@ -14,28 +14,67 @@
  *  limitations under the License.
  */
 
+import React from 'react'
 import {
   EXTENSION_ITEM_PURPOSE_CLAIM, EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_ROUTE, ManuItemParams,
-  MENU_TAG_CLAIM_NEW, MENU_TAG_REQUEST_NEW, UIExtension, UIExtensionFactoryProduct
+  MENU_TAG_CLAIM_NEW, MENU_TAG_REQUEST_NEW, UIExtension, UIExtensionFactoryProduct, castMainModalHandler
 } from "@owlmeans/regov-lib-react"
-import { singleValue } from "@owlmeans/regov-ssi-core"
-import { CustomDescription, isCustom } from "../../custom.types"
+import {
+  addObserverToSchema, Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, isPresentation, META_ROLE_CLAIM, META_ROLE_OFFER, singleValue
+} from "@owlmeans/regov-ssi-core"
+import { CustomDescription, DefaultDescription, DefaultPresentation, isCustom } from "../../custom.types"
 import { updateFactories } from "../../utils/extension"
 import { ClaimCreate } from "../component/claim/create"
 import { ClaimPreview } from "../component/claim/preview"
 import { ClaimItem } from "../component/claim/item"
 import { makeClaimPreviewPath } from "./router"
+import { IncommigDocumentWithConn } from "@owlmeans/regov-comm"
+import { getCredential } from "./cred"
+import { ClaimOffer } from "../component/offer/claim"
+import { OfferItem } from '../component/offer/item'
 
 
-export const customizeExtension = (ext: UIExtension): UIExtension => (
-  {
+export const customizeExtension = (ext: UIExtension): UIExtension => {
+  const modalHandler = castMainModalHandler(ext.extension)
+  ext.extension.schema = addObserverToSchema(ext.extension.schema, {
+    trigger: EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
+    filter: async (_, params: IncommigDocumentWithConn) => {
+      if (isPresentation(params.credential)) {
+        const cred = singleValue(params.credential.verifiableCredential)
+        return (ext.extension.schema.credentials && Object.entries(ext.extension.schema.credentials).reduce(
+          (result, [, descr]) => {
+            return result || !!cred?.type.includes(descr.mainType)
+          }, false
+        )) as boolean
+      }
+      return false
+    },
+    method: async (_, params: IncommigDocumentWithConn) => {
+      return ext.extension.schema.credentials && Object.entries(ext.extension.schema.credentials).some(
+        ([type, cred]) => {
+          if (isPresentation(params.credential)) {
+            if (getCredential(cred as DefaultDescription, params.credential)?.type.includes(type)) {
+              return params.statusHandler.successful =
+                modalHandler.handle?.open ? modalHandler.handle.open(
+                  () => <ClaimOffer ext={params.ext as Extension} descr={cred as DefaultDescription}
+                    claim={params.credential as DefaultPresentation} conn={params.conn}
+                    close={modalHandler.handle?.close} />
+                ) : false
+            }
+          }
+          return false
+        }
+      )
+    }
+  })
+
+  return {
     ...ext,
     extension: updateFactories(ext.extension),
     menuItems: [...(ext.menuItems || []), ...expandMenu(ext)],
     produceComponent: (purpose, type) => {
       const _type = singleValue(type)
       if (_type && ext.extension.schema.credentials && ext.extension.schema.credentials[_type]) {
-        console.log('???', purpose, type, _type)
         const cred = ext.extension.schema.credentials[_type]
         if (isCustom(cred)) {
           switch (purpose) {
@@ -46,7 +85,6 @@ export const customizeExtension = (ext: UIExtension): UIExtension => (
                 params: {},
                 order: 0
               }]
-
           }
         }
         if (cred.sourceType && ext.extension.schema.credentials[cred.sourceType]) {
@@ -54,12 +92,22 @@ export const customizeExtension = (ext: UIExtension): UIExtension => (
           if (isCustom(sourceCred)) {
             switch (purpose) {
               case EXTENSION_ITEM_PURPOSE_ITEM:
-                return [{
-                  com: ClaimItem(),
-                  extensionCode: `${ext.extension.schema.details.code}${cred.mainType}ClaimItem`,
-                  params: {},
-                  order: 0
-                }]
+                switch (cred.metaRole) {
+                  case META_ROLE_CLAIM:
+                    return [{
+                      com: ClaimItem(sourceCred),
+                      extensionCode: `${ext.extension.schema.details.code}${cred.mainType}ClaimItem`,
+                      params: {},
+                      order: 0
+                    }]
+                  case META_ROLE_OFFER:
+                    return [{
+                      com: OfferItem(sourceCred),
+                      extensionCode: `${ext.extension.schema.details.code}${cred.mainType}OfferItem`,
+                      params: {},
+                      order: 0
+                    }]
+                }
             }
           }
         }
@@ -81,7 +129,7 @@ export const customizeExtension = (ext: UIExtension): UIExtension => (
       return ext.produceComponent(purpose, type)
     }
   }
-)
+}
 
 const expandMenu = (ext: UIExtension): ManuItemParams[] =>
   ext.extension.schema.credentials ? Object.entries(ext.extension.schema.credentials).filter(

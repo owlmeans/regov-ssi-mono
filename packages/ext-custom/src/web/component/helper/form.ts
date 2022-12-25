@@ -24,9 +24,11 @@ import { castSectionKey } from "../../utils/tools"
 
 
 export const buildForm = (
-  purpose: UseFieldAt, descr: CustomDescription, defaultHolder: string,
+  purpose: UseFieldAt, descr: CustomDescription,
+  defaultHolder: string,
   createForm: typeof useForm,
-  castTransaltion: typeof useTranslation
+  castTransaltion: typeof useTranslation,
+  options?: BuildFormOptions
 ): [UseFormReturn, PrimaryFormProps] => {
   const sectionKey = castSectionKey(descr)
   const { t, i18n } = castTransaltion(descr.ns)
@@ -38,7 +40,7 @@ export const buildForm = (
       defaultValues: {
         [sectionKey]: {
           [purpose]: produceDefaults(purpose, descr),
-          hodler: defaultHolder,
+          [options?.controllerField || 'holder']: defaultHolder,
           alert: ''
         }
       } as DefaultValues<FieldValues>
@@ -50,8 +52,15 @@ export const buildForm = (
   ]
 }
 
+export type BuildFormOptions = {
+  controllerField?: string
+}
+
 export const castHolderField = (descr: CustomDescription) =>
   `${castSectionKey(descr)}.holder`
+
+export const castIssuerField = (descr: CustomDescription) =>
+  `${castSectionKey(descr)}.issuer`
 
 const produceDefaults = (
   purpose: UseFieldAt, descr: CustomDescription<Record<string, any>>

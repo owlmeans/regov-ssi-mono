@@ -15,7 +15,7 @@
  */
 
 import {
-  Credential, DIDDocument, EventParams, IncommigDocumentEventParams, Presentation, WalletWrapper
+  Credential, CredentialWrapperMetadata, DIDDocument, EventParams, IncommigDocumentEventParams, Presentation, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import { JWE } from 'did-jwt'
 
@@ -58,6 +58,10 @@ export type DIDCommConnectMeta = {
 }
 
 export type IncommigDocumentWithConn = IncommigDocumentEventParams & {
+  conn?: DIDCommConnectMeta
+}
+
+export type IncommingWrapperMeta = CredentialWrapperMetadata & {
   conn?: DIDCommConnectMeta
 }
 

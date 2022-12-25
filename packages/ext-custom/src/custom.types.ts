@@ -15,7 +15,7 @@
  */
 
 import {
-  CredentialDescription, CredentialSchema, MaybeArray, Presentation, Credential
+  CredentialDescription, CredentialSchema, MaybeArray, Presentation, Credential, UnsignedCredential
 } from "@owlmeans/regov-ssi-core"
 import { ExpandedTermDefinition } from "jsonld"
 
@@ -38,7 +38,11 @@ export type DefaultSubject = Record<string, any>
 
 export type DefaultCredential = Credential<DefaultSubject>
 
+export type DefaultUnsigned = UnsignedCredential<DefaultSubject>
+
 export type DefaultPresentation = Presentation<DefaultCredential>
+
+export type DefaultDescription = CustomDescription<DefaultSubject>
 
 export type SubjectMeta<Subject extends {}> = {
   [k in keyof Subject]: SubjectFieldMeta
@@ -60,10 +64,16 @@ export type ValidationOptions = Partial<{
 
 export const USE_CREATE_CLAIM = "claim_create"
 export const USE_PREVIEW_CLAIM = "claim_preview"
+export const USE_ITEM_CLAIM = "claim_item"
+export const USE_CLAIM_VIEW = "claim_view"
+export const USE_CREATE_OFFER = "offer_create"
 
 export const enum UseFieldAt {
   CLAIM_CREATE = "claim_create",
-  CLAIM_PREVIEW = "claim_preview"
+  CLAIM_PREVIEW = "claim_preview",
+  CLAIM_ITEM = "claim_item",
+  CLAIM_VIEW = "claim_view",
+  OFFER_CREATE = "offer_create"
 }
 
 export const DEFAULT_SUFFIX_CLAIM = "Claim"

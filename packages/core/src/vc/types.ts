@@ -72,18 +72,18 @@ export type CredentialContextType = string | ContextSchema | (string | ContextSc
 
 export type UnsignedCredential<
   Subject extends MaybeArray<{}> = MaybeArray<{}>
-  > = {
-    '@context': MultiSchema
-    id: string
-    type: CredentialType
-    holder: CredentialHolder
-    credentialSchema?: MaybeArray<CredentialSchema>
-    evidence?: MaybeArray<Evidence>
-    credentialSubject: Subject
-    issuanceDate: string
-    expirationDate?: string
-    revocation?: Revocation
-  }
+> = {
+  '@context': MultiSchema
+  id: string
+  type: CredentialType
+  holder: CredentialHolder
+  credentialSchema?: MaybeArray<CredentialSchema>
+  evidence?: MaybeArray<Evidence>
+  credentialSubject: Subject
+  issuanceDate: string
+  expirationDate?: string
+  revocation?: Revocation
+}
 
 export type Revocation = {
   id: string
@@ -114,18 +114,6 @@ export type CredentialType = ['VerifiableCredential', ...string[]]
 
 export type BasicCredentialType = string | string[]
 
-type PresentationSubmissionDescriptorV1 = {
-  id: string;
-  path: string;
-  path_nested?: PresentationSubmissionDescriptorV1;
-  format: 'jwt' | 'jwt_vc' | 'jwt_vp' | 'ldp' | 'ldp_vc' | 'ldp_vp';
-}
-
-type PresentationSubmissionV1 = {
-  locale?: string;
-  descriptor_map: PresentationSubmissionDescriptorV1[];
-}
-
 export type UnsignedPresentation<CredentialT extends UnsignedCredential = Credential> = {
   '@context': MultiSchema
   id?: string
@@ -134,8 +122,8 @@ export type UnsignedPresentation<CredentialT extends UnsignedCredential = Creden
   holder: PresentationHolder
 }
 
-export type Presentation<CredentialT extends UnsignedCredential = Credential> = UnsignedPresentation<CredentialT>
-  & {
+export type Presentation<CredentialT extends UnsignedCredential = Credential>
+  = UnsignedPresentation<CredentialT> & {
     proof: Proof
   }
 
