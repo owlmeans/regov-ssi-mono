@@ -21,7 +21,7 @@ import {
   AlertOutput, BasicNavigator, FormMainAction, MainTextInput, PrimaryForm, trySubmit, useNavigator,
   useRegov, WalletFormProvider
 } from "@owlmeans/regov-lib-react"
-import { DIDDocument, Extension, Identity, normalizeValue, REGISTRY_TYPE_CLAIMS } from "@owlmeans/regov-ssi-core"
+import { DIDDocument, Identity, normalizeValue, REGISTRY_TYPE_CLAIMS } from "@owlmeans/regov-ssi-core"
 import { BASIC_IDENTITY_TYPE, DIDCommConnectMeta, getDIDCommUtils } from "@owlmeans/regov-comm"
 import Grid from "@mui/material/Grid"
 
@@ -33,7 +33,7 @@ import { getCredential, getSubject } from "../../utils/cred"
 import { ERROR_WIDGET_AUTHENTICATION } from "../../ui.types"
 
 
-export const ClaimPreview = (_: Extension, descr: CustomDescription): FunctionComponent =>
+export const ClaimPreview = (descr: CustomDescription): FunctionComponent =>
   () => {
     const { handler } = useRegov()
     const { t, i18n } = useTranslation(descr.ns)

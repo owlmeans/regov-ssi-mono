@@ -62,14 +62,14 @@ export const castHolderField = (descr: CustomDescription) =>
 export const castIssuerField = (descr: CustomDescription) =>
   `${castSectionKey(descr)}.issuer`
 
-const produceDefaults = (
+export const produceDefaults = (
   purpose: UseFieldAt, descr: CustomDescription<Record<string, any>>
 ): Record<string, any> =>
   Object.fromEntries(Object.entries(descr.subjectMeta)
     .filter(([, field]) => field.useAt.includes(purpose))
     .map(([key, field]) => [key, isTermPictures(field) ? [] : '']))
 
-const produceValidation = (
+export const produceValidation = (
   purpose: UseFieldAt, descr: CustomDescription<Record<string, any>>
 ): RegovValidationRules =>
   Object.fromEntries(Object.entries(descr.subjectMeta)

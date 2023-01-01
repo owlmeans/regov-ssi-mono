@@ -22,7 +22,7 @@ import { ERROR_NO_IDENTITY, ERROR_WIDGET_AUTHENTICATION } from '../../ui.types'
 import DialogActions from '@mui/material/DialogActions'
 
 
-export const ClaimOffer: FunctionComponent<ClaimOfferProps> = ({ descr, claim, conn, ext, close }) => {
+export const OfferCreate: FunctionComponent<OfferCreateProps> = ({ descr, claim, conn, ext, close }) => {
   const { handler } = useRegov()
   const navigator = useNavigator(basicNavigator)
   const inboxRegistry = useInboxRegistry()
@@ -36,14 +36,6 @@ export const ClaimOffer: FunctionComponent<ClaimOfferProps> = ({ descr, claim, c
     UseFieldAt.OFFER_CREATE, descr, defaultId, useForm, useTranslation,
     { controllerField: 'issuer' }
   )
-
-  type OfferFields = {
-    [key: string]: {
-      alert: string,
-      issuer: string,
-      offer_create: DefaultSubject
-    }
-  }
 
   const offer = trySubmit<OfferFields>(
     { navigator, methods, errorField: `${sectionKey}.alert`, onError: async () => true },
@@ -108,10 +100,18 @@ export const ClaimOffer: FunctionComponent<ClaimOfferProps> = ({ descr, claim, c
   </Fragment>
 }
 
-export type ClaimOfferProps = {
+export type OfferCreateProps = {
   descr: DefaultDescription
   claim: DefaultPresentation
   ext: Extension
   conn?: DIDCommConnectMeta
   close?: () => void
+}
+
+type OfferFields = {
+  [key: string]: {
+    alert: string,
+    issuer: string,
+    offer_create: DefaultSubject
+  }
 }

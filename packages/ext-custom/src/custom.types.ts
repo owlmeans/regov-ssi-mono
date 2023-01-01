@@ -61,19 +61,22 @@ export type ValidationOptions = Partial<{
   pattern: RegExp
 }>
 
-
 export const USE_CREATE_CLAIM = "claim_create"
 export const USE_PREVIEW_CLAIM = "claim_preview"
 export const USE_ITEM_CLAIM = "claim_item"
 export const USE_CLAIM_VIEW = "claim_view"
 export const USE_CREATE_OFFER = "offer_create"
+export const USE_ITEM_OFFER = "offer_item"
+export const USE_REVIEW_OFFER = "offer_review"
 
 export const enum UseFieldAt {
   CLAIM_CREATE = "claim_create",
   CLAIM_PREVIEW = "claim_preview",
   CLAIM_ITEM = "claim_item",
   CLAIM_VIEW = "claim_view",
-  OFFER_CREATE = "offer_create"
+  OFFER_CREATE = "offer_create",
+  OFFER_ITEM = "offer_item",
+  OFFER_REVIEW = "offer_review"
 }
 
 export const DEFAULT_SUFFIX_CLAIM = "Claim"

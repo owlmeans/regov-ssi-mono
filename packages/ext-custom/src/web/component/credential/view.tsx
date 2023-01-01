@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,6 +14,10 @@
  *  limitations under the License.
  */
 
-export const ERROR_WIDGET_AUTHENTICATION = 'ERROR_WIDGET_AUTHENTICATION'
-export const ERROR_NO_IDENTITY = 'ERROR_NO_IDENTITY'
-export const ERROR_OFFER_WITHOUT_CRED = 'ERROR_OFFER_WITHOUT_CRED'
+import React, { Fragment, FunctionComponent } from 'react'
+
+
+export const CredentialView = (): FunctionComponent => 
+ () => {
+  return <Fragment>Hello world</Fragment>
+ }

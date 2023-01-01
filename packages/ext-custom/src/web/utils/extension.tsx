@@ -29,9 +29,10 @@ import { ClaimPreview } from "../component/claim/preview"
 import { ClaimItem } from "../component/claim/item"
 import { makeClaimPreviewPath } from "./router"
 import { IncommigDocumentWithConn } from "@owlmeans/regov-comm"
-import { getCredential } from "./cred"
-import { ClaimOffer } from "../component/offer/claim"
+import { OfferCreate } from "../component/offer/create"
 import { OfferItem } from '../component/offer/item'
+import { OfferReview } from '../component/offer/review'
+import { CredentialView } from '../component/credential/view'
 
 
 export const customizeExtension = (ext: UIExtension): UIExtension => {
@@ -51,15 +52,29 @@ export const customizeExtension = (ext: UIExtension): UIExtension => {
     },
     method: async (_, params: IncommigDocumentWithConn) => {
       return ext.extension.schema.credentials && Object.entries(ext.extension.schema.credentials).some(
-        ([type, cred]) => {
-          if (isPresentation(params.credential)) {
-            if (getCredential(cred as DefaultDescription, params.credential)?.type.includes(type)) {
-              return params.statusHandler.successful =
-                modalHandler.handle?.open ? modalHandler.handle.open(
-                  () => <ClaimOffer ext={params.ext as Extension} descr={cred as DefaultDescription}
-                    claim={params.credential as DefaultPresentation} conn={params.conn}
-                    close={modalHandler.handle?.close} />
-                ) : false
+        ([, cred]) => {
+          if (isPresentation(params.credential) && cred.sourceType && cred.metaRole) {
+            if (params.credential.type.includes(cred.mainType) && ext.extension.schema.credentials
+              && ext.extension.schema.credentials[cred.sourceType]) {
+              const sourceCred = ext.extension.schema.credentials[cred.sourceType]
+              switch (cred.metaRole) {
+                case META_ROLE_CLAIM:
+                  // @TODO - we need to add additional check: should we show something like claim prview 
+                  // or offer create depending on who open's the claim
+                  return params.statusHandler.successful =
+                    modalHandler.handle?.open ? modalHandler.handle.open(
+                      () => <OfferCreate ext={params.ext as Extension} descr={sourceCred as DefaultDescription}
+                        claim={params.credential as DefaultPresentation} conn={params.conn}
+                        close={modalHandler.handle?.close} />
+                    ) : false
+                case META_ROLE_OFFER:
+                  return params.statusHandler.successful =
+                    modalHandler.handle?.open ? modalHandler.handle.open(
+                      () => <OfferReview ext={params.ext as Extension} descr={sourceCred as DefaultDescription}
+                        offer={params.credential as DefaultPresentation} conn={params.conn}
+                        close={modalHandler.handle?.close} />
+                    ) : false
+              }
             }
           }
           return false
@@ -82,6 +97,13 @@ export const customizeExtension = (ext: UIExtension): UIExtension => {
               return [{
                 com: ClaimCreate(ext.extension, cred),
                 extensionCode: `${ext.extension.schema.details.code}${cred.mainType}Claim`,
+                params: {},
+                order: 0
+              }]
+            case EXTENSION_ITEM_PURPOSE_ITEM:
+              return [{
+                com: CredentialView(),
+                extensionCode: `${ext.extension.schema.details.code}${cred.mainType}CredItem`,
                 params: {},
                 order: 0
               }]
@@ -117,7 +139,7 @@ export const customizeExtension = (ext: UIExtension): UIExtension => {
           case EXTENSION_ITEM_PURPOSE_ROUTE:
             return [...Object.entries(ext.extension.schema.credentials).flatMap(
               ([, cred]) => isCustom(cred) ? [{
-                com: ClaimPreview(ext.extension, cred),
+                com: ClaimPreview(cred),
                 extensionCode: `${ext.extension.schema.details.code}${cred.mainType}ClaimPreview`,
                 params: { path: makeClaimPreviewPath(cred) },
                 order: 0
