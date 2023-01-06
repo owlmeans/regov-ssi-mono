@@ -68,6 +68,7 @@ export const USE_CLAIM_VIEW = "claim_view"
 export const USE_CREATE_OFFER = "offer_create"
 export const USE_ITEM_OFFER = "offer_item"
 export const USE_REVIEW_OFFER = "offer_review"
+export const USE_ITEM_CRED = "cred_item"
 
 export const enum UseFieldAt {
   CLAIM_CREATE = "claim_create",
@@ -76,7 +77,8 @@ export const enum UseFieldAt {
   CLAIM_VIEW = "claim_view",
   OFFER_CREATE = "offer_create",
   OFFER_ITEM = "offer_item",
-  OFFER_REVIEW = "offer_review"
+  OFFER_REVIEW = "offer_review",
+  CRED_ITEM = "cred_item"
 }
 
 export const DEFAULT_SUFFIX_CLAIM = "Claim"

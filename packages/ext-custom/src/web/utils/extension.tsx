@@ -20,7 +20,8 @@ import {
   MENU_TAG_CLAIM_NEW, MENU_TAG_REQUEST_NEW, UIExtension, UIExtensionFactoryProduct, castMainModalHandler
 } from "@owlmeans/regov-lib-react"
 import {
-  addObserverToSchema, Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, isPresentation, META_ROLE_CLAIM, META_ROLE_OFFER, singleValue
+  addObserverToSchema, Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, isPresentation, META_ROLE_CLAIM, 
+  META_ROLE_OFFER, singleValue
 } from "@owlmeans/regov-ssi-core"
 import { CustomDescription, DefaultDescription, DefaultPresentation, isCustom } from "../../custom.types"
 import { updateFactories } from "../../utils/extension"
@@ -32,6 +33,7 @@ import { IncommigDocumentWithConn } from "@owlmeans/regov-comm"
 import { OfferCreate } from "../component/offer/create"
 import { OfferItem } from '../component/offer/item'
 import { OfferReview } from '../component/offer/review'
+import { CredentialItem } from '../component/credential/item'
 import { CredentialView } from '../component/credential/view'
 
 
@@ -43,12 +45,12 @@ export const customizeExtension = (ext: UIExtension): UIExtension => {
       if (isPresentation(params.credential)) {
         const cred = singleValue(params.credential.verifiableCredential)
         return (ext.extension.schema.credentials && Object.entries(ext.extension.schema.credentials).reduce(
-          (result, [, descr]) => {
-            return result || !!cred?.type.includes(descr.mainType)
-          }, false
+          (result, [, descr]) => result || !!cred?.type.includes(descr.mainType), false
         )) as boolean
       }
-      return false
+      return (ext.extension.schema.credentials && Object.entries(ext.extension.schema.credentials).reduce(
+        (result, [, descr]) => result || !!params.credential.type.includes(descr.mainType), false
+      )) as boolean
     },
     method: async (_, params: IncommigDocumentWithConn) => {
       return ext.extension.schema.credentials && Object.entries(ext.extension.schema.credentials).some(
@@ -76,6 +78,13 @@ export const customizeExtension = (ext: UIExtension): UIExtension => {
                     ) : false
               }
             }
+          } else if (params.credential.type.includes(cred.mainType) && isCustom(cred)) {
+            return params.statusHandler.successful =
+              modalHandler.handle?.open ? modalHandler.handle.open(
+                () => <CredentialView ext={params.ext as Extension} descr={cred as DefaultDescription}
+                  offer={params.credential as DefaultPresentation} conn={params.conn}
+                  close={modalHandler.handle?.close} />
+              ) : false
           }
           return false
         }
@@ -102,7 +111,7 @@ export const customizeExtension = (ext: UIExtension): UIExtension => {
               }]
             case EXTENSION_ITEM_PURPOSE_ITEM:
               return [{
-                com: CredentialView(),
+                com: CredentialItem(cred),
                 extensionCode: `${ext.extension.schema.details.code}${cred.mainType}CredItem`,
                 params: {},
                 order: 0

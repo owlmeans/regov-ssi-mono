@@ -23,7 +23,7 @@ import { authUIExtension } from '@owlmeans/regov-ext-auth'
 import { buildCommUIExtension } from '@owlmeans/regov-ext-comm'
 import {
   customizeExtension, addCredential, USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, addScansContext, USE_ITEM_CLAIM, 
-  USE_CREATE_OFFER, USE_CLAIM_VIEW, USE_ITEM_OFFER, USE_REVIEW_OFFER
+  USE_CREATE_OFFER, USE_CLAIM_VIEW, USE_ITEM_OFFER, USE_REVIEW_OFFER, USE_ITEM_CRED
 } from "@owlmeans/regov-ext-custom/dist/web"
 
 import { WalletApp } from '@owlmeans/regov-lib-react'
@@ -54,7 +54,10 @@ signatureWebExtension.extension.schema = addCredential(signatureWebExtension.ext
   },
   subjectMeta: {
     testField: {
-      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW, USE_REVIEW_OFFER], 
+      useAt: [
+        USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW, 
+        USE_REVIEW_OFFER, USE_ITEM_CRED
+      ], 
       validation: { required: true },
       term: { '@id': 'custom:testField', '@type': 'xs:string' }
     },
