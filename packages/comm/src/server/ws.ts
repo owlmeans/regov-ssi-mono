@@ -22,7 +22,7 @@ import { extension } from '../ext'
 import { REDEFINED_MAX_FRAME_SIZE, REDEFINED_MAX_MESSAGE_SIZE, ServerConfig } from './types'
 import {
   COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_DIDDOC, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL,
-  DIDCommConnectMeta, ERROR_COMM_DID_WRONG_SIGNATURE, ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD,
+  DIDCommConnectMeta, ERROR_COMM_DID_WITHOUT_STATE, ERROR_COMM_DID_WRONG_SIGNATURE, ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD,
   ERROR_COMM_NO_CONNECTION, ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER, ERROR_COMM_WS_DID_REGISTERED,
   ERROR_COMM_WS_TIMEOUT, ERROR_COMM_WS_UNKNOWN, REGOV_COMM_REQUEST_TYPE
 } from '../types'
@@ -226,9 +226,11 @@ export const startWSServer = async (
 
                 return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_DID_WRONG_SIGNATURE)
               }
+            } else {
+              return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_DID_WITHOUT_STATE)
             }
           } catch (e) {
-            console.error('Issue with long format', e)
+            return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_DID_WRONG_SIGNATURE)
           }
 
           const identity = serverWallet.getIdentity()
