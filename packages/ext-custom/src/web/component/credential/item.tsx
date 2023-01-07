@@ -51,7 +51,7 @@ export const CredentialItem = (descr: CustomDescription<DefaultSubject>): Functi
             ([, field]) => field.useAt.includes(UseFieldAt.CRED_ITEM)
           ).map(([key]) => {
             return <Typography key={key} variant="body2" component="span">
-              {t(`${sectionKey}.${UseFieldAt.CRED_ITEM}.${key}`)}: {`${getDeepValue(getSubject(descr, wrapper.credential), key)}`}
+              {t(`${sectionKey}.${UseFieldAt.CRED_ITEM}.${key}.label`)}: {`${getDeepValue(getSubject(descr, wrapper.credential), key)}`}
             </Typography>
           })}
         </Fragment>} />

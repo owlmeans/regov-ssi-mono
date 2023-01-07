@@ -20,19 +20,19 @@ import {
   MENU_TAG_CLAIM_NEW, MENU_TAG_REQUEST_NEW, UIExtension, UIExtensionFactoryProduct, castMainModalHandler
 } from "@owlmeans/regov-lib-react"
 import {
-  addObserverToSchema, Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, isPresentation, META_ROLE_CLAIM, 
+  addObserverToSchema, Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, isPresentation, META_ROLE_CLAIM,
   META_ROLE_OFFER, singleValue
 } from "@owlmeans/regov-ssi-core"
-import { CustomDescription, DefaultDescription, DefaultPresentation, isCustom } from "../../custom.types"
+import { CustomDescription, DefaultCredential, DefaultDescription, DefaultPresentation, isCustom } from "../../custom.types"
 import { updateFactories } from "../../utils/extension"
 import { ClaimCreate } from "../component/claim/create"
-import { ClaimPreview } from "../component/claim/preview"
+import { ClaimView } from "../component/claim/view"
 import { ClaimItem } from "../component/claim/item"
 import { makeClaimPreviewPath } from "./router"
 import { IncommigDocumentWithConn } from "@owlmeans/regov-comm"
 import { OfferCreate } from "../component/offer/create"
 import { OfferItem } from '../component/offer/item'
-import { OfferReview } from '../component/offer/review'
+import { OfferView } from '../component/offer/view'
 import { CredentialItem } from '../component/credential/item'
 import { CredentialView } from '../component/credential/view'
 
@@ -72,19 +72,17 @@ export const customizeExtension = (ext: UIExtension): UIExtension => {
                 case META_ROLE_OFFER:
                   return params.statusHandler.successful =
                     modalHandler.handle?.open ? modalHandler.handle.open(
-                      () => <OfferReview ext={params.ext as Extension} descr={sourceCred as DefaultDescription}
+                      () => <OfferView ext={params.ext as Extension} descr={sourceCred as DefaultDescription}
                         offer={params.credential as DefaultPresentation} conn={params.conn}
                         close={modalHandler.handle?.close} />
                     ) : false
               }
             }
           } else if (params.credential.type.includes(cred.mainType) && isCustom(cred)) {
-            return params.statusHandler.successful =
-              modalHandler.handle?.open ? modalHandler.handle.open(
-                () => <CredentialView ext={params.ext as Extension} descr={cred as DefaultDescription}
-                  offer={params.credential as DefaultPresentation} conn={params.conn}
-                  close={modalHandler.handle?.close} />
-              ) : false
+            return params.statusHandler.successful = modalHandler.handle?.open ? modalHandler.handle.open(
+              () => <CredentialView ext={params.ext as Extension} descr={cred as DefaultDescription}
+                cred={params.credential as DefaultCredential} close={modalHandler.handle?.close} />
+            ) : false
           }
           return false
         }
@@ -148,7 +146,7 @@ export const customizeExtension = (ext: UIExtension): UIExtension => {
           case EXTENSION_ITEM_PURPOSE_ROUTE:
             return [...Object.entries(ext.extension.schema.credentials).flatMap(
               ([, cred]) => isCustom(cred) ? [{
-                com: ClaimPreview(cred),
+                com: ClaimView(cred),
                 extensionCode: `${ext.extension.schema.details.code}${cred.mainType}ClaimPreview`,
                 params: { path: makeClaimPreviewPath(cred) },
                 order: 0
@@ -169,7 +167,7 @@ const expandMenu = (ext: UIExtension): ManuItemParams[] =>
     ([, cred]: [string, CustomDescription]) => {
       return [
         {
-          title: `menu.request.${cred.mainType}`,
+          title: `menu.request.${cred.mainType.toLowerCase()}`,
           ns: cred.ns,
           menuTag: MENU_TAG_REQUEST_NEW,
           action: {
@@ -181,7 +179,7 @@ const expandMenu = (ext: UIExtension): ManuItemParams[] =>
           }
         },
         {
-          title: `menu.claim.${cred.mainType}`,
+          title: `menu.claim.${cred.mainType.toLowerCase()}`,
           ns: cred.ns,
           menuTag: MENU_TAG_CLAIM_NEW,
           action: {

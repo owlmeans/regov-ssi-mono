@@ -14,4 +14,4 @@
  *  limitations under the License.
  */
 
-export { addCredential } from './extension'
+export { addCredential, addLocalization } from './extension'

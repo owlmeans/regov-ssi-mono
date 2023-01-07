@@ -33,7 +33,7 @@ import { getCredential, getSubject } from "../../utils/cred"
 import { ERROR_WIDGET_AUTHENTICATION } from "../../ui.types"
 
 
-export const ClaimPreview = (descr: CustomDescription): FunctionComponent =>
+export const ClaimView = (descr: CustomDescription): FunctionComponent =>
   () => {
     const { handler } = useRegov()
     const { t, i18n } = useTranslation(descr.ns)

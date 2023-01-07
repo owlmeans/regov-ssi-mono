@@ -27,6 +27,7 @@ export type CustomDescription<
   subjectMeta: SubjectMeta<Subject>
   ns: string
   typeAlias?: string
+  defaultLabel?: string
   customExtFlag: true
 }
 
@@ -50,6 +51,8 @@ export type SubjectMeta<Subject extends {}> = {
 
 export type SubjectFieldMeta = {
   useAt: MaybeArray<UseFieldAt>
+  defaultLabel?: string
+  defaultHint?: string
   term?: ExpandedTermDefinition
   validation?: ValidationOptions
 }
@@ -67,8 +70,15 @@ export const USE_ITEM_CLAIM = "claim_item"
 export const USE_CLAIM_VIEW = "claim_view"
 export const USE_CREATE_OFFER = "offer_create"
 export const USE_ITEM_OFFER = "offer_item"
-export const USE_REVIEW_OFFER = "offer_review"
+export const USE_VIEW_OFFER = "offer_view"
 export const USE_ITEM_CRED = "cred_item"
+export const USE_CRED_VIEW = "cred_view"
+
+export const useFieldPurposes = [
+  USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW,
+  USE_CREATE_OFFER, USE_ITEM_OFFER, USE_VIEW_OFFER, USE_ITEM_CRED,
+  USE_CRED_VIEW
+]
 
 export const enum UseFieldAt {
   CLAIM_CREATE = "claim_create",
@@ -77,8 +87,9 @@ export const enum UseFieldAt {
   CLAIM_VIEW = "claim_view",
   OFFER_CREATE = "offer_create",
   OFFER_ITEM = "offer_item",
-  OFFER_REVIEW = "offer_review",
-  CRED_ITEM = "cred_item"
+  OFFER_VIEW = "offer_view",
+  CRED_ITEM = "cred_item",
+  CRED_VIEW = "cred_view"
 }
 
 export const DEFAULT_SUFFIX_CLAIM = "Claim"

@@ -38,21 +38,21 @@ import { ERROR_OFFER_WITHOUT_CRED, ERROR_WIDGET_AUTHENTICATION } from '../../ui.
 import { useInboxRegistry } from '@owlmeans/regov-ext-comm'
 
 
-export const OfferReview: FunctionComponent<OfferReviewProps> =
+export const OfferView: FunctionComponent<OfferViewProps> =
   ({ descr, offer, ext, close }) => {
     const { handler, extensions } = useRegov()
     const inbox = useInboxRegistry()
     const navigator = useNavigator(basicNavigator)
     const { t, i18n } = useTranslation(descr.ns)
     const sectionKey = castSectionKey(descr)
-    const purpose = UseFieldAt.OFFER_REVIEW
+    const purpose = UseFieldAt.OFFER_VIEW
 
     const methods = useForm({
       mode: 'onChange',
       criteriaMode: 'all',
       defaultValues: {
         [sectionKey]: {
-          meta_title: t(`${sectionKey}.${purpose}.title.default`),
+          meta_title: t(`${sectionKey}.${purpose}.meta_title.default`),
           alert: ''
         }
       }
@@ -120,7 +120,7 @@ export const OfferReview: FunctionComponent<OfferReviewProps> =
     </Fragment>
   }
 
-export type OfferReviewProps = {
+export type OfferViewProps = {
   descr: DefaultDescription
   offer: DefaultPresentation
   ext: Extension

@@ -48,7 +48,7 @@ export const ClaimItem = (descr: CustomDescription<DefaultSubject>): FunctionCom
               ([, field]) => field.useAt.includes(UseFieldAt.CLAIM_ITEM)
             ).map(([key]) => {
               return <Typography key={key} variant="body2" component="span">
-                {t(`${sectionKey}.${UseFieldAt.CLAIM_ITEM}.${key}`)}: {`${getDeepValue(getSubject(descr, wrapper.credential), key)}`}
+                {t(`${sectionKey}.${UseFieldAt.CLAIM_ITEM}.${key}.label`)}: {`${getDeepValue(getSubject(descr, wrapper.credential), key)}`}
               </Typography>
             })}
           </Fragment>} />

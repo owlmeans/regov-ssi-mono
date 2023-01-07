@@ -22,8 +22,8 @@ import { groupsUIExtension } from '@owlmeans/regov-ext-groups'
 import { authUIExtension } from '@owlmeans/regov-ext-auth'
 import { buildCommUIExtension } from '@owlmeans/regov-ext-comm'
 import {
-  customizeExtension, addCredential, USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, addScansContext, USE_ITEM_CLAIM, 
-  USE_CREATE_OFFER, USE_CLAIM_VIEW, USE_ITEM_OFFER, USE_REVIEW_OFFER, USE_ITEM_CRED
+  customizeExtension, addCredential, USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, addScansContext, USE_ITEM_CLAIM,
+  USE_CREATE_OFFER, USE_CLAIM_VIEW, USE_ITEM_OFFER, USE_VIEW_OFFER, USE_ITEM_CRED, USE_CRED_VIEW, addLocalization
 } from "@owlmeans/regov-ext-custom/dist/web"
 
 import { WalletApp } from '@owlmeans/regov-lib-react'
@@ -47,28 +47,53 @@ registry.registerSync(buildIdentityExtensionUI(EXAMPLE_IDENTITY_TYPE, { appName:
   schemaBaseUrl: 'https://my-example.org/schemas/'
 }))
 
-signatureWebExtension.extension.schema = addCredential(signatureWebExtension.extension.schema, {
-  mainType: 'CustomSignature', ns: 'custom-signature', credentialContext: {
+signatureWebExtension.extension = addCredential(signatureWebExtension.extension, {
+  mainType: 'CustomSignature',
+  defaultLabel: 'My Custom Signature',
+  credentialContext: {
     xs: 'http://www.w3.org/2001/XMLSchema#',
     custom: 'https://my-example.org/custom-signature#',
   },
   subjectMeta: {
     testField: {
       useAt: [
-        USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW, 
-        USE_REVIEW_OFFER, USE_ITEM_CRED
-      ], 
+        USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW,
+        USE_VIEW_OFFER, USE_ITEM_CRED, USE_CRED_VIEW
+      ],
+      defaultLabel: 'My Test Field',
+      defaultHint: 'My Test Hint',
       validation: { required: true },
       term: { '@id': 'custom:testField', '@type': 'xs:string' }
     },
     issuerField: {
-      useAt: [USE_CREATE_OFFER, USE_ITEM_OFFER, USE_REVIEW_OFFER], validation: { required: true },
+      useAt: [USE_CREATE_OFFER, USE_ITEM_OFFER, USE_VIEW_OFFER, USE_CRED_VIEW],
+      validation: { required: true },
+      defaultLabel: 'My Issuer Field',
       term: { '@id': 'custom:issuerField', '@type': 'xs:string' }
     },
     scansField: {
-      useAt: [USE_CREATE_CLAIM, USE_CLAIM_VIEW, USE_REVIEW_OFFER], validation: { required: true },
+      useAt: [USE_CREATE_CLAIM, USE_CLAIM_VIEW, USE_VIEW_OFFER, USE_CRED_VIEW],
+      validation: { required: true },
+      defaultLabel: 'Scans Field',
       term: addScansContext('custom', 'scansField')
     }
+  }
+})
+
+signatureWebExtension.extension = addLocalization(signatureWebExtension.extension, {
+  en: {
+    customsignature: {
+      offer_view: {
+        meta_title: {
+          default: 'Custom Signature Document'
+        }
+      },
+      cred_item: {
+        testField: {
+          label: 'Test Field'
+        }
+      }
+    },
   }
 })
 
