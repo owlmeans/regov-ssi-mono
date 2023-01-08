@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-groups",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "description": "Groups VC Extension for Regov SSI",
   "keywords": [
     "Regov",
@@ -36,11 +36,11 @@
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-lib-node": "^0.1.17",
-    "@owlmeans/regov-lib-react": "^0.2.13",
-    "@owlmeans/regov-ssi-core": "^0.7.1",
-    "@owlmeans/regov-ext-comm": "^0.1.15",
-    "@owlmeans/regov-comm": "^0.3.2",
+    "@owlmeans/regov-lib-node": "^0.1.18",
+    "@owlmeans/regov-lib-react": "^0.2.14",
+    "@owlmeans/regov-ssi-core": "^0.7.2",
+    "@owlmeans/regov-ext-comm": "^0.1.16",
+    "@owlmeans/regov-comm": "^0.3.3",
     "express": "^4.17.3",
     "i18next": "*",
     "react": "^17.0.2",
@@ -54,6 +54,12 @@
       "optional": true
     },
     "@owlmeans/regov-comm": {
+      "optional": true
+    },
+    "@owlmeans/regov-lib-node": {
+      "optional": true
+    },
+    "@owlmeans/regov-lib-react": {
       "optional": true
     },
     "@emotion/react": {

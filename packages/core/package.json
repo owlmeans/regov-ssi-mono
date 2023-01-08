@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ssi-core",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "It's core package for OwlMeans Regov SSI",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -40,7 +40,7 @@
     "@types/tiny-secp256k1": "^1.0.0"
   },
   "dependencies": {
-    "@owlmeans/tiny-lds-ecdsa-secp256k1-2019": "^1.0.3",
+    "@owlmeans/tiny-lds-ecdsa-secp256k1-2019": "^1.1.0",
     "ajv": "^8.8.2",
     "bip32": "^2.0.6",
     "browserify-aes": "^1.2.0",
