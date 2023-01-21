@@ -18,8 +18,7 @@ import { addObserverToSchema, ExtensionDetails, REGISTRY_TYPE_IDENTITIES } from 
 import { APP_EVENT_PRODUCE_IDENTITY, buildServerExtension, ServerEventProduceIdentityParams } from "@owlmeans/regov-lib-node"
 import { BASIC_IDENTITY_TYPE, BuildExtensionParams, buildIdentityExtension } from "./ext"
 import { REGOV_IDENTITY_DEFAULT_NAMESPACE } from "./types"
-import { Router } from 'express'
-import { ERROR_NO_EXENSION } from "./server"
+import { ERROR_NO_EXENSION, buildRouter } from "./server"
 
 
 export const buildIdentityExtensionServer = (
@@ -55,9 +54,7 @@ export const buildIdentityExtensionServer = (
     }
   })
 
-  const serverExtension = buildServerExtension(extension, () => {
-    return Router()
-  })
+  const serverExtension = buildServerExtension(extension, buildRouter)
 
   return serverExtension
 }

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import "dotenv"
+require('dotenv').config()
 import cors from "cors"
 import {
   buildApp, buildFileStore, buildRotuer, buildServerExtension, buildServerExtensionRegistry,

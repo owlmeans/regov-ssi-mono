@@ -15,3 +15,13 @@
  */
 
 export * from './types'
+import { Router } from 'express'
+
+
+export const buildRouter = (): Router => {
+  const router = Router()
+
+  
+
+  return router
+}

@@ -24,7 +24,7 @@ import {
   COMM_WS_PREFIX_CONFIRMED, COMM_WS_PREFIX_DIDDOC, COMM_WS_PREFIX_ERROR, COMM_WS_SUBPROTOCOL,
   DIDCommConnectMeta, ERROR_COMM_DID_WITHOUT_STATE, ERROR_COMM_DID_WRONG_SIGNATURE, ERROR_COMM_INVALID_PAYLOAD, ERROR_COMM_MALFORMED_PAYLOAD,
   ERROR_COMM_NO_CONNECTION, ERROR_COMM_NO_RECIPIENT, ERROR_COMM_NO_SENDER, ERROR_COMM_WS_DID_REGISTERED,
-  ERROR_COMM_WS_TIMEOUT, ERROR_COMM_WS_UNKNOWN, REGOV_COMM_REQUEST_TYPE
+  ERROR_COMM_WS_TIMEOUT, ERROR_COMM_WS_UNKNOWN, REGOV_COMM_REQUEST_TYPE, REGOV_COMM_RESPONSE_TYPE
 } from '../types'
 import {
   buildWalletWrapper, ExtensionRegistry, makeRandomUuid, nodeCryptoHelper, DIDDocument, VERIFICATION_KEY_HOLDER,
@@ -281,9 +281,16 @@ export const startWSServer = async (
 
             try {
               const didDoc = serverWallet.did.helper().parseLongForm(handshakeData)
-              const [verified/*, result*/] = await serverWallet.ssi.verifyCredential(jwt.payload.response, didDoc, VERIFICATION_KEY_HOLDER)
+
+              const response = extension.getFactory(REGOV_COMM_RESPONSE_TYPE)
+              const verified = await response.validate(serverWallet, {
+                credential: jwt.payload.response,
+                extensions: extensions as ExtensionRegistry,
+              })
+
+              // const [verified/*, result*/] = await serverWallet.ssi.verifyCredential(jwt.payload.response, didDoc, VERIFICATION_KEY_HOLDER)
               // console.log('!!! verified:', verified)
-              if (!verified) {
+              if (!verified.valid) {
                 return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
               }
               // console.log('!!! check', _didToClient[did])
@@ -294,6 +301,7 @@ export const startWSServer = async (
               _didDocs[did] = didDoc
             } catch (e) {
               console.error('Issue with long format', e)
+              return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
             }
 
             _didToClient[did] = uuid

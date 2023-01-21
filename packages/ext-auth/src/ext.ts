@@ -58,7 +58,9 @@ let authExtensionSchema = buildExtensionSchema({
     mainType: REGOV_AUTH_RESPONSE_TYPE,
     responseType: REGOV_AUTH_RESPONSE_TYPE,
     mandatoryTypes: [REGOV_CREDENTIAL_TYPE_AUTH],
-    credentialContext: {}
+    credentialContext: {},
+
+    evidence: { type: BASIC_IDENTITY_TYPE, signing: true }
   }
 })
 

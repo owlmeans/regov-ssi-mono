@@ -54,7 +54,8 @@ let extensionSchema = buildExtensionSchema({
     mainType: REGOV_COMM_RESPONSE_TYPE,
     responseType: REGOV_COMM_RESPONSE_TYPE,
     mandatoryTypes: [REGOV_CREDENTIAL_TYPE_COMM],
-    credentialContext: {}
+    credentialContext: {},
+    evidence: { type: BASIC_IDENTITY_TYPE, signing: true }
   }
 })
 

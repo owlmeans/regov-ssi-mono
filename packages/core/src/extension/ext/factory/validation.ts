@@ -171,7 +171,13 @@ export const defaultValidateMethod: ValidateMethodBuilder = schema =>
     }
 
     return {
-      valid: result && presentationResult,
+      valid: result && presentationResult && evidenceValidation.reduce((valid, result) => {
+        if (valid) {
+          return result.result.valid
+        }
+
+        return false
+      }, true),
       cause: presentationResult
         ? info.kind === 'invalid' ? info.errors : undefined
         : presentationCause,
@@ -182,7 +188,7 @@ export const defaultValidateMethod: ValidateMethodBuilder = schema =>
           }
 
           return false
-        }, true as boolean
+        }, true
       ),
       instance: credential,
       evidence: evidenceValidation

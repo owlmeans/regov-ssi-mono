@@ -347,8 +347,13 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
           if (!cryptoKey.pk) {
             throw new Error(ERROR_NO_CREDENTIAL_SIGNING_KEY)
           }
+
+          const unsinged = jwt.payload.request as UnsignedCredential
+
+          unsinged.evidence = identity.credential
+
           const signed = await wallet.ssi.signCredential(
-            jwt.payload.request as UnsignedCredential,
+            unsinged,
             identity.credential.issuer as DIDDocument,
             { keyId: VERIFICATION_KEY_HOLDER }
           )
