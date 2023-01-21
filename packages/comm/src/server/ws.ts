@@ -272,12 +272,9 @@ export const startWSServer = async (
         }
         try {
           const jwt = decodeJWT(data)
-          // console.log('we got jwt: ' + jwt.payload.iss)
           if (jwt.payload.response?.credentialSubject.handshakeSequence) {
             const handshakeData = _handshakes[jwt.payload.response.credentialSubject.handshakeSequence]
             const did = didHelper.parseDIDId(handshakeData).did
-
-            // console.log('!!! DID ID parsed out:', did)
 
             try {
               const didDoc = serverWallet.did.helper().parseLongForm(handshakeData)
@@ -288,12 +285,9 @@ export const startWSServer = async (
                 extensions: extensions as ExtensionRegistry,
               })
 
-              // const [verified/*, result*/] = await serverWallet.ssi.verifyCredential(jwt.payload.response, didDoc, VERIFICATION_KEY_HOLDER)
-              // console.log('!!! verified:', verified)
               if (!verified.valid) {
                 return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
               }
-              // console.log('!!! check', _didToClient[did])
               if (_didToClient[did]) {
                 return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_DID_REGISTERED)
               }
@@ -307,8 +301,6 @@ export const startWSServer = async (
             _didToClient[did] = uuid
             client.dids.push(did)
             _pokeDid(did)
-
-            // console.log('!!! confirm !!!', id)
 
             return await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + data)
           } else {
