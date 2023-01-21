@@ -119,6 +119,7 @@ export type MakeDIDIdOptions = {
   expand?: boolean
   hash?: boolean
   query?: QueryDict
+  prefix?: string
 }
 
 export type CreateDIDMethodOptions = MakeDIDIdOptions & {

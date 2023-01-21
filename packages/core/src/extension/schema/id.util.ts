@@ -59,7 +59,12 @@ export const validateVerifiableId = async (
     return false
   }
 
-  const id = helper.makeDIDId(cleanUpKey(key), { data: JSON.stringify(meta), hash: true })
+  const idInfo = helper.parseDIDId(cred.id)
+
+  const id = helper.makeDIDId(cleanUpKey(key), { 
+    data: JSON.stringify(meta), hash: true, prefix: idInfo.method
+  })
+
   return id === cred.id
 }
 

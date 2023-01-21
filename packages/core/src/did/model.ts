@@ -78,7 +78,7 @@ export const buildDidHelper =
     }))
 
     const _makeDIDId = (key: CryptoKey, options: MakeDIDIdOptions = {}) => {
-      return `did:${buildOptions.prefix}:${!options.hash
+      return `did:${options.prefix || buildOptions.prefix}:${!options.hash
         ? `${key.pubKey}${options.data ? `:${options.data}` : ''}`
         : crypto.makeId(
           `${key.pubKey}`,
