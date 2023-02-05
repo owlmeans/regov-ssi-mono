@@ -20,15 +20,21 @@ import { Credential, Presentation } from "@owlmeans/regov-ssi-core"
 export const buildServerClient = (config: ServerClientConfig) => {
   const _server: ServerClient = {
     getVC: async (uri) => {
-      const [url] = uriToUrlAndConfig(uri, config)
-      const result = await fetch(url)
+      const [url, params] = uriToUrlAndConfig(uri, config)
+      const result = params.params ? await fetch(url, {
+        method: 'POST', body: JSON.stringify(params.params),
+        headers: { 'Content-Type': 'application/json' }
+      }) : await fetch(url)
 
       return result.json()
     },
 
     getVCs: async (uri) => {
-      const [url] = uriToUrlAndConfig(uri, config)
-      const result = await fetch(url)
+      const [url, params] = uriToUrlAndConfig(uri, config)
+      const result = params.params ? await fetch(url, {
+        method: 'POST', body: JSON.stringify(params.params),
+        headers: { 'Content-Type': 'application/json' }
+      }) : await fetch(url)
 
       return result.json()
     },
@@ -38,9 +44,7 @@ export const buildServerClient = (config: ServerClientConfig) => {
       const result = await fetch(
         url, {
         body: JSON.stringify(cred), method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
       })
 
       return result.json()
@@ -75,7 +79,7 @@ export type ServerClient = {
   sendVC: <
     Type extends Credential | Presentation = Presentation,
     Result extends {} = {}
-    >(
+  >(
     uri: string | ServierClientRequest, cred: Type
   ) => Promise<Result>
 }
@@ -84,6 +88,7 @@ export type ServierClientRequest = {
   uri?: string
   fullUrl?: string
   serverAlias?: string
+  params?: Record<string, any>
 }
 
 export type ServerClientConfig = {

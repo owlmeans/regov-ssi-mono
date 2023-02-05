@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import { CredentialWrapper, RegistryType } from "@owlmeans/regov-ssi-core"
-import { EmptyProps } from "../common"
+import { CredentialDescription, CredentialWrapper, RegistryType } from "@owlmeans/regov-ssi-core"
+import { EmptyProps, WalletNavigator, BasicNavigator } from "../common"
 
 export type ExtensionItemPurpose = typeof EXTENSION_ITEM_PURPOSE_ITEM
   | typeof EXTENSION_ITEM_PURPOSE_ROUTE
@@ -78,4 +78,12 @@ export type PurposeCredentialCreationParams = EmptyProps & {
 
 export type PurposeDashboardWidgetParams = EmptyProps & {
 
+}
+
+export type ClaimNavigator = WalletNavigator<ClaimNavigatorParams> & BasicNavigator
+
+export type ClaimNavigatorParams = {
+  path?: string
+  descr: CredentialDescription
+  id?: string
 }

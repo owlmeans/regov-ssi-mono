@@ -14,36 +14,42 @@
  *  limitations under the License.
  */
 
- import React, { Fragment, FunctionComponent } from 'react'
- import { useNavigate, useParams } from 'react-router-dom'
- import {
-   useRegov, withRegov, PurposeCredentialCreationParams, EXTENSION_ITEM_PURPOSE_CLAIM
- } from '../../../common'
- import { CREDENTIAL_LIST_ROUTE } from '../../component'
- 
- 
- export const CredentialClaim = withRegov({ namespace: 'regov-wallet-credential' }, () => {
-   const { ext, type } = useParams()
-   const { extensions } = useRegov()
-   const navigate = useNavigate()
- 
-   if (!extensions || !ext || !type) {
-     return <Fragment />
-   }
- 
-   const uiExt = extensions.getExtensionByCode(ext)
- 
-   if (!uiExt) {
-     return <Fragment />
-   }
- 
-   const renderers = uiExt.produceComponent(EXTENSION_ITEM_PURPOSE_CLAIM, type)
- 
-   if (!renderers[0]) {
-     return <Fragment />
-   }
- 
-   const Renderer = renderers[0].com as FunctionComponent<PurposeCredentialCreationParams>
- 
-   return <Renderer next={() => navigate(CREDENTIAL_LIST_ROUTE)} />
- })
+import React, { Fragment, FunctionComponent } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import {
+  useRegov, withRegov, PurposeCredentialCreationParams, EXTENSION_ITEM_PURPOSE_CLAIM, useNavigator,
+  ClaimNavigator, ClaimNavigatorParams, NavigatorContextProvider
+} from '../../../common'
+import { CREDENTIAL_LIST_ROUTE } from '../../component'
+
+
+export const CredentialClaim = withRegov({ namespace: 'regov-wallet-credential' }, () => {
+  const { ext, type } = useParams()
+  const { extensions } = useRegov()
+  const navigate = useNavigate()
+  const navigator = useNavigator<ClaimNavigator>({
+    success: async ({ path }: ClaimNavigatorParams) => { path && navigate(path) }
+  })
+
+  if (!extensions || !ext || !type) {
+    return <Fragment />
+  }
+
+  const uiExt = extensions.getExtensionByCode(ext)
+
+  if (!uiExt) {
+    return <Fragment />
+  }
+
+  const renderers = uiExt.produceComponent(EXTENSION_ITEM_PURPOSE_CLAIM, type)
+
+  if (!renderers[0]) {
+    return <Fragment />
+  }
+
+  const Renderer = renderers[0].com as FunctionComponent<PurposeCredentialCreationParams>
+
+  return <NavigatorContextProvider navigator={navigator}>
+    <Renderer next={() => navigate(CREDENTIAL_LIST_ROUTE)} />
+  </NavigatorContextProvider>
+})

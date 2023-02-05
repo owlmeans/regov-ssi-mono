@@ -16,7 +16,6 @@
 
 import React, { FunctionComponent } from "react"
 import { useForm } from "react-hook-form"
-import { useParams } from "react-router-dom"
 import {
   AlertOutput, BasicNavigator, FormMainAction, MainTextInput, PrimaryForm, trySubmit, useNavigator,
   useRegov, WalletFormProvider
@@ -33,12 +32,13 @@ import { getCredential, getSubject } from "../../utils/cred"
 import { ERROR_WIDGET_AUTHENTICATION } from "../../ui.types"
 
 
-export const ClaimView = (descr: CustomDescription): FunctionComponent =>
-  () => {
+export const ClaimView = (descr: CustomDescription): FunctionComponent<ClaimViewParams> =>
+  (props) => {
+    console.log(props)
+    const { id } = props
     const { handler } = useRegov()
     const { t, i18n } = useTranslation(descr.ns)
     const navigator = useNavigator<BasicNavigator>()
-    const { id } = useParams<{ id: string }>()
     const claim = handler.wallet?.getRegistry(REGISTRY_TYPE_CLAIMS)
       .getCredential<DefaultSubject, DefaultPresentation>(id)?.credential as DefaultPresentation
 
@@ -101,3 +101,7 @@ export const ClaimView = (descr: CustomDescription): FunctionComponent =>
       </Grid>
     </WalletFormProvider>
   }
+
+export type ClaimViewParams = {
+  id: string
+}

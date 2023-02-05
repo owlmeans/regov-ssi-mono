@@ -62,10 +62,10 @@ export const addLocalization = (ext: Extension, localization: Resource): Extensi
                         list: { item: { unknown: `Claim of ${cred.defaultLabel || cred.mainType} from unknown user` } }
                       },
                       offer: {
-                        list: {item: {unknown: `Unknown offer of ${cred.defaultLabel || cred.mainType}`}}
+                        list: { item: { unknown: `Unknown offer of ${cred.defaultLabel || cred.mainType}` } }
                       },
                       claim_create: { title: `Create claim of ${cred.defaultLabel || cred.mainType}` },
-                      claim_preview: { 
+                      claim_preview: {
                         title: `Send claim of ${cred.defaultLabel || cred.mainType}`,
                         issuer: {
                           label: 'DID of issuer',
@@ -88,7 +88,7 @@ export const addLocalization = (ext: Extension, localization: Resource): Extensi
                       },
                       issuer: { hint: 'Select identity to sign offer' },
                       holder: { hint: 'Select holder identity' },
-                      action: { close: 'Close', offer: 'Offer', claim: 'Claim', accept: 'Accept'}
+                      action: { close: 'Close', offer: 'Offer', claim: 'Claim', accept: 'Accept' }
                     }
                   }
                   if (cred.defaultLabel) {
@@ -131,7 +131,23 @@ export const updateFactories = (ext: Extension): Extension => {
       ] : []
     )
   ) : {})).factories).map(([type, factories]) => {
-    ext.factories[type] = factories
+    ext.factories[type] = {
+      ...factories,
+      build: async (wallet, params) => {
+        const unsigned = await factories.build(wallet, params)
+
+        if (ext.schema.credentials && ext.schema.credentials[type]) {
+          const descr = ext.schema.credentials[type]
+          if (isCustom(descr) && descr.expirationPeriod) {
+            const date = new Date()
+            date.setSeconds(date.getSeconds() + descr.expirationPeriod)
+            unsigned.expirationDate = date.toISOString()
+          }
+        }
+
+        return unsigned
+      }
+    }
   })
 
   return ext

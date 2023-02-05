@@ -28,6 +28,7 @@ export type CustomDescription<
   ns: string
   typeAlias?: string
   defaultLabel?: string
+  expirationPeriod?: number
   customExtFlag: true
 }
 

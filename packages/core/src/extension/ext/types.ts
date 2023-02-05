@@ -197,7 +197,7 @@ export type OfferMethodParams = {
   domain: string
 }
 
-export type RespondMethodBuilder = <
+  export type RespondMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
 >(schema: CredentialDescription<{}, Schema>) => RespondMethod
 
@@ -207,7 +207,7 @@ export type RespondMethod = <
 
 export type RespondMethodParams = {
   request: Presentation
-  credential: Credential
+  credential: Credential | Credential[]
   identity?: Credential
 }
 

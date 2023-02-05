@@ -16,7 +16,7 @@
 
 import { WalletHandler } from '@owlmeans/regov-ssi-core'
 import React from 'react'
-import { NavigateFunction, Route, Routes } from 'react-router-dom'
+import { NavigateFunction, Route, Routes, useParams } from 'react-router-dom'
 import {
   basicNavigator, extendNavigator, MainAuthArea, MainDashboard, useRegov, Config,
   EXTENSION_ITEM_PURPOSE_ROUTE
@@ -34,8 +34,13 @@ export const NavigationRoot = () => {
     <Route path="/" element={<MainAuthArea menu={<WalletMainMenu />} />}>
       <Route path="" element={<MainDashboard />} />
       {extensions?.produceComponent(EXTENSION_ITEM_PURPOSE_ROUTE).map(ext => {
+        const Renderer = () => {
+          const params = useParams()
+          return <ext.com {...params} />
+        }
         return ext.params && <Route key={`${ext.extensionCode}-${ext.params.path}`}
-          path={ext.params.path as string} element={<ext.com />} />
+          path={ext.params.path as string} element={<Renderer />}
+        />
       })}
       <Route path="credential">
         <Route path="list/:tab/:section" element={<WalletCredentialList />} />

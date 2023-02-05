@@ -19,8 +19,8 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { ERROR_NO_IDENTITY, Extension } from "@owlmeans/regov-ssi-core"
 import {
-  basicNavigator,
-  CredentialSelector, FormMainAction, PrimaryForm, trySubmit, useNavigator, useRegov, WalletFormProvider
+  ClaimNavigator, CredentialSelector, FormMainAction, PrimaryForm, trySubmit, useNavigator, 
+  useRegov, WalletFormProvider
 } from "@owlmeans/regov-lib-react"
 
 import { CustomDescription, UseFieldAt } from "../../../custom.types"
@@ -28,15 +28,13 @@ import { buildForm, castHolderField } from "../helper/form"
 import { InputsRenderer } from "../widget/inputs"
 import { ERROR_WIDGET_AUTHENTICATION } from "../../ui.types"
 import { castSectionKey } from "../../utils/tools"
-import { useNavigate } from "react-router-dom"
 import { makeClaimPreviewPath } from "../../utils/router"
 
 
 export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionComponent =>
   () => {
     const { handler, extensions } = useRegov()
-    const navigator = useNavigator(basicNavigator)
-    const navigate = useNavigate()
+    const navigator = useNavigator<ClaimNavigator>()
     // Load identities
     const identities = handler.wallet?.getIdentityWrappers()
     const defaultId = handler.wallet?.getIdentityCredential()?.id || ''
@@ -68,7 +66,9 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
         const claim = await factory.claim(handler.wallet, { unsignedClaim: cred })
         await handler.wallet.getClaimRegistry().addCredential(claim)
         handler.notify()
-        navigate(makeClaimPreviewPath(descr, claim.id))
+        if (navigator.success) {
+          navigator.success({ path: makeClaimPreviewPath(descr, claim.id), id: claim.id, descr })
+        }
       }
     )
 
