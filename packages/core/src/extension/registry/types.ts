@@ -16,7 +16,7 @@
 
 import { MaybeArray } from "../../common"
 import { WalletWrapper } from "../../wallet"
-import { Extension } from "../ext"
+import { CredentialService, Extension } from "../ext"
 import { EventParams, ExtensionEvent } from "../schema"
 
 
@@ -25,6 +25,7 @@ export type ExtensionRegistry = {
   registerAll: (exts: Extension[]) => Promise<void>
   getExtensions: (type: string) => Extension[]
   getExtension: (type: string | string[], code?: string) => Extension
+  getFactory: (type: string | string[]) => CredentialService
   register: (ext: Extension) => Promise<void>
   registerSync: (ext: Extension) => void
   getObservers: (event: MaybeArray<string>) => [ExtensionEvent, Extension][]

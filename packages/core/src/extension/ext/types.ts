@@ -170,7 +170,7 @@ export type RequestMethod = <
 >(wallet: WalletWrapper, params: Params) => Promise<Presentation>
 
 export type RequestMethodParams = {
-  unsignedRequest: UnsignedCredential
+  unsignedRequest: UnsignedCredential | UnsignedCredential[]
   holder?: DIDDocument
   requestType?: string
   identity?: Credential

@@ -17,7 +17,7 @@
 
 import { normalizeValue } from '../../common'
 import { ExtensionEvent } from '../schema'
-import { Extension } from '../ext'
+import { CredentialService, Extension } from '../ext'
 import { ERROR_NO_EXTENSION, ExtensionRegistry } from './types'
 import { documentWarmer } from '../../did/loader'
 
@@ -67,6 +67,13 @@ export const buildExtensionRegistry = <
 
     getExtensions: (type) => {
       return _typeToExtension[type] || []
+    },
+
+    getFactory: type => {
+      const ext = _registry.getExtension(type)
+      return Object.entries(ext.factories).filter(([_type]) => {
+        return normalizeValue(type).includes(_type)
+      }).map(([, factory]) => factory).find(factory => factory) as CredentialService
     },
 
     getExtension: (type, code?) => {
