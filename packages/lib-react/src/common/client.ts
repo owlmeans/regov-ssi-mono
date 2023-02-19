@@ -56,7 +56,7 @@ export const buildServerClient = (config: ServerClientConfig) => {
 
 const uriToUrlAndConfig = (uri: string | ServierClientRequest, config: ServerClientConfig): [string, ServierClientRequest] => {
   if (typeof uri === 'string') {
-    return [config.baseUrl.replace(/\/+$/, '') + uri.replace(/^\/+/, ''), {}]
+    return [config.baseUrl.replace(/\/+$/, '') + '/' + uri.replace(/^\/+/, ''), {}]
   }
 
   const baseUrl = uri.fullUrl

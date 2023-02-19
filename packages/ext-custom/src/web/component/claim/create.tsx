@@ -31,8 +31,8 @@ import { castSectionKey } from "../../utils/tools"
 import { makeClaimPreviewPath } from "../../utils/router"
 
 
-export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionComponent =>
-  () => {
+export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionComponent<ClaimCreateParams> =>
+  (props) => {
     const { handler, extensions } = useRegov()
     const navigator = useNavigator<ClaimNavigator>()
     // Load identities
@@ -62,12 +62,14 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
           extensions: extensions?.registry, identity,
           subjectData: { ...subject },
         })
-        console.log(cred)
         const claim = await factory.claim(handler.wallet, { unsignedClaim: cred })
         await handler.wallet.getClaimRegistry().addCredential(claim)
         handler.notify()
         if (navigator.success) {
-          navigator.success({ path: makeClaimPreviewPath(descr, claim.id), id: claim.id, descr })
+          navigator.success({ 
+            path: makeClaimPreviewPath(descr, claim.id), id: claim.id, descr,
+            issuer: props.issuer
+          })
         }
       }
     )
@@ -83,3 +85,8 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
       </PrimaryForm>
     </WalletFormProvider>
   }
+
+
+export type ClaimCreateParams = {
+  issuer?: string
+}

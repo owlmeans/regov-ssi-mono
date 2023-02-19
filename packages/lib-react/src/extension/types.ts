@@ -86,4 +86,5 @@ export type ClaimNavigatorParams = {
   path?: string
   descr: CredentialDescription
   id?: string
+  issuer?: string
 }

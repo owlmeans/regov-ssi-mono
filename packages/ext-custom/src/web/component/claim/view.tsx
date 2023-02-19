@@ -20,7 +20,10 @@ import {
   AlertOutput, BasicNavigator, FormMainAction, MainTextInput, PrimaryForm, trySubmit, useNavigator,
   useRegov, WalletFormProvider
 } from "@owlmeans/regov-lib-react"
-import { DIDDocument, Identity, normalizeValue, REGISTRY_TYPE_CLAIMS } from "@owlmeans/regov-ssi-core"
+import { 
+  DIDDocument, Identity, normalizeValue, REGISTRY_TYPE_CLAIMS, 
+  // REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES 
+} from "@owlmeans/regov-ssi-core"
 import { BASIC_IDENTITY_TYPE, DIDCommConnectMeta, getDIDCommUtils } from "@owlmeans/regov-comm"
 import Grid from "@mui/material/Grid"
 
@@ -46,7 +49,7 @@ export const ClaimView = (descr: CustomDescription): FunctionComponent<ClaimView
 
     const methods = useForm({
       mode: 'onChange', criteriaMode: 'all',
-      defaultValues: { [sectionKey]: { claim_preview: { issuer: '', alert: '' } } }
+      defaultValues: { [sectionKey]: { claim_preview: { issuer: props.issuer || '', alert: '' } } }
     })
 
     const send = trySubmit(
@@ -68,6 +71,7 @@ export const ClaimView = (descr: CustomDescription): FunctionComponent<ClaimView
           .find(cred => cred && cred.type.includes(BASIC_IDENTITY_TYPE)) as Identity
 
         const conn: DIDCommConnectMeta = {
+          allowAsync: true,
           recipientId: issuer,
           sender: handler.wallet.did.helper().isDIDDocument(identity.holder)
             ? identity.holder
@@ -104,4 +108,5 @@ export const ClaimView = (descr: CustomDescription): FunctionComponent<ClaimView
 
 export type ClaimViewParams = {
   id: string
+  issuer?: string
 }

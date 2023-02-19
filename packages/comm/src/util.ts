@@ -90,7 +90,7 @@ export const didDocToCommKeyBuilder = (helper: DIDHelper) =>
 export const getDIDCommUtils = (wallet: WalletWrapper) => {
   return {
     connect: async (conn: DIDCommConnectMeta) => {
-      const statusHandle: CommConnectionStatusHandler = { established: false };
+      const statusHandle: CommConnectionStatusHandler = { established: false }
       const resultConn = new Promise<DIDCommConnectMeta>(async (resolve, reject) => {
         await wallet.getExtensions()?.triggerEvent<InitCommEventParams>(wallet, EVENT_INIT_CONNECTION, {
           statusHandle,
