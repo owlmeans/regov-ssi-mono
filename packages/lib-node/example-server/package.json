@@ -10,6 +10,7 @@
     "@owlmeans/regov-ext-auth": "link:../../ext-auth/",
     "@owlmeans/regov-ext-groups": "link:../../ext-groups/",
     "@owlmeans/regov-ext-identity": "link:../../ext-identity/",
+    "@owlmeans/regov-ext-custom": "link:../../ext-custom/",
     "@owlmeans/regov-lib-node": "link:../",
     "@owlmeans/regov-ssi-core": "link:../../core/",
     "@types/express": "^4.17.13",

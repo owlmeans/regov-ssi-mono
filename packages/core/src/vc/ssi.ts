@@ -197,9 +197,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           })
           if (!evidenceResult) {
             result.verified = false
-            result.error = {
-              errors: [{ kind: 'evidence', message: evidenceErrors[0].message }]
-            }
+            result.error = { errors: [{ kind: 'evidence', message: evidenceErrors[0].message }] }
           }
         }
         if (result.verified && options.verifySchema) {
@@ -209,10 +207,16 @@ export const buildSSICore: BuildSSICoreMethod = async ({
           })
           if (!schemaResult) {
             result.verified = false
-            result.error = {
-              errors: [{ kind: 'schema', message: schemaErrors[0].message }]
-            }
+            result.error = { errors: [{ kind: 'schema', message: schemaErrors[0].message }] }
           }
+        }
+      }
+
+      if (result.verified && credential.expirationDate) {
+        console.log('Verify dates', new Date(Date.parse(credential.expirationDate ?? '')), new Date())
+        if (new Date(credential.expirationDate ?? '') < new Date()) {
+          result.verified = false
+          result.error = { errors: [{ kind: 'expired', message: 'credential.expired' }] }
         }
       }
 

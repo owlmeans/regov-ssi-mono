@@ -75,7 +75,10 @@ export const addLocalization = (ext: Extension, localization: Resource): Extensi
                       },
                       claim_view: { title: `Review claim of ${cred.defaultLabel || cred.mainType}` },
                       offer_create: { title: `Create offer of ${cred.defaultLabel || cred.mainType}` },
-                      offer_view: { title: `Review offer of ${cred.defaultLabel || cred.mainType}` },
+                      offer_view: { 
+                        title: `Review offer of ${cred.defaultLabel || cred.mainType}`,
+                        meta_title: { default: `Credential offer: ${cred.defaultLabel || cred.mainType}` },
+                      },
                       cred_view: { title: `Verifiable credential: ${cred.defaultLabel || cred.mainType}` },
                       form: {
                         offer_create: { title: `Fill issuer fields for ${cred.defaultLabel || cred.mainType}` },
@@ -84,7 +87,7 @@ export const addLocalization = (ext: Extension, localization: Resource): Extensi
                       },
                       meta_title: {
                         label: 'Verifiable credential title',
-                        hint: 'Name to list the credential in your wallet'
+                        hint: 'Name to list the credential in your wallet',
                       },
                       issuer: { hint: 'Select identity to sign offer' },
                       holder: { hint: 'Select holder identity' },

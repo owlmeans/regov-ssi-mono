@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ssi-core",
-  "version": "0.7.6",
+  "version": "0.7.8",
   "description": "It's core package for OwlMeans Regov SSI",
   "author": "Igor Tkachenk <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",

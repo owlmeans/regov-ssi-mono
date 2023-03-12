@@ -29,7 +29,7 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "@owlmeans/regov-lib-native": "0.1.0",
+    "@owlmeans/regov-lib-native": "0.1.1",
     "react": "^17.0.2",
     "react-native": "^0.68.5",
     "react-native-crypto": "^2.2.0",

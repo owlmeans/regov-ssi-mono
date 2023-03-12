@@ -6,8 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "lerna run build:watch --stream --parallel --concurrency 12",
     "build": "lerna run build",
+    "dev": "lerna run build:watch --stream --parallel --concurrency 12",
     "start": "cd ./packages/lib-react/example-web/ && yarn start"
   },
   "devDependencies": {

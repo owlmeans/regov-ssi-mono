@@ -16,6 +16,14 @@
 
 import { Credential, Presentation } from "@owlmeans/regov-ssi-core"
 
+const _buildHeaders = (
+  config: ServerClientConfig, params?: ServierClientRequest
+): Record<string, string> => {
+  return {
+    'Content-Type': 'application/json', ...(config.headers ?? {}),
+    ...(params?.headers ?? {})
+  }
+}
 
 export const buildServerClient = (config: ServerClientConfig) => {
   const _server: ServerClient = {
@@ -23,7 +31,7 @@ export const buildServerClient = (config: ServerClientConfig) => {
       const [url, params] = uriToUrlAndConfig(uri, config)
       const result = params.params ? await fetch(url, {
         method: 'POST', body: JSON.stringify(params.params),
-        headers: { 'Content-Type': 'application/json' }
+        headers: _buildHeaders(config, params)
       }) : await fetch(url)
 
       return result.json()
@@ -33,18 +41,18 @@ export const buildServerClient = (config: ServerClientConfig) => {
       const [url, params] = uriToUrlAndConfig(uri, config)
       const result = params.params ? await fetch(url, {
         method: 'POST', body: JSON.stringify(params.params),
-        headers: { 'Content-Type': 'application/json' }
+        headers: _buildHeaders(config, params)
       }) : await fetch(url)
 
       return result.json()
     },
 
     sendVC: async (uri, cred) => {
-      const [url] = uriToUrlAndConfig(uri, config)
+      const [url, params] = uriToUrlAndConfig(uri, config)
       const result = await fetch(
         url, {
         body: JSON.stringify(cred), method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: _buildHeaders(config, params)
       })
 
       return result.json()
@@ -88,11 +96,13 @@ export type ServierClientRequest = {
   uri?: string
   fullUrl?: string
   serverAlias?: string
+  headers?: Record<string, string>
   params?: Record<string, any>
 }
 
 export type ServerClientConfig = {
   baseUrl: string
+  headers?: Record<string, string>
   servers?: { [alias: string]: string }
 }
 

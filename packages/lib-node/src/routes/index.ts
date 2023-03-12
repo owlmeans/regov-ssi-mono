@@ -17,7 +17,7 @@
 import {
   Presentation, singleValue, ERROR_NO_EXTENSION, REGISTRY_TYPE_IDENTITIES,
   REGISTRY_SECTION_PEER, RegistryType, REGISTRY_TYPE_CREDENTIALS, defaultRequestMethod,
-  UnsignedCredential, MaybeArray, defaultBuildMethod, normalizeValue
+  UnsignedCredential, MaybeArray, defaultBuildMethod, normalizeValue, ValidationResult
 } from '@owlmeans/regov-ssi-core'
 import { Router } from 'express'
 import { ERROR_NO_WALLET, getAppContext } from '../app'
@@ -25,6 +25,7 @@ import {
   ERROR_NO_CREDENTIAL, SERVER_ALL_TRUSTED_TYPES, SERVER_ALL_TRUSTED_VCS,
   SERVER_ALL_TYPE_CREDENTIALS, SERVER_CREATE_REQUEST, SERVER_VALIDATE_OFFER, SERVER_VALIDATE_REQUEST
 } from '../types'
+import { randomRequestSchema, randomRequestUrl } from './schemas'
 
 
 export const buildRotuer = () => {
@@ -108,15 +109,29 @@ export const buildRotuer = () => {
 
       const result = (
         await Promise.all(normalizeValue(response.verifiableCredential).map(
-          credential => {
+          async credential => {
             if (!handler.wallet) {
               return undefined
             }
-            const facotry = extensions.registry.getFactory(credential.type)
 
-            return facotry.validate(handler.wallet, {
-              presentation: response, credential, extensions: extensions.registry
-            })
+            try {
+              const facotry = extensions.registry.getFactory(credential.type)
+              const validationResult = await facotry.validate(handler.wallet, {
+                presentation: response, credential, extensions: extensions.registry
+              })
+
+              return validationResult
+            } catch (e) {
+              console.error('Validation failed', e)
+              const res: ValidationResult = {
+                valid: false,
+                trusted: false,
+                evidence: [],
+                cause: `${e}`
+              }
+
+              return res
+            }
           }
         ))
       ).filter(result => result)
@@ -135,79 +150,31 @@ export const buildRotuer = () => {
       }
 
       const requested: {
-        types: string | { [key: string]: MaybeArray<string> },
+        types: { [key: string]: MaybeArray<string> },
         holder: string
       } = req.body
-
-      /**
-       * @TODO 1. Restore unused variables errors ✅
-       * 2. Add possibility to make requests considering multiple types ✅
-       * 3. Consider to make possibility to make a request from a particular identity ✅
-       * 4. Consider to pass fields from the final client to a stanartized requests ✅
-       */
-
-      /**
-       * + Request method params:
-       * unsignedRequest: UnsignedCredential | UnsignedCredential[]
-       * holder?: DIDDocument
-       * requestType?: string
-       * identity?: Credential
-       */
 
       const request = await defaultRequestMethod({
         mainType: 'MultiRequest',
         requestType: 'Request',
         credentialContext: {}
       })(handler.wallet, {
-        unsignedRequest: (await Promise.all(Object.entries(requested.types).map(([type, issuer]) => {
+        unsignedRequest: (await Promise.all(Object.entries(requested.types).map(async ([type, issuer]) => {
           if (!handler.wallet) {
             return undefined
           }
-          // const ext = extensions.registry.getExtension(type)
-          return defaultBuildMethod({
+          const unsignedRequest = await defaultBuildMethod({
             mainType: type,
-            contextUrl: 'https://schema.owlmeans.com/random-request.json',
-            credentialContext: {
-              '@version': 1.1,
-              holder: "http://www.w3.org/2001/XMLSchema#string",
-              type: "http://www.w3.org/2001/XMLSchema#string",
-              issuer: {
-                '@id': "https://schema.owlmeans.com/random-request.json#issuer",
-                '@container': '@set'
-              },
-            }
+            contextUrl: randomRequestUrl,
+            credentialContext: randomRequestSchema['@context']
           })(handler.wallet, {
             extensions: extensions.registry,
-            subjectData: {
-              type, issuer,
-              holder: requested.holder,
-            }
+            subjectData: { type, issuer, holder: requested.holder }
           })
 
-          // const factory = ext.getFactory(
-          //   (
-          //     ext.schema.credentials as { [key: string]: CredentialDescription }
-          //   )[type].requestType as string
-          // )
-          // return factory.build(handler.wallet, {
-          //   extensions: extensions.registry,
-          //   subjectData: {},
-          // })
+          return unsignedRequest
         }))).filter(cred => cred) as UnsignedCredential[]
       })
-
-      /**
-       * + Build method params:
-       * didUnsigned?: DIDDocumentUnsinged
-       * subjectData: Object
-       * key?: CryptoKey
-       * evidence?: MaybeArray<Evidence>
-       * identity?: Credential
-       * type?: CredentialType
-       * schema?: MaybeArray<CredentialSchema>
-       * context?: MultiSchema
-       * extensions?: ExtensionRegistry
-       */
 
       res.json(request)
     } catch (e) {

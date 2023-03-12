@@ -20,6 +20,7 @@ import { ExtensionEvent } from '../schema'
 import { CredentialService, Extension } from '../ext'
 import { ERROR_NO_EXTENSION, ExtensionRegistry } from './types'
 import { documentWarmer } from '../../did/loader'
+import { BASE_CREDENTIAL_TYPE } from '../../vc'
 
 
 export const buildExtensionRegistry = <
@@ -78,6 +79,11 @@ export const buildExtensionRegistry = <
 
     getExtension: (type, code?) => {
       if (Array.isArray(type)) {
+        const toRemove = type.findIndex(type => type === BASE_CREDENTIAL_TYPE)
+        if (toRemove > -1) {
+          type = [...type]
+          type.splice(toRemove, 1)
+        }
         const exts = Object.entries(_typeToExtension).map(([_type, extensions]) => {
           if (type.includes(_type)) {
             const exts: [Extension, number][] = extensions.map(ext => {
@@ -87,7 +93,8 @@ export const buildExtensionRegistry = <
                   ext,
                   normalizeValue(description.mandatoryTypes)
                     .reduce(
-                      (accum, descType) => accum + (descType && type.includes(descType) ? 1 : 0), 1
+                      (accum, descType) => accum + (descType && type.includes(descType) ? 1 : 0)
+                      , type.includes(description.mainType) ? 2 : 1
                     )
                 ]
               }

@@ -17,17 +17,20 @@
 require('dotenv').config()
 import cors from "cors"
 import {
-  buildApp, buildFileStore, buildRotuer, buildServerExtension, buildServerExtensionRegistry,
+  buildApp, buildFileStore, buildRotuer, buildServerExtensionRegistry,
   ServerAppConfig
 } from "@owlmeans/regov-lib-node"
 import { createWalletHandler } from "@owlmeans/regov-ssi-core"
 import { buildIdentityExtensionServer } from "@owlmeans/regov-ext-identity/dist/index.server"
 import { authServerExtension } from "@owlmeans/regov-ext-auth/dist/index.server"
 import { groupsServerExtension } from "@owlmeans/regov-ext-groups/dist/index.server"
+import { addCredential } from "@owlmeans/regov-ext-custom/dist/utils"
 
 import './warmup'
 
 import util from 'util'
+import { USE_CLAIM_VIEW, USE_CREATE_CLAIM, USE_CREATE_OFFER, USE_CRED_VIEW, USE_ITEM_CLAIM, USE_ITEM_CRED, USE_ITEM_OFFER, USE_PREVIEW_CLAIM, USE_VIEW_OFFER } from "@owlmeans/regov-ext-custom/dist/custom.types"
+import { updateFactories } from "@owlmeans/regov-ext-custom/dist/utils/extension"
 util.inspect.defaultOptions.depth = 8
 
 
@@ -57,6 +60,40 @@ const identity = buildIdentityExtensionServer(
 const registry = buildServerExtensionRegistry()
 registry.registerSync(identity)
 registry.registerSync(authServerExtension)
+
+groupsServerExtension.extension = updateFactories(addCredential(groupsServerExtension.extension, {
+  mainType: 'RoySupport',
+  defaultLabel: 'Roy Team Support',
+  expirationPeriod: 3600 * 24 * 365,
+  credentialContext: {
+    xs: 'http://www.w3.org/2001/XMLSchema#',
+    custom: 'https://roy.team/ssi/vc/support#',
+  },
+  subjectMeta: {
+    contactName: {
+      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW],
+      defaultLabel: 'Main contact',
+      defaultHint: 'Some contact you are known as',
+      validation: { required: true },
+      term: { '@id': 'custom:contactName', '@type': 'xs:string' },
+    },
+    contactToCheck: {
+      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW],
+      defaultLabel: 'Someone we know',
+      defaultHint: 'Who we can contact to check you',
+      validation: { required: true },
+      term: { '@id': 'custom:contactToCheck', '@type': 'xs:string' },
+    },
+    specialMark: {
+      useAt: [USE_CREATE_OFFER, USE_VIEW_OFFER, USE_ITEM_CRED, USE_CRED_VIEW, USE_ITEM_OFFER],
+      defaultLabel: 'Someone we know',
+      defaultHint: 'Who we can contact to check you',
+      validation: { required: true },
+      term: { '@id': 'custom:specialMark', '@type': 'xs:string' },
+    },
+  },
+}))
+
 registry.registerSync(groupsServerExtension)
 
 
