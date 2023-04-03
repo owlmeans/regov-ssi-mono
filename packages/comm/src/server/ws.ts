@@ -37,8 +37,8 @@ const messages: { [key: string]: SentMessage } = {}
 export const startWSServer = async (
   server: HttpServer, config: ServerConfig, extensions?: ExtensionRegistry
 ): Promise<void> => {
-  const _wsServer = new WSServer({ 
-    httpServer: server, 
+  const _wsServer = new WSServer({
+    httpServer: server,
     maxReceivedFrameSize: REDEFINED_MAX_FRAME_SIZE,
     maxReceivedMessageSize: REDEFINED_MAX_MESSAGE_SIZE
   })
@@ -119,6 +119,7 @@ export const startWSServer = async (
       const [id] = msg.data.split(':', 1)
       try {
         await new Promise((resolve, reject) => {
+          console.log('[=>]', client.dids)
           client.connection.send(msg.data, err => err ? reject(err) : resolve(undefined))
         })
         messages[id] = { id }
@@ -142,6 +143,8 @@ export const startWSServer = async (
         if (timeout) {
           clearTimeout(timeout)
         }
+        console.log(`Stats. Clients: ${Object.entries(_didToClient).length}; Inboxes: ${Object.entries(_messages).length}; Handshakes: ${Object.entries(_handshakes).length}; Diddocs: ${Object.entries(_didDocs).length}.`)
+        console.log(`Messages total: ${Object.entries(_messages).reduce((total, [, message]) => total + message.length, 0)}`)
         console.log('> Released occupied')
         delete messages[id]
       }
@@ -246,8 +249,8 @@ export const startWSServer = async (
             return await _send(id + ':' + COMM_WS_PREFIX_ERROR + ':' + ERROR_COMM_WS_UNKNOWN)
           }
 
-          const jwt = await createJWT({ request: unsigned }, { 
-            issuer: identity.credential.id, signer: ES256KSigner(serverWallet.crypto.base58().decode(cryptoKey.pk)) 
+          const jwt = await createJWT({ request: unsigned }, {
+            issuer: identity.credential.id, signer: ES256KSigner(serverWallet.crypto.base58().decode(cryptoKey.pk))
           })
 
           await _send(id + ':' + COMM_WS_PREFIX_CONFIRMED + ':' + didInfo.did)
@@ -275,6 +278,8 @@ export const startWSServer = async (
           if (jwt.payload.response?.credentialSubject.handshakeSequence) {
             const handshakeData = _handshakes[jwt.payload.response.credentialSubject.handshakeSequence]
             const did = didHelper.parseDIDId(handshakeData).did
+
+            delete _handshakes[jwt.payload.response.credentialSubject.handshakeSequence]
 
             try {
               const didDoc = serverWallet.did.helper().parseLongForm(handshakeData)
