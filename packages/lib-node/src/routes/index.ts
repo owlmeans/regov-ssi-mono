@@ -58,9 +58,8 @@ export const buildRotuer = () => {
       const { handler } = getAppContext(req)
 
       const response = handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES)
-        .registry.credentials[REGISTRY_SECTION_PEER].map(
-          wrapper => wrapper.credential
-        ) || []
+        .registry.credentials[REGISTRY_SECTION_PEER]
+        .map(wrapper => wrapper.credential) || []
 
       res.json(response)
     } catch (e) {
