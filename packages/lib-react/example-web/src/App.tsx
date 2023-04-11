@@ -58,7 +58,7 @@ signatureWebExtension.extension = addCredential(signatureWebExtension.extension,
     testField: {
       useAt: [
         USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW,
-        USE_VIEW_OFFER, USE_ITEM_CRED, USE_CRED_VIEW
+        USE_VIEW_OFFER, USE_ITEM_CRED, USE_CRED_VIEW, USE_CREATE_OFFER
       ],
       defaultLabel: 'My Test Field',
       defaultHint: 'My Test Hint',

@@ -33,6 +33,10 @@ export const addScansContext = (space: string, field: string): ExpandedTermDefin
         "@id": `${space}:${itemType}`,
         "@context": {
           "page": "@id",
+          "name": {
+            "@id": `${space}:${field}Name`,
+            "@type": "xs:string"
+          },
           "binaryData": {
             "@id": `${space}:${field}BinaryData`,
             "@type": "xs:base64binary"
@@ -54,3 +58,12 @@ export const addScansContext = (space: string, field: string): ExpandedTermDefin
 
 export const isTermPictures = (field: SubjectFieldMeta) =>
   field.term && field.term['@context'] && field.term['@context']['files']
+
+
+export type FileInfo = {
+  page: string
+  name: string
+  type: string
+  mimeType: string
+  binaryData: string
+}

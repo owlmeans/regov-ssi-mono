@@ -28,8 +28,7 @@ import Typography from '@mui/material/Typography'
 
 
 export const EntityTextRenderer = ({
-  t, showIntro, inlineLabel, showLabel, showHint, netSize,
-  entity, field, value, formatter, formatTemplate, small
+  t, showIntro, inlineLabel, showLabel, showHint, netSize, entity, field, value, formatter, formatTemplate, small
 }: EntityTextProps) => {
   const showIntroLabel = !inlineLabel && showLabel
   const useInlinedLabel = inlineLabel || (!showIntroLabel && showLabel)

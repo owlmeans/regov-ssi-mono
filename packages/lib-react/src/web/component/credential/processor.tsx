@@ -17,7 +17,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { CredentialProcessorFields, CredentialProcessorImplProps } from '../../../common'
 import { useDropzone } from 'react-dropzone'
-import { Controller, useForm, UseFormProps } from 'react-hook-form'
+import { Control, Controller, FieldValues, useForm, UseFormProps } from 'react-hook-form'
 import { formatError } from '../common'
 import { isMobile } from "react-device-detect"
 import Close from '@mui/icons-material/Close'
@@ -79,7 +79,7 @@ export const CredentialProcessorWeb = ({ t, form, rules, process }: CredentialPr
   return <Paper {...getRootProps()} variant={
     isDragActive || hasDoc ? "elevation" : "outlined"}>
     <input {...getInputProps()} />
-    <Controller name="document" control={control} rules={rules && rules.document}
+    <Controller name="document" control={control as unknown as Control<FieldValues>} rules={rules && rules.document}
       render={({ field, fieldState }) => {
         const success = hasDoc && !fieldState.invalid
 

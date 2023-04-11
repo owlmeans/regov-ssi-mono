@@ -24,13 +24,11 @@ import { castSectionKey } from "../web/utils/tools"
 import { castClaimType, castOfferType, castRequestType, castResponseType } from "./tools"
 import merge from "lodash/fp/merge"
 
-
 export const addCredential = (
   ext: Extension, cred: Omit<CustomDescription, "customExtFlag" | "ns"> & { ns?: string }
 ): Extension => {
   return {
-    ...ext,
-    schema: {
+    ...ext, schema: {
       ...ext.schema,
       credentials: {
         ...ext.schema.credentials,
@@ -56,6 +54,7 @@ export const addLocalization = (ext: Extension, localization: Resource): Extensi
                 if (isCustom(cred)) {
                   const sectionKey = castSectionKey(cred)
                   const translation: ResourceKey = {
+                    common: { fields: { download: { prefix: 'Download:' } } },
                     menu: { claim: {}, request: {} },
                     [sectionKey]: {
                       claim: {
@@ -75,7 +74,7 @@ export const addLocalization = (ext: Extension, localization: Resource): Extensi
                       },
                       claim_view: { title: `Review claim of ${cred.defaultLabel || cred.mainType}` },
                       offer_create: { title: `Create offer of ${cred.defaultLabel || cred.mainType}` },
-                      offer_view: { 
+                      offer_view: {
                         title: `Review offer of ${cred.defaultLabel || cred.mainType}`,
                         meta_title: { default: `Credential offer: ${cred.defaultLabel || cred.mainType}` },
                       },

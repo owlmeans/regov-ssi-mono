@@ -49,8 +49,10 @@ export const OfferCreate: FunctionComponent<OfferCreateProps> = ({ descr, claim,
   const sectionKey = castSectionKey(descr)
 
   const [methods, fields] = buildForm(
-    UseFieldAt.OFFER_CREATE, descr, defaultId, useForm, useTranslation,
-    { controllerField: 'issuer' }
+    UseFieldAt.OFFER_CREATE, descr, defaultId, useForm, useTranslation, { 
+      controllerField: 'issuer',
+      values: getSubject(descr, claim)
+    }
   )
 
   const offer = trySubmit<OfferFields>(
@@ -99,10 +101,7 @@ export const OfferCreate: FunctionComponent<OfferCreateProps> = ({ descr, claim,
           </Grid>
           <Grid item>
             <PrimaryForm {...fields}>
-              {
-                identities && <CredentialSelector {...fields} credentials={identities} defaultId={defaultId}
-                  field={castIssuerField(descr)} />
-              }
+              {identities && <CredentialSelector {...fields} credentials={identities} defaultId={defaultId} field={castIssuerField(descr)} />}
               <InputsRenderer purpose={UseFieldAt.OFFER_CREATE} descr={descr} props={fields} />
               <AlertOutput {...fields} field={`${sectionKey}.alert`} />
             </PrimaryForm>

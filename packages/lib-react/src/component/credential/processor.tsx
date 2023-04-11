@@ -96,7 +96,7 @@ export type CredentialProcessorProps = RegovComponentProps<
 export type CredentialProcessorFields = {
   document: string
   alert: string | undefined
-}
+} & Record<string, unknown>
 
 export type CredentialProcessorImplParams = {
   process: (methods: UseFormReturn<CredentialProcessorFields>) =>

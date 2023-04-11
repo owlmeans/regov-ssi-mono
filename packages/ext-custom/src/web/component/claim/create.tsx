@@ -51,6 +51,7 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
         if (!handler.wallet) {
           throw ERROR_WIDGET_AUTHENTICATION
         }
+        debugger
         const sectionData = data[castSectionKey(descr)]
         const subject = sectionData[UseFieldAt.CLAIM_CREATE] as Record<string, any>
         const identity = handler.wallet.getIdentityCredential(data.holder)
@@ -59,8 +60,7 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
         }
         const factory = ext.getFactory(descr.mainType)
         const cred = await factory.build(handler.wallet, {
-          extensions: extensions?.registry, identity,
-          subjectData: { ...subject },
+          extensions: extensions?.registry, identity, subjectData: { ...subject },
         })
         const claim = await factory.claim(handler.wallet, { unsignedClaim: cred })
         await handler.wallet.getClaimRegistry().addCredential(claim)
@@ -85,7 +85,6 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
       </PrimaryForm>
     </WalletFormProvider>
   }
-
 
 export type ClaimCreateParams = {
   issuer?: string

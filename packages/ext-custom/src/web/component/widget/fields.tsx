@@ -14,13 +14,15 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent } from "react"
+import React, { Fragment, FunctionComponent } from "react"
 import { EntityRenderer, EntityTextRenderer } from "@owlmeans/regov-lib-react"
 import { useTranslation } from "react-i18next"
 
 import { CustomDescription, DefaultSubject, UseFieldAt } from "../../../custom.types"
+import { FileInfo, isTermPictures } from "../../../picture.types"
 import { castSectionKey } from "../../utils/tools"
-
+import { getDeepValue } from '@owlmeans/regov-ssi-core'
+import Link from '@mui/material/Link'
 
 export const FieldsRenderer: FunctionComponent<FieldsRendererProps> = ({ subject, descr, purpose }) => {
   const { t } = useTranslation(descr.ns)
@@ -29,8 +31,20 @@ export const FieldsRenderer: FunctionComponent<FieldsRendererProps> = ({ subject
   return <EntityRenderer entity={`${sectionKey}.${purpose}`} subject={subject} t={t} >
     {
       Object.entries(descr.subjectMeta).filter(([, field]) => field.useAt.includes(purpose))
-        .map(([key]) => {
-          return <EntityTextRenderer key={key} field={key} showHint showLabel />
+        .map(([key, field]) => {
+          if (isTermPictures(field)) {
+            const files = getDeepValue<{ files: FileInfo[] }, typeof subject>(subject, key)
+            return <Fragment key={key}>
+              {files.files.map(file => {
+                return <Link key={file.page} download={file.name} type={file.mimeType}
+                  href={URL.createObjectURL(new Blob([Buffer.from(file.binaryData, 'base64')]))}>
+                  {t('common.fields.download.prefix')} {file.name}
+                </Link>
+              })}
+            </Fragment>
+          } else {
+            return <EntityTextRenderer key={key} field={key} showHint showLabel />
+          }
         })
     }
   </EntityRenderer>

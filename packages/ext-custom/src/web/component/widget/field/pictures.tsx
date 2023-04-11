@@ -21,23 +21,16 @@ import { TFunction } from "i18next"
 import Paper from "@mui/material/Paper"
 import { useDropzone } from "react-dropzone"
 import { useNavigator } from "@owlmeans/regov-lib-react"
+import { FileInfo } from '../../../../picture.types'
+import Typography from '@mui/material/Typography'
 
 
 export const PicsturesField: FunctionComponent<PricturesFieldProps> = ({ field, t, fieldType }) => {
   const methods = useFormContext()
   const navigator = useNavigator()
 
-  const [files, setFiles] = useState<ArrayBuffer[]>([])
-
-  useEffect(() => {
-    methods.setValue(
-      field, {
-      files: files.map((file, page) => ({
-        page: `page:${page}`, type: fieldType, mimeType: 'image/jpeg',
-        binaryData: Buffer.from(file).toString('base64'),
-      }))
-    })
-  }, [files])
+  const [files, setFiles] = useState<FileInfo[]>([])
+  useEffect(() => { methods.setValue(field, { files }) }, [files])
 
   const onDrop = useCallback(async (uploaded: File[]) => {
     if (uploaded.length) {
@@ -49,9 +42,9 @@ export const PicsturesField: FunctionComponent<PricturesFieldProps> = ({ field, 
         }
       }
 
-      const _files: ArrayBuffer[] = []
+      const _files: FileInfo[] = []
 
-      await Promise.all(uploaded.map(file => new Promise((resolve) => {
+      await Promise.all(uploaded.map((file, idx) => new Promise((resolve) => {
         const reader = new FileReader()
         reader.onabort = () => {
           methods.setError(field, { type: 'file.aborted' })
@@ -66,7 +59,11 @@ export const PicsturesField: FunctionComponent<PricturesFieldProps> = ({ field, 
         }
 
         reader.onload = () => {
-          _files.push(reader.result as ArrayBuffer)
+          console.log(file.name, file.type)
+          _files.push({
+            page: `page:${idx}`, name: file.name, type: fieldType, mimeType: file.type,
+            binaryData: Buffer.from(reader.result as ArrayBuffer).toString('base64'),
+          })
           stopLoading()
           resolve(undefined)
         }
@@ -79,21 +76,19 @@ export const PicsturesField: FunctionComponent<PricturesFieldProps> = ({ field, 
   }, [])
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDropAccepted: onDrop, accept: ['image/jpeg'] as any
+    onDropAccepted: onDrop, accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'application/pdf': ['.pdf']
+    }
   })
 
-  return <Controller name={field} control={methods.control} render={({ }) => {
+  return <Controller name={field} control={methods.control} render={({ field: _field }) => {
     return <Grid container direction="column" justifyContent="flex-start" alignItems="stretch">
-      {
-        files.map((_, idx) => {
-          return <Grid item key={idx}>
-            Hello world
-          </Grid>
-        })
-      }
+      {files.map((file) => <Grid item key={file.page}>{file.name}</Grid>)}
       <Paper {...getRootProps()}>
         <input {...getInputProps()} />
-        {t(`${field}.upload.new_files`) as string}
+        <Typography>{t(`${field}.upload.new_files`) as string}</Typography>
       </Paper>
     </Grid>
   }} />

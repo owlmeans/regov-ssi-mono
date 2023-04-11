@@ -39,7 +39,7 @@ export const buildForm = (
       criteriaMode: 'all',
       defaultValues: {
         [sectionKey]: {
-          [purpose]: produceDefaults(purpose, descr),
+          [purpose]: { ...produceDefaults(purpose, descr), ...options?.values },
           [options?.controllerField || 'holder']: defaultHolder,
           alert: ''
         }
@@ -54,6 +54,7 @@ export const buildForm = (
 
 export type BuildFormOptions = {
   controllerField?: string
+  values?: any
 }
 
 export const castHolderField = (descr: CustomDescription) =>
