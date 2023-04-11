@@ -51,7 +51,6 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
         if (!handler.wallet) {
           throw ERROR_WIDGET_AUTHENTICATION
         }
-        debugger
         const sectionData = data[castSectionKey(descr)]
         const subject = sectionData[UseFieldAt.CLAIM_CREATE] as Record<string, any>
         const identity = handler.wallet.getIdentityCredential(data.holder)
