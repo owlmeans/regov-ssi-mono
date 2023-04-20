@@ -66,31 +66,24 @@ registry.registerSync(authServerExtension)
 
 groupsServerExtension.extension = updateFactories(addCredential(groupsServerExtension.extension, {
   mainType: 'RoySupport',
-  defaultLabel: 'Roy Team Support',
-  expirationPeriod: 3600 * 24 * 365,
+  defaultLabel: 'Доверие от ROY.TEAM',
+  expirationPeriod: 3600 * 24 * 365 / 2,
   credentialContext: {
     xs: 'http://www.w3.org/2001/XMLSchema#',
     custom: 'https://roy.team/ssi/vc/support#',
   },
   subjectMeta: {
-    contactName: {
-      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW],
-      defaultLabel: 'Main contact',
-      defaultHint: 'Some contact you are known as',
+    secretWord: {
+      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_CLAIM_VIEW],
+      defaultLabel: 'Кодовое слово',
+      defaultHint: 'Эмитент по этому кодовому слову может догадаться что это вы',
       validation: { required: true },
       term: { '@id': 'custom:contactName', '@type': 'xs:string' },
     },
-    contactToCheck: {
-      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_ITEM_CLAIM, USE_CLAIM_VIEW],
-      defaultLabel: 'Someone we know',
-      defaultHint: 'Who we can contact to check you',
-      validation: { required: true },
-      term: { '@id': 'custom:contactToCheck', '@type': 'xs:string' },
-    },
     specialMark: {
-      useAt: [USE_CREATE_OFFER, USE_VIEW_OFFER, USE_ITEM_CRED, USE_CRED_VIEW, USE_ITEM_OFFER],
-      defaultLabel: 'Someone we know',
-      defaultHint: 'Who we can contact to check you',
+      useAt: [USE_CREATE_OFFER, USE_ITEM_OFFER, USE_VIEW_OFFER],
+      defaultLabel: 'Отметка эмитента',
+      defaultHint: 'Должна содержать техническое значение заключения OK или любое другое значение в случае отказа',
       validation: { required: true },
       term: { '@id': 'custom:specialMark', '@type': 'xs:string' },
     },
