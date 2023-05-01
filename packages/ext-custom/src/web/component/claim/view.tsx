@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,23 +16,16 @@
 
 import React, { FunctionComponent } from "react"
 import { useForm } from "react-hook-form"
-import {
-  AlertOutput, BasicNavigator, FormMainAction, MainTextInput, PrimaryForm, trySubmit, useNavigator,
-  useRegov, WalletFormProvider
-} from "@owlmeans/regov-lib-react"
-import { 
-  DIDDocument, Identity, normalizeValue, REGISTRY_TYPE_CLAIMS, 
-  // REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES 
-} from "@owlmeans/regov-ssi-core"
-import { BASIC_IDENTITY_TYPE, DIDCommConnectMeta, getDIDCommUtils } from "@owlmeans/regov-comm"
+import { AlertOutput, BasicNavigator, FormMainAction, MainTextInput, PrimaryForm, useNavigator, useRegov, WalletFormProvider } from "@owlmeans/regov-lib-react"
+import { REGISTRY_TYPE_CLAIMS } from "@owlmeans/regov-ssi-core"
 import Grid from "@mui/material/Grid"
 
-import { CustomDescription, DefaultCredential, DefaultPresentation, DefaultSubject, UseFieldAt } from "../../../custom.types"
+import { CustomDescription, DefaultPresentation, DefaultSubject, UseFieldAt } from "../../../custom.types"
 import { castSectionKey } from "../../utils/tools"
 import { useTranslation } from "react-i18next"
 import { FieldsRenderer } from "../widget/fields"
-import { getCredential, getSubject } from "../../utils/cred"
-import { ERROR_WIDGET_AUTHENTICATION } from "../../ui.types"
+import { getSubject } from "../../utils/cred"
+import { buildClaimSend } from './helpers'
 
 
 export const ClaimView = (descr: CustomDescription): FunctionComponent<ClaimViewParams> =>
@@ -52,38 +45,9 @@ export const ClaimView = (descr: CustomDescription): FunctionComponent<ClaimView
       defaultValues: { [sectionKey]: { claim_preview: { issuer: props.issuer || '', alert: '' } } }
     })
 
-    const send = trySubmit(
-      { navigator, methods, errorField: `${sectionKey}.claim_preview.alert`, onError: async () => true },
-      async (_, data) => {
-        if (!handler.wallet) {
-          throw ERROR_WIDGET_AUTHENTICATION
-        }
-        const issuer = data[sectionKey].claim_preview.issuer
-        if (!handler.wallet.did.helper().isDIDId(issuer)) {
-          throw new Error('invalid_did')
-        }
-
-        /**
-         * @TODO get identity from some meta ???
-         */
-        const cred = getCredential(descr, claim) as DefaultCredential
-        const identity = normalizeValue(cred.evidence)
-          .find(cred => cred && cred.type.includes(BASIC_IDENTITY_TYPE)) as Identity
-
-        const conn: DIDCommConnectMeta = {
-          allowAsync: true,
-          recipientId: issuer,
-          sender: handler.wallet.did.helper().isDIDDocument(identity.holder)
-            ? identity.holder
-            : identity.issuer as DIDDocument
-        }
-
-        const connection = getDIDCommUtils(handler.wallet)
-        await connection.send(await connection.connect(conn), claim)
-
-        await navigator.home()
-      }
-    )
+    const send = buildClaimSend({
+      navigator, methods, handler, claim, descr, sectionKey, errorField: `${sectionKey}.claim_preview.alert`
+    })
 
     const fields = { t, i18n }
 

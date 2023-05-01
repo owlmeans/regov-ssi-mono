@@ -31,7 +31,6 @@ import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
 
 
-
 export const OfferItem = (descr: CustomDescription<DefaultSubject>): FunctionComponent<OfferItemProps> => (
   { wrapper, action }
 ) => {

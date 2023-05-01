@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import { ExtensionSchema } from "../schema"
 import { findAppropriateCredentialType } from "../util"
 import {
   defaultBuildMethod, defaultClaimMethod, defaultSignMethod, defaultValidateMethod,
-  defaultOfferMethod, defaultRequestMethod
+  defaultOfferMethod, defaultRequestMethod, defaultRefuseMethod
 } from "./factory"
 import { singleValue } from "../../common"
 import { defaultRespondMethod } from "./factory/response"
@@ -33,6 +33,7 @@ const methodMap = {
   'produceValidateMethod': 'validate',
   'produceClaimMethod': 'claim',
   'produceOfferMethod': 'offer',
+  'produceRefuseMethod': 'refuse',
   'produceRequestMethod': 'request',
   'produceRespondMethod': 'respond'
 }
@@ -53,6 +54,7 @@ export const buildExtension = (
             validate: defaultValidateMethod(description),
             claim: defaultClaimMethod(description),
             offer: defaultOfferMethod(description),
+            refuse: defaultRefuseMethod(description),
             request: defaultRequestMethod(description),
             respond: defaultRespondMethod(description),
             ...(

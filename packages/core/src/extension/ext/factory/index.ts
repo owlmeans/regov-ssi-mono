@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,4 +22,5 @@ export * from './claiming'
 export * from './request'
 export * from './response'
 export * from './offering'
+export * from './refusing'
 export * from './types'

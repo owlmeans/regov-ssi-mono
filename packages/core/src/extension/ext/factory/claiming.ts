@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 import { addToValue, normalizeValue } from "../../../common"
 import { isCredential, Credential } from "../../../vc"
 import { DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_HOLDER } from "../../../did"
-import { ClaimMethodBuilder } from "../types"
+import { ClaimMethodBuilder, TYPE_REGOV_CLAIM } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
 
 
@@ -65,7 +65,7 @@ export const defaultClaimMethod: ClaimMethodBuilder = schema =>
     const helper = wallet.did.helper()
 
     const unsignedClaim = await wallet.ssi.buildPresentation([cred, ...(params.evidenceClaims as Credential[] || [])], {
-      holder, type: schema.claimType,
+      holder, type: [...(schema.claimType != null ? [schema.claimType] : []), TYPE_REGOV_CLAIM],
       id: helper.parseDIDId(
         helper.makeDIDId(signerKey, { data: JSON.stringify([cred]), hash: true })
       ).did

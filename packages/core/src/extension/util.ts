@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 import { normalizeValue } from "../common"
 import { BasicCredentialType, Credential } from "../vc"
+import { defaultRefuseMethod } from './ext'
 import { defaultBuildMethod } from "./ext/factory/building"
 import { defaultClaimMethod } from "./ext/factory/claiming"
 import { defaultOfferMethod } from "./ext/factory/offering"
@@ -42,6 +43,7 @@ const methodMap = {
   'produceValidateMethod': 'validate',
   'produceClaimMethod': 'claim',
   'produceOfferMethod': 'offer',
+  'produceRefuseMethod': 'refuse',
   'produceRequestMethod': 'request',
   'produceRespondMethod': 'respond'
 }
@@ -55,6 +57,7 @@ export const addFactoriesToExt = (ext: Extension, type: string, factories: Crede
       validate: defaultValidateMethod(description),
       claim: defaultClaimMethod(description),
       offer: defaultOfferMethod(description),
+      refuse: defaultRefuseMethod(description),
       request: defaultRequestMethod(description),
       respond: defaultRespondMethod(description)
     },

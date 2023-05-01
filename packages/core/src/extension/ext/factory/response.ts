@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import { Credential } from '../../../vc'
 import {
   DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION
 } from "../../../did"
-import { RespondMethodBuilder } from "../types"
+import { RespondMethodBuilder, TYPE_REGOV_RESPONSE } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
 
 
@@ -60,7 +60,7 @@ export const defaultRespondMethod: RespondMethodBuilder = schema =>
       {
         id: params.request.id,
         holder: did,
-        type: schema.responseType
+        type: [...(schema.responseType != null ? [schema.responseType] : []), TYPE_REGOV_RESPONSE]
       }
     )
 

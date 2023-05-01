@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { CustomDescription } from "../../custom.types";
+import { CustomDescription } from '../../custom.types'
 
 
 export const castSectionKey = (descr: CustomDescription) =>

@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ import React, { FunctionComponent, useEffect, useState, } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import { REGOV_CREDENTIAL_TYPE_GROUP, GroupSubject, REGOV_GROUP_ROOT_TYPE } from '../../../../types'
 import {
-  EmptyProps, generalNameVlidation, RegovComponentProps, SwitchInput, useRegov, withRegov
+  EmptyProps, generalNameVlidation, RegovComponentProps, RegovValidationRules, SwitchInput, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
 import {
@@ -34,19 +34,17 @@ import { REGISTRY_TYPE_CREDENTIALS, UnsignedCredential } from '@owlmeans/regov-s
 export const GroupCreation = (ext: Extension): FunctionComponent<GroupCreationParams> =>
   withRegov<GroupCreationProps>({ namespace: ext.localization?.ns }, ({ t, i18n, navigator, next }) => {
     const { handler, extensions } = useRegov()
-    const props = {
-      t, i18n,
-      rules: {
-        'group.creation.credentialName': generalNameVlidation(true),
-        'group.name': {
-          required: true, maxLength: 192, validate: {
-            pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
-          }
-        },
-        'group.depth': { valueAsNumber: true, min: 0, max: 9, pattern: /^\d+$/ },
-        'group.description': { maxLength: 1024 },
-      }
+    const rules: RegovValidationRules = {
+      'group.creation.credentialName': generalNameVlidation(true),
+      'group.name': {
+        required: true, maxLength: 192, validate: {
+          pattern: (v: string) => !v.match(/[\<\>\[\]\{\}\\\']/)
+        }
+      },
+      'group.depth': { valueAsNumber: true, min: 0, max: 9 },
+      'group.description': { maxLength: 1024 },
     }
+    const props = { t, i18n, rules }
     const [unsginedGroup, setUnsignedGroup] = useState<UnsignedCredential | undefined>(undefined)
 
     useEffect(() => {

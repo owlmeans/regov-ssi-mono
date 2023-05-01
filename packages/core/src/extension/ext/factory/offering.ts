@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,14 +14,11 @@
  *  limitations under the License.
  */
 
-import {
-  DIDDocument, DIDDocumentUnsinged, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION,
-  VERIFICATION_KEY_CONTROLLER
-} from "../../../did"
+import { DIDDocument, DIDDocumentUnsinged, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION, VERIFICATION_KEY_CONTROLLER } from "../../../did"
 import { Credential } from '../../../vc'
 import { buildWalletLoader } from '../../../wallet/loader'
 import { updateDidIdWithKey, validateVerifiableId } from "../../schema"
-import { OfferMethodBuilder } from "../types"
+import { OfferMethodBuilder, TYPE_REGOV_OFFER } from "../types"
 
 
 export const defaultOfferMethod: OfferMethodBuilder = schema => async (wallet, params) => {
@@ -65,10 +62,8 @@ export const defaultOfferMethod: OfferMethodBuilder = schema => async (wallet, p
 
   const signed = await wallet.ssi.signCredential(offeredCredential, issuerDid as DIDDocument)
   const offer = await wallet.ssi.buildPresentation([signed], {
-    holder: issuerDid, type: offerType, id
+    holder: issuerDid, type: [...(offerType != null ? [offerType] : []), TYPE_REGOV_OFFER], id
   })
 
   return wallet.ssi.signPresentation(offer, issuerDid as DIDDocument, { challenge, domain })
 }
-
-

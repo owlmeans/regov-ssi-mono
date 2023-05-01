@@ -14,13 +14,10 @@
  *  limitations under the License.
  */
 
-import { DIDCommConnectMeta, getDIDCommUtils } from '@owlmeans/regov-comm'
+import { DIDCommConnectMeta } from '@owlmeans/regov-comm'
 import { useInboxRegistry } from '@owlmeans/regov-ext-comm'
-import {
-  AlertOutput, basicNavigator, CredentialSelector, FormMainAction, PrimaryForm, trySubmit, useNavigator, useRegov,
-  WalletFormProvider
-} from '@owlmeans/regov-lib-react'
-import { addToValue, DIDDocument, Extension } from '@owlmeans/regov-ssi-core'
+import { AlertOutput, basicNavigator, CredentialSelector, FormMainButton, PrimaryForm, useNavigator, useRegov, WalletFormProvider } from '@owlmeans/regov-lib-react'
+import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -28,14 +25,14 @@ import { useTranslation } from 'react-i18next'
 import Grid from '@mui/material/Grid'
 import DialogContent from '@mui/material/DialogContent'
 
-import { DefaultCredential, DefaultDescription, DefaultPresentation, DefaultSubject, UseFieldAt } from '../../../custom.types'
+import { DefaultDescription, DefaultPresentation, DefaultSubject, UseFieldAt } from '../../../custom.types'
 import { buildForm, castIssuerField } from '../helper/form'
 import { FieldsRenderer } from '../widget/fields'
 import { getCredential, getSubject } from '../../utils/cred'
 import { InputsRenderer } from '../widget/inputs'
 import { castSectionKey } from '../../utils/tools'
-import { ERROR_NO_IDENTITY, ERROR_WIDGET_AUTHENTICATION } from '../../ui.types'
 import DialogActions from '@mui/material/DialogActions'
+import { buildOffer, buildRefuse } from './helpers'
 
 
 export const OfferCreate: FunctionComponent<OfferCreateProps> = ({ descr, claim, conn, ext, close }) => {
@@ -49,48 +46,18 @@ export const OfferCreate: FunctionComponent<OfferCreateProps> = ({ descr, claim,
   const sectionKey = castSectionKey(descr)
 
   const [methods, fields] = buildForm(
-    UseFieldAt.OFFER_CREATE, descr, defaultId, useForm, useTranslation, { 
-      controllerField: 'issuer',
-      values: getSubject(descr, claim)
-    }
-  )
+    UseFieldAt.OFFER_CREATE, descr, defaultId, useForm, useTranslation, {
+    controllerField: 'issuer',
+    values: getSubject(descr, claim)
+  })
 
-  const offer = trySubmit<OfferFields>(
-    { navigator, methods, errorField: `${sectionKey}.alert`, onError: async () => true },
-    async (_, data) => {
-      if (!handler.wallet) {
-        throw new Error(ERROR_WIDGET_AUTHENTICATION)
-      }
+  const offer = buildOffer({
+    navigator, methods, handler, credential, sectionKey, ext, claim, conn, descr, inboxRegistry, close
+  })
 
-      const unsigned: DefaultCredential = JSON.parse(JSON.stringify(credential))
-      const identity = handler.wallet.getIdentityCredential(data[sectionKey].issuer)
-
-      if (!identity) {
-        throw new Error(ERROR_NO_IDENTITY)
-      }
-
-      const factory = ext.getFactory(descr.mainType)
-      unsigned.evidence = addToValue(unsigned.evidence, identity)
-
-      const offer = await factory.offer(handler.wallet, {
-        claim, credential: unsigned,
-        holder: unsigned.issuer as DIDDocument,
-        cryptoKey: await handler.wallet.keys.getCryptoKey(),
-        subject: { ...unsigned.credentialSubject, ...data[sectionKey].offer_create },
-        id: claim.id as string,
-        challenge: claim.proof.challenge || '',
-        domain: claim.proof.domain || ''
-      })
-
-      if (conn) {
-        await getDIDCommUtils(handler.wallet).send(conn, offer)
-        await inboxRegistry.removePeer(claim)
-        handler.notify()
-      }
-
-      close && close()
-    }
-  )
+  const refuse = buildRefuse({
+    navigator, methods, handler, credential, sectionKey, ext, claim, conn, descr, inboxRegistry, close
+  })
 
   return <Fragment>
     <DialogContent>
@@ -110,7 +77,14 @@ export const OfferCreate: FunctionComponent<OfferCreateProps> = ({ descr, claim,
       </WalletFormProvider>
     </DialogContent>
     <DialogActions>
-      <FormMainAction {...fields} title={`${sectionKey}.action.offer`} action={methods.handleSubmit(offer)} />
+      <Grid container item direction="row" justifyContent="flex-end" alignItems="center" spacing={1}>
+        <Grid item xs={3}>
+          <FormMainButton {...fields} title={`${sectionKey}.action.refuse`} action={methods.handleSubmit(refuse)} />
+        </Grid>
+        <Grid item xs={3}>
+          <FormMainButton {...fields} title={`${sectionKey}.action.offer`} action={methods.handleSubmit(offer)} />
+        </Grid>
+      </Grid>
     </DialogActions>
   </Fragment>
 }
@@ -123,7 +97,7 @@ export type OfferCreateProps = {
   close?: () => void
 }
 
-type OfferFields = {
+export type OfferFields = {
   [key: string]: {
     alert: string,
     issuer: string,

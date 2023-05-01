@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 import { addToValue, normalizeValue, CryptoKey } from "../../../common"
 import { isCredential } from "../../../vc"
 import { DIDDocument, DIDDocumentUnsinged, VERIFICATION_KEY_HOLDER } from "../../../did"
-import { RequestMethodBuilder } from "../types"
+import { RequestMethodBuilder, TYPE_REGOV_REQUEST } from "../types"
 import { ERROR_FACTORY_NO_IDENTITY } from "./types"
 import { Credential } from "../../../vc/types"
 
@@ -75,7 +75,7 @@ export const defaultRequestMethod: RequestMethodBuilder = schema =>
     const helper = wallet.did.helper()
 
     const unsignedRequest = await wallet.ssi.buildPresentation(credentials, {
-      holder, type: schema.requestType,
+      holder, type: [...(schema.requestType != null ? [schema.requestType] : []), TYPE_REGOV_REQUEST] ,
       id: helper.parseDIDId(
         helper.makeDIDId(signerKey, { data: JSON.stringify(credentials), hash: true })
       ).did

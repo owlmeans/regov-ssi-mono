@@ -21,7 +21,7 @@ import {
 import { Resource, ResourceKey } from "i18next"
 import { CustomDescription, DefaultSubject, isCustom, SubjectFieldMeta, SubjectMeta } from "../custom.types"
 import { castSectionKey } from "../web/utils/tools"
-import { castClaimType, castOfferType, castRequestType, castResponseType } from "./tools"
+import { castClaimType, castOfferType, castRefuseType, castRequestType, castResponseType } from "./tools"
 import merge from "lodash/fp/merge"
 
 export const addCredential = (
@@ -82,7 +82,8 @@ export const addLocalization = (ext: Extension, localization: Resource): Extensi
                       form: {
                         offer_create: { title: `Fill issuer fields for ${cred.defaultLabel || cred.mainType}` },
                         claim_create: { title: `Fill issuer fields for ${cred.defaultLabel || cred.mainType}` },
-                        offer_view: { title: `Offered verifiable credential: ${cred.defaultLabel || cred.mainType}` }
+                        offer_view: { title: `Offered verifiable credential: ${cred.defaultLabel || cred.mainType}` },
+                        refused_view: { title: `Refused verifiable credential: ${cred.defaultLabel || cred.mainType}` }
                       },
                       meta_title: {
                         label: 'Verifiable credential title',
@@ -90,7 +91,10 @@ export const addLocalization = (ext: Extension, localization: Resource): Extensi
                       },
                       issuer: { hint: 'Select identity to sign offer' },
                       holder: { hint: 'Select holder identity' },
-                      action: { close: 'Close', offer: 'Offer', claim: 'Claim', accept: 'Accept' }
+                      action: { 
+                        close: 'Close', offer: 'Offer', refuse: 'Refuse', claim: 'Claim', accept: 'Accept',
+                        cancel: 'Cancel'
+                      }
                     }
                   }
                   if (cred.defaultLabel) {
@@ -129,7 +133,8 @@ export const updateFactories = (ext: Extension): Extension => {
         [castClaimType(descr), {}],
         [castOfferType(descr), {}],
         [castRequestType(descr), {}],
-        [castResponseType(descr), {}]
+        [castResponseType(descr), {}],
+        [castRefuseType(descr), {}],
       ] : []
     )
   ) : {})).factories).map(([type, factories]) => {
@@ -158,6 +163,7 @@ export const updateFactories = (ext: Extension): Extension => {
 const produceTypes = (schema: ExtensionSchema, cred: CustomDescription): { [key: string]: CredentialDescription } => {
   const claimType = castClaimType(cred)
   const offerType = castOfferType(cred)
+  const refuseType = castRefuseType(cred)
   const requestType = castRequestType(cred)
   const responseType = castResponseType(cred)
 
@@ -175,6 +181,9 @@ const produceTypes = (schema: ExtensionSchema, cred: CustomDescription): { [key:
     [responseType]: {
       mainType: responseType, metaRole: META_ROLE_RESPONSE, sourceType: cred.mainType, credentialContext: {}
     },
+    [refuseType]: {
+      mainType: refuseType, metaRole: META_ROLE_OFFER, sourceType: cred.mainType, credentialContext: {}
+    }
   }
 }
 
@@ -184,6 +193,7 @@ const expandType = (
   return {
     claimType: castClaimType(cred),
     offerType: castOfferType(cred),
+    refuseType: castRefuseType(cred),
     ...(schema.credentials && schema.credentials[cred.mainType] || {}),
     ...cred,
     credentialContext: {

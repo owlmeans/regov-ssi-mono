@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,18 +17,14 @@
 import React, { FunctionComponent } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { ERROR_NO_IDENTITY, Extension } from "@owlmeans/regov-ssi-core"
-import {
-  ClaimNavigator, CredentialSelector, FormMainAction, PrimaryForm, trySubmit, useNavigator, 
-  useRegov, WalletFormProvider
-} from "@owlmeans/regov-lib-react"
+import { Extension } from "@owlmeans/regov-ssi-core"
+import { ClaimNavigator, CredentialSelector, FormMainAction, PrimaryForm, useNavigator, useRegov, WalletFormProvider } from "@owlmeans/regov-lib-react"
 
 import { CustomDescription, UseFieldAt } from "../../../custom.types"
 import { buildForm, castHolderField } from "../helper/form"
 import { InputsRenderer } from "../widget/inputs"
-import { ERROR_WIDGET_AUTHENTICATION } from "../../ui.types"
 import { castSectionKey } from "../../utils/tools"
-import { makeClaimPreviewPath } from "../../utils/router"
+import { buildClaim } from './helpers'
 
 
 export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionComponent<ClaimCreateParams> =>
@@ -45,33 +41,7 @@ export const ClaimCreate = (ext: Extension, descr: CustomDescription): FunctionC
     )
 
     // Create claim
-    const claim = trySubmit(
-      { navigator, methods, errorField: `${castSectionKey(descr)}.alert` },
-      async (_, data) => {
-        if (!handler.wallet) {
-          throw ERROR_WIDGET_AUTHENTICATION
-        }
-        const sectionData = data[castSectionKey(descr)]
-        const subject = sectionData[UseFieldAt.CLAIM_CREATE] as Record<string, any>
-        const identity = handler.wallet.getIdentityCredential(data.holder)
-        if (!identity) {
-          throw ERROR_NO_IDENTITY
-        }
-        const factory = ext.getFactory(descr.mainType)
-        const cred = await factory.build(handler.wallet, {
-          extensions: extensions?.registry, identity, subjectData: { ...subject },
-        })
-        const claim = await factory.claim(handler.wallet, { unsignedClaim: cred })
-        await handler.wallet.getClaimRegistry().addCredential(claim)
-        handler.notify()
-        if (navigator.success) {
-          navigator.success({ 
-            path: makeClaimPreviewPath(descr, claim.id), id: claim.id, descr,
-            issuer: props.issuer
-          })
-        }
-      }
-    )
+    const claim = buildClaim({ navigator, methods, handler, descr, issuer: props.issuer, ext, extensions })
 
     // Render fields
     return <WalletFormProvider {...methods}>

@@ -15,24 +15,25 @@
  */
 
 import { CredentialDescription } from "@owlmeans/regov-ssi-core"
-import {
-  CustomDescription, DEFAULT_SUFFIX_CLAIM, DEFAULT_SUFFIX_OFFER, DEFAULT_SUFFIX_REQUEST,
-  DEFAULT_SUFFIX_RESPONSE
-} from "../custom.types"
+import { CustomDescription, DEFAULT_SUFFIX_CLAIM, DEFAULT_SUFFIX_OFFER, DEFAULT_SUFFIX_REFUSE, DEFAULT_SUFFIX_REQUEST, DEFAULT_SUFFIX_RESPONSE } from "../custom.types"
 
 
 export const castClaimType = <Subject extends {} = {}>(
   cred: CustomDescription<Subject> | CredentialDescription<Subject>
-) => cred.claimType || `${cred.mainType}${DEFAULT_SUFFIX_CLAIM}`
+) => cred.claimType ?? `${cred.mainType}${DEFAULT_SUFFIX_CLAIM}`
 
 export const castOfferType = <Subject extends {} = {}>(
   cred: CustomDescription<Subject> | CredentialDescription<Subject>
-) => cred.offerType || `${cred.mainType}${DEFAULT_SUFFIX_OFFER}`
+) => cred.offerType ?? `${cred.mainType}${DEFAULT_SUFFIX_OFFER}`
 
 export const castRequestType = <Subject extends {} = {}>(
   cred: CustomDescription<Subject> | CredentialDescription<Subject>
-) => cred.requestType || `${cred.mainType}${DEFAULT_SUFFIX_REQUEST}`
+) => cred.requestType ?? `${cred.mainType}${DEFAULT_SUFFIX_REQUEST}`
 
 export const castResponseType = <Subject extends {} = {}>(
   cred: CustomDescription<Subject> | CredentialDescription<Subject>
-) => cred.responseType || `${cred.mainType}${DEFAULT_SUFFIX_RESPONSE}`
+) => cred.responseType ?? `${cred.mainType}${DEFAULT_SUFFIX_RESPONSE}`
+
+export const castRefuseType = <Subject extends {} = {}>(
+  cred: CustomDescription<Subject> | CredentialDescription<Subject>
+) => cred.refuseType ?? `${cred.mainType}${DEFAULT_SUFFIX_REFUSE}`

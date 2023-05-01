@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -53,6 +53,7 @@ export type CredentialServiceBuilder = {
   produceValidateMethod?: ValidateMethodBuilder
   produceClaimMethod?: ClaimMethodBuilder
   produceOfferMethod?: OfferMethodBuilder
+  produceRefuseMethod?: RefuseMethodBuilder
   produceRequestMethod?: RequestMethodBuilder
   produceRespondMethod?: RespondMethodBuilder
 }
@@ -63,10 +64,10 @@ export type CredentialService = {
   validate: ValidateMethod
   claim: ClaimMethod
   offer: OfferMethod
+  refuse: RefuseMethod
   request: RequestMethod
   respond: RespondMethod
 }
-
 
 export type BuildMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
@@ -197,6 +198,27 @@ export type OfferMethodParams = {
   domain: string
 }
 
+export type RefuseMethodBuilder = <
+  Schema extends CredentialSchema = CredentialSchema,
+>(schema: CredentialDescription<{}, Schema>) => RefuseMethod
+
+export type RefuseMethod = <
+  Params extends RefuseMethodParams
+>(wallet: WalletWrapper, params: Params) => Promise<Presentation>
+
+export type RefuseMethodParams = {
+  claim: Presentation
+  credential: Credential
+  holder: DIDDocument
+  cryptoKey: CryptoKey
+  subject: Object
+  claimType?: string
+  refuseType?: string
+  id: string,
+  challenge: string
+  domain: string
+}
+
   export type RespondMethodBuilder = <
   Schema extends CredentialSchema = CredentialSchema,
 >(schema: CredentialDescription<{}, Schema>) => RespondMethod
@@ -217,3 +239,8 @@ export type ExtensionLocalization = {
 }
 
 export const VALIDATION_FAILURE_CHECKING = 'checking'
+export const TYPE_REGOV_CLAIM = 'RegovCredentialClaim'
+export const TYPE_REGOV_OFFER = 'RegovCredentialOffer'
+export const TYPE_REGOV_REFUSE = 'RegovCredentialRefuse'
+export const TYPE_REGOV_REQUEST = 'RegovCredentialRequest'
+export const TYPE_REGOV_RESPONSE = 'RegovCredentialRespnse'

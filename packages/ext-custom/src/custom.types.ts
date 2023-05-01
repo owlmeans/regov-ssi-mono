@@ -1,5 +1,5 @@
 /**
- *  Copyright 2022 OwlMeans
+ *  Copyright 2023 OwlMeans
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -93,7 +93,10 @@ export const enum UseFieldAt {
   CRED_VIEW = "cred_view"
 }
 
+export const REFUSED_TITLE = 'refused_view'
+
 export const DEFAULT_SUFFIX_CLAIM = "Claim"
 export const DEFAULT_SUFFIX_OFFER = "Offer"
+export const DEFAULT_SUFFIX_REFUSE = "Refuse"
 export const DEFAULT_SUFFIX_REQUEST = "Request"
 export const DEFAULT_SUFFIX_RESPONSE = "Response"
