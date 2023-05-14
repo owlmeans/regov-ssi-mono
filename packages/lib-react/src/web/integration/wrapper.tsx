@@ -22,7 +22,7 @@ import CssBaseline from "@mui/material/CssBaseline"
 
 export const IntegrationWrapper = ({ width, children }: IntegrationWrapperPorps) => {
   return <CssBaseline>
-    <Container>
+    <Container sx={{ px: '0px !important' }}>
       <Box sx={(theme) => ({
         [theme.breakpoints.down('sm')]: { width: width?.sm || 300 },
         [theme.breakpoints.between('sm', 'md')]: { width: width?.smmd || 420 },
