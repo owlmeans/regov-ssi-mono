@@ -65,10 +65,12 @@ export const castIssuerField = (descr: CustomDescription) =>
 
 export const produceDefaults = (
   purpose: UseFieldAt, descr: CustomDescription<Record<string, any>>
-): Record<string, any> =>
-  Object.fromEntries(Object.entries(descr.subjectMeta)
+): Record<string, any> => ({
+  ...descr.defaultSubject,
+  ...Object.fromEntries(Object.entries(descr.subjectMeta)
     .filter(([, field]) => field.useAt.includes(purpose))
     .map(([key, field]) => [key, isTermPictures(field) ? [] : '']))
+})
 
 export const produceValidation = (
   purpose: UseFieldAt, descr: CustomDescription<Record<string, any>>

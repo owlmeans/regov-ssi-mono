@@ -56,6 +56,7 @@ export type SubjectFieldMeta = {
   defaultHint?: string
   term?: ExpandedTermDefinition
   validation?: ValidationOptions
+  defaultValue?: any
 }
 
 export type ValidationOptions = Partial<{

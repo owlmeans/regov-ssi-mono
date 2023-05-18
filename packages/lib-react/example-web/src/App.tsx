@@ -80,6 +80,55 @@ signatureWebExtension.extension = addCredential(signatureWebExtension.extension,
   }
 })
 
+signatureWebExtension.extension = addCredential(signatureWebExtension.extension, {
+  mainType: 'RoyGroupFriendNCODapamoga',
+  defaultLabel: 'Волонтёр НКО "Дапамога"',
+  expirationPeriod: (3600 * 24 * 30) / 2,
+  credentialContext: {
+    xs: 'http://www.w3.org/2001/XMLSchema#',
+    custom: 'https://roy.team/ssi/vc/nkodapamoga/friend#',
+  },
+  defaultSubject: {
+    iconUrl: 'https://picsum.photos/200',
+  },
+  subjectMeta: {
+    name: {
+      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_CLAIM_VIEW, USE_CREATE_OFFER, USE_VIEW_OFFER, USE_CRED_VIEW],
+      defaultLabel: 'Имя, фамилия',
+      defaultHint: 'Имя и фамилия',
+      validation: { required: true },
+      term: { '@id': 'custom:name', '@type': 'xs:string' },
+    },
+    iconUrl: {
+      useAt: [],
+      term: { '@id': 'custom:iconUrl', '@type': 'xs:string' },
+    },
+    confirmationInfo: {
+      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_CLAIM_VIEW],
+      defaultLabel: 'Данные для подтверждения',
+      defaultHint:
+        'Подтверждение двух волонтеров и руководителя НКО "Дапамога" о том, что человек входит в состав волонтерского круга НКО "Дапамога".',
+      validation: { required: true },
+      term: { '@id': 'custom:confirmationInfo', '@type': 'xs:string' },
+    },
+    motivation: {
+      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_CLAIM_VIEW],
+      defaultLabel: 'Повод для вступления',
+      defaultHint: 'Описание мотивации быть волонтером НКО "Дапамога".',
+      validation: { required: true },
+      term: { '@id': 'custom:motivation', '@type': 'xs:string' },
+    },
+    confirmationFile: {
+      useAt: [USE_CREATE_CLAIM, USE_PREVIEW_CLAIM, USE_CLAIM_VIEW],
+      defaultLabel: 'Прикрепите файлы',
+      defaultHint:
+        'Опциональное изображение или PDF с изображениями подтверждений от двух волонтеров и руководителя НКО "Дапамога" о том, что человек входит в состав волонтерского круга НКО "Дапамога".',
+      validation: { required: false },
+      term: addScansContext('custom', 'confirmationFile'),
+    },
+  },
+})
+
 signatureWebExtension.extension = addLocalization(signatureWebExtension.extension, {
   en: {
     customsignature: {
