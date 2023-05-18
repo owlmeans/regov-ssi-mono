@@ -16,3 +16,6 @@
 
 export * from './react'
 export * from './wrapper'
+export * from './utils'
+export * from './persistent'
+export * from './types'
