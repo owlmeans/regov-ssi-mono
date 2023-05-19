@@ -65,7 +65,8 @@ export const addLocalization = (ext: Extension, localization: Resource): Extensi
                       },
                       claim_create: { title: `Create claim of ${cred.defaultLabel || cred.mainType}` },
                       claim_preview: {
-                        title: `Send claim of ${cred.defaultLabel || cred.mainType}`,
+                        title: `Claim preview of ${cred.defaultLabel || cred.mainType}`,
+                        header: `Send claim of ${cred.defaultLabel || cred.mainType}`,
                         issuer: {
                           label: 'DID of issuer',
                           hint: `Specify address of an agent, that may issue ${cred.defaultLabel || cred.mainType}`

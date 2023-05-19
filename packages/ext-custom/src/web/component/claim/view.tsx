@@ -16,7 +16,7 @@
 
 import React, { FunctionComponent } from "react"
 import { useForm } from "react-hook-form"
-import { AlertOutput, BasicNavigator, FormMainAction, MainTextInput, PrimaryForm, useNavigator, useRegov, WalletFormProvider } from "@owlmeans/regov-lib-react"
+import { AlertOutput, BasicNavigator, FormMainAction, MainTextInput, MainTextOutput, PrimaryForm, useNavigator, useRegov, WalletFormProvider } from "@owlmeans/regov-lib-react"
 import { REGISTRY_TYPE_CLAIMS } from "@owlmeans/regov-ssi-core"
 import Grid from "@mui/material/Grid"
 
@@ -30,8 +30,7 @@ import { buildClaimSend } from './helpers'
 
 export const ClaimView = (descr: CustomDescription): FunctionComponent<ClaimViewParams> =>
   (props) => {
-    console.log(props)
-    const { id } = props
+    const { id, lockIssuer } = props
     const { handler } = useRegov()
     const { t, i18n } = useTranslation(descr.ns)
     const navigator = useNavigator<BasicNavigator>()
@@ -54,9 +53,11 @@ export const ClaimView = (descr: CustomDescription): FunctionComponent<ClaimView
     return <WalletFormProvider {...methods}>
       <Grid container direction="column" spacing={1} justifyContent="flex-start" alignItems="stretch">
         <Grid item>
-          <PrimaryForm {...fields} title={`${sectionKey}.claim_preview.title`}>
+          <PrimaryForm {...fields} title={`${sectionKey}.claim_preview.header`}>
             <AlertOutput {...fields} field={`${sectionKey}.claim_preview.alert`} />
-            <MainTextInput {...fields} field={`${sectionKey}.claim_preview.issuer`} />
+            {props.issuer && props.issuer !== '' && lockIssuer === true
+              ? <MainTextOutput {...fields} field={`${sectionKey}.claim_preview.issuer`} inlineLabel />
+              : <MainTextInput {...fields} field={`${sectionKey}.claim_preview.issuer`} /> }
           </PrimaryForm>
         </Grid>
         <Grid item>
@@ -73,4 +74,5 @@ export const ClaimView = (descr: CustomDescription): FunctionComponent<ClaimView
 export type ClaimViewParams = {
   id: string
   issuer?: string
+  lockIssuer?: boolean
 }
