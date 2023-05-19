@@ -127,6 +127,13 @@ export const buildExtensionRegistry = <
       return ext
     },
 
+    getCredentialDescription: type => {
+      const descrPair = Object.entries(_registry.getExtension(type).schema.credentials ?? {})
+        .find(([,descr]) => (Array.isArray(type) ? type : [type]).includes(descr.mainType))
+
+      return descrPair ? descrPair[1] : undefined
+    },
+
     registerAll: async (exts) => {
       await Promise.all(exts.map(async ext => _registry.register(ext)))
     },

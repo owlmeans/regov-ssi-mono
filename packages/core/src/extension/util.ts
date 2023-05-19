@@ -15,7 +15,7 @@
  */
 
 import { normalizeValue } from "../common"
-import { BasicCredentialType, Credential } from "../vc"
+import { BASE_CREDENTIAL_TYPE, BASE_PRESENTATION_TYPE, BasicCredentialType, Credential } from "../vc"
 import { defaultRefuseMethod } from './ext'
 import { defaultBuildMethod } from "./ext/factory/building"
 import { defaultClaimMethod } from "./ext/factory/claiming"
@@ -25,6 +25,7 @@ import { defaultRespondMethod } from "./ext/factory/response"
 import { defaultSignMethod } from "./ext/factory/signing"
 import { defaultValidateMethod } from "./ext/factory/validation"
 import { CredentialService, CredentialServiceBuilder, Extension, ValidationResult } from "./ext/types"
+import { ExtensionRegistry } from './registry'
 import { CredentialDescription } from "./schema"
 
 
@@ -71,6 +72,15 @@ export const addFactoriesToExt = (ext: Extension, type: string, factories: Crede
       return _facts
     }, {} as CredentialService)
   }
+}
+
+export const getMainType = (registry: ExtensionRegistry, cred: Credential) => {
+  const ext = registry.getExtension(cred.type)
+  const descr = Object.entries(ext.schema.credentials ?? {}).find(([, descr]) => cred.type.includes(descr.mainType))
+
+  return descr ? descr[1].mainType : cred.type.find(type => ![
+    BASE_CREDENTIAL_TYPE, BASE_PRESENTATION_TYPE
+  ].includes(type))
 }
 
 interface CredentialChainDebug {
