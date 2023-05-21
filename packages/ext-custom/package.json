@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-custom",
-  "version": "0.1.10-rc.6",
+  "version": "0.1.10",
   "description": "Regov extension to build customizable credentials.",
   "keywords": [
     "Regov",
@@ -39,10 +39,10 @@
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-comm": "^0.3.6",
-    "@owlmeans/regov-ext-comm": "^0.1.19",
-    "@owlmeans/regov-lib-react": "^0.2.25",
-    "@owlmeans/regov-ssi-core": "^0.7.9",
+    "@owlmeans/regov-comm": "^0.3.7",
+    "@owlmeans/regov-ext-comm": "^0.1.20",
+    "@owlmeans/regov-lib-react": "^0.2.26",
+    "@owlmeans/regov-ssi-core": "^0.7.10",
     "i18next": "^21.4.2",
     "jsonld": "^8.1.0",
     "react": "^17.0.2",

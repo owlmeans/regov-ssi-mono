@@ -48,7 +48,9 @@ export const StoreListWeb = (props: StoreListImplProps) => {
       reader.readAsText(files[0])
     }
   }
-  const { getRootProps, getInputProps, open } = useDropzone({ onDrop, noClick: true, maxFiles: 1 })
+  const { getRootProps, getInputProps, open } = useDropzone({
+    onDrop, noClick: true, maxFiles: 1, accept: { "application/json": [".json"] }
+  })
 
   return <span {...getRootProps()}><SimpleList {...props} title="list.title" actions={[
     { title: 'list.create', action: props.create },
@@ -66,7 +68,7 @@ export const StoreListWeb = (props: StoreListImplProps) => {
               }}>
                 <Grid item>
                   <FormHeaderButton {...props} title='list.item.export' action={() => saveAs(new Blob(
-                    [JSON.stringify(store)], { type: "text/plain;charset=utf-8" }
+                    [JSON.stringify(store)], { type: "application/json;charset=utf-8" }
                   ), `${store.alias}.wallet.json`)} />
                 </Grid>
                 <Grid item>

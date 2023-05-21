@@ -33,7 +33,7 @@
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"
   },
   "dependencies": {
-    "@owlmeans/regov-ssi-core": "^0.7.9",
+    "@owlmeans/regov-ssi-core": "^0.7.10",
     "buffer": "^6.0.3",
     "events": "^3.3.0",
     "process": "^0.11.10",
