@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, useEffect, useState, } from 'react'
+import { FunctionComponent, useEffect, useState, } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import { REGOV_CREDENTIAL_TYPE_GROUP, GroupSubject, REGOV_GROUP_ROOT_TYPE } from '../../../../types'
 import {

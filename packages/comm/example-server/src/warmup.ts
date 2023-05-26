@@ -10,8 +10,11 @@ import identity from './schemas/identity.json'
 import comm from './schemas/comm.json'
 import commRequest from './schemas/comm-request.json'
 
-import { documentWarmer } from '@owlmeans/regov-ssi-core'
+import { documentWarmer, getCryptoAdapter } from '@owlmeans/regov-ssi-core'
 
+import { encodeBase58, decodeBase58, toBeArray } from 'ethers/utils'
+
+getCryptoAdapter().setBase58Impl(encodeBase58, decodeBase58, toBeArray)
 
 documentWarmer('https://owlmeans.com/schemas/did-schema.json#', JSON.stringify(didSchema))
 documentWarmer('https://owlmeans.com/schemas/did-schema.json', JSON.stringify(didSchema))

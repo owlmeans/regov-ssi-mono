@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import React from 'react'
 import {
   addObserverToSchema, ExtensionDetails, EXTENSION_TRIGGER_AUTHENTICATED,
   EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, IncommigDocumentEventParams, isCredential

@@ -18,12 +18,15 @@ import { BasicNavigator, Config, UIExtensionRegistry } from "../../common"
 import { NavigateFunction } from "react-router-dom"
 import { WalletHandler } from "@owlmeans/regov-ssi-core"
 import { ServerClient } from "../../common"
+import { CryptoLoaderProps } from '../crypto/types'
+import { FC } from 'react'
 
 
 export type WalletAppParams = {
   config: Config
   extensions?: UIExtensionRegistry
   serverClient?: ServerClient
+  CryptoLoader: FC<CryptoLoaderProps>
 }
 
 export type RootNavigatorBuilder = (

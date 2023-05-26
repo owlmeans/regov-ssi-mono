@@ -18,7 +18,7 @@ import { DIDCommConnectMeta } from '@owlmeans/regov-comm'
 import { useInboxRegistry } from '@owlmeans/regov-ext-comm'
 import { AlertOutput, basicNavigator, CredentialSelector, FormMainButton, PrimaryForm, useNavigator, useRegov, WalletFormProvider } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-core'
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 

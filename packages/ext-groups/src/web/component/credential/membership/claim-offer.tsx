@@ -28,7 +28,7 @@ import {
   getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CLAIMS, REGISTRY_TYPE_IDENTITIES
 } from '@owlmeans/regov-ssi-core'
 import { VALIDATION_KIND_OFFER } from '@owlmeans/regov-ssi-core'
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
+import { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { OfferFields } from './offer'
 

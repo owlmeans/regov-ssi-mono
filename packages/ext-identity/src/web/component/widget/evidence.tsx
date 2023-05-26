@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import { EmptyProps, PurposeEvidenceWidgetParams, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { getCompatibleSubject } from '@owlmeans/regov-ssi-core'

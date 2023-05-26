@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useMemo } from 'react'
+import { Fragment, FunctionComponent, useMemo } from 'react'
 import { MembershipSubject, REGOV_CREDENTIAL_TYPE_MEMBERSHIP } from '../../../../types'
 import { Extension, EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED, normalizeValue, UnsignedCredential } from '@owlmeans/regov-ssi-core'
 import { CredentialWrapper, Presentation } from '@owlmeans/regov-ssi-core'

@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import type { encodeBase58, decodeBase58, toBeArray } from 'ethers'
 
 export type CryptoHelper = {
   buildSignSuite: (keyOptions: BuildSignSignatureOptions) => Object
@@ -32,7 +33,7 @@ export type CryptoHelper = {
 
   encrypt: (body: string, password: string) => Promise<string>
 
-  decrypt: (chiper: string, password: string)=> Promise<string>
+  decrypt: (chiper: string, password: string) => Promise<string>
 
   makeDerivationPath: (index?: number, change?: number, account?: number, bc?: string) => string
 
@@ -44,6 +45,16 @@ export type CryptoHelper = {
    * @bug seed param implicitly requires Buffer not Uint8Array!
    */
   getKey: (seed: Uint8Array, derivationPath?: string) => CryptoKey & { dp: string }
+}
+
+export interface CryptoAdapter {
+  base58: {
+    encode: typeof encodeBase58
+    decode: typeof decodeBase58
+    toArray: typeof toBeArray
+  }
+
+  setBase58Impl: (encode: typeof encodeBase58, decode: typeof decodeBase58, toArray: typeof toBeArray) => void
 }
 
 export type Base58Lib = {

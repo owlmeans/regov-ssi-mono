@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent } from "react"
+import { Fragment, FunctionComponent } from "react"
 import { EntityRenderer, EntityTextRenderer } from "@owlmeans/regov-lib-react"
 import { useTranslation } from "react-i18next"
 

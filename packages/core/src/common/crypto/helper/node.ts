@@ -18,7 +18,8 @@ import { Secp256k1Key, Secp256k1Signature } from "@owlmeans/tiny-lds-ecdsa-secp2
 import { sha256 } from 'hash.js'
 import { fromSeed, BIP32Interface } from 'bip32'
 import { Base58Lib, CryptoHelper, CryptoKey } from "../types"
-import { encode as encode58, decode as decode58 } from './base58'
+// import { encode as encode58, decode as decode58 } from './base58'
+import { getCryptoAdapter } from '../adapter'
 
 require("jsonld/lib/events").safeEventHandler = ({ next }: { next: () => void }) => next()
 
@@ -68,7 +69,11 @@ const _getSecp256k1 = () => {
   }
 }
 
-const _base58 = (): Base58Lib => ({ encode: encode58, decode: decode58 })
+const _base58 = (): Base58Lib => ({
+  encode: getCryptoAdapter().base58.encode,
+  decode: value => getCryptoAdapter().base58.toArray(getCryptoAdapter().base58.decode(value))
+})
+
 
 const _makeDerivationPath = (index = 0, change = 0, account = 0, bc = '0') => {
   return `m/44'/${bc}/${account}'/${change}/${index}`

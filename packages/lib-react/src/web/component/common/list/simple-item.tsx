@@ -15,7 +15,7 @@
  */
 
 
-import React from 'react'
+
 import { WrappedComponentProps } from '../../../../common'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'

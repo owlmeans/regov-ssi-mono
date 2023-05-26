@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import { FormProvider, useForm, UseFormProps } from 'react-hook-form'
 import { StoreLoginFields, StoreLoginImplProps, MainFooter } from '../../../common'
 import { webCryptoHelper } from '@owlmeans/regov-ssi-core'

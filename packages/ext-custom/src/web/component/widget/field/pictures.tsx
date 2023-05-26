@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, useCallback, useEffect, useState } from "react"
+import { FunctionComponent, useCallback, useEffect, useState } from "react"
 import Grid from "@mui/material/Grid"
 import { Controller, useFormContext } from "react-hook-form"
 import { TFunction } from "i18next"

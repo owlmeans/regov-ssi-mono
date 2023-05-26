@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import { MainFooterImplProps, useRegov } from '../../../common'
 import AppBar from '@mui/material/AppBar'
 import Grid from '@mui/material/Grid'

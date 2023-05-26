@@ -15,7 +15,7 @@
  */
 
 import { WrappedComponentProps } from '../../../../common'
-import React from 'react'
+
 import { Controller, useFormContext } from 'react-hook-form'
 import { formatError } from '../error'
 import Grid from '@mui/material/Grid'

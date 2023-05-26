@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 import { PurposeEvidenceWidgetParams } from '../../../../../common'
 import { normalizeValue } from '@owlmeans/regov-ssi-core'
 import Paper from '@mui/material/Paper'

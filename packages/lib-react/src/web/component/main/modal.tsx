@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, useState } from 'react'
+import { FunctionComponent, useState } from 'react'
 import { MainModalImplProps } from '../../../common'
 import Dialog from '@mui/material/Dialog'
 

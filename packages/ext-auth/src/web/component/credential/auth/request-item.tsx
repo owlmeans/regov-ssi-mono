@@ -7,7 +7,7 @@ import {
   EXTENSION_TRIGGER_INCOMMING_DOC_RECEIVED,
   singleValue
 } from "@owlmeans/regov-ssi-core"
-import React, { Fragment, FunctionComponent, useEffect, useMemo } from "react"
+import { Fragment, FunctionComponent, useEffect, useMemo } from "react"
 
 import BorderColor from '@mui/icons-material/BorderColor'
 import Avatar from '@mui/material/Avatar'

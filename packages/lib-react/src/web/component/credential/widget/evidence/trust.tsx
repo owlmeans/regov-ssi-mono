@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useState } from 'react'
+import { Fragment, FunctionComponent, useState } from 'react'
 import {
   EmptyProps, EXTENSION_ITEM_PURPOSE_EVIDENCE, generalNameVlidation, PurposeEvidenceWidgetParams,
   RegovComponentProps, useRegov, withRegov

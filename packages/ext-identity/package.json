@@ -10,7 +10,6 @@
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
   "license": "Apache-2.0",
-  "type": "commonjs",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -41,9 +40,9 @@
     "@owlmeans/regov-ssi-core": "^0.7.10",
     "express": "^4.17.3",
     "i18next": "*",
-    "react": "^17.0.2",
+    "react": "^18.2.0",
     "react-device-detect": "^2.1.2",
-    "react-dom": "^17.0.2",
+    "react-dom": "^18.2.0",
     "react-hook-form": "*",
     "react-i18next": "*"
   },
@@ -89,7 +88,7 @@
     }
   },
   "devDependencies": {
-    "typescript": "^4.5.2"
+    "typescript": "^4.9.5"
   },
   "publishConfig": {
     "access": "public"

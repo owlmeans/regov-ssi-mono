@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, PropsWithChildren, useEffect, useMemo, useState } from 'react'
+import { Fragment, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { buildWalletWrapper, createWalletHandler, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_INIT_SENSETIVE, InitSensetiveEventParams, WalletHandler, webCryptoHelper, Credential, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
 
 import { i18n as I18n } from 'i18next'

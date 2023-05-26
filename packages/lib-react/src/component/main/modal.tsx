@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, ReactNode, useEffect, useMemo } from 'react'
+import { FunctionComponent, ReactNode, useEffect, useMemo } from 'react'
 import { EventParams, EXTENSION_TRIGGER_AUTHENTICATED, WalletHandler } from '@owlmeans/regov-ssi-core'
 import {
   RegovComponentProps, useRegov, withRegov, WrappedComponentProps, Config

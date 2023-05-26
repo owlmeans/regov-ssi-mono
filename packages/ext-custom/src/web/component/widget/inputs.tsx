@@ -15,7 +15,7 @@
  */
 
 import { MainTextInput, PrimaryFormProps } from "@owlmeans/regov-lib-react"
-import React, { Fragment, FunctionComponent } from "react"
+import { Fragment, FunctionComponent } from "react"
 
 import { CustomDescription, UseFieldAt } from "../../../custom.types"
 import { castFieldType, isTermPictures } from "../../../picture.types"

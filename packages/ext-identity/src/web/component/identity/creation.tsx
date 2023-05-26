@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   EmptyProps, generalNameVlidation, MainModalAuthenticatedEventParams, RegovComponentProps,

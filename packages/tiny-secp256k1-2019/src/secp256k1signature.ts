@@ -33,12 +33,7 @@ type MatchProofOptions = {
   documentLoader: unknown
 }
 
-type LinkedDataSignatureInstance = {
-  createProof(...args: any[]): Promise<unknown>
-  matchProof(options: MatchProofOptions): Promise<boolean>
-  verifyProof(...args: any[]): Promise<unknown>
-}
-const LinkedDataSignature: new (options: unknown) => LinkedDataSignatureInstance = jsigs.suites.LinkedDataSignature
+const LinkedDataSignature: any = jsigs.suites.LinkedDataSignature
 
 export default class Secp256k1Signature extends LinkedDataSignature {
   private readonly key: Secp256k1Key

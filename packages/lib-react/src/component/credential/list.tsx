@@ -17,7 +17,7 @@
 import {
   CredentialWrapper, RegistryType, REGISTRY_SECTION_OWN, REGISTRY_SECTION_PEER, REGISTRY_TYPE_CREDENTIALS
 } from '@owlmeans/regov-ssi-core'
-import React, { FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 import {
   BasicNavigator, EmptyProps, RegovComponentProps, WalletNavigatorMenuMethod, withRegov,
   WrappedComponentProps

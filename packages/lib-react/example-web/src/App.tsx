@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { buildUIExtensionRegistry } from '@owlmeans/regov-lib-react'
+import { buildUIExtensionRegistry, CryptoLoaderProps } from '@owlmeans/regov-lib-react'
 
 import { buildIdentityExtensionUI } from '@owlmeans/regov-ext-identity'
 import { signatureWebExtension } from '@owlmeans/regov-ext-doc-signature'
@@ -29,6 +29,7 @@ import {
 import { WalletApp } from '@owlmeans/regov-lib-react'
 
 import { config, commConfig } from './config'
+import React, { FC } from 'react'
 
 
 const EXAMPLE_IDENTITY_TYPE = 'ExampleIdentity'
@@ -150,6 +151,8 @@ registry.registerSync(customizeExtension(signatureWebExtension))
 
 registry.registerSync(groupsUIExtension)
 
+const CryptoLoader: FC<CryptoLoaderProps> = React.lazy(() => import('./crypto-loader') as any)
+
 export const App = () => {
-  return <WalletApp config={config} extensions={registry.normalize()} />
+  return <WalletApp config={config} extensions={registry.normalize()} CryptoLoader={CryptoLoader} />
 }

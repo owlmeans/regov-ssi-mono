@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useMemo } from 'react'
+import { Fragment, FunctionComponent, useMemo } from 'react'
 import { GroupSubject } from '../../../../types'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov, ListItemMeta } from '@owlmeans/regov-lib-react'
 import {

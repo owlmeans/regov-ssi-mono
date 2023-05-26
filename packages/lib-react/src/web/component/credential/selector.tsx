@@ -16,7 +16,7 @@
 
 import { CredentialWrapper } from '@owlmeans/regov-ssi-core'
 import { TFunction } from 'i18next'
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
+import { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'

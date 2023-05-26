@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, useMemo, Fragment } from 'react'
+import { FunctionComponent, useMemo, Fragment } from 'react'
 import {
   CredentialListImplProps, useRegov, EXTENSION_ITEM_PURPOSE_ITEM, PurposeListItemParams
 } from '../../../common'

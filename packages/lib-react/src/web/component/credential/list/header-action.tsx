@@ -16,7 +16,7 @@
 
 import { CredentialListTab, WrappedComponentProps } from '../../../../common'
 import { REGISTRY_SECTION_PEER } from '@owlmeans/regov-ssi-core'
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import Switch from '@mui/material/Switch'
 
 

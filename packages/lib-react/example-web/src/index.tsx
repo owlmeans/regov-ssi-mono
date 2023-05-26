@@ -14,10 +14,14 @@
  *  limitations under the License.
  */
 
-import ReactDOM from 'react-dom'
-require('dotenv').config()
-
-import { App } from './App'
+import './buffer'
 import './warmup'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+// import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client';
+// require('dotenv').config()
+
+import { App } from './App'
+
+const root = createRoot(document.getElementById('root') as HTMLElement)
+root.render(<App />)

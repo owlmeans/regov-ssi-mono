@@ -10,7 +10,8 @@
     "@owlmeans/regov-come": "link:../",
     "@owlmeans/regov-ext-identity": "link:../../ext-identity/",
     "@owlmeans/regov-ssi-core": "link:../../core/",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "ethers": "^6.4.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.30",

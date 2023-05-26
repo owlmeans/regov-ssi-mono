@@ -20,7 +20,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
-    "target": "esnext",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -31,10 +30,11 @@
     "isolatedModules": true
   },
   "include": [
-    "src"
+    "../../comm/src/**/*",
+    "../../ext-identity/src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "build"
+    "build",
+    "./config-overrides.js",
   ]
 }

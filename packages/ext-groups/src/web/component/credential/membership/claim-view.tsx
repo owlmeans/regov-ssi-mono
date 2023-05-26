@@ -26,7 +26,7 @@ import { normalizeValue } from '@owlmeans/regov-ssi-core'
 import {
   getCompatibleSubject, Presentation, Credential, REGISTRY_TYPE_CLAIMS, REGISTRY_SECTION_OWN
 } from '@owlmeans/regov-ssi-core'
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import { useForm } from 'react-hook-form'
 import Button from '@mui/material/Button'
 import DialogActions from '@mui/material/DialogActions'

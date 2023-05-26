@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import {
   EXTENSION_ITEM_PURPOSE_VALIDATION, ResultWidgetParams, useRegov, ValidationResultWidget

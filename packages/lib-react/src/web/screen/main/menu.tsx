@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import { useNavigate } from 'react-router-dom'
 import {
   MainMenu, MainMenuNavigation, NavigatorContextProvider, useNavigator, useRegov

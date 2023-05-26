@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 import { 
   BasicNavigator, EmptyProps, NavigatorLoading, RegovComponentProps, withRegov, WrappedComponentProps
 } from '../../common/'

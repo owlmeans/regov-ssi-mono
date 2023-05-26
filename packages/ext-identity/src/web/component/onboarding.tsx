@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, useState, Fragment } from 'react'
+import { FunctionComponent, useState, Fragment } from 'react'
 import {
   EmptyProps, FormHeaderButton, MainModalAuthenticatedEventParams, RegovComponentProps, useRegov, withRegov
 } from '@owlmeans/regov-lib-react'

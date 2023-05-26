@@ -16,7 +16,7 @@
 
 import { EmptyProps, RegovValidationRules, WrappedComponentProps } from '../../../../common'
 import { formatError } from '../error'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Controller, useFormContext, UseFormProps } from 'react-hook-form'
 import { useDropzone } from 'react-dropzone'
 import { isMobile } from "react-device-detect"

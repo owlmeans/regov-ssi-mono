@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent } from "react"
+import { Fragment, FunctionComponent } from "react"
 import { CredentialList, EmptyProps, RegovComponentProps, withRegov } from "@owlmeans/regov-lib-react"
 import { Extension, REGISTRY_SECTION_PEER } from "@owlmeans/regov-ssi-core"
 import { REGISTRY_TYPE_INBOX } from "../../../types"

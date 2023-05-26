@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import { EntityItemProps, EntityContextConsumer } from './types'
 import { getDeepValue } from '@owlmeans/regov-ssi-core'
 import { OutputFieldFormatter } from '../field'

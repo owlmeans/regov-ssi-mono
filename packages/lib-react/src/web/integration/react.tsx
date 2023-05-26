@@ -18,7 +18,7 @@ import { WalletAppParams } from '../app/types'
 import {
   i18nDefaultOptions, i18nSetup, BasicNavigator, RegovProvider, MainLoading
 } from '../../common'
-import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react'
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { buildStorageHelper } from '../storage'
 import { i18nRegisterExtensions } from '../../i18n/util'
 import { webComponentMap } from '../component'

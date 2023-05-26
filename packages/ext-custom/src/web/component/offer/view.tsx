@@ -16,7 +16,7 @@
 
 import { DIDCommConnectMeta } from '@owlmeans/regov-comm'
 import { Extension, normalizeValue } from '@owlmeans/regov-ssi-core'
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import { DefaultDescription, DefaultPresentation, DEFAULT_SUFFIX_REFUSE, REFUSED_TITLE, UseFieldAt } from "../../../custom.types"
 
 import { useForm } from 'react-hook-form'

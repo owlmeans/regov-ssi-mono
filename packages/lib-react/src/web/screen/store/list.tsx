@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import { useNavigator, NavigatorContextProvider, StoreList, StoreListNavigator } from '../../../common'
 import { useNavigate } from 'react-router-dom'
 

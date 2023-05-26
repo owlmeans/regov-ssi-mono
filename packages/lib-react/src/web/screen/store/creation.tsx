@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import {
   useNavigator, NavigatorContextProvider, StoreCreation, StoreCreationNavigator,
   StoreCreationNavSuccess, STORE_CREATION_MENU_IMPORT,

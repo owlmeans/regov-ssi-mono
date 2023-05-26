@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import { WrappedComponentProps } from '../../../../common'
 import Grid from '@mui/material/Grid'
 

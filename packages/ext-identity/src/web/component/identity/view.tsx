@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
+import { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import {
   CredentialEvidenceWidget, EmptyProps, EntityRenderer, RegovComponentProps, useRegov,
   ValidationResultWidgetWeb, withRegov
