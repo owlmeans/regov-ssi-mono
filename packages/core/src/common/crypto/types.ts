@@ -14,7 +14,10 @@
  *  limitations under the License.
  */
 
-import type { encodeBase58, decodeBase58, toBeArray } from 'ethers'
+import type { encodeBase58, decodeBase58, toBeArray, getBytes } from 'ethers/lib.esm/utils'
+import type { sha256, randomBytes } from 'ethers/lib.esm/crypto'
+import type { HDNodeWallet } from 'ethers/lib.esm/wallet'
+import type { signSync, verify } from '@noble/secp256k1'
 
 export type CryptoHelper = {
   buildSignSuite: (keyOptions: BuildSignSignatureOptions) => Object
@@ -25,7 +28,7 @@ export type CryptoHelper = {
 
   sign: (data: string, key: string) => string
 
-  getRandomBytes: (size: number) => Promise<Uint8Array>
+  getRandomBytes: (size: number) => Uint8Array
 
   verify: (signature: string, data: string, key: string) => boolean
 
@@ -54,7 +57,33 @@ export interface CryptoAdapter {
     toArray: typeof toBeArray
   }
 
+  sha256: {
+    toBytes: typeof getBytes
+    hash: typeof sha256
+  }
+
+  aes: {
+    encoder: any
+  }
+
+  secp: {
+    sign: typeof signSync,
+    verify: typeof verify
+  },
+
+  random: typeof randomBytes
+
+  WalletClass: typeof HDNodeWallet
+
+  _wallets: {
+    [key: string]: HDNodeWallet
+  }
+
   setBase58Impl: (encode: typeof encodeBase58, decode: typeof decodeBase58, toArray: typeof toBeArray) => void
+  setSha256Impl: (hash: typeof sha256, toBytes: typeof getBytes) => void
+  setAesImpl: (encoder: any) => void
+  setRandomImpl: (random: typeof randomBytes) => void
+  setSecpImpl: (sign: typeof signSync, _verify: typeof verify) => void
 }
 
 export type Base58Lib = {
