@@ -26,11 +26,11 @@ export type CryptoHelper = {
 
   hashBytes: (data: Buffer) => string
 
-  sign: (data: string, key: string) => string
+  sign: (data: string | Uint8Array, key: string) => string
 
   getRandomBytes: (size: number) => Uint8Array
 
-  verify: (signature: string, data: string, key: string) => boolean
+  verify: (signature: string, data: string | Uint8Array, key: string) => boolean
 
   normalizePassword: (password: string) => Uint8Array
 

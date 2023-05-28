@@ -23,7 +23,6 @@
     "@owlmeans/regov-ext-identity": "link:../../ext-identity",
     "@owlmeans/regov-lib-react": "link:..",
     "@owlmeans/regov-ssi-core": "link:../../core",
-    "@owlmeans/tiny-lds-ecdsa-secp256k1-2019": "link:../../tiny-secp256k1-2019",
     "ethers": "^6.4.0",
     "file-saver": "^2.0.5",
     "i18next": "^21.4.2",

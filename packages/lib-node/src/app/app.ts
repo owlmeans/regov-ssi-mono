@@ -15,7 +15,7 @@
  */
 
 import {
-  buildWalletWrapper, DEFAULT_WALLET_ALIAS, nodeCryptoHelper, WalletHandler, WalletWrapper
+  buildWalletWrapper, DEFAULT_WALLET_ALIAS, cryptoHelper, WalletHandler, WalletWrapper
 } from '@owlmeans/regov-ssi-core'
 import express, { Router, Request, Response } from 'express'
 import bodyParser from 'body-parser'
@@ -42,7 +42,7 @@ export const buildApp = async (
   if (stored) {
     await handler.loadStore(async () => {
       return await buildWalletWrapper(
-        { crypto: nodeCryptoHelper, extensions: extensions.registry },
+        { crypto: cryptoHelper, extensions: extensions.registry },
         config.wallet?.password || DEFAULT_STORE_PASSWORD,
         stored,
         {
@@ -55,7 +55,7 @@ export const buildApp = async (
   } else {
     await handler.loadStore(async () => {
       const wallet = await buildWalletWrapper(
-        { crypto: nodeCryptoHelper, extensions: extensions.registry },
+        { crypto: cryptoHelper, extensions: extensions.registry },
         config.wallet?.password || DEFAULT_STORE_PASSWORD,
         {
           alias: config.wallet?.alias || DEFAULT_WALLET_ALIAS,

@@ -15,7 +15,7 @@
  */
 
 import 'dotenv/config'
-import { buildWalletWrapper, nodeCryptoHelper, WalletWrapper } from "@owlmeans/regov-ssi-core"
+import { buildWalletWrapper, cryptoHelper, WalletWrapper } from "@owlmeans/regov-ssi-core"
 import { createDebugChannel } from "../channel/debug"
 import { buildDidCommHelper } from "../model"
 import { DIDCommConnectMeta, DIDCommHelper, DIDCommListner } from "../types"
@@ -31,11 +31,11 @@ const config = {
 describe('Comm model', () => {
   it('opens connection', async () => {
     const aliceWallet = await buildWalletWrapper(
-      { crypto: nodeCryptoHelper }, '11111111', { alias: 'alice', name: 'Alice' }, config
+      { crypto: cryptoHelper }, '11111111', { alias: 'alice', name: 'Alice' }, config
     )
 
     const bobWallet = await buildWalletWrapper(
-      { crypto: nodeCryptoHelper }, '11111111', { alias: 'bob', name: 'Bob' }, config
+      { crypto: cryptoHelper }, '11111111', { alias: 'bob', name: 'Bob' }, config
     )
 
     const aliceServer = createDebugChannel()

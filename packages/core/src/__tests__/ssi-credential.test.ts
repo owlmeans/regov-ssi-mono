@@ -16,7 +16,7 @@
 
 require('dotenv').config()
 
-import { nodeCryptoHelper } from "../common"
+import { cryptoHelper } from "../common"
 import {
   buildDidHelper, buildDidRegistryWarpper, DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION,
   DIDPURPOSE_VERIFICATION,
@@ -42,10 +42,10 @@ beforeAll(async () => {
   test.ssi = await buildSSICore({
     keys: await buildKeyChain({
       password: '11111111',
-      crypto: nodeCryptoHelper
+      crypto: cryptoHelper
     }),
-    crypto: nodeCryptoHelper,
-    did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
+    crypto: cryptoHelper,
+    did: buildDidRegistryWarpper(buildDidHelper(cryptoHelper))
   })
 })
 

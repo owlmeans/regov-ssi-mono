@@ -5,6 +5,7 @@
       "esnext"
     ],
     "module": "esnext",
+    "target": "esnext",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

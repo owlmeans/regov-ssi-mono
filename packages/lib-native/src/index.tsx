@@ -15,7 +15,7 @@
  */
 
 import * as React from 'react'
-import { buildWalletWrapper, createWalletHandler, webCryptoHelper } from '@owlmeans/regov-ssi-core'
+import { buildWalletWrapper, createWalletHandler, cryptoHelper } from '@owlmeans/regov-ssi-core'
 import { useEffect, useMemo } from 'react'
 import { View, Text } from 'react-native'
 
@@ -26,7 +26,7 @@ export const DebugSSIView = () => {
   useEffect(() => {
     (async () => {
       handler.wallet = await await buildWalletWrapper(
-        { crypto: webCryptoHelper }, '11111111', { alias: 'default', name: 'Development wallet' }, {
+        { crypto: cryptoHelper }, '11111111', { alias: 'default', name: 'Development wallet' }, {
         prefix: 'exm',
         defaultSchema: 'https://schema.owlmeans.com',
         didSchemaPath: 'did-schema.json',

@@ -40,7 +40,6 @@
   },
   "dependencies": {
     "@digitalbazaar/jws-linked-data-signature": "^3.0.0",
-    "@owlmeans/tiny-lds-ecdsa-secp256k1-2019": "^1.1.0",
     "ajv": "^8.8.2",
     "crypto-ld": "^7.0.0",
     "jsonld-signatures": "^11.0.0",

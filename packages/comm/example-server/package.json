@@ -7,18 +7,30 @@
   "license": "Apache-2.0",
   "private": true,
   "dependencies": {
-    "@owlmeans/regov-come": "link:../",
+    "@owlmeans/regov-comm": "link:../",
     "@owlmeans/regov-ext-identity": "link:../../ext-identity/",
     "@owlmeans/regov-ssi-core": "link:../../core/",
     "dotenv": "^16.0.0",
     "ethers": "^6.4.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.22.1",
+    "@babel/preset-env": "^7.22.2",
     "@types/node": "^17.0.30",
-    "nodemon": "^2.0.16",
-    "ts-node": "^10.7.0"
+    "babel-loader": "^9.1.2",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.7.0",
+    "typescript": "^5.0.4",
+    "webpack": "^5.84.1",
+    "webpack-cli": "^5.1.1",
+    "yarn-run-all": "^3.1.1"
   },
   "scripts": {
-    "start": "nodemon --watch './**/*.ts' --watch '../src/**/*' --exec 'ts-node' src/index.ts"
+    "watch": "nodemon --watch './**/*.ts' --watch '../src/**/*' --exec 'ts-node' src/index.ts",
+    "build": "tsc -b -f && webpack -c ./webpack/prod.config.js",
+    "start": "npm-run-all --parallel watch:build watch:bundle watch:serve",
+    "watch:build": "tsc -b -w --preserveWatchOutput --pretty",
+    "watch:bundle": "NODE_ENV=development webpack -c ./webpack/prod.config.js --watch",
+    "watch:serve": "nodemon ./build/comm-serv.js --watch ./build/**/*"
   }
 }

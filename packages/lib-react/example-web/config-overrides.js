@@ -42,6 +42,7 @@ module.exports = (config, env) => {
   // config.resolve.alias['react'] = path.resolve(__dirname, 'node_modules/react')
   // config.resolve.alias['react'] = require.resolve('react')
   // config.resolve.alias['react-dom'] = path.resolve(__dirname, 'node_modules/react-dom')
+  // config.resolve.alias['react-dom/client'] = path.resolve(__dirname, 'node_modules/react-dom/client.js')
   // config.resolve.alias['react-dom'] = require.resolve('react-dom')
   // config.resolve.alias['did-jwt'] = path.resolve(__dirname, 'node_modules/did-jwt')
   // Object.entries({

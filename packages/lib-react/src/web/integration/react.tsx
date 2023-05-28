@@ -24,7 +24,7 @@ import { i18nRegisterExtensions } from '../../i18n/util'
 import { webComponentMap } from '../component'
 import { 
   buildWalletWrapper, createWalletHandler, EXTENSION_TRIGGER_INIT_SENSETIVE, InitSensetiveEventParams, 
-  WalletHandler, webCryptoHelper 
+  WalletHandler, cryptoHelper 
 } from '@owlmeans/regov-ssi-core'
 import { DEFAULT_GUEST_WALLET_ALIAS } from '../types'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -45,7 +45,7 @@ export const WalletIntegrationReact = (
     (async () => {
       if (!handler.wallet) {
         const wallet = await buildWalletWrapper(
-          { crypto: webCryptoHelper, extensions: extensions?.registry }, '11111111',
+          { crypto: cryptoHelper, extensions: extensions?.registry }, '11111111',
           { alias: DEFAULT_GUEST_WALLET_ALIAS, name: 'Guest wallet' }, {
           prefix: config.DID_PREFIX,
           defaultSchema: config.baseSchemaUrl,

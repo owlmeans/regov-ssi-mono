@@ -19,7 +19,7 @@ require('dotenv').config()
 import { buildSSICore } from "../vc/ssi"
 import { SSICore } from "../vc/ssi/types"
 import { Credential } from "../vc/types"
-import { nodeCryptoHelper } from "../common"
+import { cryptoHelper } from "../common"
 import {
   buildDidHelper, buildDidRegistryWarpper, DIDDocument, DIDPURPOSE_ASSERTION, DIDPURPOSE_AUTHENTICATION,
   DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_CONTROLLER, VERIFICATION_KEY_HOLDER
@@ -43,28 +43,28 @@ describe('SSI Presentation', () => {
     const ssiAlice = await buildSSICore({
       keys: await buildKeyChain({
         password: '11111111',
-        crypto: nodeCryptoHelper
+        crypto: cryptoHelper
       }),
-      crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
+      crypto: cryptoHelper,
+      did: buildDidRegistryWarpper(buildDidHelper(cryptoHelper))
     })
 
     const ssiBob = await buildSSICore({
       keys: await buildKeyChain({
         password: '11111111',
-        crypto: nodeCryptoHelper
+        crypto: cryptoHelper
       }),
-      crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
+      crypto: cryptoHelper,
+      did: buildDidRegistryWarpper(buildDidHelper(cryptoHelper))
     })
 
     const ssiCharly = await buildSSICore({
       keys: await buildKeyChain({
         password: '11111111',
-        crypto: nodeCryptoHelper
+        crypto: cryptoHelper
       }),
-      crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
+      crypto: cryptoHelper,
+      did: buildDidRegistryWarpper(buildDidHelper(cryptoHelper))
     })
 
     const uAliceDid = await ssiAlice.did.helper().createDID(

@@ -15,7 +15,7 @@
  */
 
 import { Fragment, PropsWithChildren, useEffect, useMemo, useState } from 'react'
-import { buildWalletWrapper, createWalletHandler, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_INIT_SENSETIVE, InitSensetiveEventParams, WalletHandler, webCryptoHelper, Credential, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
+import { buildWalletWrapper, createWalletHandler, EXTENSION_TRIGGER_AUTHENTICATED, EXTENSION_TRIGGER_INIT_SENSETIVE, InitSensetiveEventParams, WalletHandler, cryptoHelper, Credential, REGISTRY_SECTION_PEER, REGISTRY_TYPE_IDENTITIES } from '@owlmeans/regov-ssi-core'
 
 import { i18n as I18n } from 'i18next'
 
@@ -97,7 +97,7 @@ export const WalletPersistentIntegrationReact = (
       if (!handler.wallet) {
         if (!handler.stores['default']) {
           const wallet = await buildWalletWrapper(
-            { crypto: webCryptoHelper, extensions: extensions?.registry },
+            { crypto: cryptoHelper, extensions: extensions?.registry },
             getRegovPassword() ?? '',
             {
               name: 'Default wallet',
@@ -118,7 +118,7 @@ export const WalletPersistentIntegrationReact = (
         }
         await handler.loadStore(async (handler) => {
           return await buildWalletWrapper(
-            { crypto: webCryptoHelper, extensions: extensions?.registry },
+            { crypto: cryptoHelper, extensions: extensions?.registry },
             getRegovPassword() ?? '',
             handler.stores['default'],
             {

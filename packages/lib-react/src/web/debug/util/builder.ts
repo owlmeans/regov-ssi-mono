@@ -15,13 +15,13 @@
  */
 
 import { Config } from "../../../common"
-import { ExtensionRegistry, webCryptoHelper } from "@owlmeans/regov-ssi-core"
+import { ExtensionRegistry, cryptoHelper } from "@owlmeans/regov-ssi-core"
 import { buildWalletWrapper } from "@owlmeans/regov-ssi-core"
 
 
 export const buildDevWallet = async (config: Config, extensions?: ExtensionRegistry, alias = DEFAULT_DEVELOPMENT_VOICE_ALIAS) =>
   await buildWalletWrapper(
-    { crypto: webCryptoHelper, extensions }, '11111111', { alias, name: 'Development wallet' }, {
+    { crypto: cryptoHelper, extensions }, '11111111', { alias, name: 'Development wallet' }, {
     prefix: config.DID_PREFIX,
     defaultSchema: config.baseSchemaUrl,
     didSchemaPath: config.DID_SCHEMA_PATH,

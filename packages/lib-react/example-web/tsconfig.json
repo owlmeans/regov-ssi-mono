@@ -5,6 +5,7 @@
       "esnext"
     ],
     "module": "esnext",
+    "target": "esnext",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -26,7 +27,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "isolatedModules": true
+    // "isolatedModules": true
   },
   "exclude": [
     "./build/**/*",

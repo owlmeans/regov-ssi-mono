@@ -18,15 +18,15 @@ require('dotenv').config()
 
 import {
   buildDidHelper, DIDPURPOSE_ASSERTION, DIDPURPOSE_VERIFICATION, buildDidRegistryWarpper,
-  VERIFICATION_KEY_CONTROLLER, nodeCryptoHelper
+  VERIFICATION_KEY_CONTROLLER, cryptoHelper
 } from "../index"
 
 
 const _test = async () => {
-  const helper = buildDidHelper(nodeCryptoHelper)
+  const helper = buildDidHelper(cryptoHelper)
   buildDidRegistryWarpper(helper)
 
-  const key = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
+  const key = await cryptoHelper.getKey(await cryptoHelper.getRandomBytes(32))
 
   const didDocUnsinged = await helper.createDID(key, {
     purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION],
@@ -41,9 +41,9 @@ const _test = async () => {
   const result = await helper.verifyDID(didDoc)
   console.log('Verfification result', result)
 
-  const aliceKey = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
+  const aliceKey = await cryptoHelper.getKey(await cryptoHelper.getRandomBytes(32))
   aliceKey.nextKeyDigest = 'nkdigest-simulation'
-  const bobKey = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
+  const bobKey = await cryptoHelper.getKey(await cryptoHelper.getRandomBytes(32))
   bobKey.nextKeyDigest = 'nkdigest-simulation'
 
   const depDocUnsinged = await helper.createDID(aliceKey, {

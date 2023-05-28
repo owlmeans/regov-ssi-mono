@@ -17,7 +17,7 @@
 require('dotenv').config()
 
 import {
-  buildDidHelper, nodeCryptoHelper, normalizeValue, DIDDocument, DIDPURPOSE_ASSERTION, 
+  buildDidHelper, cryptoHelper, normalizeValue, DIDDocument, DIDPURPOSE_ASSERTION, 
   DIDPURPOSE_VERIFICATION, buildDidRegistryWarpper, VERIFICATION_KEY_CONTROLLER
 } from "../index"
 
@@ -31,11 +31,11 @@ const ctx: {
 } = {}
 
 describe('DID Helper', () => {
-  const didHelper = buildDidHelper(nodeCryptoHelper)
+  const didHelper = buildDidHelper(cryptoHelper)
   buildDidRegistryWarpper(didHelper)
 
   it('creates DID Id', async () => {
-    const key = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
+    const key = await cryptoHelper.getKey(await cryptoHelper.getRandomBytes(32))
     const id = didHelper.makeDIDId(key)
     const described = id.split(':')
     expect(described.length).toBe(3)
@@ -45,7 +45,7 @@ describe('DID Helper', () => {
   })
 
   it('creates a DID Document', async () => {
-    const key = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
+    const key = await cryptoHelper.getKey(await cryptoHelper.getRandomBytes(32))
 
     const didDocUnsinged = await didHelper.createDID(key, {
       purpose: [DIDPURPOSE_VERIFICATION, DIDPURPOSE_ASSERTION],
@@ -83,9 +83,9 @@ describe('DID Helper', () => {
   })
 
   it('produces holder / controller verifiable did', async () => {
-    const aliceKey = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
+    const aliceKey = await cryptoHelper.getKey(await cryptoHelper.getRandomBytes(32))
     aliceKey.nextKeyDigest = 'nkdigest-simulation'
-    const bobKey = await nodeCryptoHelper.getKey(await nodeCryptoHelper.getRandomBytes(32))
+    const bobKey = await cryptoHelper.getKey(await cryptoHelper.getRandomBytes(32))
     bobKey.nextKeyDigest = 'nkdigest-simulation'
 
     const didDocUnsinged = await didHelper.createDID(aliceKey, {

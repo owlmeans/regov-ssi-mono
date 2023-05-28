@@ -14,9 +14,10 @@
  *  limitations under the License.
  */
 
-import { Secp256k1Key, Secp256k1Signature } from "@owlmeans/tiny-lds-ecdsa-secp256k1-2019"
-import { Base58Lib, CryptoHelper, CryptoKey } from "../types"
-import { getCryptoAdapter } from '../adapter'
+// import { Secp256k1Key, Secp256k1Signature } from "@owlmeans/tiny-lds-ecdsa-secp256k1-2019"
+import { Base58Lib, CryptoHelper, CryptoKey } from "./types"
+import { getCryptoAdapter } from './adapter'
+import { Secp256k1Key, Secp256k1Signature } from './secp256k1'
 
 require("jsonld/lib/events").safeEventHandler = ({ next }: { next: () => void }) => next()
 
@@ -86,30 +87,49 @@ const _normalizePassword = (password: string) => {
 }
 
 
-export const nodeCryptoHelper: CryptoHelper = {
-  buildSignSuite: (options) => new Secp256k1Signature({
-    key: new Secp256k1Key({
-      ...options,
-      privateKeyHex: options.privateKey && Buffer.from(_base58().decode(options.privateKey)).toString('hex'),
-      publicKeyHex: options.publicKey && Buffer.from(_base58().decode(options.publicKey)).toString('hex'),
-    }),
-    useNativeCanonize: false
-  }),
+export const cryptoHelper: CryptoHelper = {
+  // buildSignSuite: (options) => new Secp256k1Signature({
+  //   key: new Secp256k1Key({
+  //     ...options,
+  //     privateKeyHex: options.privateKey && Buffer.from(_base58().decode(options.privateKey)).toString('hex'),
+  //     publicKeyHex: options.publicKey && Buffer.from(_base58().decode(options.publicKey)).toString('hex'),
+  //   }),
+  //   useNativeCanonize: false
+  // }),
+
+  buildSignSuite: options => {
+    return new Secp256k1Signature({
+      key: new Secp256k1Key({
+        ...options,
+        pk: options.privateKey == null ? undefined : _base58().decode(options.privateKey),
+        pubKey: options.publicKey == null ? undefined : _base58().decode(options.publicKey)
+      }),
+      useNativeCanonize: false
+    })
+  },
 
   hash: _hash,
 
   hashBytes: data => _hashBytes(data).toString('base64'),
 
-  sign: (data: string, key: string) => {
+  sign: (data, key) => {
+    if (typeof data !== 'string') {
+      // const adapter = getCryptoAdapter()
+
+      return Buffer.from(
+        _getSecp256k1().sign(data, _base58().decode(key))
+      ).toString('base64')
+    }
+
     return Buffer.from(
       _getSecp256k1().sign(_hashBytes(data), _base58().decode(key))
     ).toString('base64')
   },
 
-  verify: (signature: string, data: string, key: string) => {
+  verify: (signature: string, data: string | Uint8Array, key: string) => {
     return _getSecp256k1().verify(
       Buffer.from(signature, 'base64'),
-      _hashBytes(data),
+      typeof data === 'string' ? _hashBytes(data) : data,
       _base58().decode(key)
     )
   },
