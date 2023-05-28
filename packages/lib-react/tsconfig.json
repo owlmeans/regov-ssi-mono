@@ -4,14 +4,14 @@
       "dom",
       "esnext"
     ],
-    "module": "commonjs",
+    "module": "esnext",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist/",
     "rootDir": "./src/",
     "moduleResolution": "node",
-    "jsx": "react",
+    "jsx": "react-jsx",
     // "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -24,11 +24,9 @@
     "esModuleInterop": true,
     "inlineSources": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    // "isolatedModules": true
   },
-  "include": [
-    "src"
-  ],
   "exclude": [
     "./dist/**/*",
     "./example-web/**/*"

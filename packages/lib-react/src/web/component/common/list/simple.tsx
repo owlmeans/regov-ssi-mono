@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import { WrappedComponentProps } from '../../../../common'
 import { ButtonParams, FormMainButton } from '../button'
 import Card from '@mui/material/Card'

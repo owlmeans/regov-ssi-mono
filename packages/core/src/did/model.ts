@@ -403,7 +403,8 @@ export const buildDidHelper =
               )
               : new jldsign.purposes.PublicKeyProofPurpose({
                 controller: { id: controller }
-              })
+              }),
+            addSuiteContext: false
           }
         )
       },

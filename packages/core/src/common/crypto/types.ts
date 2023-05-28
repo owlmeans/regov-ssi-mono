@@ -14,6 +14,10 @@
  *  limitations under the License.
  */
 
+import type { encodeBase58, decodeBase58, toBeArray, getBytes } from 'ethers/lib.esm/utils'
+import type { sha256, randomBytes } from 'ethers/lib.esm/crypto'
+import type { HDNodeWallet } from 'ethers/lib.esm/wallet'
+import type { signSync, verify } from '@noble/secp256k1'
 
 export type CryptoHelper = {
   buildSignSuite: (keyOptions: BuildSignSignatureOptions) => Object
@@ -22,17 +26,17 @@ export type CryptoHelper = {
 
   hashBytes: (data: Buffer) => string
 
-  sign: (data: string, key: string) => string
+  sign: (data: string | Uint8Array, key: string) => string
 
-  getRandomBytes: (size: number) => Promise<Uint8Array>
+  getRandomBytes: (size: number) => Uint8Array
 
-  verify: (signature: string, data: string, key: string) => boolean
+  verify: (signature: string, data: string | Uint8Array, key: string) => boolean
 
   normalizePassword: (password: string) => Uint8Array
 
   encrypt: (body: string, password: string) => Promise<string>
 
-  decrypt: (chiper: string, password: string)=> Promise<string>
+  decrypt: (chiper: string, password: string) => Promise<string>
 
   makeDerivationPath: (index?: number, change?: number, account?: number, bc?: string) => string
 
@@ -44,6 +48,42 @@ export type CryptoHelper = {
    * @bug seed param implicitly requires Buffer not Uint8Array!
    */
   getKey: (seed: Uint8Array, derivationPath?: string) => CryptoKey & { dp: string }
+}
+
+export interface CryptoAdapter {
+  base58: {
+    encode: typeof encodeBase58
+    decode: typeof decodeBase58
+    toArray: typeof toBeArray
+  }
+
+  sha256: {
+    toBytes: typeof getBytes
+    hash: typeof sha256
+  }
+
+  aes: {
+    encoder: any
+  }
+
+  secp: {
+    sign: typeof signSync,
+    verify: typeof verify
+  },
+
+  random: typeof randomBytes
+
+  WalletClass: typeof HDNodeWallet
+
+  _wallets: {
+    [key: string]: HDNodeWallet
+  }
+
+  setBase58Impl: (encode: typeof encodeBase58, decode: typeof decodeBase58, toArray: typeof toBeArray) => void
+  setSha256Impl: (hash: typeof sha256, toBytes: typeof getBytes) => void
+  setAesImpl: (encoder: any) => void
+  setRandomImpl: (random: typeof randomBytes) => void
+  setSecpImpl: (sign: typeof signSync, _verify: typeof verify) => void
 }
 
 export type Base58Lib = {

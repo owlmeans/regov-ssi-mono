@@ -25,12 +25,12 @@
   "devDependencies": {
     "@types/react-native": "^0.70.8",
     "react-native-eject": "^0.2.0",
-    "typescript": "^4.5.2"
+    "typescript": "^4.9.5"
   },
   "peerDependencies": {},
   "dependencies": {
     "@owlmeans/regov-lib-native": "0.1.1",
-    "react": "^17.0.2",
+    "react": "^18.2.0",
     "react-native": "^0.68.5",
     "react-native-crypto": "^2.2.0",
     "react-native-randombytes": "^3.6.1",

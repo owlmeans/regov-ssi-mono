@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import {
   EmptyProps, RegovComponentProps, useRegov, withRegov, EXTENSION_ITEM_PURPOSE_VALIDATION,
   ResultWidgetParams

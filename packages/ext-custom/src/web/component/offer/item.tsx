@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 
 import { EmptyProps, ListItemMeta, useRegov } from '@owlmeans/regov-lib-react'
 import { CredentialWrapper, getDeepValue } from '@owlmeans/regov-ssi-core'

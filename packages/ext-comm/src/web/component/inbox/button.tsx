@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, useEffect } from 'react'
+import { FunctionComponent, useEffect } from 'react'
 import { Extension, REGISTRY_SECTION_PEER } from '@owlmeans/regov-ssi-core'
 import { EmptyProps, RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import IconButton from '@mui/material/IconButton'

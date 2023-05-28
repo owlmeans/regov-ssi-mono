@@ -18,7 +18,7 @@
 require('dotenv').config()
 
 import {
-  nodeCryptoHelper, buildDidHelper, buildDidRegistryWarpper, DIDPURPOSE_ASSERTION,
+  cryptoHelper, buildDidHelper, buildDidRegistryWarpper, DIDPURPOSE_ASSERTION,
   DIDPURPOSE_AUTHENTICATION, DIDPURPOSE_VERIFICATION, VERIFICATION_KEY_CONTROLLER,
   VERIFICATION_KEY_HOLDER, buildKeyChain, buildSSICore
 } from "../index"
@@ -32,10 +32,10 @@ const _test = async () => {
   const ssi = await buildSSICore({
     keys: await buildKeyChain({
       password: '11111111',
-      crypto: nodeCryptoHelper
+      crypto: cryptoHelper
     }),
-    crypto: nodeCryptoHelper,
-    did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
+    crypto: cryptoHelper,
+    did: buildDidRegistryWarpper(buildDidHelper(cryptoHelper))
   })
 
   const subject = {
@@ -114,28 +114,28 @@ const _test = async () => {
     const ctxAlice = await buildSSICore({
       keys: await buildKeyChain({
         password: '11111111',
-        crypto: nodeCryptoHelper
+        crypto: cryptoHelper
       }),
-      crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
+      crypto: cryptoHelper,
+      did: buildDidRegistryWarpper(buildDidHelper(cryptoHelper))
     })
 
     const ctxBob = await buildSSICore({
       keys: await buildKeyChain({
         password: '11111111',
-        crypto: nodeCryptoHelper
+        crypto: cryptoHelper
       }),
-      crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
+      crypto: cryptoHelper,
+      did: buildDidRegistryWarpper(buildDidHelper(cryptoHelper))
     })
 
     const ctxCharly = await buildSSICore({
       keys: await buildKeyChain({
         password: '11111111',
-        crypto: nodeCryptoHelper
+        crypto: cryptoHelper
       }),
-      crypto: nodeCryptoHelper,
-      did: buildDidRegistryWarpper(buildDidHelper(nodeCryptoHelper))
+      crypto: cryptoHelper,
+      did: buildDidRegistryWarpper(buildDidHelper(cryptoHelper))
     })
 
     const uAliceDid = await ctxAlice.did.helper().createDID(

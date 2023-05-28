@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { ReactElement } from 'react'
+import { ReactElement } from 'react'
 import { WrappedComponentProps } from '../../../common'
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"

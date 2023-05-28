@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 
 import { 
   CredentialWrapper, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES 

@@ -17,7 +17,7 @@
 import { EmptyProps, RegovComponentProps, withRegov } from '../../../common'
 import copy from 'copy-to-clipboard'
 import saveAs from 'file-saver'
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import Button from '@mui/material/Button'
 
 

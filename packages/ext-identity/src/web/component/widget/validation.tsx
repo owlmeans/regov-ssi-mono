@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import { Credential, getCompatibleSubject } from '@owlmeans/regov-ssi-core'
 import { IdentitySubject, REGOV_IDENTITY_DEFAULT_NAMESPACE } from '../../../types'
 import {

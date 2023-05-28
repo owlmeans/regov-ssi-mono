@@ -16,10 +16,7 @@
 
 require('dotenv').config()
 import cors from "cors"
-import {
-  buildApp, buildFileStore, buildRotuer, buildServerExtensionRegistry,
-  ServerAppConfig
-} from "@owlmeans/regov-lib-node"
+import { buildApp, buildFileStore, buildRotuer, buildServerExtensionRegistry, ServerAppConfig } from "@owlmeans/regov-lib-node"
 import { createWalletHandler } from "@owlmeans/regov-ssi-core"
 import { buildIdentityExtensionServer } from "@owlmeans/regov-ext-identity/dist/index.server"
 import { authServerExtension } from "@owlmeans/regov-ext-auth/dist/index.server"
@@ -27,15 +24,13 @@ import { groupsServerExtension } from "@owlmeans/regov-ext-groups/dist/index.ser
 import { addCredential } from "@owlmeans/regov-ext-custom/dist/utils"
 import { updateFactories } from "@owlmeans/regov-ext-custom/dist/utils/extension"
 import {
-  USE_CLAIM_VIEW, USE_CREATE_CLAIM, USE_CREATE_OFFER, USE_CRED_VIEW, USE_ITEM_CLAIM,
-  USE_ITEM_CRED, USE_ITEM_OFFER, USE_PREVIEW_CLAIM, USE_VIEW_OFFER
+  USE_CLAIM_VIEW, USE_CREATE_CLAIM, USE_CREATE_OFFER, USE_ITEM_OFFER, USE_PREVIEW_CLAIM,
+  USE_VIEW_OFFER
 } from "@owlmeans/regov-ext-custom/dist/custom.types"
-
 import './warmup'
 
 import util from 'util'
 util.inspect.defaultOptions.depth = 8
-
 
 const EXAMPLE_IDENTITY_TYPE = 'ExampleIdentity'
 

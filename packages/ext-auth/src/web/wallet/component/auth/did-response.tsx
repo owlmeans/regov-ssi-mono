@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent } from "react"
+import { FunctionComponent } from "react"
 
 import { DIDCommConnectMeta, CommConnectionStatusHandler, ERROR_COMM_SEND_FAILED } from "@owlmeans/regov-comm"
 import {

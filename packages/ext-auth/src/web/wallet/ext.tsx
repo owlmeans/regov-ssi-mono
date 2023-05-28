@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import React from "react"
 import { buildUIExtension, castMainModalHandler, ExtensionItemPurpose, EXTENSION_ITEM_PURPOSE_ITEM, MainModalAuthenticatedEventParams, PurposeListItemParams, UIExtensionFactoryProduct } from "@owlmeans/regov-lib-react"
 import { addObserverToSchema, EXTENSION_TRIGGER_AUTHENTICATED, isPresentation } from "@owlmeans/regov-ssi-core"
 import { authExtension } from "../../ext"

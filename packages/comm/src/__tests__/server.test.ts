@@ -16,7 +16,7 @@
 
 import 'dotenv/config'
 
-import { buildWalletWrapper, nodeCryptoHelper } from '@owlmeans/regov-ssi-core'
+import { buildWalletWrapper, cryptoHelper } from '@owlmeans/regov-ssi-core'
 import { createWSChannel } from '../channel'
 import { createWSClient } from '../client'
 import { buildDidCommHelper } from '../model'
@@ -52,11 +52,11 @@ describe('WS Server', () => {
 
   it('works with wallets', async () => {
     const aliceWallet = await buildWalletWrapper(
-      { crypto: nodeCryptoHelper }, '11111111', { alias: 'alice', name: 'Alice' }, config
+      { crypto: cryptoHelper }, '11111111', { alias: 'alice', name: 'Alice' }, config
     )
 
     const bobWallet = await buildWalletWrapper(
-      { crypto: nodeCryptoHelper }, '11111111', { alias: 'bob', name: 'Bob' }, config
+      { crypto: cryptoHelper }, '11111111', { alias: 'bob', name: 'Bob' }, config
     )
 
     const aliceChannel = await createWSChannel({

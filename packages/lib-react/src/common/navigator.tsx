@@ -14,12 +14,7 @@
  *  limitations under the License.
  */
 
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext
-} from "react"
-
+import { createContext, PropsWithChildren, useContext } from "react"
 
 export const basicNavigator: BasicNavigator = {
   assertAuth: async () => true,

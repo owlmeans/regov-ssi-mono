@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import { EmptyProps, RegovComponentProps, withRegov, WrappedComponentProps } from '../../../../common/'
 import { EvidenceValidationResult } from '@owlmeans/regov-ssi-core'
 

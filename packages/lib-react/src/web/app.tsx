@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { i18nDefaultOptions, i18nSetup } from '../common'
 import { createWalletHandler } from '@owlmeans/regov-ssi-core'
 import { NavigationRoot, createRootNavigator } from './router'
@@ -29,8 +29,8 @@ import CssBaseline from '@mui/material/CssBaseline'
 
 
 const i18n = i18nSetup(i18nDefaultOptions)
-  
-export const WalletApp = ({ config, extensions }: WalletAppParams) => {
+
+export const WalletApp = ({ config, extensions, CryptoLoader }: WalletAppParams) => {
   const handler = useMemo(createWalletHandler, [])
   const storage = useMemo(() => buildStorageHelper(handler, config), [config])
 
@@ -38,21 +38,21 @@ export const WalletApp = ({ config, extensions }: WalletAppParams) => {
 
   const [loaded, setLoaded] = useState(false)
 
-  useEffect(() => {
-    storage.init().then(
-      async _ => {
-        console.info('STORE INITIALIZED')
-        setLoaded(true)
-      }
-    )
-
-    return () => {
-      console.info('STORE DETACHED')
-      storage.detach()
-    }
-  }, [storage])
-
   return <CssBaseline>
+    <CryptoLoader onFinish={() => {
+      console.log('>>> Crypto loading finished <<<')
+      storage.init().then(
+        async _ => {
+          console.info('STORE INITIALIZED')
+          setLoaded(true)
+        }
+      )
+
+      return () => {
+        console.info('STORE DETACHED')
+        storage.detach()
+      }
+    }} />
     <Container maxWidth="xl" sx={{ pb: 10 }}>
       {
         loaded

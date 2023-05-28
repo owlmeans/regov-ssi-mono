@@ -14,10 +14,59 @@
  *  limitations under the License.
  */
 
-const { override, addExternalBabelPlugin, addWebpackAlias } = require('customize-cra')
+// const { override, addExternalBabelPlugin, addWebpackAlias } = require('customize-cra')
 const path = require('path')
+const NodePlugin = require('node-polyfill-webpack-plugin')
 
-module.exports = override(
-  addExternalBabelPlugin('@babel/plugin-proposal-nullish-coalescing-operator'),
-  addWebpackAlias({ react: path.resolve(__dirname, 'node_modules/react') })
-)
+
+// console.log(override(
+//   addExternalBabelPlugin('@babel/plugin-proposal-nullish-coalescing-operator'),
+//   addWebpackAlias({
+//     url: path.resolve(__dirname, 'node_modules/url'),
+//     crypto: require.resolve("crypto-browserify"),
+//     os: require.resolve("os-browserify/browser"),
+//     path: require.resolve("path-browserify"),
+//     stream: require.resolve("stream-browserify"),
+//     buffer: require.resolve('buffer/'),
+
+//   })
+// )().paths())
+
+// process.exit()
+
+module.exports = (config, env) => {
+  config.plugins ??= []
+  config.plugins.push(new NodePlugin())
+  config.resolve ??= {}
+  config.resolve.alias ??= {}
+  // config.resolve.alias['react'] = path.resolve(__dirname, 'node_modules/react')
+  // config.resolve.alias['react'] = require.resolve('react')
+  // config.resolve.alias['react-dom'] = path.resolve(__dirname, 'node_modules/react-dom')
+  // config.resolve.alias['react-dom/client'] = path.resolve(__dirname, 'node_modules/react-dom/client.js')
+  // config.resolve.alias['react-dom'] = require.resolve('react-dom')
+  // config.resolve.alias['did-jwt'] = path.resolve(__dirname, 'node_modules/did-jwt')
+  // Object.entries({
+  //   url: path.resolve(__dirname, 'node_modules/url'),
+  //   crypto: require.resolve("crypto-browserify"),
+  //   os: require.resolve("os-browserify/browser"),
+  //   path: require.resolve("path-browserify"),
+  //   stream: require.resolve("stream-browserify"),
+  //   buffer: require.resolve('buffer/'),
+  // }).forEach(([alias, path]) => config.resolve.alias[alias] = path)
+
+  return config
+}
+
+
+// module.exports = override(
+//   addExternalBabelPlugin('@babel/plugin-proposal-nullish-coalescing-operator'),
+//   addWebpackAlias({
+//     url: path.resolve(__dirname, 'node_modules/url'),
+//     crypto: require.resolve("crypto-browserify"),
+//     os: require.resolve("os-browserify/browser"),
+//     path: require.resolve("path-browserify"),
+//     stream: require.resolve("stream-browserify"),
+//     buffer: require.resolve('buffer/'),
+
+//   })
+// )

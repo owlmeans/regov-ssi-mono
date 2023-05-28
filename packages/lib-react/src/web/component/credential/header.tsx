@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useState } from 'react'
+import { Fragment, FunctionComponent, useState } from 'react'
 import {
   castMenuItemParams, CredentialListNavigator, EmptyProps, ManuItemParams, MenuActionResult, RegovComponentProps,
   useNavigator, useRegov, withRegov

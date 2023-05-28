@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import {
   MainDashboardImplProps, NavigatorContextProvider, useNavigator, useRegov,
   CredentialProcessor, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET

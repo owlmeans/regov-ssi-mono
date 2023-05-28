@@ -15,7 +15,7 @@
  */
 
 import { EncryptedStore } from '@owlmeans/regov-ssi-core'
-import React, { FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 import {
   BasicNavigator, EmptyProps, RegovComponentProps, useRegov, WalletNavigatorMethod,
   withRegov, WrappedComponentProps

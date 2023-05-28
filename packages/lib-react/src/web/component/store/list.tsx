@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 
 import { StoreListImplProps, MainFooter } from '../../../common'
 import { FormHeaderButton, SimpleList, SimpleListItem } from '../../component/common'

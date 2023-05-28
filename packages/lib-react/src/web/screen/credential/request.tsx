@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   useRegov, withRegov, PurposeCredentialCreationParams, EXTENSION_ITEM_PURPOSE_REQUEST

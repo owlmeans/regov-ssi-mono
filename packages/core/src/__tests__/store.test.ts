@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { nodeCryptoHelper, EncryptedStore, WalletWrapper, buildWalletWrapper, KEYCHAIN_DEFAULT_KEY } from "../index"
+import { cryptoHelper, EncryptedStore, WalletWrapper, buildWalletWrapper, KEYCHAIN_DEFAULT_KEY } from "../index"
 import util from 'util'
 util.inspect.defaultOptions.depth = 6
 
@@ -30,7 +30,7 @@ describe('Wallet', () => {
   }
 
   it('creates store', async () => {
-    const wallet = _ctx.wallet = await buildWalletWrapper({ crypto: nodeCryptoHelper }, '11111111', {
+    const wallet = _ctx.wallet = await buildWalletWrapper({ crypto: cryptoHelper }, '11111111', {
       alias: 'current',
       name: 'Some name'
     }, { key: { seed: _ctx.seed } })
@@ -53,7 +53,7 @@ describe('Wallet', () => {
       throw new Error('No store from pervious test')
     }
 
-    const newWallet = await buildWalletWrapper({ crypto: nodeCryptoHelper }, '11111111', _ctx.store)
+    const newWallet = await buildWalletWrapper({ crypto: cryptoHelper }, '11111111', _ctx.store)
 
     expect(newWallet.wallet).toMatchSnapshot({
       keyChain: {

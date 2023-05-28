@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import { FormProvider, useForm, UseFormProps } from 'react-hook-form'
 import { StoreLoginFields, StoreLoginImplProps, MainFooter } from '../../../common'
-import { webCryptoHelper } from '@owlmeans/regov-ssi-core'
+import { cryptoHelper } from '@owlmeans/regov-ssi-core'
 import {
   FormMainAction, PasswordInput, PrimaryForm, AlertOutput, FormHeaderButton
 } from '../../component/common'
@@ -33,7 +33,7 @@ export const StoreLoginWeb = (props: StoreLoginImplProps) => {
       <PasswordInput {...props} field="login.password" />
       <AlertOutput {...props} field="login.alert" />
       <FormMainAction {...props} title="login.main" action={
-        methods.handleSubmit(props.login(methods, webCryptoHelper))
+        methods.handleSubmit(props.login(methods, cryptoHelper))
       } />
     </PrimaryForm>
     <MainFooter />

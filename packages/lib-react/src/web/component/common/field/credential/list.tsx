@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useMemo, useState } from "react"
+import { Fragment, FunctionComponent, useMemo, useState } from "react"
 import { buildCredentialListControl } from "./control"
 import { CredentialListInputPopup } from './popup'
 import { CredentialListInputProps, isCredentialListControl } from "./types"

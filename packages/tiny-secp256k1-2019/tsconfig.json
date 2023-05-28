@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
+    "module": "esnext",
+    "target": "esnext",
     "lib": [
       "dom",
       "esnext"
@@ -22,7 +22,6 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "jsx": "react",
     "esModuleInterop": true,
     "outDir": "dist",
     "skipLibCheck": true,

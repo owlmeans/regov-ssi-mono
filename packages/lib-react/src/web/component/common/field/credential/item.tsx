@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react"
+import { FunctionComponent } from "react"
 import { CredentialListItemInputProps, CredentialListItemInputRendererProps } from "./types"
 import { EXRENSION_ITEM_PURPOSE_INPUT_ITEM, UIExtensionFactoryProduct, useRegov } from "../../../../../common"
 import { CredentialListItemInputSimpleRenderer } from "./item/simple"

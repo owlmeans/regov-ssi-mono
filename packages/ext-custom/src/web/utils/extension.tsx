@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import React from 'react'
 import {
   EXTENSION_ITEM_PURPOSE_CLAIM, EXTENSION_ITEM_PURPOSE_ITEM, EXTENSION_ITEM_PURPOSE_ROUTE, ManuItemParams,
   MENU_TAG_CLAIM_NEW, MENU_TAG_REQUEST_NEW, UIExtension, UIExtensionFactoryProduct, castMainModalHandler

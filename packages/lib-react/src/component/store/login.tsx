@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent, useEffect } from 'react'
+import { FunctionComponent, useEffect } from 'react'
 
 import { CryptoHelper } from '@owlmeans/regov-ssi-core'
 import { buildWalletWrapper } from '@owlmeans/regov-ssi-core'

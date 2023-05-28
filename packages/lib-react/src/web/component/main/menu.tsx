@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import { MainMenuImplProps } from '../../../common'
 import { MainMenuItemWeb } from './menu/item'
 import List from '@mui/material/List'

@@ -149,6 +149,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
             documentLoader,
             purpose: new jsigs.purposes.AssertionProofPurpose({ controller: issuer }),
             compactProof: false,
+            addSuiteContext: false
           }
         ) as C
       } catch (e: any) {

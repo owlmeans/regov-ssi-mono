@@ -27,7 +27,7 @@ import {
   ERROR_COMM_WS_TIMEOUT, ERROR_COMM_WS_UNKNOWN, REGOV_COMM_REQUEST_TYPE, REGOV_COMM_RESPONSE_TYPE
 } from '../types'
 import {
-  buildWalletWrapper, ExtensionRegistry, makeRandomUuid, nodeCryptoHelper, DIDDocument, VERIFICATION_KEY_HOLDER,
+  buildWalletWrapper, ExtensionRegistry, makeRandomUuid, cryptoHelper, DIDDocument, VERIFICATION_KEY_HOLDER,
   EXTENSION_TRIGGER_PRODUCE_IDENTITY, InitSensetiveEventParams
 } from '@owlmeans/regov-ssi-core'
 import { parseJWE } from '../util'
@@ -44,7 +44,7 @@ export const startWSServer = async (
   })
 
   const serverWallet = await buildWalletWrapper(
-    { crypto: nodeCryptoHelper, extensions }, '00000000', { alias: 'server', name: 'Regov' },
+    { crypto: cryptoHelper, extensions }, '00000000', { alias: 'server', name: 'Regov' },
     {
       prefix: config.did.prefix,
       defaultSchema: config.did.baseSchemaUrl,
@@ -164,7 +164,7 @@ export const startWSServer = async (
     }
 
     _messages[did].push({
-      id: nodeCryptoHelper.hash(message),
+      id: cryptoHelper.hash(message),
       data: message,
       ttl: Date.now() + config.message.ttl
     })
@@ -215,7 +215,7 @@ export const startWSServer = async (
           return reject && reject(code)
         } else if (data.startsWith('did:')) {
           const didInfo = didHelper.parseDIDId(data)
-          const sequence = (await nodeCryptoHelper.getRandomBytes(32)).toString()
+          const sequence = (await cryptoHelper.getRandomBytes(32)).toString()
           const request = extension.getFactory(REGOV_COMM_REQUEST_TYPE)
 
           const unsigned = await request.build(serverWallet, { subjectData: { handshakeSequence: sequence } })

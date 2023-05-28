@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { MainLoadingImplProps } from '../../../common'
 import Alert, { AlertColor } from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useEffect } from 'react'
+import { Fragment, FunctionComponent, useEffect } from 'react'
 
 import {
   Credential, getCompatibleSubject, Presentation, RegistryItem, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CLAIMS,

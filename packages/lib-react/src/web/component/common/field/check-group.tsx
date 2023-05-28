@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import { WrappedComponentProps } from '../../../../common'
 import { useFormContext, Controller } from 'react-hook-form'
 import { formatError } from '../error'

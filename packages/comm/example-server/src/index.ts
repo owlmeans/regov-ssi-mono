@@ -16,11 +16,11 @@
 
 require('dotenv').config()
 import http from 'http'
-import { buildExtensionRegistry } from "@owlmeans/regov-ssi-core"
-import { buildIdentityExtension } from "@owlmeans/regov-ext-identity/dist/ext"
-import { startWSServer } from '@owlmeans/regov-come'
+import { buildExtensionRegistry } from '@owlmeans/regov-ssi-core'
+import { buildIdentityExtension } from '@owlmeans/regov-ext-identity/dist/ext'
+import { startWSServer } from '@owlmeans/regov-comm'
 
-import './warmup'
+import './warmup.js'
 
 import util from 'util'
 util.inspect.defaultOptions.depth = 8

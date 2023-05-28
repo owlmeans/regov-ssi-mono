@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import React from 'react'
+
 import { StoreCreationFields, StoreCreationImplProps, MainFooter } from '../../../common'
 import { useForm, FormProvider, UseFormProps, } from 'react-hook-form'
-import { webCryptoHelper } from '@owlmeans/regov-ssi-core'
+import { cryptoHelper } from '@owlmeans/regov-ssi-core'
 import {
   PrimaryForm, FormHeaderButton, MainTextInput, NewPasswordInput, FormMainAction
 } from '../../component/common'
@@ -34,7 +34,7 @@ export const StoreCreationWeb = (props: StoreCreationImplProps) => {
       <MainTextInput {...props} field="creation.login" />
       <NewPasswordInput {...props} field="creation.password" />
       <FormMainAction {...props} title="creation.create" action={
-        methods.handleSubmit(props.create(methods, webCryptoHelper))
+        methods.handleSubmit(props.create(methods, cryptoHelper))
       } />
     </PrimaryForm>
     <MainFooter />

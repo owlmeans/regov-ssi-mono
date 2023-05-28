@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { useEffect, FunctionComponent, Fragment, ReactNode } from 'react'
+import { useEffect, FunctionComponent, Fragment, ReactNode } from 'react'
 import { EmptyProps, RegovComponentProps, useRegov, withRegov, WrappedComponentProps } from '../../common/'
 
 

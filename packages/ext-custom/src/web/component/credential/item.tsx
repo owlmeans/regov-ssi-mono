@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
+import { Fragment, FunctionComponent, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CustomDescription, DefaultPresentation, DefaultSubject, UseFieldAt } from '../../../custom.types'
 

@@ -14,27 +14,23 @@
  *  limitations under the License.
  */
 
-import { Secp256k1Key, Secp256k1Signature } from "@owlmeans/tiny-lds-ecdsa-secp256k1-2019"
-import { sha256 } from 'hash.js'
-import { fromSeed, BIP32Interface } from 'bip32'
-import { Base58Lib, CryptoHelper, CryptoKey } from "../types"
-import { encode as encode58, decode as decode58 } from './base58'
+// import { Secp256k1Key, Secp256k1Signature } from "@owlmeans/tiny-lds-ecdsa-secp256k1-2019"
+import { Base58Lib, CryptoHelper, CryptoKey } from "./types"
+import { getCryptoAdapter } from './adapter'
+import { Secp256k1Key, Secp256k1Signature } from './secp256k1'
 
 require("jsonld/lib/events").safeEventHandler = ({ next }: { next: () => void }) => next()
 
 const IV_LENGTH = 16
 const ENCRYPTION_ALGORITHM = 'aes-256-cbc'
 
-const _keysCache: { [key: string]: BIP32Interface } = {}
-
-const _hashBytes = (bytes: Buffer | string) => Buffer.from(sha256().update(bytes).digest())
+const _hashBytes = (bytes: Buffer | string) => Buffer.from(
+  getCryptoAdapter().sha256.hash(Buffer.from(bytes)).substring(2), 'hex'
+)
 
 const _hash = (data: string | Buffer) => _base58().encode(_hashBytes(data))
 
 const _createCipher = (suite: string, key: unknown, iv: unknown, isDecipher = false) => {
-  const aes = require('browserify-aes/browser')
-  const aesModes = require('browserify-aes/modes')
-
   let cipherType = 'createCipheriv'
   if (isDecipher) {
     cipherType = 'createDecipheriv'
@@ -42,11 +38,9 @@ const _createCipher = (suite: string, key: unknown, iv: unknown, isDecipher = fa
 
   suite = suite.toLowerCase()
 
-  if (aesModes[suite]) {
-    return aes[cipherType](suite, key, iv)
-  }
+  const adapter = getCryptoAdapter()
 
-  throw new Error('invalid suite type')
+  return adapter.aes.encoder[cipherType](suite, key, iv)
 }
 
 const _createCipheriv = (suite: string, key: unknown, iv: unknown) => {
@@ -57,18 +51,18 @@ const _createDecipheriv = (suite: string, key: unknown, iv: unknown) => {
   return _createCipher(suite, key, iv, true)
 }
 
-const _getSecp256k1 = () => {
-  const secp256k1 = require('secp256k1')
+const _getSecp256k1 = () => ({
+  sign: (msg: Uint8Array, pk: Uint8Array) =>
+    getCryptoAdapter().secp.sign(msg, pk),
+  verify: (sig: Uint8Array, msg: Uint8Array, pub: Uint8Array) =>
+    getCryptoAdapter().secp.verify(sig, msg, pub)
+})
 
-  return {
-    sign: (msg: Uint8Array, pk: Uint8Array) =>
-      secp256k1.ecdsaSign(msg, pk).signature,
-    verify: (sig: Uint8Array, msg: Uint8Array, pub: Uint8Array) =>
-      secp256k1.ecdsaVerify(sig, msg, pub)
-  }
-}
+const _base58 = (): Base58Lib => ({
+  encode: getCryptoAdapter().base58.encode,
+  decode: value => getCryptoAdapter().base58.toArray(getCryptoAdapter().base58.decode(value))
+})
 
-const _base58 = (): Base58Lib => ({ encode: encode58, decode: decode58 })
 
 const _makeDerivationPath = (index = 0, change = 0, account = 0, bc = '0') => {
   return `m/44'/${bc}/${account}'/${change}/${index}`
@@ -84,8 +78,8 @@ const _makeId = (key: string, payload?: string, expand: boolean = false) => {
   return _hash(`${key}${suffix ? `:${suffix}` : ''}`)
 }
 
-const _getRandomBytes = async (size: number): Promise<Buffer> => {
-  return require('crypto').randomBytes(size)
+const _getRandomBytes = (size: number): Buffer => {
+  return Buffer.from(getCryptoAdapter().random(size))
 }
 
 const _normalizePassword = (password: string) => {
@@ -93,30 +87,49 @@ const _normalizePassword = (password: string) => {
 }
 
 
-export const nodeCryptoHelper: CryptoHelper = {
-  buildSignSuite: (options) => new Secp256k1Signature({
-    key: new Secp256k1Key({
-      ...options,
-      privateKeyHex: options.privateKey && Buffer.from(_base58().decode(options.privateKey)).toString('hex'),
-      publicKeyHex: options.publicKey && Buffer.from(_base58().decode(options.publicKey)).toString('hex'),
-    }),
-    useNativeCanonize: false
-  }),
+export const cryptoHelper: CryptoHelper = {
+  // buildSignSuite: (options) => new Secp256k1Signature({
+  //   key: new Secp256k1Key({
+  //     ...options,
+  //     privateKeyHex: options.privateKey && Buffer.from(_base58().decode(options.privateKey)).toString('hex'),
+  //     publicKeyHex: options.publicKey && Buffer.from(_base58().decode(options.publicKey)).toString('hex'),
+  //   }),
+  //   useNativeCanonize: false
+  // }),
+
+  buildSignSuite: options => {
+    return new Secp256k1Signature({
+      key: new Secp256k1Key({
+        ...options,
+        pk: options.privateKey == null ? undefined : _base58().decode(options.privateKey),
+        pubKey: options.publicKey == null ? undefined : _base58().decode(options.publicKey)
+      }),
+      useNativeCanonize: false
+    })
+  },
 
   hash: _hash,
 
   hashBytes: data => _hashBytes(data).toString('base64'),
 
-  sign: (data: string, key: string) => {
+  sign: (data, key) => {
+    if (typeof data !== 'string') {
+      // const adapter = getCryptoAdapter()
+
+      return Buffer.from(
+        _getSecp256k1().sign(data, _base58().decode(key))
+      ).toString('base64')
+    }
+
     return Buffer.from(
       _getSecp256k1().sign(_hashBytes(data), _base58().decode(key))
     ).toString('base64')
   },
 
-  verify: (signature: string, data: string, key: string) => {
+  verify: (signature: string, data: string | Uint8Array, key: string) => {
     return _getSecp256k1().verify(
       Buffer.from(signature, 'base64'),
-      _hashBytes(data),
+      typeof data === 'string' ? _hashBytes(data) : data,
       _base58().decode(key)
     )
   },
@@ -129,7 +142,7 @@ export const nodeCryptoHelper: CryptoHelper = {
     const normalizedPassword = _normalizePassword(password)
     const bodyBuffer = Buffer.from(body, 'utf8')
 
-    const iv = await _getRandomBytes(IV_LENGTH)
+    const iv = _getRandomBytes(IV_LENGTH)
 
     const cipher = _createCipheriv(ENCRYPTION_ALGORITHM, normalizedPassword, iv)
     const chiper = Buffer.concat([cipher.update(bodyBuffer), cipher.final()])
@@ -157,19 +170,24 @@ export const nodeCryptoHelper: CryptoHelper = {
   base58: _base58,
 
   getKey: (seed: Uint8Array, derivationPath?: string): CryptoKey & { dp: string } => {
-    const bufferedSeed = <Buffer>seed
+    const bufferedSeed = seed as Buffer
     derivationPath = derivationPath || _makeDerivationPath()
     const _key = `${bufferedSeed.toString('hex')}_${derivationPath}`
 
-    if (!_keysCache[_key]) {
-      _keysCache[_key] = fromSeed(Buffer.from(bufferedSeed)).derivePath(derivationPath)
+    const adapter = getCryptoAdapter()
+    if (!adapter._wallets[_key]) {
+      adapter._wallets[_key] = adapter.WalletClass.fromSeed(seed).derivePath(derivationPath)
     }
 
-    const pubKey = _base58().encode(_keysCache[_key].publicKey)
+    const pubKey = _base58().encode(
+      Buffer.from(adapter._wallets[_key].publicKey.substring(2), 'hex')
+    )
 
     return {
       dp: derivationPath,
-      pk: _base58().encode(<Buffer>_keysCache[_key].privateKey),
+      pk: _base58().encode(
+        Buffer.from(adapter._wallets[_key].privateKey.substring(2), 'hex')
+      ),
       pubKey,
       id: _makeId(pubKey)
     }

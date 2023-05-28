@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { FunctionComponent } from "react"
+import { FunctionComponent } from "react"
 import { useForm } from "react-hook-form"
 import { AlertOutput, BasicNavigator, FormMainAction, MainTextInput, MainTextOutput, PrimaryForm, useNavigator, useRegov, WalletFormProvider } from "@owlmeans/regov-lib-react"
 import { REGISTRY_TYPE_CLAIMS } from "@owlmeans/regov-ssi-core"

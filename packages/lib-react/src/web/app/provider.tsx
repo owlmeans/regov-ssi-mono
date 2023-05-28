@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import React, { PropsWithChildren, useState } from "react"
+import { PropsWithChildren, useState } from "react"
 import { MainLoading, RegovProvider, MainModal } from "../../common"
 import { useNavigate } from "react-router-dom"
 import { buildDevWallet } from "../debug/util/builder"
@@ -54,7 +54,7 @@ export const AppProvider = ({
   </RegovProvider>
 }
 
-export type ProviderParams = PropsWithChildren<WalletAppParams & {
+export type ProviderParams = PropsWithChildren<Omit<WalletAppParams, "CryptoLoader"> & {
   handler: WalletHandler
   navigatorBuilder: RootNavigatorBuilder
   i18n: i18n
