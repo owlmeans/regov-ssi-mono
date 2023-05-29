@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-auth",
-  "version": "0.1.23",
+  "version": "0.8.0-rc.1",
   "description": "Authentication widgets for Regov SSI",
   "keywords": [
     "Regov",
@@ -33,15 +33,15 @@
     "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
+    "@emotion/react": "*",
+    "@emotion/styled": "*",
+    "@mui/icons-material": "*",
+    "@mui/material": "*",
     "@owlmeans/regov-comm": "^0.3.7",
     "@owlmeans/regov-ext-comm": "^0.1.20",
     "@owlmeans/regov-lib-node": "^0.1.23",
     "@owlmeans/regov-lib-react": "^0.2.26",
     "@owlmeans/regov-ssi-core": "^0.7.10",
-    "@emotion/react": "*",
-    "@emotion/styled": "*",
-    "@mui/icons-material": "*",
-    "@mui/material": "*",
     "express": "*",
     "i18next": "*",
     "react": "*",
@@ -79,8 +79,6 @@
     "react-i18next": {
       "optional": true
     }
-  },
-  "devDependencies": {
   },
   "publishConfig": {
     "access": "public"

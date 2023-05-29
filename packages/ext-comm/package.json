@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-comm",
-  "version": "0.1.20",
+  "version": "0.8.0-rc.1",
   "description": "Communication channel Regov SSI",
   "keywords": [
     "Regov",
@@ -32,13 +32,13 @@
     "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
-    "@owlmeans/regov-comm": "^0.3.7",
-    "@owlmeans/regov-lib-react": "^0.2.26",
-    "@owlmeans/regov-ssi-core": "^0.7.10",
     "@emotion/react": "*",
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
+    "@owlmeans/regov-comm": "^0.3.7",
+    "@owlmeans/regov-lib-react": "^0.2.26",
+    "@owlmeans/regov-ssi-core": "^0.7.10",
     "i18next": "*",
     "react": "*",
     "react-hook-form": "*",
@@ -69,8 +69,6 @@
     "react-i18next": {
       "optional": true
     }
-  },
-  "devDependencies": {
   },
   "publishConfig": {
     "access": "public"
