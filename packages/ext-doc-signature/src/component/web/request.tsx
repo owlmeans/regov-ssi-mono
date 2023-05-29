@@ -166,7 +166,7 @@ export const SignatureRequestWeb = (ext: Extension): FunctionComponent<Signature
 
         item.meta.title = t('signature.request.meta.title', {
           name: data.signature.request.name,
-        })
+        }) as string
 
         loader?.success(t('signature.request.success'))
 

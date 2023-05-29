@@ -31,34 +31,30 @@
     "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
-    "@emotion/react": "*",
-    "@emotion/styled": "*",
-    "@mui/icons-material": "*",
-    "@mui/material": "*",
     "@owlmeans/regov-lib-node": "^0.1.23",
     "@owlmeans/regov-lib-react": "^0.2.26",
     "@owlmeans/regov-ssi-core": "^0.7.10",
     "@owlmeans/regov-ext-comm": "^0.1.20",
     "@owlmeans/regov-comm": "^0.3.7",
-    "express": "^4.17.3",
+    "@emotion/react": "*",
+    "@emotion/styled": "*",
+    "@mui/icons-material": "*",
+    "@mui/material": "*",
+    "express": "*",
     "i18next": "*",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "*",
     "react-hook-form": "*",
-    "react-i18next": "^11.14.2",
+    "react-i18next": "*",
     "react-router-dom": "*"
   },
   "peerDependenciesMeta": {
-    "express": {
-      "optional": true
-    },
-    "@owlmeans/regov-comm": {
-      "optional": true
-    },
     "@owlmeans/regov-lib-node": {
       "optional": true
     },
     "@owlmeans/regov-lib-react": {
+      "optional": true
+    },
+    "express": {
       "optional": true
     },
     "@emotion/react": {
@@ -76,9 +72,6 @@
     "react": {
       "optional": true
     },
-    "react-dom": {
-      "optional": true
-    },
     "react-hook-form": {
       "optional": true
     },
@@ -90,8 +83,8 @@
     }
   },
   "devDependencies": {
-    "typescript": "^4.9.5"
   },
+  "private": false,
   "publishConfig": {
     "access": "public"
   },

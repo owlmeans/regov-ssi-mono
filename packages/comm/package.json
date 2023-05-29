@@ -26,24 +26,19 @@
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"
   },
   "devDependencies": {
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.6.1",
     "@types/websocket": "^1.0.5",
-    "dotenv": "^16.0.0",
-    "jest": "^27.0.6",
-    "ts-jest": "^27.0.4",
-    "ts-node": "^10.2.0",
-    "typescript": "^4.9.5"
+    "dotenv": "^16.0.3"
   },
   "peerDependencies": {
     "@owlmeans/regov-ssi-core": "^0.7.10"
   },
   "dependencies": {
-    "did-jwt": "^6.0.0",
-    "@stablelib/x25519": "^1.0.2",
-    "did-resolver": "^3.1.5",
+    "did-jwt": "^7.2.0",
+    "@stablelib/x25519": "^1.0.3",
+    "did-resolver": "^4.1.0",
     "websocket": "^1.0.34"
   },
+  "private": false,
   "publishConfig": {
     "access": "public"
   }

@@ -52,7 +52,7 @@ export const LongOutput = (props: LongOutputProps) => {
         && <Grid item>
           <FormMainButton t={t} i18n={i18n} title={`${field}.copy`} action={
             () => copy(valueHolder.value, {
-              message: t([`${field}.clipboard.copyhint`, 'clipboard.copyhint']),
+              message: t([`${field}.clipboard.copyhint`, 'clipboard.copyhint']) as string,
               format: 'text/plain'
             })
           } />

@@ -19,7 +19,7 @@ import { useFormContext, Controller } from 'react-hook-form'
 import { WrappedComponentProps } from '../../../../common'
 import { formatError } from '../error'
 import Grid from '@mui/material/Grid'
-import Alert from '@mui/material/Alert'
+import Alert, { AlertColor } from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 
 
@@ -35,7 +35,7 @@ export const AlertOutput = ({ t, field }: AlertOutputProps) => {
           `${field.name}.error.severity.${type}`,
           `${field.name}.error.severity.error`,
           'alert.error.severity'
-        ])}>
+        ]) as AlertColor}>
           <AlertTitle>{`${t([`${field.name}.error.title.${type}`, `alert.error.label`])}`}</AlertTitle>
           {formatError(t, field.name, fieldState)}
         </Alert> : <Fragment></Fragment>

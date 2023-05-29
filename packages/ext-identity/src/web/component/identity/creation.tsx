@@ -122,7 +122,7 @@ export const IdentityCreation: FunctionComponent<IdentityCreationParams> = withR
           createdAt: '',
           alert: undefined
         },
-        identityName: t('creation.defaultIdentityTitle'),
+        identityName: t('creation.defaultIdentityTitle') as string,
       }
     })
 

@@ -131,7 +131,7 @@ export const MembershipClaim: FunctionComponent<MembershipClaimParams> = withReg
       item.meta.title = t('membership.claim.meta.title', {
         group: groupSubjet?.name,
         role: data.membership.claim.role
-      })
+      }) as string
 
       loader?.success(t('membership.claim.success'))
 

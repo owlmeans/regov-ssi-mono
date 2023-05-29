@@ -29,29 +29,24 @@
     "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
+    "@owlmeans/regov-ssi-core": "^0.7.10",
     "@emotion/react": "*",
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-ssi-core": "^0.7.10",
-    "copy-to-clipboard": "^3.3.1",
-    "file-saver": "^2.0.5",
-    "i18next": "^21.4.2",
-    "i18next-browser-languagedetector": "^6.1.3",
-    "react": "^18.2.0",
-    "react-device-detect": "^2.1.2",
-    "react-dom": "^18.2.0",
-    "react-dropzone": "^14.2.3",
-    "react-hook-form": "*",
-    "react-i18next": "^11.14.2",
-    "react-router-dom": "^6.*",
-    "ethers": "^6.*"
+    "copy-to-clipboard": "*",
+    "file-saver": "*",
+    "i18next": "*",
+    "i18next-browser-languagedetector": "*",
+    "react": "*",
+    "react-device-detect": "*",
+    "react-dropzone": "*",
+    "react-i18next": "*",
+    "react-hook-form": "^7.*",
+    "react-router-dom": "^6.*"
   },
   "peerDependenciesMeta": {
     "react-device-detect": {
-      "optional": true
-    },
-    "react-dom": {
       "optional": true
     },
     "react-router-dom": {
@@ -80,15 +75,12 @@
     }
   },
   "devDependencies": {
-    "@types/file-saver": "^2.0.5",
-    "@types/node": "^16.11.10",
-    "typescript": "^4.9.5",
-    "ethers": "^6.4.0"
   },
   "dependencies": {
     "localforage": "^1.10.0",
-    "moment": "^2.29.1"
+    "moment": "^2.29.4"
   },
+  "private": false,
   "publishConfig": {
     "access": "public"
   },

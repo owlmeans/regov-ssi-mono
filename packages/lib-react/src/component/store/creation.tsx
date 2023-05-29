@@ -57,7 +57,7 @@ export const StoreCreation: FunctionComponent<StoreCreationParams> =
           const loading = await navigator?.invokeLoading()
           try {
             if (data.creation.password.input !== data.creation.password.confirm) {
-              loading?.error(t('creation.password.confirm.error.equal'))
+              loading?.error(t('creation.password.confirm.error.equal') as string)
               methods.setError('creation.password.confirm', { type: 'equal' })
               return
             }

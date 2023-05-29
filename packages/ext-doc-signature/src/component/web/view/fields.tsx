@@ -17,7 +17,7 @@
 import React, { FunctionComponent, PropsWithChildren } from "react"
 
 import { dateFormatter, EmptyProps, EntityRenderer, EntityTextRenderer } from "@owlmeans/regov-lib-react"
-import { TFunction } from "react-i18next"
+import { UseTranslationResponse } from "react-i18next"
 import { SignatureCredential } from "../../../types"
 import { typeFormatterFacotry } from "../../formatter"
 
@@ -54,6 +54,6 @@ export const SignatureViewFieldsWeb: FunctionComponent<SignatureViewFieldsWebPro
 }
 
 export type SignatureViewFieldsWebProps = PropsWithChildren<EmptyProps & {
-  t: TFunction
+  t: UseTranslationResponse<any, any>["t"]
   cred: SignatureCredential
 }>

@@ -4,11 +4,7 @@ cd packages/example-mobile
 cd ../..
 yarn install
 yarn lerna clean
-cd packages/tiny-secp256k1-2019
-yarn build
-yarn lerna link
-yarn link
-cd ../../packages/core
+cd ./packages/core
 yarn build
 yarn lerna link
 yarn link

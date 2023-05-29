@@ -32,7 +32,7 @@ export const CredentialActionGroup: FunctionComponent<CredentialActionGroupParam
     {remove && <Button onClick={remove}>{`${t('actionGroup.remove')}`}</Button>}
     <Button onClick={() => {
       copy(content as string, {
-        message: t([`actionGroup.copyhint`, 'clipboard.copyhint']),
+        message: t([`actionGroup.copyhint`, 'clipboard.copyhint']) as string,
         format: 'text/plain'
       })
     }}>{`${t('actionGroup.copy')}`}</Button>

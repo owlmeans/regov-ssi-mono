@@ -31,18 +31,17 @@
     "build:watch": "tsc -b -w --preserveWatchOutput --pretty"
   },
   "peerDependencies": {
+    "@owlmeans/regov-lib-node": "^0.1.23",
+    "@owlmeans/regov-lib-react": "^0.2.26",
+    "@owlmeans/regov-ssi-core": "^0.7.10",
     "@emotion/react": "*",
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-lib-node": "^0.1.23",
-    "@owlmeans/regov-lib-react": "^0.2.26",
-    "@owlmeans/regov-ssi-core": "^0.7.10",
-    "express": "^4.17.3",
+    "express": "*",
     "i18next": "*",
-    "react": "^18.2.0",
-    "react-device-detect": "^2.1.2",
-    "react-dom": "^18.2.0",
+    "react": "*",
+    "react-device-detect": "*",
     "react-hook-form": "*",
     "react-i18next": "*"
   },
@@ -68,16 +67,10 @@
     "@mui/material": {
       "optional": true
     },
-    "i18next": {
-      "optional": true
-    },
     "react": {
       "optional": true
     },
     "react-device-detect": {
-      "optional": true
-    },
-    "react-dom": {
       "optional": true
     },
     "react-hook-form": {
@@ -88,8 +81,8 @@
     }
   },
   "devDependencies": {
-    "typescript": "^4.9.5"
   },
+  "private": false,
   "publishConfig": {
     "access": "public"
   },

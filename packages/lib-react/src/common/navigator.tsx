@@ -55,7 +55,10 @@ export const patchNavigator = <
   InNav extends WalletNavigator = WalletNavigator,
   ExtNav extends WalletNavigator = WalletNavigator
 >(inNav: InNav & ExtNav, ext: ExtNav) => {
-  Object.entries(ext).forEach(([key, value]) => inNav[key] = value)
+  Object.entries(ext).forEach(([key, value]) => {
+    const _key = key as keyof InNav & ExtNav
+    inNav[_key] = value as (InNav & ExtNav)[typeof _key]
+  })
 }
 
 export type BasicNavigator = WalletNavigator<{}, string> & {

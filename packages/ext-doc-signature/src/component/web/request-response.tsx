@@ -136,7 +136,7 @@ export const SignatureRequestResponseWeb: FunctionComponent<SignatureRequestResp
         item.meta.title = subject?.name || t('signature.response.credential.title', {
           type: subject?.docType || 'unknown',
           hash: subject?.documentHash || 'unhashed'
-        })
+        }) as string
 
         handler.notify()
 

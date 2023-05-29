@@ -74,7 +74,7 @@ export const ItemMenu = ({ i18n, meta, handle, content, prettyOutput, exportTitl
       </MenuItem>}
       <MenuItem onClick={() => {
         copy(_content, {
-          message: t([`widget.dashboard.clipboard.copyhint`, 'clipboard.copyhint']),
+          message: t([`widget.dashboard.clipboard.copyhint`, 'clipboard.copyhint']) as string,
           format: 'text/plain'
         })
         handle.handler?.close()
@@ -86,7 +86,7 @@ export const ItemMenu = ({ i18n, meta, handle, content, prettyOutput, exportTitl
       </MenuItem>
       {meta && <MenuItem onClick={() => {
         copy(meta.id, {
-          message: t([`widget.dashboard.clipboard.copyhint`, 'clipboard.copyhint']),
+          message: t([`widget.dashboard.clipboard.copyhint`, 'clipboard.copyhint']) as string,
           format: 'text/plain'
         })
         handle.handler?.close()

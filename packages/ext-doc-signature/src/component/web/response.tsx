@@ -130,7 +130,9 @@ export const SignatureResponseWeb: FunctionComponent<SignatureResponseParams> =
 
       useEffect(() => {
         ['documentHash', 'description', 'url', 'authorId', 'version'].map(
-          key => currentSubject && methods.setValue(`signature.response.${key}` as any, currentSubject[key])
+          key => currentSubject && methods.setValue(
+            `signature.response.${key}` as any, currentSubject[key as keyof typeof currentSubject]
+          )
         )
 
         if (currentSubject && subject.documentHash && subject.documentHash !== ''
