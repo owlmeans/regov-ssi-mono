@@ -15,7 +15,7 @@
  */
 
 
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom-regov'
 import {
   MainMenu, MainMenuNavigation, NavigatorContextProvider, useNavigator, useRegov
 } from '../../../common'

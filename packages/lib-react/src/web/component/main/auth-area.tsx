@@ -15,7 +15,7 @@
  */
 
 import React, { Fragment } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom-regov'
 import { EXTENSION_ITEM_PURPOSE_TOP_ACTION, MainAuthAreaImplProps, MainFooter } from '../../../common'
 import { useRegov } from '../../../common/context'
 import MenuIcon from '@mui/icons-material/Menu'

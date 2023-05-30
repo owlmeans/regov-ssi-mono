@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-lib-react",
-  "version": "0.8.0-rc.1",
+  "version": "0.8.0-rc.3",
   "description": "UI toolkit to build SSI Applications over OwlMeans Regov SSI",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -33,7 +33,7 @@
     "@emotion/styled": "*",
     "@mui/icons-material": "*",
     "@mui/material": "*",
-    "@owlmeans/regov-ssi-core": "^0.7.10",
+    "@owlmeans/regov-ssi-core": "^0.8.0",
     "copy-to-clipboard": "*",
     "file-saver": "*",
     "i18next": "*",
@@ -43,13 +43,13 @@
     "react-dropzone": "*",
     "react-hook-form": "^7.*",
     "react-i18next": "*",
-    "react-router-dom": "^6.*"
+    "react-router-dom-regov": "npm:react-router-dom@^6.*"
   },
   "peerDependenciesMeta": {
     "react-device-detect": {
       "optional": true
     },
-    "react-router-dom": {
+    "react-router-dom-regov": {
       "optional": true
     },
     "@emotion/react": {

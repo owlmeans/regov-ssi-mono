@@ -15,7 +15,7 @@
  */
 
 import { Fragment, FunctionComponent } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom-regov'
 import {
   useRegov, withRegov, PurposeCredentialCreationParams, EXTENSION_ITEM_PURPOSE_REQUEST
 } from '../../../common'

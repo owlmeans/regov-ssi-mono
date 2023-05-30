@@ -16,7 +16,7 @@
 
 import { PropsWithChildren, useState } from "react"
 import { MainLoading, RegovProvider, MainModal } from "../../common"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom-regov"
 import { buildDevWallet } from "../debug/util/builder"
 import { WalletAppParams, RootNavigatorBuilder } from "./types"
 import { webComponentMap } from "../component"

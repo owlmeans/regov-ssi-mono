@@ -26,7 +26,7 @@ import { REGISTRY_SECTION_OWN, REGISTRY_TYPE_REQUESTS } from '@owlmeans/regov-ss
 import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom-regov'
 import {
   ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION, SignatureRequestSubject, REGOV_SIGNATURE_REQUEST_TYPE
 } from '../../types'

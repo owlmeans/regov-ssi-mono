@@ -20,7 +20,7 @@ import {
   CredentialProcessor, EXTENSION_ITEM_PURPOSE_DASHBOARD_WIDGET
 } from '../../../common'
 import { ListNavigator, partialListNavigator } from './navigator'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom-regov'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 

@@ -15,7 +15,7 @@
  */
 
 
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom-regov'
 import { NavigatorContextProvider, StoreLogin, StoreLoginNavigator, useNavigator } from '../../../common'
 
 

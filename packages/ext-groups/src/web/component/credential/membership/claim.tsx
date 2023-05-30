@@ -33,7 +33,7 @@ import {
 } from '@owlmeans/regov-lib-react'
 import { useForm } from 'react-hook-form'
 import { ERROR_WIDGET_AUTHENTICATION, ERROR_WIDGET_EXTENSION } from '../../types'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom-regov'
 import { addToValue } from '@owlmeans/regov-ssi-core'
 import DialogContent from '@mui/material/DialogContent'
 

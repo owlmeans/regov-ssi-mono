@@ -30,7 +30,7 @@
     "dotenv": "^16.0.3"
   },
   "peerDependencies": {
-    "@owlmeans/regov-ssi-core": "^0.7.10"
+    "@owlmeans/regov-ssi-core": "^0.8.0"
   },
   "dependencies": {
     "@stablelib/x25519": "^1.0.3",

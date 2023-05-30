@@ -16,7 +16,7 @@
 
 import { BasicNavigator, WalletNavigator, WalletNavigatorMenuMethod } from "../../../../common"
 import { RegistryType } from "@owlmeans/regov-ssi-core"
-import { NavigateFunction } from "react-router-dom"
+import { NavigateFunction } from "react-router-dom-regov"
 
 
 export type ListNavigator = WalletNavigator & BasicNavigator & {

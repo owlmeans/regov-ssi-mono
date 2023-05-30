@@ -17,7 +17,7 @@
 import { RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom-regov'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'
 import Add from '@mui/icons-material/Add'
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline'

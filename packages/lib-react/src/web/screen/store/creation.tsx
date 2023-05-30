@@ -19,7 +19,7 @@ import {
   useNavigator, NavigatorContextProvider, StoreCreation, StoreCreationNavigator,
   StoreCreationNavSuccess, STORE_CREATION_MENU_IMPORT,
 } from '../../../common'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom-regov'
 
 
 export const WalletStoreCreation = () => {

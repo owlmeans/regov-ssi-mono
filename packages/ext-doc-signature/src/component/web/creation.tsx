@@ -25,7 +25,7 @@ import { CredentialsRegistryWrapper, REGISTRY_SECTION_OWN, REGISTRY_TYPE_CREDENT
 import { Extension } from '@owlmeans/regov-ssi-core'
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react'
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom-regov'
 import {
   DOCUMENT_TYPE_JSON, DOCUMENT_TYPE_TEXT, DOCUMENT_TYPE_BINARY, REGOV_CREDENTIAL_TYPE_SIGNATURE,
   ERROR_WIDGET_AUTHENTICATION, SignatureSubject

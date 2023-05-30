@@ -16,7 +16,7 @@
 
 import { WalletHandler } from '@owlmeans/regov-ssi-core'
 
-import { NavigateFunction, Route, Routes, useParams } from 'react-router-dom'
+import { NavigateFunction, Route, Routes, useParams } from 'react-router-dom-regov'
 import {
   basicNavigator, extendNavigator, MainAuthArea, MainDashboard, useRegov, Config,
   EXTENSION_ITEM_PURPOSE_ROUTE

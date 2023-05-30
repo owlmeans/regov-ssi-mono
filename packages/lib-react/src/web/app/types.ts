@@ -15,7 +15,7 @@
  */
 
 import { BasicNavigator, Config, UIExtensionRegistry } from "../../common"
-import { NavigateFunction } from "react-router-dom"
+import { NavigateFunction } from "react-router-dom-regov"
 import { WalletHandler } from "@owlmeans/regov-ssi-core"
 import { ServerClient } from "../../common"
 import { CryptoLoaderProps } from '../crypto/types'
