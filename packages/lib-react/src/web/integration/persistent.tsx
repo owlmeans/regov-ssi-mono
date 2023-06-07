@@ -52,7 +52,7 @@ export const i18nRegisterExtensions = (i18n: I18n, extensions: UIExtensionRegist
 export const WalletPersistentIntegrationReact = (
   {
     config, extensions, navigatorBuilder, children, serverClient, setInboxCount, source,
-    passedHandler, renderSeed, integrationConfig, plugins
+    passedHandler, renderSeed, integrationConfig, plugins, CryptoLoader
   }: PropsWithChildren<WalletPersistentIntegrationReactProps>
 ) => {
   const personalHandler = useMemo(() => createWalletHandler(), [source])
@@ -78,117 +78,122 @@ export const WalletPersistentIntegrationReact = (
 
   useEffect(() => extensions && i18nRegisterExtensions(i18n, extensions), extensions?.uiExtensions)
 
-  useEffect(() => {
-    if (!isRegovPasswordSet()) {
-      return
-    }
-    if (passedHandler && passedHandler.wallet && handler.wallet) {
-      const destructors = plugins?.onKickOff?.map(plugin => plugin({
-        handler, isHandlerPassed: true, isUnregisterSet: !!pluginDestructors, extensions, setInboxCount
-      }))
+  // useEffect(() => {
 
-      setLoaded(PasswordState.LOADED)
-
-      return () => {
-        destructors && destructors.forEach(destructor => destructor && destructor())
-      }
-    }
-    storage.init().then(async () => {
-      if (!handler.wallet) {
-        if (!handler.stores['default']) {
-          const wallet = await buildWalletWrapper(
-            { crypto: cryptoHelper, extensions: extensions?.registry },
-            getRegovPassword() ?? '',
-            {
-              name: 'Default wallet',
-              alias: 'default',
-            },
-            {
-              prefix: config.DID_PREFIX,
-              defaultSchema: config.baseSchemaUrl,
-              didSchemaPath: config.DID_SCHEMA_PATH,
-            }
-          )
-          await extensions?.triggerEvent<InitSensetiveEventParams>(wallet, EXTENSION_TRIGGER_INIT_SENSETIVE, {
-            extensions: extensions.registry,
-          })
-          handler.stores[wallet.store.alias] = await wallet.export()
-
-          handler.notify()
-        }
-        await handler.loadStore(async (handler) => {
-          return await buildWalletWrapper(
-            { crypto: cryptoHelper, extensions: extensions?.registry },
-            getRegovPassword() ?? '',
-            handler.stores['default'],
-            {
-              prefix: config.DID_PREFIX,
-              defaultSchema: config.baseSchemaUrl,
-              didSchemaPath: config.DID_SCHEMA_PATH,
-            }
-          )
-        })
-      }
-
-      if (integrationConfig?.trustedIssuersUri) {
-        try {
-          let credentialList = (await serverClient?.getVCs<Credential[]>({
-            uri: integrationConfig.trustedIssuersUri,
-            serverAlias: 'integration',
-          })) as unknown as { credentials: Credential[] }
-
-          if (!credentialList?.credentials) {
-            credentialList = { credentials: [] }
-          }
-
-          await Promise.all(
-            credentialList.credentials.map(async (credential) => {
-              if (!handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(credential.id, REGISTRY_SECTION_PEER)) {
-                await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES).addCredential(credential, REGISTRY_SECTION_PEER)
-              }
-            })
-          )
-          handler.notify()
-        } catch (e) {
-          console.error(e)
-        }
-      }
-
-      if (!handler?.wallet) {
-        return
-      }
-
-      await extensions?.triggerEvent<MainModalShareEventParams>(handler.wallet, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, { handle })
-
-      /**
-       * @TODO handle should be able to open modals or process incomming VCs some other way
-       */
-      await extensions?.triggerEvent<MainModalAuthenticatedEventParams>(handler.wallet, EXTENSION_TRIGGER_AUTHENTICATED, {
-        handle, config, handler, extensions
-      })
-
-      const destructors = plugins?.onStorageLoaded?.map(destructor => destructor({
-        handler, isHandlerPassed: !!passedHandler, isUnregisterSet: !!pluginDestructors, extensions, setInboxCount
-      }))
-
-      destructors && setPluginDestructors(
-        destructors.filter(destructor => !!destructor) as UneregisterIntegratedWalletPlugin[]
-      )
-
-      setLoaded(PasswordState.LOADED)
-    })
-
-    return () => {
-      if (!passedHandler) {
-        pluginDestructors && pluginDestructors.forEach(destructor => destructor())
-        handler.logout().then(() => storage.detach())
-      }
-    }
-  }, [source, isRegovPasswordSet(), storage])
+  // }, [source, isRegovPasswordSet(), storage])
 
   switch (loaded) {
     case PasswordState.LOADING:
-      return <CircularProgress color="inherit" />
+      return <>
+        <CryptoLoader deps={[source, isRegovPasswordSet(), storage]} onFinish={() => {
+          if (!isRegovPasswordSet()) {
+            return
+          }
+          if (passedHandler && passedHandler.wallet && handler.wallet) {
+            const destructors = plugins?.onKickOff?.map(plugin => plugin({
+              handler, isHandlerPassed: true, isUnregisterSet: !!pluginDestructors, extensions, setInboxCount
+            }))
+
+            setLoaded(PasswordState.LOADED)
+
+            return () => {
+              destructors && destructors.forEach(destructor => destructor && destructor())
+            }
+          }
+          storage.init().then(async () => {
+            if (!handler.wallet) {
+              if (!handler.stores['default']) {
+                const wallet = await buildWalletWrapper(
+                  { crypto: cryptoHelper, extensions: extensions?.registry },
+                  getRegovPassword() ?? '',
+                  {
+                    name: 'Default wallet',
+                    alias: 'default',
+                  },
+                  {
+                    prefix: config.DID_PREFIX,
+                    defaultSchema: config.baseSchemaUrl,
+                    didSchemaPath: config.DID_SCHEMA_PATH,
+                  }
+                )
+                await extensions?.triggerEvent<InitSensetiveEventParams>(wallet, EXTENSION_TRIGGER_INIT_SENSETIVE, {
+                  extensions: extensions.registry,
+                })
+                handler.stores[wallet.store.alias] = await wallet.export()
+
+                handler.notify()
+              }
+              await handler.loadStore(async (handler) => {
+                return await buildWalletWrapper(
+                  { crypto: cryptoHelper, extensions: extensions?.registry },
+                  getRegovPassword() ?? '',
+                  handler.stores['default'],
+                  {
+                    prefix: config.DID_PREFIX,
+                    defaultSchema: config.baseSchemaUrl,
+                    didSchemaPath: config.DID_SCHEMA_PATH,
+                  }
+                )
+              })
+            }
+
+            if (integrationConfig?.trustedIssuersUri) {
+              try {
+                let credentialList = (await serverClient?.getVCs<Credential[]>({
+                  uri: integrationConfig.trustedIssuersUri,
+                  serverAlias: 'integration',
+                })) as unknown as { credentials: Credential[] }
+
+                if (!credentialList?.credentials) {
+                  credentialList = { credentials: [] }
+                }
+
+                await Promise.all(
+                  credentialList.credentials.map(async (credential) => {
+                    if (!handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES).getCredential(credential.id, REGISTRY_SECTION_PEER)) {
+                      await handler.wallet?.getRegistry(REGISTRY_TYPE_IDENTITIES).addCredential(credential, REGISTRY_SECTION_PEER)
+                    }
+                  })
+                )
+                handler.notify()
+              } catch (e) {
+                console.error(e)
+              }
+            }
+
+            if (!handler?.wallet) {
+              return
+            }
+
+            await extensions?.triggerEvent<MainModalShareEventParams>(handler.wallet, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, { handle })
+
+            /**
+             * @TODO handle should be able to open modals or process incomming VCs some other way
+             */
+            await extensions?.triggerEvent<MainModalAuthenticatedEventParams>(handler.wallet, EXTENSION_TRIGGER_AUTHENTICATED, {
+              handle, config, handler, extensions
+            })
+
+            const destructors = plugins?.onStorageLoaded?.map(destructor => destructor({
+              handler, isHandlerPassed: !!passedHandler, isUnregisterSet: !!pluginDestructors, extensions, setInboxCount
+            }))
+
+            destructors && setPluginDestructors(
+              destructors.filter(destructor => !!destructor) as UneregisterIntegratedWalletPlugin[]
+            )
+
+            setLoaded(PasswordState.LOADED)
+          })
+
+          return () => {
+            if (!passedHandler) {
+              pluginDestructors && pluginDestructors.forEach(destructor => destructor())
+              handler.logout().then(() => storage.detach())
+            }
+          }
+        }} />
+        <CircularProgress color="inherit" />
+      </>
     case PasswordState.LOADED:
       return (
         <RegovProvider i18n={i18n} map={webComponentMap} handler={handler}
