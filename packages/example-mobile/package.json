@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-mold-wallet-native-example",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "description": "> TODO: description",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
@@ -26,7 +26,6 @@
     "@types/react-native": "^0.72.2",
     "react-native-eject": "^0.2.0"
   },
-  "peerDependencies": {},
   "dependencies": {
     "@owlmeans/regov-lib-native": "^0.8.0",
     "react": "^18.2.0",

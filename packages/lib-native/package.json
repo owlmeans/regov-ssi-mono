@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-lib-native",
-  "version": "0.8.0-rc.4",
+  "version": "0.8.0",
   "description": "Re:gov SSI UI package for mobile wallet applications",
   "keywords": [
     "SSI",

@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-auth",
-  "version": "0.8.0-rc.4",
+  "version": "0.8.0",
   "description": "Authentication widgets for Regov SSI",
   "keywords": [
     "Regov",
