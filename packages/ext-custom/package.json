@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-custom",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Regov extension to build customizable credentials.",
   "keywords": [
     "Regov",
