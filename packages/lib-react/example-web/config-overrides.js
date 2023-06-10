@@ -39,7 +39,10 @@ module.exports = (config, env) => {
   config.plugins.push(new NodePlugin())
   config.resolve ??= {}
   config.resolve.alias ??= {}
+  // config.resolve.modules ??= []
+  config.resolve.modules = [path.resolve(__dirname, 'node_modules')]
   // config.resolve.alias['react'] = path.resolve(__dirname, 'node_modules/react')
+  // config.resolve.alias['@types/react'] = path.resolve(__dirname, 'node_modules/@types/react')
   // config.resolve.alias['react'] = require.resolve('react')
   // config.resolve.alias['react-dom'] = path.resolve(__dirname, 'node_modules/react-dom')
   // config.resolve.alias['react-dom/client'] = path.resolve(__dirname, 'node_modules/react-dom/client.js')

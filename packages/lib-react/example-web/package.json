@@ -11,6 +11,11 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.3",
+    "@owlmeans/regov-comm": "link:../../comm",
     "@owlmeans/regov-ext-auth": "link:../../ext-auth",
     "@owlmeans/regov-ext-comm": "link:../../ext-comm",
     "@owlmeans/regov-ext-custom": "link:../../ext-custom",
@@ -19,20 +24,20 @@
     "@owlmeans/regov-ext-identity": "link:../../ext-identity",
     "@owlmeans/regov-lib-react": "link:..",
     "@owlmeans/regov-ssi-core": "link:../../core",
-    "@emotion/react": "^11.11.0",
-    "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.11.16",
-    "@mui/material": "^5.13.3",
+    "copy-to-clipboard": "^3.3.3",
     "ethers": "^6.4.0",
     "file-saver": "^2.0.5",
     "i18next": "^22.5.0",
+    "i18next-browser-languagedetector": "^7.0.2",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "react": "^18.2.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.44.2",
     "react-i18next": "^12.3.1",
-    "uint8array-tools": "^0.0.7"
+    "uint8array-tools": "^0.0.7",
+    "react-router-dom-regov": "npm:react-router-dom@^6.11.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
