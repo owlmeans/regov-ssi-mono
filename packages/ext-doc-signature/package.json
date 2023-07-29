@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-doc-signature",
-  "version": "0.8.1",
+  "version": "0.8.2-alpha.0",
   "description": "Regov extension to sign and check signatures of random documents.",
   "keywords": [
     "Regov",

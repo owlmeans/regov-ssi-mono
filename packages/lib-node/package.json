@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-lib-node",
-  "version": "0.8.1",
+  "version": "0.8.2-alpha.0",
   "description": "This is the server stored and managed wallet framework for OwlMeans Re:gov SSI",
   "author": "Igor Tkachenko <igor.w.tkachenko@gmail.com>",
   "homepage": "https://github.com/owlmeans/regov-ssi-mono#readme",
