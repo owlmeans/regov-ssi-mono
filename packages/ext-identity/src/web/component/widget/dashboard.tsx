@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { Fragment, useMemo } from 'react'
+import { Fragment, FunctionComponent, useMemo } from 'react'
 
 import { 
   CredentialWrapper, getCompatibleSubject, REGISTRY_SECTION_OWN, REGISTRY_TYPE_IDENTITIES 
@@ -27,7 +27,7 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 
 
-export const DashboardWidget = (ext: Extension) =>
+export const DashboardWidget = (ext: Extension): FunctionComponent<DashboardWidgetParams> =>
   withRegov<DashboardWidgetProps>({
     namespace: ext.localization?.ns,
     transformer: (wallet) => {

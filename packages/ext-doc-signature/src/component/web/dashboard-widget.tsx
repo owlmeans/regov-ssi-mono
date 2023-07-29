@@ -16,7 +16,7 @@
 
 import { RegovComponentProps, withRegov } from '@owlmeans/regov-lib-react'
 import { Extension } from '@owlmeans/regov-ssi-core'
-import React, { Fragment, useState } from 'react'
+import React, { FC, Fragment, useState } from 'react'
 import { useNavigate } from 'react-router-dom-regov'
 import { REGOV_CREDENTIAL_TYPE_SIGNATURE } from '../../types'
 import Add from '@mui/icons-material/Add'
@@ -34,7 +34,7 @@ import MenuList from '@mui/material/MenuList'
 import Typography from '@mui/material/Typography'
 
 
-export const DashboardWidgetWeb = (ext: Extension) => withRegov<DashboardWidgetProps>(
+export const DashboardWidgetWeb = (ext: Extension): FC<DashboardWidgetParams> => withRegov<DashboardWidgetProps>(
   { namespace: ext.localization?.ns }, (props) => {
     const { t } = props
     const navigate = useNavigate()
