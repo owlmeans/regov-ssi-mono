@@ -1,9 +1,10 @@
-rm -rf node_modules yarn.lock yarn-error.log
+rm -rf node_modules yarn-error.log
 cd packages/example-mobile
 ./preinstall.sh
 cd ../..
 yarn install
-yarn lerna clean
+yarn lerna clean -y
+yarn lerna bootstrap
 cd ./packages/core
 yarn build
 yarn lerna link
@@ -53,7 +54,6 @@ yarn build
 yarn lerna link
 yarn link
 cd ../..
-yarn lerna bootstrap
 cd packages/example-mobile
 ./postinstall.sh
 cd ../..
