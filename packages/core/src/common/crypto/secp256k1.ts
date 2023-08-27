@@ -93,7 +93,7 @@ export class Secp256k1Key extends LDKeyPair implements Secp256k1CryptoKey {
     const pk = this.pk as Uint8Array
 
     return {
-      sign: (options?: SigningOption) => {
+      sign: async (options?: SigningOption) => {
         if (options?.data == null) {
           throw new Error('cryptosuite.signer.sign.noData')
         }
@@ -112,7 +112,7 @@ export class Secp256k1Key extends LDKeyPair implements Secp256k1CryptoKey {
     const pubKey = this.pubKey as Uint8Array
 
     return {
-      verify: (options?: SigningOption) => {
+      verify: async (options?: SigningOption) => {
         if (options?.data == null) {
           throw new Error('cryptosuite.verifier.verify.noData')
         }
@@ -126,7 +126,11 @@ export class Secp256k1Key extends LDKeyPair implements Secp256k1CryptoKey {
 
         let verified: boolean
         try {
-          verified = cryptoHelper.verify(options.signature, digest, adapter.base58.encode(pubKey))
+          verified = cryptoHelper.verify(
+            Buffer.from(options.signature).toString("base64"), 
+            digest, 
+            adapter.base58.encode(pubKey)
+          )
         } catch {
           verified = false
         }
@@ -139,7 +143,7 @@ export class Secp256k1Key extends LDKeyPair implements Secp256k1CryptoKey {
 
 interface SigningOption {
   data: { buffer: any, byteOffset: number, length: number }
-  signature?: string
+  signature?: Uint8Array
 }
 
 export class Secp256k1Signature extends JwsLinkedDataSignature {
