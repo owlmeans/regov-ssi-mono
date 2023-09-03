@@ -103,7 +103,6 @@ export const buildCommExtension = (config: CommExtConfig) => {
       return _unauthenticationStarted = !_unauthenticationStarted && Object.keys(_didComm).length > 0
     },
     method: async wallet => {
-
       if (_didComm[wallet.store.alias]) {
         console.log('DISCONNECT FROM COMM: ', wallet.store.alias)
         await _didComm[wallet.store.alias].cleanup()

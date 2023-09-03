@@ -146,14 +146,14 @@ if (groupsExtension.schema.events) {
 
           if (isPresentation(doc)) {
             if (doc.type.includes(REGOV_GROUP_CLAIM_TYPE)) {
-              console.log('INCOMING GROUP CLAIM', doc)
+              // console.log('INCOMING GROUP CLAIM', doc)
               modalHandler.getContent = () =>
                 <GroupClaimView close={close} credential={doc} ext={groupsExtension} conn={conn}
                   connection={statusHandle} />
 
               modalHandler.setOpen && modalHandler.setOpen(true)
             } else if (doc.type.includes(REGOV_MEMBERSHIP_CLAIM_TYPE)) {
-              console.log('INCOMING MEMBERSHIP CLAIM', doc)
+              // console.log('INCOMING MEMBERSHIP CLAIM', doc)
 
               modalHandler.getContent = () =>
                 <MembershipOffer close={close} credential={doc} ext={groupsExtension} conn={conn}

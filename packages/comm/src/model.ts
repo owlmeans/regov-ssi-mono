@@ -238,7 +238,7 @@ export const buildDidCommHelper = (wallet: WalletWrapper): DIDCommHelper => {
             }
           }
         } catch (e) {
-          console.log('check long format message - failed')
+          console.error('check long format message - failed')
         }
 
         return

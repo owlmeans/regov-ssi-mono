@@ -214,7 +214,7 @@ export const buildSSICore: BuildSSICoreMethod = async ({
       }
 
       if (result.verified && credential.expirationDate) {
-        console.log('Verify dates', new Date(Date.parse(credential.expirationDate ?? '')), new Date())
+        // console.log('Verify dates', new Date(Date.parse(credential.expirationDate ?? '')), new Date())
         if (new Date(credential.expirationDate ?? '') < new Date()) {
           result.verified = false
           result.error = { errors: [{ kind: 'expired', message: 'credential.expired' }] }

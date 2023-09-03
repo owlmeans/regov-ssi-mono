@@ -78,9 +78,11 @@ export const WalletPersistentIntegrationReact = (
 
   useEffect(() => extensions && i18nRegisterExtensions(i18n, extensions), extensions?.uiExtensions)
 
-  // useEffect(() => {
+  // useEffect(() => { console.log('Regov:WalletPersistentIntegrationReact') }, [])
 
-  // }, [source, isRegovPasswordSet(), storage])
+  // console.log('Regov:loaded', loaded)
+
+  const destructors: UneregisterIntegratedWalletPlugin[] = []
 
   switch (loaded) {
     case PasswordState.LOADING:
@@ -89,18 +91,23 @@ export const WalletPersistentIntegrationReact = (
           if (!isRegovPasswordSet()) {
             return
           }
-          if (passedHandler && passedHandler.wallet && handler.wallet) {
-            const destructors = plugins?.onKickOff?.map(plugin => plugin({
+          if (storage.loaded && passedHandler && passedHandler.wallet && handler.wallet) {
+            // console.log('Regov:kickoff plugins', plugins)
+            const _destructors = plugins?.onKickOff?.map(plugin => plugin({
               handler, isHandlerPassed: true, isUnregisterSet: !!pluginDestructors, extensions, setInboxCount
             }))
 
+            destructors.push(..._destructors?.filter(_ => _) as UneregisterIntegratedWalletPlugin[])
             setLoaded(PasswordState.LOADED)
 
             return () => {
+              // console.log('Regov:nnnnn')
               destructors && destructors.forEach(destructor => destructor && destructor())
+              // destructors && destructors.forEach(destructor => destructor)// && destructor())
             }
           }
           storage.init().then(async () => {
+            // console.log('Regov:Kickoff store')
             if (!handler.wallet) {
               if (!handler.stores['default']) {
                 const wallet = await buildWalletWrapper(
@@ -174,9 +181,13 @@ export const WalletPersistentIntegrationReact = (
               handle, config, handler, extensions
             })
 
-            const destructors = plugins?.onStorageLoaded?.map(destructor => destructor({
+            destructors.push(...plugins?.onStorageLoaded?.map(destructor => destructor({
               handler, isHandlerPassed: !!passedHandler, isUnregisterSet: !!pluginDestructors, extensions, setInboxCount
-            }))
+            })) as [])
+
+            destructors?.push(...plugins?.onKickOff?.map(plugin => plugin({
+              handler, isHandlerPassed: true, isUnregisterSet: !!pluginDestructors, extensions, setInboxCount
+            })) as [])
 
             destructors && setPluginDestructors(
               destructors.filter(destructor => !!destructor) as UneregisterIntegratedWalletPlugin[]
@@ -187,22 +198,19 @@ export const WalletPersistentIntegrationReact = (
 
           return () => {
             if (!passedHandler) {
-              pluginDestructors && pluginDestructors.forEach(destructor => destructor())
-              handler.logout().then(() => storage.detach())
+              pluginDestructors && pluginDestructors.forEach(destructor => destructor && destructor())
+              // handler.logout().then(() => storage.detach())
             }
           }
         }} />
-        <CircularProgress color="inherit" />
+        <CircularProgress />
       </>
     case PasswordState.LOADED:
-      return (
-        <RegovProvider i18n={i18n} map={webComponentMap} handler={handler}
-          config={config} navigator={navigator} extensions={extensions} serverClient={serverClient}
-        >
-          {children}
-          <MainLoading nav={navigator} />
-        </RegovProvider>
-      )
+      return <RegovProvider i18n={i18n} map={webComponentMap} handler={handler}
+        config={config} navigator={navigator} extensions={extensions} serverClient={serverClient}>
+        {children}
+        <MainLoading nav={navigator} />
+      </RegovProvider>
   }
 
   return <Fragment>{children}</Fragment>

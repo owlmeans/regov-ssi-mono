@@ -46,7 +46,7 @@ export const validateVerifiableId = async (
   }
 
   if (!did) {
-    console.log('no did')
+    console.error('no did')
     return false
   }
 
@@ -55,7 +55,7 @@ export const validateVerifiableId = async (
     key = await helper.extractKey(did, VERIFICATION_KEY_HOLDER)
   }
   if (!key) {
-    console.log('no key')
+    console.error('no key')
     return false
   }
 

@@ -23,7 +23,6 @@ export const pluginIntegratedWalletKickoff: IntegratedWalletPlugin = ({
 
   setInboxCount && handler.observers.push(updateInbox)
 
-
   return () => {
     const idx = handler.observers.findIndex((ob) => ob === updateInbox)
     idx > -1 && handler.observers.splice(idx, 1)
@@ -39,6 +38,7 @@ export const pluginIntegratedWalletInbox: IntegratedWalletPlugin = ({
   } else if (!isHandlerPassed && !isUnregisterSet) {
     const handle = handleIncommingCommDocuments(handler, extensions?.registry)
     unregister = () => {
+      debugger
       handle?.defaultListener && handle.helper?.removeListener(handle.defaultListener)
     }
   }

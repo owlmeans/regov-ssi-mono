@@ -34,6 +34,8 @@ export const buildStorageHelper = (
   let _obvserIdx = -1
 
   const _helper = {
+    loaded: false,
+
     init: async () => {
       if (_obvserIdx > -1) {
         return
@@ -54,6 +56,8 @@ export const buildStorageHelper = (
         _helper.commitAsync()
       })
       _obvserIdx = handler.observers.length - 1
+
+      _helper.loaded = true
     },
 
     touch: (alias: string) => {

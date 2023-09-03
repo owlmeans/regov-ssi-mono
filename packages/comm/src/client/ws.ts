@@ -44,7 +44,7 @@ const _processMessage = (_data: string, receive?: Receiver) => {
     if (receive) {
       receive(_data)
     } else {
-      console.log('Received data: ', data)
+      console.info('Received data, but not processed: ', data)
     }
   }
 }
@@ -77,7 +77,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
               await new Promise((resolve, reject) => {
                 _conn.send(`${id}:${msg}`, err => err ? reject(err) : resolve(undefined))
               })
-              console.log('sending... ' + msg.substring(0, 23))
+              // console.log('sending... ' + msg.substring(0, 23))
               if (!msg.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')
                 && !msg.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
 
@@ -93,7 +93,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
 
                 const code = await defer
 
-                console.log('Sent', msg.substring(0, 16) + '...', code)
+                // console.log('Sent', msg.substring(0, 16) + '...', code)
               }
             } catch (err) {
               console.error(err)
@@ -160,7 +160,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
         if (typeof msg.data === 'string') {
           _processMessage(msg.data, receive)
         } else {
-          console.log('non string data received from ws: ', msg)
+          console.info('non string data received from ws: ', msg)
         }
       }
 
@@ -177,7 +177,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
             let timeout: ReturnType<typeof setTimeout> | undefined
             try {
               _wsClient.send(`${id}:${msg}`)
-              console.log(`brwsr:sending {${id}}... ` + msg.substring(0, 23))
+              // console.log(`brwsr:sending {${id}}... ` + msg.substring(0, 23))
               if (!msg.startsWith(COMM_WS_PREFIX_CONFIRMED + ':')
                 && !msg.startsWith(COMM_WS_PREFIX_ERROR + ':')) {
                 messages[id] = { id }
@@ -191,7 +191,7 @@ export const createWSClient = (config: WSClientConfig, receive?: Receiver) => {
                 })
 
                 const code = await defer
-                console.log('Sent', msg.substring(0, 16) + '...', code)
+                // console.log('Sent', msg.substring(0, 16) + '...', code)
               }
             } catch (err) {
               console.error(err)

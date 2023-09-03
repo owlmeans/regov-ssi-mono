@@ -22,7 +22,7 @@ export const createWSChannel = async (config: WSClientConfig): Promise<DIDCommCh
   let _comm: DIDCommHelper
 
   const client = await createWSClient(config, (msg) => {
-    console.log('Received: ' + msg.substring(0, 32))
+    // console.log('Received: ' + msg.substring(0, 32))
     if (_comm && _channel) {
       _comm.receive(msg, _channel)
     }

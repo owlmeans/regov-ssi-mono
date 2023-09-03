@@ -141,7 +141,7 @@ export const buildIdentityExtension = (
     trigger: EXTENSION_TRIGGER_PRODUCE_IDENTITY,
     filter: async wallet => !wallet.getIdentity(),
     method: async (wallet, params: InitSensetiveEventParams) => {
-      console.log('EXTENSION_TRIGGER_PRODUCE_IDENTITY')
+      // console.log('EXTENSION_TRIGGER_PRODUCE_IDENTITY')
       const { ext } = params
       if (!ext) {
         throw ERROR_NO_EXENSION
