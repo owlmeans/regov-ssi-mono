@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-ext-identity",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Simple Identity Extension for Regov SSI",
   "keywords": [
     "Regov",
