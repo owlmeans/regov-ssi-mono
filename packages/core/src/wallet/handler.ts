@@ -28,6 +28,8 @@ export const createWalletHandler = (): WalletHandler => {
 
     observers: [],
 
+    cryptoLoaded: false,
+
     observe: <T>(
       setState: Dispatch<SetStateAction<T>>,
       transformer: HandlerObserverTransformer<T>
@@ -75,6 +77,8 @@ export type WalletHandler = {
   stores: { [key: string]: EncryptedStore },
 
   observers: HandlerObserver[]
+
+  cryptoLoaded: boolean
 
   notify: () => void
 

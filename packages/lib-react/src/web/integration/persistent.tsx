@@ -49,7 +49,7 @@ export const i18nRegisterExtensions = (i18n: I18n, extensions: UIExtensionRegist
   })
 }
 
-export const WalletPersistentIntegrationReact = (
+export const WalletPersistentIntegrationCombined = (
   {
     config, extensions, navigatorBuilder, children, serverClient, setInboxCount, source,
     passedHandler, renderSeed, integrationConfig, plugins, CryptoLoader

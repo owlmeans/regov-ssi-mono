@@ -33,6 +33,7 @@ export const pluginIntegratedWalletInbox: IntegratedWalletPlugin = ({
   isHandlerPassed, handler, extensions, isUnregisterSet, setInboxCount
 }) => {
   let unregister: UneregisterIntegratedWalletPlugin | undefined
+  console.log("PLUGIN",isHandlerPassed, !!globalStatusHandle, isUnregisterSet, handler, extensions?.registry)
   if (isHandlerPassed && !globalStatusHandle) {
     globalStatusHandle = handleIncommingCommDocuments(handler, extensions?.registry)
   } else if (!isHandlerPassed && !isUnregisterSet) {
