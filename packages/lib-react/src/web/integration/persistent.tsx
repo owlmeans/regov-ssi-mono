@@ -78,10 +78,6 @@ export const WalletPersistentIntegrationCombined = (
 
   useEffect(() => extensions && i18nRegisterExtensions(i18n, extensions), extensions?.uiExtensions)
 
-  // useEffect(() => { console.log('Regov:WalletPersistentIntegrationReact') }, [])
-
-  // console.log('Regov:loaded', loaded)
-
   const destructors: UneregisterIntegratedWalletPlugin[] = []
 
   switch (loaded) {
@@ -92,7 +88,6 @@ export const WalletPersistentIntegrationCombined = (
             return
           }
           if (storage.loaded && passedHandler && passedHandler.wallet && handler.wallet) {
-            // console.log('Regov:kickoff plugins', plugins)
             const _destructors = plugins?.onKickOff?.map(plugin => plugin({
               handler, isHandlerPassed: true, isUnregisterSet: !!pluginDestructors, extensions, setInboxCount
             }))
@@ -101,13 +96,10 @@ export const WalletPersistentIntegrationCombined = (
             setLoaded(PasswordState.LOADED)
 
             return () => {
-              // console.log('Regov:nnnnn')
               destructors && destructors.forEach(destructor => destructor && destructor())
-              // destructors && destructors.forEach(destructor => destructor)// && destructor())
             }
           }
           storage.init().then(async () => {
-            // console.log('Regov:Kickoff store')
             if (!handler.wallet) {
               if (!handler.stores['default']) {
                 const wallet = await buildWalletWrapper(
@@ -199,7 +191,6 @@ export const WalletPersistentIntegrationCombined = (
           return () => {
             if (!passedHandler) {
               pluginDestructors && pluginDestructors.forEach(destructor => destructor && destructor())
-              // handler.logout().then(() => storage.detach())
             }
           }
         }} />

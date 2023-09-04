@@ -6,7 +6,7 @@ import { handleIncommingCommDocuments } from '../../utils'
 
 let globalStatusHandle: CommConnectionStatusHandler | undefined
 
-export const pluginIntegratedWalletKickoff: IntegratedWalletPlugin = ({ 
+export const pluginIntegratedWalletKickoff: IntegratedWalletPlugin = ({
   handler, setInboxCount
 }) => {
   if (!handler.wallet) {
@@ -33,7 +33,6 @@ export const pluginIntegratedWalletInbox: IntegratedWalletPlugin = ({
   isHandlerPassed, handler, extensions, isUnregisterSet, setInboxCount
 }) => {
   let unregister: UneregisterIntegratedWalletPlugin | undefined
-  console.log("PLUGIN",isHandlerPassed, !!globalStatusHandle, isUnregisterSet, handler, extensions?.registry)
   if (isHandlerPassed && !globalStatusHandle) {
     globalStatusHandle = handleIncommingCommDocuments(handler, extensions?.registry)
   } else if (!isHandlerPassed && !isUnregisterSet) {

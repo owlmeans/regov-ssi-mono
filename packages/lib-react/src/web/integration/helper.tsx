@@ -52,18 +52,16 @@ export const RegovProviderWrapper: FC<RegovProviderWrapperProps> = ({
   )
 
   useEffect(() => regov.extensions && i18nRegisterExtensions(i18n, regov.extensions), regov.extensions?.uiExtensions)
+  
+  const [oneTime, setOneTime] = useState(true)
 
   useEffect(() => {
-    console.log('try to plugin')
-    if (!isRegovPasswordSet()) {
+    if (!isRegovPasswordSet() || !plugins) {
       return
     }
-    const destructors: UneregisterIntegratedWalletPlugin[] = [];
     (async () => {
-      console.log('input plugin area');
       if (handler && !handler?.wallet) {
         if (!handler?.stores['default']) {
-          console.log('try to rebuild wallet')
           const wallet = await buildWalletWrapper(
             { crypto: cryptoHelper, extensions: regov.extensions?.registry },
             getRegovPassword() ?? '',
@@ -84,7 +82,6 @@ export const RegovProviderWrapper: FC<RegovProviderWrapperProps> = ({
 
           handler.notify()
         }
-        console.log('try to reload wallet')
         await handler.loadStore(async (handler) => {
           return await buildWalletWrapper(
             { crypto: cryptoHelper, extensions: regov.extensions?.registry },
@@ -99,8 +96,8 @@ export const RegovProviderWrapper: FC<RegovProviderWrapperProps> = ({
         })
       }
 
-      if (integrationConfig?.trustedIssuersUri) {
-        console.log('try to specify integration uri')
+      if (integrationConfig?.trustedIssuersUri && oneTime) {
+        setOneTime(false)
         try {
           let credentialList = (await serverClient?.getVCs<Credential[]>({
             uri: integrationConfig.trustedIssuersUri,
@@ -128,8 +125,6 @@ export const RegovProviderWrapper: FC<RegovProviderWrapperProps> = ({
         return
       }
 
-      console.log('start register plugins')
-
       await regov.extensions?.triggerEvent<MainModalShareEventParams>(handler.wallet, EXTENSION_TIRGGER_MAINMODAL_SHARE_HANDLER, { handle })
 
       /**
@@ -139,21 +134,19 @@ export const RegovProviderWrapper: FC<RegovProviderWrapperProps> = ({
         handle, config, handler, extensions: regov.extensions
       })
 
-      destructors.push(...plugins?.onStorageLoaded?.map(destructor => destructor({
-        handler: handler ?? regov.handler, isHandlerPassed: !!handler, isUnregisterSet: true, extensions: regov.extensions, setInboxCount
-      })) as [])
-
-      destructors?.push(...plugins?.onKickOff?.map(plugin => plugin({
-        handler: handler ?? regov.handler, isHandlerPassed: true, isUnregisterSet: true, extensions: regov.extensions, setInboxCount
-      })) as [])
-
-      // destructors && setPluginDestructors(
-      //   destructors.filter(destructor => !!destructor) as UneregisterIntegratedWalletPlugin[]
-      // )
     })()
 
+    const destructors: UneregisterIntegratedWalletPlugin[] = []
+
+    destructors.push(...plugins?.onStorageLoaded?.map(plugin => plugin({
+      handler: handler ?? regov.handler, isHandlerPassed: !!handler, isUnregisterSet: true, extensions: regov.extensions, setInboxCount
+    })) as [])
+
+    destructors.push(...plugins?.onKickOff?.map(plugin => plugin({
+      handler: handler ?? regov.handler, isHandlerPassed: true, isUnregisterSet: true, extensions: regov.extensions, setInboxCount
+    })) as [])
+
     return () => {
-      console.log('apply destructores !!!!!')
       destructors.forEach(destructor => destructor && destructor())
     }
   }, [isRegovPasswordSet(), handler, handler.wallet])

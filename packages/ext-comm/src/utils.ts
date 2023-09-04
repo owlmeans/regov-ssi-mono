@@ -31,7 +31,7 @@ export const handleIncommingCommDocuments = (handler?: WalletHandler, extensions
       trigger: async (conn, doc) => {
         if (registry) {
           if (!registry.getCredential(doc.id, REGISTRY_SECTION_PEER)) {
-            console.info(`ext-comm: received message: ${doc.id}`)
+            // console.info(`ext-comm: received message: ${doc.id}`)
             const wrapper = await registry.addCredential<
               IncommingCrednetialSubject, IncommingPresentation, IncommingMeta
             >(doc as IncommingPresentation, REGISTRY_SECTION_PEER)

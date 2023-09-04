@@ -31,7 +31,6 @@ export const DebugSSIView = () => {
         defaultSchema: 'https://schema.owlmeans.com',
         didSchemaPath: 'did-schema.json',
       })
-      console.log(handler.wallet)
     })()
   }, [])
 

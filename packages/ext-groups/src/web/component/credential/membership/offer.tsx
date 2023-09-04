@@ -102,7 +102,6 @@ export const MembershipOffer: FunctionComponent<MembershipOfferParams> = withReg
         const unsignedMembership = JSON.parse(JSON.stringify(
           getMembershipClaim(presentation)
         )) as Credential<MembershipSubject>
-        console.log('loading...')
         if (
           !normalizeValue(unsignedMembership.evidence)
             .find(evidence => (evidence as Credential).type.includes(
