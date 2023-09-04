@@ -1,6 +1,6 @@
 {
   "name": "@owlmeans/regov-lib-native",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Re:gov SSI UI package for mobile wallet applications",
   "keywords": [
     "SSI",
@@ -33,7 +33,7 @@
     "url": "https://github.com/owlmeans/regov-ssi-mono/issues"
   },
   "dependencies": {
-    "@owlmeans/regov-ssi-core": "^0.8.3",
+    "@owlmeans/regov-ssi-core": "^0.8.4",
     "buffer": "^6.0.3",
     "events": "^3.3.0",
     "process": "^0.11.10",
