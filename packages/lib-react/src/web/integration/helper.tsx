@@ -52,7 +52,7 @@ export const RegovProviderWrapper: FC<RegovProviderWrapperProps> = ({
   )
 
   useEffect(() => regov.extensions && i18nRegisterExtensions(i18n, regov.extensions), regov.extensions?.uiExtensions)
-  
+
   const [oneTime, setOneTime] = useState(true)
 
   useEffect(() => {
@@ -182,11 +182,18 @@ export const useIntRegov = (): ContextParams => {
 
 export const buildRegovCryptoLoader = ({
   context: { setLoading, handler, storage },
-  CryptoLoader, extensions
+  CryptoLoader, extensions, noSuspense
 }: RegovCryptoLoaderParams): FC => {
   sharedRegovContext.extensions = extensions
   const CompoundCryptoLoader = () => {
-    return handler.cryptoLoaded ? null : <Suspense fallback={<>Loading...</>}>
+
+    const Wrapper: FC<PropsWithChildren> = noSuspense ? ({ children }) => {
+      return <>{children}</>
+    } : ({ children }) => {
+      return <Suspense fallback={<>Loading...</>}>{children}</Suspense>
+    }
+
+    return handler.cryptoLoaded ? null : <Wrapper>
       <CryptoLoader deps={extensions?.uiExtensions || []} onFinish={() => {
         if (sharedRegovContext.handler == null) {
           handler.cryptoLoaded = true
@@ -197,7 +204,9 @@ export const buildRegovCryptoLoader = ({
           })
         }
       }} />
-    </Suspense>
+    </Wrapper>
+
+
   }
 
   return CompoundCryptoLoader
@@ -207,6 +216,7 @@ export interface RegovCryptoLoaderParams {
   context: RegovUIContext,
   CryptoLoader: FC<CryptoLoaderProps>
   extensions: UIExtensionRegistry
+  noSuspense?: boolean
 }
 
 export interface RegovUIContext {
