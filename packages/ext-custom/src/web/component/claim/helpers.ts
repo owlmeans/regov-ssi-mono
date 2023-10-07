@@ -40,7 +40,9 @@ export const buildClaim: ClaimBuilder = ({
     }
     const factory = ext.getFactory(descr.mainType)
     const cred = await factory.build(handler.wallet, {
-      extensions: extensions?.registry, identity, subjectData: { ...subject },
+      extensions: extensions?.registry, identity, subjectData: { 
+        ...Object.fromEntries(Object.entries(subject).map(([key, value]) => [key, `${value}`.trim()]))
+      },
     })
     const claim = await factory.claim(handler.wallet, { unsignedClaim: cred })
     await handler.wallet.getClaimRegistry().addCredential(claim)

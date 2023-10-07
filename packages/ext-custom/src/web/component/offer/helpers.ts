@@ -47,7 +47,10 @@ export const buildOffer: OfferBuilder = ({
       claim, credential: unsigned,
       holder: unsigned.issuer as DIDDocument,
       cryptoKey: await handler.wallet.keys.getCryptoKey(),
-      subject: { ...unsigned.credentialSubject, ...data[sectionKey].offer_create },
+      subject: {
+        ...unsigned.credentialSubject,
+        ...Object.fromEntries(Object.entries(data[sectionKey].offer_create).map(([key, value]) => [key, `${value}`.trim()]))
+      },
       id: claim.id as string,
       challenge: claim.proof.challenge ?? '',
       domain: claim.proof.domain ?? ''

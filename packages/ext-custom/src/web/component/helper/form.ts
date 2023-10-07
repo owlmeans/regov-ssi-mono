@@ -78,5 +78,5 @@ export const produceValidation = (
   Object.fromEntries(Object.entries(descr.subjectMeta)
     .filter(([, field]) => field.useAt.includes(purpose) && field.validation)
     .map(([key, field]) => [
-      `${castSectionKey(descr)}.${purpose}.${key}`, field.validation || {}
+      `${castSectionKey(descr)}.${purpose}.${key}`, field.validation ?? {}
     ]))
